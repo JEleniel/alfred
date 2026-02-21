@@ -1,0 +1,180 @@
+#+#+#+#+######################################################################
+# This file is a template.
+# It is a copy of the root .gitignore with Rust-specific ignores added at top.
+#+#+#+#+######################################################################
+
+# Project specific
+# Add files and directories specific to your project that should be ignored here
+
+# Rust
+.analyze/
+*.pdb
+debug/
+mutants.out*/
+target/
+*.d
+cargo-install-update-lock
+Cargo.lock
+Cargo.toml.orig
+crates-io-index/
+*.dll
+*.dSYM/
+*.dylib
+*.exe
+*.rlib
+*.rmeta
+*.so
+
+# Visual Studio Code
+.vscode/*
+!.vscode/*.code-snippets
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.*.json
+!.vscode/settings.json
+!.vscode/tasks.json
+.history/
+.vscode-test
+*.vsix
+.codacy
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# Vim swap files
+*.swp
+*.swo
+*.swx
+
+#Ignore IDE specific AI instructions
+.github/instructions/IDE.instructions.md
+.agents/
+
+# Archive Files
+*.7z
+*.bz2
+*.bzip
+*.bzip2
+*.cab
+*.deb
+*.dmg
+*.egg
+*.gem
+*.gz
+*.gzip
+*.iso
+*.jar
+*.lzma
+*.msi
+*.msix
+*.msm
+*.msp
+*.rar
+*.rpm
+*.tar
+*.tgz
+*.txz
+*.tzst
+*.xar
+*.xpi
+*.xz
+*.zip
+*.zst
+
+# Backup Files
+*.bk
+*.bak
+*.gho
+*.ori
+*.orig
+
+# Cache, Temporary, and Other Common Files
+.cache/
+.temp/
+temp/
+tmp/
+*.tmp
+*.orig
+*.rej
+
+# direnv
+.direnv/
+
+# Security Files
+*.cert
+*.crt
+*.key
+*.keystore
+*.p12
+*.pem
+*.pfx
+
+# Logs and Diagnostics
+logs/
+*.log
+*-debug.log*
+*-error.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Test results & coverage output
+.nyc_output/
+.coverage
+coverage/
+coverage.xml
+*.lcov
+test-results/
+
+# Runtime data
+*.pfx
+*.pid
+*.pid.lock
+*.seed
+pids/
+
+# Diff Files
+*.diff
+*.patch
+
+# Configuration Files
+.env*
+!.env.example
+config.json
+!config.default.json
+!config.example.json
+
+# Linux Cruft
+*~
+.directory
+.fuse_hidden*
+.nfs*
+.Trash-*
+
+# Windows Cruft
+$RECYCLE.BIN/
+[Dd]esktop.ini
+ehthumbs.db
+ehthumbs_vista.db
+*.lnk
+*.stackdump
+Thumbs.db
+Thumbs.db:encryptable
+
+# MacOS Cruft
+._*
+.apdisk
+.AppleDB
+.AppleDesktop
+.AppleDouble
+.com.apple.timemachine.donotpresent
+.DocumentRevisions-V100
+.DS_Store
+.fseventsd
+.LSOverride
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+Icon
+Network Trash Folder
+Temporary Items

@@ -1,0 +1,76 @@
+{
+	"$id": "https://crystultima.org/aurora/card.schema.json",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"additionalProperties": false,
+	"definitions": {
+		"id_ref": {
+			"pattern": "^[A-Z]{3}-\\d{3,}$",
+			"type": "string"
+		},
+		"link": {
+			"additionalProperties": false,
+			"properties": {
+				"relationship": {
+					"$ref": "#/definitions/non_empty"
+				},
+				"target": {
+					"$ref": "#/definitions/id_ref"
+				}
+			},
+			"required": ["relationship", "target"],
+			"type": "object"
+		},
+		"non_empty": {
+			"minLength": 1,
+			"type": "string"
+		}
+	},
+	"description": "JSON schema for Aurora cards",
+	"properties": {
+		"$schema": {
+			"minLength": 1,
+			"type": "string"
+		},
+		"attributes": {
+			"additionalProperties": true,
+			"type": "object"
+		},
+		"boundary": {
+			"$ref": "#/definitions/non_empty"
+		},
+		"card_subtype": {
+			"$ref": "#/definitions/non_empty"
+		},
+		"card_type": {
+			"$ref": "#/definitions/non_empty"
+		},
+		"description": {
+			"$ref": "#/definitions/non_empty"
+		},
+		"id": {
+			"$ref": "#/definitions/id_ref"
+		},
+		"links": {
+			"items": {
+				"$ref": "#/definitions/link"
+			},
+			"type": "array",
+			"uniqueItems": true
+		},
+		"name": {
+			"$ref": "#/definitions/non_empty"
+		},
+		"notes": {
+			"$ref": "#/definitions/non_empty"
+		},
+		"icon": {
+			"$ref": "#/definitions/non_empty"
+		},
+		"status": {
+			"$ref": "#/definitions/non_empty"
+		}
+	},
+	"required": ["$schema", "id", "card_type", "name", "description", "links"],
+	"title": "Aurora Card Schema",
+	"type": "object"
+}

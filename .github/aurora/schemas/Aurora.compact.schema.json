@@ -1,0 +1,83 @@
+{
+	"$id": "https://crystultima.org/aurora/compact.schema.json",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"additionalProperties": false,
+	"definitions": {
+		"card": {
+			"additionalProperties": false,
+			"properties": {
+				"attributes": {
+					"additionalProperties": true,
+					"type": "object"
+				},
+				"boundary": {
+					"minLength": 1,
+					"type": "string"
+				},
+				"card_subtype": {
+					"$ref": "#/definitions/non_empty"
+				},
+				"card_type": {
+					"$ref": "#/definitions/non_empty"
+				},
+				"id": {
+					"$ref": "#/definitions/id_ref"
+				},
+				"links": {
+					"items": {
+						"$ref": "#/definitions/link"
+					},
+					"type": "array",
+					"uniqueItems": true
+				},
+				"name": {
+					"$ref": "#/definitions/non_empty"
+				},
+				"status": {
+					"$ref": "#/definitions/non_empty"
+				}
+			},
+			"required": ["id", "card_type", "name", "links", "attributes"],
+			"type": "object"
+		},
+		"id_ref": {
+			"pattern": "^[A-Z]{3}-\\d{3,}$",
+			"type": "string"
+		},
+		"link": {
+			"additionalProperties": false,
+			"properties": {
+				"relationship": {
+					"$ref": "#/definitions/non_empty"
+				},
+				"target": {
+					"$ref": "#/definitions/id_ref"
+				}
+			},
+			"required": ["relationship", "target"],
+			"type": "object"
+		},
+		"non_empty": {
+			"minLength": 1,
+			"type": "string"
+		}
+	},
+	"description": "JSON schema for Compact.json",
+	"properties": {
+		"$schema": {
+			"minLength": 1,
+			"type": "string"
+		},
+		"cards": {
+			"items": {
+				"$ref": "#/definitions/card"
+			},
+			"minItems": 1,
+			"type": "array",
+			"uniqueItems": true
+		}
+	},
+	"required": ["$schema", "cards"],
+	"title": "Aurora Compact Model Schema",
+	"type": "object"
+}
