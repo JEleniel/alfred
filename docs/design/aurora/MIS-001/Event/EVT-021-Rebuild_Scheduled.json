@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-021",
+	"card_type": "Event",
+	"name": "Rebuild Scheduled",
+	"description": "Indexer scheduled a rebuild/reconciliation due to detected change, staleness, or explicit request.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-016"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-003",
+		"from_state": "STA-015"
+	}
+}

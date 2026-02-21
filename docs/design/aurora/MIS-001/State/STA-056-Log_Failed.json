@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-056",
+	"card_type": "State",
+	"name": "Log Failed",
+	"description": "Log Manager reports deterministic diagnostics and falls back to minimal log access if possible.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-080"
+		}
+	]
+}

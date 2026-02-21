@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-082",
+	"card_type": "Event",
+	"name": "Env Policy Accepted",
+	"description": "Policy checks succeeded and an output is ready for deterministic redaction.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-059"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-012",
+		"from_state": "STA-058"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-018",
+	"card_type": "State",
+	"name": "Context Ready",
+	"description": "Context provider is ready to resolve context for a request.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-026"
+		}
+	]
+}

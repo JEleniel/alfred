@@ -1,0 +1,29 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-009",
+	"card_type": "State Machine",
+	"name": "Contracts and Diagnostics State Machine",
+	"description": "Deterministic validation and emission lifecycle for COM-011 (Contracts and Diagnostics) when shaping outputs and errors.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-045"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-046"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-047"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-048"
+		}
+	],
+	"attributes": {
+		"component": "COM-011",
+		"initial_state": "STA-045"
+	}
+}

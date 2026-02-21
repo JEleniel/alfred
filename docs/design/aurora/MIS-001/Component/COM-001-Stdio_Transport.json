@@ -1,0 +1,34 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-001",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Stdio Transport",
+	"description": "Implements stdio request/response transport and framing for MCP tool calls.",
+	"links": [
+		{
+			"relationship": "exposes",
+			"target": "INT-001"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-007"
+		},
+		{
+			"relationship": "produces",
+			"target": "ART-002"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-001"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"transport": "stdio",
+		"streaming": true
+	}
+}

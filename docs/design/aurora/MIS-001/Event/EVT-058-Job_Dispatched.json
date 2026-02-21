@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-058",
+	"card_type": "Event",
+	"name": "Job Dispatched",
+	"description": "Job worker started successfully and monitoring commenced.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-042"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-008",
+		"from_state": "STA-041"
+	}
+}

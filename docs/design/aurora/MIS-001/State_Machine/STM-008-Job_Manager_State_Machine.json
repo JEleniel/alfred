@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-008",
+	"card_type": "State Machine",
+	"name": "Job Manager State Machine",
+	"description": "Deterministic asynchronous lifecycle for COM-010 (Job Manager): enqueue, dispatch, monitor, complete, and report.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-039"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-040"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-041"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-042"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-043"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-044"
+		}
+	],
+	"attributes": {
+		"component": "COM-010",
+		"initial_state": "STA-039",
+		"determinism_notes": [
+			"Job ids are stable and unique; status transitions are monotonic.",
+			"Timeout and cancellation policies are applied consistently across platforms."
+		]
+	}
+}

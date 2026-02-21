@@ -1,0 +1,12 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ADR-001",
+	"card_type": "ADR",
+	"name": "Rust as Implementation Language",
+	"description": "Rust is chosen for Alfred to achieve high performance, strong safety guarantees, implementation flexibility, and cross-platform usability for a local stdio server.",
+	"links": [],
+	"attributes": {
+		"doc": "docs/design/adr/0001-rust.md",
+		"decision": "use-rust"
+	}
+}

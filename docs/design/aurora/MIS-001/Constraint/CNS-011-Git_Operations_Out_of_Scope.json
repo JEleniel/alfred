@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-011",
+	"card_type": "Constraint",
+	"name": "Git and GitHub Operations Out of Scope",
+	"description": "Alfred MUST NOT implement Git or GitHub operations handled by dedicated tools.",
+	"links": []
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-004",
+	"card_type": "State",
+	"name": "Transport Writing Response",
+	"description": "Transport writes a single framed response to stdout (or NDJSON stream segment), then returns to listening.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-006"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-007"
+		}
+	]
+}

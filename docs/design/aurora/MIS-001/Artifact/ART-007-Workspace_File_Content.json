@@ -1,0 +1,12 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ART-007",
+	"card_type": "Artifact",
+	"card_subtype": "Data",
+	"name": "Workspace File Content",
+	"description": "File bytes and metadata read from within the workspace boundary.",
+	"links": [],
+	"attributes": {
+		"boundary": "workspace"
+	}
+}

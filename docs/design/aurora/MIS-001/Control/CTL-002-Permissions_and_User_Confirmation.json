@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-002",
+	"card_type": "Control",
+	"name": "Permissions and User Confirmation",
+	"description": "Require explicit permissions for sensitive tool categories (writes, deletes, patch application, and task execution). Support IDE-compliant prompts and policy defaults that assume the agent may be malicious.",
+	"links": [
+		{
+			"relationship": "protects",
+			"target": "AST-001"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-002"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-003"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-010"
+		},
+		{
+			"relationship": "obstructs",
+			"target": "THC-001"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-001"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-002"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-003"
+		}
+	]
+}

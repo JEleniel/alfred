@@ -1,0 +1,33 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-009",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Task Runner",
+	"description": "Runs named tasks and common ecosystem commands, capturing structured output and diagnostics.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-005"
+		},
+		{
+			"relationship": "produces",
+			"target": "ART-003"
+		},
+		{
+			"relationship": "stores in",
+			"target": "DST-002"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-007"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"commands": ["build", "test", "cargo", "pnpm", "lint", "format"]
+	}
+}

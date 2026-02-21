@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-005",
+	"card_type": "Capability",
+	"name": "Task and Tool Execution",
+	"description": "Execute named tasks (build/test) and common ecosystem commands (cargo/pnpm/lint/format) with normalized outputs.",
+	"links": []
+}

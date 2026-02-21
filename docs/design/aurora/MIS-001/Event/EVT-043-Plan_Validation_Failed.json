@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-043",
+	"card_type": "Event",
+	"name": "Plan Validation Failed",
+	"description": "Plan validation failed (schema mismatch, corrupted artifact, or lockstep violation).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-032"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-006",
+		"from_state": "STA-029"
+	}
+}

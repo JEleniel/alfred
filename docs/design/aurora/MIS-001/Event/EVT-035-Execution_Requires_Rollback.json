@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-035",
+	"card_type": "Event",
+	"name": "Execution Requires Rollback",
+	"description": "Execution partially completed and requires compensating actions.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-025"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-023"
+	}
+}

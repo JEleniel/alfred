@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-002",
+	"card_type": "Risk",
+	"name": "Host Compromise",
+	"description": "A malicious action results in arbitrary code execution or harmful system changes on the developer machine.",
+	"links": []
+}

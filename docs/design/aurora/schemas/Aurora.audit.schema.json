@@ -1,0 +1,79 @@
+{
+	"$id": "https://crystultima.org/aurora/audit.schema.json",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"additionalProperties": false,
+	"definitions": {
+		"card_change": {
+			"additionalProperties": false,
+			"properties": {
+				"card_id": {
+					"$ref": "#/definitions/id_ref"
+				},
+				"change_type": {
+					"$ref": "#/definitions/change_type"
+				},
+				"link_changes": {
+					"description": "Optional link-level changes captured together with the card edit",
+					"items": {
+						"$ref": "#/definitions/link_change"
+					},
+					"minItems": 1,
+					"type": "array"
+				}
+			},
+			"required": ["card_id", "change_type"],
+			"type": "object"
+		},
+		"change_type": {
+			"enum": ["create", "change", "delete"],
+			"type": "string"
+		},
+		"id_ref": {
+			"pattern": "^[A-Z]{3}-\\d{3,}$",
+			"type": "string"
+		},
+		"link_change": {
+			"additionalProperties": false,
+			"properties": {
+				"change_type": {
+					"$ref": "#/definitions/change_type"
+				},
+				"relationship": {
+					"$ref": "#/definitions/non_empty"
+				},
+				"target": {
+					"$ref": "#/definitions/id_ref"
+				}
+			},
+			"required": ["change_type", "relationship", "target"],
+			"type": "object"
+		},
+		"non_empty": {
+			"minLength": 1,
+			"type": "string"
+		}
+	},
+	"description": "JSON schema for a single Aurora audit log entry. Mission audit logs are append-only NDJSON files (`AuditLog.ndjson`) where each line is one entry.",
+	"properties": {
+		"changes": {
+			"description": "The set of card changes recorded in this single audit event",
+			"items": {
+				"$ref": "#/definitions/card_change"
+			},
+			"minItems": 1,
+			"type": "array"
+		},
+		"editor": {
+			"$ref": "#/definitions/non_empty",
+			"description": "The identity of the entity making the change"
+		},
+		"timestamp": {
+			"description": "UTC time of the change in RFC3339/ISO 8601 format",
+			"format": "date-time",
+			"type": "string"
+		}
+	},
+	"required": ["timestamp", "editor", "changes"],
+	"title": "Aurora Audit Log Entry Schema",
+	"type": "object"
+}

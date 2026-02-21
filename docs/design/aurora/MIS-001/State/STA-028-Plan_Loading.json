@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-028",
+	"card_type": "State",
+	"name": "Plan Loading",
+	"description": "Plan Manager loads the plan artifact from the workspace store.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-040"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-041"
+		}
+	]
+}

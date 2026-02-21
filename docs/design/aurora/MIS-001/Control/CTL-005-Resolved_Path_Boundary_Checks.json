@@ -1,0 +1,29 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-005",
+	"card_type": "Control",
+	"name": "Resolved-Path Boundary Checks (Symlinks/Junctions)",
+	"description": "Use resolved/canonical paths for workspace boundary enforcement, accounting for symlinks/junctions and platform-specific path rules; reject ambiguous or unresolvable path inputs.",
+	"links": [
+		{
+			"relationship": "protects",
+			"target": "AST-001"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-003"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-016"
+		},
+		{
+			"relationship": "obstructs",
+			"target": "THC-001"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-004"
+		}
+	]
+}

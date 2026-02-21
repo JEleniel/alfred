@@ -1,0 +1,49 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-016",
+	"card_type": "Requirement",
+	"name": "Local-First Execution",
+	"description": "Alfred MUST run as a local stdio server relative to the workspace host (including VS Code Remote Development modes), enforce workspace boundaries, remain self-contained (no outside services), and support Linux/macOS/Windows.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-007"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-006"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-007"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-010"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-011"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-013"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-014"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-023"
+		},
+		{
+			"relationship": "has",
+			"target": "ADR-001"
+		}
+	]
+}

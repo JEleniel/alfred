@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-032",
+	"card_type": "Event",
+	"name": "Plan Validated For Dry-Run",
+	"description": "The plan validated successfully and dry-run mode was requested (no writes).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-024"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-022"
+	}
+}

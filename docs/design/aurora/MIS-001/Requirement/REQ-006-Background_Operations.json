@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-006",
+	"card_type": "Requirement",
+	"name": "Background Operations",
+	"description": "Alfred MUST support asynchronous operations with streaming output, cancellation and timeout controls, and job/session introspection.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-006"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-012"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-019"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-022"
+		}
+	]
+}

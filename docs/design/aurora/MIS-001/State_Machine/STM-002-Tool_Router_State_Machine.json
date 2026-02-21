@@ -1,0 +1,42 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-002",
+	"card_type": "State Machine",
+	"name": "Tool Router State Machine",
+	"description": "Deterministic request lifecycle for COM-002 (Tool Router): validate, dispatch, stream/wait, and finalize results.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-007"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-008"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-009"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-010"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-011"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-012"
+		}
+	],
+	"attributes": {
+		"component": "COM-002",
+		"initial_state": "STA-007",
+		"steady_state": "STA-007",
+		"determinism_notes": [
+			"Requests are validated before dispatch; invalid requests fail fast with deterministic taxonomy.",
+			"Stop-on-failure chaining is enforced at the router boundary."
+		]
+	}
+}

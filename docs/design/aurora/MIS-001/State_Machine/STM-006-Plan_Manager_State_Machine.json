@@ -1,0 +1,38 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-006",
+	"card_type": "State Machine",
+	"name": "Plan Manager State Machine",
+	"description": "Deterministic lifecycle for COM-008 (Plan Manager) for loading, validating, updating, and persisting the plan artifact.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-027"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-028"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-029"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-030"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-031"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-032"
+		}
+	],
+	"attributes": {
+		"component": "COM-008",
+		"initial_state": "STA-027",
+		"steady_state": "STA-030"
+	}
+}

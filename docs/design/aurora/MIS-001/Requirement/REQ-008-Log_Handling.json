@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-008",
+	"card_type": "Requirement",
+	"name": "Log Handling",
+	"description": "Alfred MUST tail and filter logs.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-008"
+		}
+	]
+}

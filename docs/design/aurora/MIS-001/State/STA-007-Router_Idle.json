@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-007",
+	"card_type": "State",
+	"name": "Router Idle",
+	"description": "Router awaits the next validated framed tool call from the transport.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-008"
+		}
+	]
+}

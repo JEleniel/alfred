@@ -1,0 +1,53 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "THD-001",
+	"card_type": "Threat Diamond",
+	"name": "Workspace Boundary Escape",
+	"description": "A malicious/compromised agent attempts to read or write outside the configured workspace boundary (e.g., via path traversal, symlink tricks, or ambiguous path normalization).",
+	"links": [
+		{
+			"relationship": "threatens",
+			"target": "AST-003"
+		},
+		{
+			"relationship": "threatens",
+			"target": "AST-001"
+		},
+		{
+			"relationship": "involves",
+			"target": "ADV-001"
+		},
+		{
+			"relationship": "uses",
+			"target": "THC-001"
+		},
+		{
+			"relationship": "impacts",
+			"target": "VIC-001"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-001"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-004"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-005"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-006"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-009"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-003"
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-114",
+	"card_type": "Event",
+	"name": "Diagnostics Failure Emitted",
+	"description": "Diagnostics emitted the minimal deterministic error envelope and finalized the response.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-045"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-009",
+		"from_state": "STA-048"
+	}
+}

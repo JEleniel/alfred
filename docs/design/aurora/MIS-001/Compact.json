@@ -1,0 +1,6309 @@
+{
+  "$schema": "../schemas/Aurora.compact.schema.json",
+  "cards": [
+    {
+      "attributes": {
+        "execution": "local",
+        "notes": [
+          "Alfred is an MCP stdio server running on the workspace host machine.",
+          "The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs."
+        ],
+        "transport": "stdio"
+      },
+      "card_type": "Mission",
+      "id": "MIS-001",
+      "links": [
+        {
+          "relationship": "involves",
+          "target": "STK-001"
+        },
+        {
+          "relationship": "remediates",
+          "target": "THM-001"
+        },
+        {
+          "relationship": "involves",
+          "target": "ACT-001"
+        },
+        {
+          "relationship": "involves",
+          "target": "ACT-002"
+        },
+        {
+          "relationship": "establishes",
+          "target": "DRI-001"
+        },
+        {
+          "relationship": "establishes",
+          "target": "DRI-002"
+        },
+        {
+          "relationship": "establishes",
+          "target": "DRI-003"
+        },
+        {
+          "relationship": "establishes",
+          "target": "DRI-004"
+        },
+        {
+          "relationship": "establishes",
+          "target": "DRI-005"
+        },
+        {
+          "relationship": "necessitates",
+          "target": "SYS-001"
+        },
+        {
+          "relationship": "necessitates",
+          "target": "APP-001"
+        }
+      ],
+      "name": "Alfred Local MCP Server"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-010",
+      "links": [],
+      "name": "Permission Model and Guardrails"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-014",
+      "links": [],
+      "name": "Mobile Platforms Out of Scope"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-009",
+      "links": [],
+      "name": "Stop-on-Failure Default for Chains"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-017",
+      "links": [],
+      "name": "Cross-Platform Atomic Write Semantics"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-005",
+      "links": [],
+      "name": "Deterministic Error Taxonomy"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-023",
+      "links": [],
+      "name": "VS Code Remote Development Compatibility"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-019",
+      "links": [],
+      "name": "Cross-Platform Cancellation Semantics"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-001",
+      "links": [],
+      "name": "Workspace Boundary Enforcement"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-003",
+      "links": [],
+      "name": "Dry-Run for Destructive Operations"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-022",
+      "links": [],
+      "name": "Network Filesystem Tolerance"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-008",
+      "links": [],
+      "name": "SemVer and Schema Lockstep"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-020",
+      "links": [],
+      "name": "Environment Variable CRUD Scope"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-011",
+      "links": [],
+      "name": "Git and GitHub Operations Out of Scope"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-018",
+      "links": [],
+      "name": "No Shell by Default for Task Execution"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-002",
+      "links": [],
+      "name": "Side-Effect Free Reads"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-013",
+      "links": [],
+      "name": "Cross-Platform Desktop OS Support"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-016",
+      "links": [],
+      "name": "Symlink and Junction-Safe Boundary Checks"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-006",
+      "links": [],
+      "name": "No External Service Dependencies"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-004",
+      "links": [],
+      "name": "Atomic Mutations (Per Target)"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-007",
+      "links": [],
+      "name": "Local Stdio Server"
+    },
+    {
+      "attributes": {
+        "p95_targets_ms": {
+          "cancellation_ack": 3000,
+          "capability_discovery": 100,
+          "file_patch_apply_up_to_1mb": 1000,
+          "indexed_search_and_symbol_lookup": 500,
+          "job_status_freshness": 2000
+        }
+      },
+      "card_type": "Constraint",
+      "id": "CNS-012",
+      "links": [],
+      "name": "Service Level Objectives"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-015",
+      "links": [],
+      "name": "Deterministic Output Normalization"
+    },
+    {
+      "attributes": {},
+      "card_type": "Constraint",
+      "id": "CNS-021",
+      "links": [],
+      "name": "UTF-8 Protocol and Path Encoding Handling"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-003",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-003"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-003"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-004"
+        }
+      ],
+      "name": "Edit files safely within the workspace"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-008",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-008"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-012"
+        }
+      ],
+      "name": "Handle logs predictably"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-014",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-014"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-008"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-013"
+        }
+      ],
+      "name": "Trust conformance and compatibility"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-007",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-007"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-005"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-015"
+        }
+      ],
+      "name": "Receive deterministic JSON/NDJSON outputs"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-001",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-001"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-012"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-015"
+        }
+      ],
+      "name": "Index and query the workspace"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-005",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-005"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-018"
+        }
+      ],
+      "name": "Execute local tasks with guardrails"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-016",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-016"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-007"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-006"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-023"
+        }
+      ],
+      "name": "Run local to the workspace host"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-006",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-006"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-019"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-012"
+        }
+      ],
+      "name": "Run background jobs safely"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-012",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-012"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-005"
+        }
+      ],
+      "name": "Get normalized diagnostics"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-010",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-010"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-008"
+        }
+      ],
+      "name": "Discover tool capabilities"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-011",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-011"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-009"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-015"
+        }
+      ],
+      "name": "Chain actions deterministically"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-015",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-015"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-012"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-022"
+        }
+      ],
+      "name": "Work with any-size files"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-004",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-004"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-015"
+        }
+      ],
+      "name": "Track a project plan and progress"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-002",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-002"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-001"
+        }
+      ],
+      "name": "Understand current context"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-013",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-013"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-005"
+        }
+      ],
+      "name": "Rely on a deterministic error taxonomy"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-009",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-009"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-020"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-010"
+        }
+      ],
+      "name": "Manage environment variables safely"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-007",
+      "links": [
+        {
+          "relationship": "protects",
+          "target": "AST-002"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-003"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-018"
+        },
+        {
+          "relationship": "obstructs",
+          "target": "THC-001"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-007"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-001"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-002"
+        }
+      ],
+      "name": "Argv-Only Task Execution (No Shell Default)"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-011",
+      "links": [
+        {
+          "relationship": "enforces",
+          "target": "CNS-022"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-011"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-005"
+        }
+      ],
+      "name": "Network FS Safe Write Strategy"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-014",
+      "links": [
+        {
+          "relationship": "enforces",
+          "target": "CNS-022"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-014"
+        }
+      ],
+      "name": "Watcher Fallback and Index Reconciliation"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-006",
+      "links": [
+        {
+          "relationship": "protects",
+          "target": "AST-001"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-017"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-005"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-003"
+        }
+      ],
+      "name": "Cross-Platform Atomic Write and Replace"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-005",
+      "links": [
+        {
+          "relationship": "protects",
+          "target": "AST-001"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-003"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-016"
+        },
+        {
+          "relationship": "obstructs",
+          "target": "THC-001"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-004"
+        }
+      ],
+      "name": "Resolved-Path Boundary Checks (Symlinks/Junctions)"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-009",
+      "links": [
+        {
+          "relationship": "enforces",
+          "target": "CNS-021"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-001"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-003"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-009"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-006"
+        }
+      ],
+      "name": "Encoding-Safe Path Handling and Reporting"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-010",
+      "links": [
+        {
+          "relationship": "enforces",
+          "target": "CNS-020"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-002"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-010"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-001"
+        }
+      ],
+      "name": "Scoped Environment Management"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-002",
+      "links": [
+        {
+          "relationship": "protects",
+          "target": "AST-001"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-002"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-003"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "obstructs",
+          "target": "THC-001"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-001"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-002"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-003"
+        }
+      ],
+      "name": "Permissions and User Confirmation"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-003",
+      "links": [
+        {
+          "relationship": "protects",
+          "target": "AST-002"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-003"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-006"
+        },
+        {
+          "relationship": "governs",
+          "target": "DST-002"
+        },
+        {
+          "relationship": "governs",
+          "target": "DST-003"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-001"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-002"
+        }
+      ],
+      "name": "Safe Task Execution Policy"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-008",
+      "links": [
+        {
+          "relationship": "enforces",
+          "target": "CNS-019"
+        },
+        {
+          "relationship": "governs",
+          "target": "DST-002"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-008"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-002"
+        }
+      ],
+      "name": "Best-Effort Cancellation Protocol"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-012",
+      "links": [
+        {
+          "relationship": "enforces",
+          "target": "CNS-022"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-012"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-014"
+        }
+      ],
+      "name": "Progressive Indexing with Time Budgets"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-004",
+      "links": [
+        {
+          "relationship": "protects",
+          "target": "AST-001"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-015"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-006"
+        }
+      ],
+      "name": "Deterministic Enumeration and Normalization"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-001",
+      "links": [
+        {
+          "relationship": "protects",
+          "target": "AST-001"
+        },
+        {
+          "relationship": "protects",
+          "target": "AST-003"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "enforces",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "obstructs",
+          "target": "THC-001"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-001"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-003"
+        }
+      ],
+      "name": "Workspace Boundary Guard"
+    },
+    {
+      "attributes": {},
+      "card_type": "Control",
+      "id": "CTL-013",
+      "links": [
+        {
+          "relationship": "enforces",
+          "target": "CNS-023"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-013"
+        },
+        {
+          "relationship": "mitigates",
+          "target": "RIS-007"
+        }
+      ],
+      "name": "Remote Mode Environment Introspection"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Insider",
+      "card_type": "Adversary",
+      "id": "ADV-001",
+      "links": [],
+      "name": "Malicious or Compromised Agent"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-035",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-052",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-038"
+        }
+      ],
+      "name": "Task Run Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-003",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-004",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-004"
+        }
+      ],
+      "name": "Frame Parsed OK"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-069",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-099",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-072"
+        }
+      ],
+      "name": "Conformance Run Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-001",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-109",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-002"
+        }
+      ],
+      "name": "Transport Initialized"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-017",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-025",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-014"
+        }
+      ],
+      "name": "Manual Rebuild Requested"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-029",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-042",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-030"
+        }
+      ],
+      "name": "Plan Validated"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-048",
+        "state_machine": "STM-009"
+      },
+      "card_type": "Event",
+      "id": "EVT-114",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-045"
+        }
+      ],
+      "name": "Diagnostics Failure Emitted"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-060",
+        "state_machine": "STM-012"
+      },
+      "card_type": "Event",
+      "id": "EVT-085",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-057"
+        }
+      ],
+      "name": "Env Failure Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-015",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-022",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-017"
+        }
+      ],
+      "name": "Indexer Fault Detected"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-032",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-104",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-027"
+        }
+      ],
+      "name": "Plan Failure Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-054",
+        "state_machine": "STM-011"
+      },
+      "card_type": "Event",
+      "id": "EVT-076",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-055"
+        }
+      ],
+      "name": "Log Rotation Detected"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-050",
+        "state_machine": "STM-010"
+      },
+      "card_type": "Event",
+      "id": "EVT-072",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-052"
+        }
+      ],
+      "name": "CapReg Fault Detected"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-023",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-035",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-025"
+        }
+      ],
+      "name": "Execution Requires Rollback"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-065",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-093",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-061"
+        }
+      ],
+      "name": "Chain Completed Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-055",
+        "state_machine": "STM-011"
+      },
+      "card_type": "Event",
+      "id": "EVT-078",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-054"
+        }
+      ],
+      "name": "Rotation Handled"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-051",
+        "state_machine": "STM-010"
+      },
+      "card_type": "Event",
+      "id": "EVT-070",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-050"
+        }
+      ],
+      "name": "CapReg Refresh Succeeded"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-022",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-032",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-024"
+        }
+      ],
+      "name": "Plan Validated For Dry-Run"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-002",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-002",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-006"
+        }
+      ],
+      "name": "Shutdown Requested"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-036",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-054",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-033"
+        }
+      ],
+      "name": "Task Result Emitted"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-041",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-059",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-044"
+        }
+      ],
+      "name": "Job Dispatch Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-011",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-015",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-007"
+        }
+      ],
+      "name": "Response Finalized"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-050",
+        "state_machine": "STM-010"
+      },
+      "card_type": "Event",
+      "id": "EVT-069",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-051"
+        }
+      ],
+      "name": "CapReg Refresh Requested"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-068",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-096",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-069"
+        }
+      ],
+      "name": "Conformance Tests Selected"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-051",
+        "state_machine": "STM-010"
+      },
+      "card_type": "Event",
+      "id": "EVT-071",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-052"
+        }
+      ],
+      "name": "CapReg Refresh Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-025",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-037",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-021"
+        }
+      ],
+      "name": "Rollback Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-064",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-107",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-066"
+        }
+      ],
+      "name": "Chain Stop Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-055",
+        "state_machine": "STM-011"
+      },
+      "card_type": "Event",
+      "id": "EVT-079",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-056"
+        }
+      ],
+      "name": "Rotation Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-037",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-053",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-036"
+        }
+      ],
+      "name": "Task Canceled"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-046",
+        "state_machine": "STM-009"
+      },
+      "card_type": "Event",
+      "id": "EVT-065",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-048"
+        }
+      ],
+      "name": "Diagnostics Invalid"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-042",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-061",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-044"
+        }
+      ],
+      "name": "Job Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-061",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-086",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-062"
+        }
+      ],
+      "name": "Chain Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-063",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-089",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-065"
+        }
+      ],
+      "name": "Steps Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-049",
+        "state_machine": "STM-010"
+      },
+      "card_type": "Event",
+      "id": "EVT-067",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-050"
+        }
+      ],
+      "name": "CapReg Bootstrapped"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-037",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-108",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-038"
+        }
+      ],
+      "name": "Task Cancel Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-063",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-090",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-064"
+        }
+      ],
+      "name": "Stop Requested"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-035",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-051",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-037"
+        }
+      ],
+      "name": "Task Cancel Requested"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-034",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-049",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-038"
+        }
+      ],
+      "name": "Task Preparation Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-067",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-095",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-068"
+        }
+      ],
+      "name": "Conformance Requested"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-068",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-097",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-072"
+        }
+      ],
+      "name": "Conformance Discovery Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-046",
+        "state_machine": "STM-009"
+      },
+      "card_type": "Event",
+      "id": "EVT-064",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-047"
+        }
+      ],
+      "name": "Diagnostics Validated"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-049",
+        "state_machine": "STM-010"
+      },
+      "card_type": "Event",
+      "id": "EVT-068",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-052"
+        }
+      ],
+      "name": "CapReg Bootstrap Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-030",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-045",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-027"
+        }
+      ],
+      "name": "Plan Request Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-058",
+        "state_machine": "STM-012"
+      },
+      "card_type": "Event",
+      "id": "EVT-082",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-059"
+        }
+      ],
+      "name": "Env Policy Accepted"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-054",
+        "state_machine": "STM-011"
+      },
+      "card_type": "Event",
+      "id": "EVT-077",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-056"
+        }
+      ],
+      "name": "Log Fault Detected"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-008",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-010",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-012"
+        }
+      ],
+      "name": "Request Rejected"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-022",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-031",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-023"
+        }
+      ],
+      "name": "Plan Validated For Execution"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-066",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-094",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-061"
+        }
+      ],
+      "name": "Chain Failure Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-052",
+        "state_machine": "STM-010"
+      },
+      "card_type": "Event",
+      "id": "EVT-073",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-049"
+        }
+      ],
+      "name": "CapReg Recovery Requested"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-013",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-018",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-017"
+        }
+      ],
+      "name": "Indexer Init Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-004",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-007",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-005"
+        }
+      ],
+      "name": "Response Write Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-027",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-039",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-028"
+        }
+      ],
+      "name": "Plan Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-016",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-024",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-017"
+        }
+      ],
+      "name": "Rebuild Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-010",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-014",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-012"
+        }
+      ],
+      "name": "Operation Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-002",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-003",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-005"
+        }
+      ],
+      "name": "Transport IO Error"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-009",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-012",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-012"
+        }
+      ],
+      "name": "Dispatch Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-072",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-103",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-067"
+        }
+      ],
+      "name": "Conformance Failed Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-026",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-038",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-021"
+        }
+      ],
+      "name": "FileOps Failure Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-057",
+        "state_machine": "STM-012"
+      },
+      "card_type": "Event",
+      "id": "EVT-081",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-058"
+        }
+      ],
+      "name": "Env Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-070",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-101",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-072"
+        }
+      ],
+      "name": "Conformance Report Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-008",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-009",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-009"
+        }
+      ],
+      "name": "Request Validated"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-007",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-008",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-008"
+        }
+      ],
+      "name": "Tool Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-002",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-001",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-003"
+        }
+      ],
+      "name": "Request Frame Available"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-034",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-048",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-035"
+        }
+      ],
+      "name": "Task Prepared"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-028",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-041",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-032"
+        }
+      ],
+      "name": "Plan Load Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-004",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-006",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-002"
+        }
+      ],
+      "name": "Response Write OK"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-040",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-056",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-041"
+        }
+      ],
+      "name": "Job Enqueued"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-024",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-111",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-021"
+        }
+      ],
+      "name": "FileOps Commit Finalized"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-031",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-105",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-032"
+        }
+      ],
+      "name": "Plan Save Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-010",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-013",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-011"
+        }
+      ],
+      "name": "Operation Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-021",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-030",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-022"
+        }
+      ],
+      "name": "FileOps Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-053",
+        "state_machine": "STM-011"
+      },
+      "card_type": "Event",
+      "id": "EVT-074",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-054"
+        }
+      ],
+      "name": "Log Sources Initialized"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-019",
+        "state_machine": "STM-004"
+      },
+      "card_type": "Event",
+      "id": "EVT-028",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-020"
+        }
+      ],
+      "name": "Context Resolve Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-014",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-019",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-015"
+        }
+      ],
+      "name": "Index Build Succeeded"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-045",
+        "state_machine": "STM-009"
+      },
+      "card_type": "Event",
+      "id": "EVT-063",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-046"
+        }
+      ],
+      "name": "Diagnostics Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-042",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-060",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-043"
+        }
+      ],
+      "name": "Job Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-062",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-088",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-066"
+        }
+      ],
+      "name": "Chain Build Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-005",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-110",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-006"
+        }
+      ],
+      "name": "Transport Shutdown Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-013",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-017",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-014"
+        }
+      ],
+      "name": "Initial Build Required"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-053",
+        "state_machine": "STM-011"
+      },
+      "card_type": "Event",
+      "id": "EVT-075",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-056"
+        }
+      ],
+      "name": "Log Init Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-059",
+        "state_machine": "STM-012"
+      },
+      "card_type": "Event",
+      "id": "EVT-084",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-057"
+        }
+      ],
+      "name": "Env Response Redacted"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-063",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-091",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-066"
+        }
+      ],
+      "name": "Step Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-012",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-016",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-007"
+        }
+      ],
+      "name": "Failure Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-031",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-046",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-030"
+        }
+      ],
+      "name": "Plan Save Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-043",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-062",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-039"
+        }
+      ],
+      "name": "Job Record Written"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-041",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-058",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-042"
+        }
+      ],
+      "name": "Job Dispatched"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-038",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-112",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-033"
+        }
+      ],
+      "name": "Task Failure Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-019",
+        "state_machine": "STM-004"
+      },
+      "card_type": "Event",
+      "id": "EVT-027",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-018"
+        }
+      ],
+      "name": "Context Resolved"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-044",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-113",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-039"
+        }
+      ],
+      "name": "Job Failure Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-022",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-033",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-026"
+        }
+      ],
+      "name": "Plan Rejected"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-009",
+        "state_machine": "STM-002"
+      },
+      "card_type": "Event",
+      "id": "EVT-011",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-010"
+        }
+      ],
+      "name": "Dispatch Succeeded"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-033",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-047",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-034"
+        }
+      ],
+      "name": "Task Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-039",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-055",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-040"
+        }
+      ],
+      "name": "Job Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-028",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-040",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-029"
+        }
+      ],
+      "name": "Plan Loaded"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-062",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-087",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-063"
+        }
+      ],
+      "name": "Chain Built"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-023",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-034",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-024"
+        }
+      ],
+      "name": "Execution Succeeded"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-029",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-043",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-032"
+        }
+      ],
+      "name": "Plan Validation Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-035",
+        "state_machine": "STM-007"
+      },
+      "card_type": "Event",
+      "id": "EVT-050",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-036"
+        }
+      ],
+      "name": "Task Run Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-047",
+        "state_machine": "STM-009"
+      },
+      "card_type": "Event",
+      "id": "EVT-066",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-045"
+        }
+      ],
+      "name": "Diagnostics Emission Complete"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-025",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-106",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-026"
+        }
+      ],
+      "name": "Rollback Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-015",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-021",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-016"
+        }
+      ],
+      "name": "Rebuild Scheduled"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-071",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-102",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-067"
+        }
+      ],
+      "name": "Conformance Completed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-064",
+        "state_machine": "STM-013"
+      },
+      "card_type": "Event",
+      "id": "EVT-092",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-065"
+        }
+      ],
+      "name": "Chain Stopped"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-030",
+        "state_machine": "STM-006"
+      },
+      "card_type": "Event",
+      "id": "EVT-044",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-031"
+        }
+      ],
+      "name": "Plan Update Requested"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-056",
+        "state_machine": "STM-011"
+      },
+      "card_type": "Event",
+      "id": "EVT-080",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-054"
+        }
+      ],
+      "name": "Log Recovered"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-058",
+        "state_machine": "STM-012"
+      },
+      "card_type": "Event",
+      "id": "EVT-083",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-060"
+        }
+      ],
+      "name": "Env Policy Rejected"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-020",
+        "state_machine": "STM-004"
+      },
+      "card_type": "Event",
+      "id": "EVT-029",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-018"
+        }
+      ],
+      "name": "Context Failure Reported"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-018",
+        "state_machine": "STM-004"
+      },
+      "card_type": "Event",
+      "id": "EVT-026",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-019"
+        }
+      ],
+      "name": "Context Request Received"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-040",
+        "state_machine": "STM-008"
+      },
+      "card_type": "Event",
+      "id": "EVT-057",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-044"
+        }
+      ],
+      "name": "Job Enqueue Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-003",
+        "state_machine": "STM-001"
+      },
+      "card_type": "Event",
+      "id": "EVT-005",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-005"
+        }
+      ],
+      "name": "Frame Malformed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-014",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-020",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-017"
+        }
+      ],
+      "name": "Index Build Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-016",
+        "state_machine": "STM-003"
+      },
+      "card_type": "Event",
+      "id": "EVT-023",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-015"
+        }
+      ],
+      "name": "Rebuild Succeeded"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-023",
+        "state_machine": "STM-005"
+      },
+      "card_type": "Event",
+      "id": "EVT-036",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-026"
+        }
+      ],
+      "name": "Execution Failed"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-070",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-100",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-071"
+        }
+      ],
+      "name": "Conformance Report Written"
+    },
+    {
+      "attributes": {
+        "from_state": "STA-069",
+        "state_machine": "STM-014"
+      },
+      "card_type": "Event",
+      "id": "EVT-098",
+      "links": [
+        {
+          "relationship": "transitions to",
+          "target": "STA-070"
+        }
+      ],
+      "name": "Conformance Run Completed"
+    },
+    {
+      "attributes": {
+        "invocation_path": "via ACT-001 (MCP Host) over stdio",
+        "operational_mode": "local-first relative to workspace host"
+      },
+      "card_subtype": "User",
+      "card_type": "Actor",
+      "id": "ACT-002",
+      "links": [
+        {
+          "relationship": "performs",
+          "target": "ATV-001"
+        },
+        {
+          "relationship": "performs",
+          "target": "ATV-002"
+        },
+        {
+          "relationship": "performs",
+          "target": "ATV-003"
+        },
+        {
+          "relationship": "performs",
+          "target": "ATV-004"
+        },
+        {
+          "relationship": "performs",
+          "target": "ATV-005"
+        },
+        {
+          "relationship": "performs",
+          "target": "ATV-006"
+        }
+      ],
+      "name": "Agent"
+    },
+    {
+      "attributes": {
+        "examples": [
+          "VS Code extension",
+          "CLI wrapper",
+          "agent runtime"
+        ]
+      },
+      "card_subtype": "External System",
+      "card_type": "Actor",
+      "id": "ACT-001",
+      "links": [],
+      "name": "MCP Host"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-006",
+      "links": [],
+      "name": "Nondeterministic Output Across OS/Filesystems"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-005",
+      "links": [],
+      "name": "Non-Atomic File Replace Due to Locking"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-008",
+      "links": [],
+      "name": "Cancellation Failure / Runaway Tasks"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-009",
+      "links": [],
+      "name": "Path Encoding / Non-UTF8 Filenames Break Protocol"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-002",
+      "links": [],
+      "name": "Host Compromise"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-007",
+      "links": [],
+      "name": "Shell Quoting / Injection / Portability Issues"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-013",
+      "links": [],
+      "name": "Remote Dev Environment Mismatch"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-011",
+      "links": [],
+      "name": "Network FS Semantics Break Atomicity"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-010",
+      "links": [],
+      "name": "Env Var CRUD Semantics Mislead Users"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-014",
+      "links": [],
+      "name": "Remote FS Caching / Watcher Inconsistency"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-003",
+      "links": [],
+      "name": "Workspace Corruption"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-001",
+      "links": [],
+      "name": "Unauthorized Data Disclosure"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-012",
+      "links": [],
+      "name": "Network Latency Causes Timeouts / Incomplete Indexing"
+    },
+    {
+      "attributes": {},
+      "card_type": "Risk",
+      "id": "RIS-004",
+      "links": [],
+      "name": "Boundary Bypass via Symlinks/Junctions"
+    },
+    {
+      "attributes": {
+        "placement": "workspace-host",
+        "platforms": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ]
+      },
+      "card_subtype": "Hardware",
+      "card_type": "Node",
+      "id": "NOD-001",
+      "links": [],
+      "name": "Workspace Host Machine"
+    },
+    {
+      "attributes": {
+        "io_format": [
+          "json",
+          "ndjson"
+        ],
+        "transport": "stdio"
+      },
+      "card_type": "Application",
+      "id": "APP-001",
+      "links": [
+        {
+          "relationship": "deploys to",
+          "target": "DEP-001"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-001"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-002"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-003"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-007"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-009"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-010"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-011"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-012"
+        }
+      ],
+      "name": "Alfred Stdio Server"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-009",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-009"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-010"
+        }
+      ],
+      "name": "Environment Variable Tooling"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-005",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-005"
+        }
+      ],
+      "name": "Task Execution Tooling"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-007",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-007"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-005"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-008"
+        }
+      ],
+      "name": "Deterministic Response Contracts"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-002",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-002"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-001"
+        }
+      ],
+      "name": "Context Tools"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-008",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-008"
+        }
+      ],
+      "name": "Log Tailing and Filtering"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-006",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-006"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-012"
+        }
+      ],
+      "name": "Background Job Control"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-011",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-011"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-009"
+        }
+      ],
+      "name": "Action Chaining Orchestration"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-012",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-012"
+        }
+      ],
+      "name": "Diagnostics Normalization"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-001",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-001"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-002"
+        }
+      ],
+      "name": "Index and Query Tools"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-003",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-003"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-003"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-004"
+        }
+      ],
+      "name": "Safe File Mutation Tools"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-004",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-004"
+        }
+      ],
+      "name": "Project Plan Tooling"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-010",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-010"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-008"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-012"
+        }
+      ],
+      "name": "Capability Discovery Endpoint"
+    },
+    {
+      "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-013",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-013"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-003"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-005"
+        }
+      ],
+      "name": "Conformance Suite Execution"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Key-Value",
+      "card_type": "Data Store",
+      "id": "DST-001",
+      "links": [
+        {
+          "relationship": "retrieves",
+          "target": "ART-005"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Index Store"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Object Store",
+      "card_type": "Data Store",
+      "id": "DST-003",
+      "links": [
+        {
+          "relationship": "retrieves",
+          "target": "ART-004"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Plan Store"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Event Log",
+      "card_type": "Data Store",
+      "id": "DST-002",
+      "links": [
+        {
+          "relationship": "retrieves",
+          "target": "ART-006"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Job and Session Store"
+    },
+    {
+      "attributes": {
+        "formats": [
+          "json"
+        ]
+      },
+      "card_subtype": "Data",
+      "card_type": "Artifact",
+      "id": "ART-001",
+      "links": [],
+      "name": "MCP Request"
+    },
+    {
+      "attributes": {
+        "boundary": "workspace"
+      },
+      "card_subtype": "Data",
+      "card_type": "Artifact",
+      "id": "ART-007",
+      "links": [],
+      "name": "Workspace File Content"
+    },
+    {
+      "attributes": {
+        "formats": [
+          "ndjson",
+          "json"
+        ],
+        "semantics": "append-only"
+      },
+      "card_subtype": "Data",
+      "card_type": "Artifact",
+      "id": "ART-006",
+      "links": [],
+      "name": "Job Output Stream"
+    },
+    {
+      "attributes": {
+        "format": [
+          "json",
+          "ndjson"
+        ],
+        "sources": [
+          "cargo",
+          "pnpm",
+          "linters",
+          "formatters",
+          "tasks"
+        ]
+      },
+      "card_subtype": "Report",
+      "card_type": "Artifact",
+      "id": "ART-003",
+      "links": [],
+      "name": "Diagnostics Report"
+    },
+    {
+      "attributes": {
+        "formats": [
+          "json",
+          "yaml",
+          "markdown"
+        ],
+        "note": "Exact plan format is a project-level choice; it must be consistent and tool-friendly."
+      },
+      "card_subtype": "Document",
+      "card_type": "Artifact",
+      "id": "ART-004",
+      "links": [],
+      "name": "Project Plan"
+    },
+    {
+      "attributes": {
+        "storage": "local"
+      },
+      "card_subtype": "Data",
+      "card_type": "Artifact",
+      "id": "ART-005",
+      "links": [],
+      "name": "Index Snapshot"
+    },
+    {
+      "attributes": {
+        "design_goal": "concise and token-conservative",
+        "formats": [
+          "json",
+          "ndjson"
+        ]
+      },
+      "card_subtype": "Data",
+      "card_type": "Artifact",
+      "id": "ART-002",
+      "links": [],
+      "name": "MCP Response"
+    },
+    {
+      "attributes": {
+        "mobile_platforms": "out-of-scope",
+        "multi_user": false,
+        "network": "none-required",
+        "supported_platforms": [
+          "macOS",
+          "Linux",
+          "Windows"
+        ]
+      },
+      "card_type": "Deployment",
+      "id": "DEP-001",
+      "links": [
+        {
+          "relationship": "includes",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Local Stdio Process"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-014",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-013"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-003"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-005"
+        }
+      ],
+      "name": "Conformance Suite"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-003",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-003"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-003"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-004"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-016"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-017"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-021"
+        }
+      ],
+      "name": "Safe File Operations"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-013",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-007"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-005"
+        }
+      ],
+      "name": "Deterministic Error Taxonomy"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-016",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-007"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-006"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-007"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-011"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-013"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-014"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-023"
+        },
+        {
+          "relationship": "has",
+          "target": "ADR-001"
+        }
+      ],
+      "name": "Local-First Execution"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-008",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-008"
+        }
+      ],
+      "name": "Log Handling"
+    },
+    {
+      "attributes": {
+        "tool_surface": [
+          "task_run",
+          "cargo",
+          "pnpm",
+          "lint",
+          "format"
+        ]
+      },
+      "card_type": "Requirement",
+      "id": "REQ-005",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-005"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-018"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-019"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-020"
+        }
+      ],
+      "name": "Task Execution"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-009",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-009"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-020"
+        }
+      ],
+      "name": "Environment Variable CRUD"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-006",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-006"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-012"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-019"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-022"
+        }
+      ],
+      "name": "Background Operations"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-012",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-012"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-015"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-021"
+        }
+      ],
+      "name": "Normalized Diagnostics Contract"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-011",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-011"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-009"
+        }
+      ],
+      "name": "Single-Call Action Chaining"
+    },
+    {
+      "attributes": {
+        "tool_surface": [
+          "ls",
+          "grep",
+          "rg",
+          "symbols",
+          "read_range",
+          "diff"
+        ]
+      },
+      "card_type": "Requirement",
+      "id": "REQ-001",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-001"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-002"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-012"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-022"
+        }
+      ],
+      "name": "Workspace Index and Query Tools"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-004",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-004"
+        }
+      ],
+      "name": "Project Plan Management"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-010",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-010"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-008"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-012"
+        }
+      ],
+      "name": "Capability Discovery"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-015",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-001"
+        },
+        {
+          "relationship": "requires",
+          "target": "CAP-003"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-012"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-022"
+        }
+      ],
+      "name": "Any-Size File Operations"
+    },
+    {
+      "attributes": {
+        "tool_surface": [
+          "pwd",
+          "workspace_root"
+        ]
+      },
+      "card_type": "Requirement",
+      "id": "REQ-002",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-002"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-001"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-002"
+        }
+      ],
+      "name": "Context Awareness"
+    },
+    {
+      "attributes": {},
+      "card_type": "Requirement",
+      "id": "REQ-007",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-007"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-008"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-015"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-021"
+        }
+      ],
+      "name": "JSON and NDJSON Output"
+    },
+    {
+      "attributes": {
+        "out_of_scope": [
+          "git",
+          "github"
+        ],
+        "scope": "local-only"
+      },
+      "card_type": "System",
+      "id": "SYS-001",
+      "links": [
+        {
+          "relationship": "integrates",
+          "target": "APP-001"
+        }
+      ],
+      "name": "Alfred"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-016",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-023"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-024"
+        }
+      ],
+      "name": "Indexer Rebuilding"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-053",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-074"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-075"
+        }
+      ],
+      "name": "Log Initializing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-071",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-102"
+        }
+      ],
+      "name": "Conformance Complete"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-064",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-092"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-107"
+        }
+      ],
+      "name": "Chain Stopping"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-009",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-011"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-012"
+        }
+      ],
+      "name": "Router Dispatching"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-047",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-066"
+        }
+      ],
+      "name": "Diagnostics Emitting"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-046",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-064"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-065"
+        }
+      ],
+      "name": "Diagnostics Validating"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-011",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-015"
+        }
+      ],
+      "name": "Router Complete"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-030",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-044"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-045"
+        }
+      ],
+      "name": "Plan Ready"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-051",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-070"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-071"
+        }
+      ],
+      "name": "CapReg Refreshing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-059",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-084"
+        }
+      ],
+      "name": "Env Redacting"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-052",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-073"
+        }
+      ],
+      "name": "CapReg Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-050",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-069"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-072"
+        }
+      ],
+      "name": "CapReg Ready"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-041",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-058"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-059"
+        }
+      ],
+      "name": "Job Dispatching"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-020",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-029"
+        }
+      ],
+      "name": "Context Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-055",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-078"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-079"
+        }
+      ],
+      "name": "Log Rotating"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-029",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-042"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-043"
+        }
+      ],
+      "name": "Plan Validating"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-044",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-113"
+        }
+      ],
+      "name": "Job Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-058",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-082"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-083"
+        }
+      ],
+      "name": "Env Resolving"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-054",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-076"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-077"
+        }
+      ],
+      "name": "Log Ready"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-018",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-026"
+        }
+      ],
+      "name": "Context Ready"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-001",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-109"
+        }
+      ],
+      "name": "Transport Initializing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-035",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-050"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-051"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-052"
+        }
+      ],
+      "name": "Task Running"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-032",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-104"
+        }
+      ],
+      "name": "Plan Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-042",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-060"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-061"
+        }
+      ],
+      "name": "Job Monitoring"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-063",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-089"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-090"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-091"
+        }
+      ],
+      "name": "Chain Executing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-028",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-040"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-041"
+        }
+      ],
+      "name": "Plan Loading"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-057",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-081"
+        }
+      ],
+      "name": "Env Ready"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-033",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-047"
+        }
+      ],
+      "name": "Task Idle"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-005",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-110"
+        }
+      ],
+      "name": "Transport Faulted"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-025",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-037"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-106"
+        }
+      ],
+      "name": "FileOps Rolling Back"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-061",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-086"
+        }
+      ],
+      "name": "Chain Idle"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-038",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-112"
+        }
+      ],
+      "name": "Task Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-004",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-006"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-007"
+        }
+      ],
+      "name": "Transport Writing Response"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-007",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-008"
+        }
+      ],
+      "name": "Router Idle"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-049",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-067"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-068"
+        }
+      ],
+      "name": "CapReg Bootstrapping"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-056",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-080"
+        }
+      ],
+      "name": "Log Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-060",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-085"
+        }
+      ],
+      "name": "Env Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-017",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-025"
+        }
+      ],
+      "name": "Indexer Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-031",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-046"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-105"
+        }
+      ],
+      "name": "Plan Saving"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-027",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-039"
+        }
+      ],
+      "name": "Plan Idle"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-069",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-098"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-099"
+        }
+      ],
+      "name": "Conformance Running"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-065",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-093"
+        }
+      ],
+      "name": "Chain Complete"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-067",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-095"
+        }
+      ],
+      "name": "Conformance Idle"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-003",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-004"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-005"
+        }
+      ],
+      "name": "Transport Receiving"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-021",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-030"
+        }
+      ],
+      "name": "FileOps Idle"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-048",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-114"
+        }
+      ],
+      "name": "Diagnostics Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-023",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-034"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-035"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-036"
+        }
+      ],
+      "name": "FileOps Executing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-043",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-062"
+        }
+      ],
+      "name": "Job Completing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-006",
+      "links": [],
+      "name": "Transport Shutdown"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-014",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-019"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-020"
+        }
+      ],
+      "name": "Indexer Building Index"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-070",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-100"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-101"
+        }
+      ],
+      "name": "Conformance Reporting"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-066",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-094"
+        }
+      ],
+      "name": "Chain Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-040",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-056"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-057"
+        }
+      ],
+      "name": "Job Enqueuing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-010",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-013"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-014"
+        }
+      ],
+      "name": "Router Streaming or Waiting"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-012",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-016"
+        }
+      ],
+      "name": "Router Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-022",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-031"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-032"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-033"
+        }
+      ],
+      "name": "FileOps Validating Plan"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-037",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-053"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-108"
+        }
+      ],
+      "name": "Task Canceling"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-034",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-048"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-049"
+        }
+      ],
+      "name": "Task Preparing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-019",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-027"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-028"
+        }
+      ],
+      "name": "Context Resolving"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-036",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-054"
+        }
+      ],
+      "name": "Task Reporting"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-045",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-063"
+        }
+      ],
+      "name": "Diagnostics Idle"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-024",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-111"
+        }
+      ],
+      "name": "FileOps Committing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-062",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-087"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-088"
+        }
+      ],
+      "name": "Chain Building"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-008",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-009"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-010"
+        }
+      ],
+      "name": "Router Validating Request"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-015",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-021"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-022"
+        }
+      ],
+      "name": "Indexer Ready"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-013",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-017"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-018"
+        }
+      ],
+      "name": "Indexer Initializing"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-026",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-038"
+        }
+      ],
+      "name": "FileOps Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-068",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-096"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-097"
+        }
+      ],
+      "name": "Conformance Discovering"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-072",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-103"
+        }
+      ],
+      "name": "Conformance Failed"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-039",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-055"
+        }
+      ],
+      "name": "Job Idle"
+    },
+    {
+      "attributes": {},
+      "card_type": "State",
+      "id": "STA-002",
+      "links": [
+        {
+          "relationship": "handles",
+          "target": "EVT-001"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-002"
+        },
+        {
+          "relationship": "handles",
+          "target": "EVT-003"
+        }
+      ],
+      "name": "Transport Listening"
+    },
+    {
+      "attributes": {
+        "commands": [
+          "build",
+          "test",
+          "cargo",
+          "pnpm",
+          "lint",
+          "format"
+        ]
+      },
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-009",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-005"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-003"
+        },
+        {
+          "relationship": "stores in",
+          "target": "DST-002"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-007"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Task Runner"
+    },
+    {
+      "attributes": {
+        "error_taxonomy": "deterministic",
+        "formats": [
+          "json",
+          "ndjson"
+        ]
+      },
+      "card_subtype": "Library",
+      "card_type": "Component",
+      "id": "COM-011",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-007"
+        },
+        {
+          "relationship": "implements",
+          "target": "FEA-012"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-003"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-009"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Contracts and Diagnostics"
+    },
+    {
+      "attributes": {
+        "default_chain_behavior": "stop-on-failure",
+        "execution_modes": [
+          "sync",
+          "async"
+        ]
+      },
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-002",
+      "links": [
+        {
+          "relationship": "composes",
+          "target": "COM-003"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-005"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-007"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-008"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-009"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-010"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-012"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-013"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-014"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-015"
+        },
+        {
+          "relationship": "composes",
+          "target": "COM-016"
+        },
+        {
+          "relationship": "implements",
+          "target": "FEA-011"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-002"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Tool Router"
+    },
+    {
+      "attributes": {
+        "storage": "local"
+      },
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-014",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-009"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-012"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Environment Variable Manager"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-005",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-002"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-004"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Context Provider"
+    },
+    {
+      "attributes": {
+        "reports_conflicts": true,
+        "supports_dry_run": true
+      },
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-007",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-003"
+        },
+        {
+          "relationship": "includes",
+          "target": "DSR-001"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-005"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "File Operations Engine"
+    },
+    {
+      "attributes": {
+        "supports": [
+          "ls",
+          "grep",
+          "rg",
+          "symbols",
+          "read_range",
+          "diff"
+        ]
+      },
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-003",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-001"
+        },
+        {
+          "relationship": "includes",
+          "target": "DSR-001"
+        },
+        {
+          "relationship": "stores in",
+          "target": "DST-001"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-005"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-003"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Workspace Indexer"
+    },
+    {
+      "attributes": {
+        "schema_lockstep": true,
+        "versioning": "semver"
+      },
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-012",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-010"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-010"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Capability Registry"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-015",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-011"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-013"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Chain Orchestrator"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-008",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-004"
+        },
+        {
+          "relationship": "stores in",
+          "target": "DST-003"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-004"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-006"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Plan Manager"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-016",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-013"
+        },
+        {
+          "relationship": "implements",
+          "target": "TES-001"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-002"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-014"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Conformance Runner"
+    },
+    {
+      "attributes": {
+        "streaming": true,
+        "transport": "stdio"
+      },
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-001",
+      "links": [
+        {
+          "relationship": "exposes",
+          "target": "INT-001"
+        },
+        {
+          "relationship": "implements",
+          "target": "FEA-007"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-002"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-001"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Stdio Transport"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-010",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-006"
+        },
+        {
+          "relationship": "stores in",
+          "target": "DST-002"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-006"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-008"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Job Manager"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-013",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-008"
+        },
+        {
+          "relationship": "stores in",
+          "target": "DST-002"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-006"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM-011"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Log Manager"
+    },
+    {
+      "attributes": {},
+      "card_type": "Threat Capability",
+      "id": "THC-001",
+      "links": [],
+      "name": "Prompt Injection and Tool Misuse"
+    },
+    {
+      "attributes": {},
+      "card_type": "Threat Diamond",
+      "id": "THD-001",
+      "links": [
+        {
+          "relationship": "threatens",
+          "target": "AST-003"
+        },
+        {
+          "relationship": "threatens",
+          "target": "AST-001"
+        },
+        {
+          "relationship": "involves",
+          "target": "ADV-001"
+        },
+        {
+          "relationship": "uses",
+          "target": "THC-001"
+        },
+        {
+          "relationship": "impacts",
+          "target": "VIC-001"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-001"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-004"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-005"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-006"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-009"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-003"
+        }
+      ],
+      "name": "Workspace Boundary Escape"
+    },
+    {
+      "attributes": {},
+      "card_type": "Threat Diamond",
+      "id": "THD-002",
+      "links": [
+        {
+          "relationship": "threatens",
+          "target": "AST-002"
+        },
+        {
+          "relationship": "threatens",
+          "target": "AST-003"
+        },
+        {
+          "relationship": "involves",
+          "target": "ADV-001"
+        },
+        {
+          "relationship": "uses",
+          "target": "THC-001"
+        },
+        {
+          "relationship": "impacts",
+          "target": "VIC-001"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-001"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-007"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-008"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-010"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-013"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-014"
+        },
+        {
+          "relationship": "creates",
+          "target": "RIS-002"
+        }
+      ],
+      "name": "Malicious Command Execution and Exfiltration"
+    },
+    {
+      "attributes": {},
+      "card_type": "Resource Owner",
+      "id": "ROW-001",
+      "links": [
+        {
+          "relationship": "owns",
+          "target": "AST-001"
+        },
+        {
+          "relationship": "owns",
+          "target": "AST-002"
+        },
+        {
+          "relationship": "owns",
+          "target": "AST-003"
+        }
+      ],
+      "name": "Developer and Workspace Owner"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-009",
+      "links": [],
+      "name": "Environment Variable Management"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-005",
+      "links": [],
+      "name": "Task and Tool Execution"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-001",
+      "links": [],
+      "name": "Workspace Index and Query"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-011",
+      "links": [],
+      "name": "Single-Call Action Chaining"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-006",
+      "links": [],
+      "name": "Background Operations"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-013",
+      "links": [],
+      "name": "Conformance Validation"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-003",
+      "links": [],
+      "name": "Safe File Operations"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-010",
+      "links": [],
+      "name": "Capability Discovery"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-008",
+      "links": [],
+      "name": "Log Handling"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-004",
+      "links": [],
+      "name": "Project Planning"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-007",
+      "links": [],
+      "name": "Deterministic Contracts"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-012",
+      "links": [],
+      "name": "Diagnostics Normalization"
+    },
+    {
+      "attributes": {},
+      "card_type": "Capability",
+      "id": "CAP-002",
+      "links": [],
+      "name": "Context Awareness"
+    },
+    {
+      "attributes": {},
+      "card_type": "Threat Model",
+      "id": "THM-001",
+      "links": [
+        {
+          "relationship": "includes",
+          "target": "THD-001"
+        },
+        {
+          "relationship": "includes",
+          "target": "THD-002"
+        },
+        {
+          "relationship": "includes",
+          "target": "ROW-001"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-001"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-002"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-003"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-004"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-005"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-006"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-007"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-008"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-009"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-010"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-011"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-012"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-013"
+        },
+        {
+          "relationship": "recommends",
+          "target": "CTL-014"
+        }
+      ],
+      "name": "Alfred Threat Model"
+    },
+    {
+      "attributes": {
+        "component": "COM-010",
+        "determinism_notes": [
+          "Job ids are stable and unique; status transitions are monotonic.",
+          "Timeout and cancellation policies are applied consistently across platforms."
+        ],
+        "initial_state": "STA-039"
+      },
+      "card_type": "State Machine",
+      "id": "STM-008",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-039"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-040"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-041"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-042"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-043"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-044"
+        }
+      ],
+      "name": "Job Manager State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-011",
+        "initial_state": "STA-045"
+      },
+      "card_type": "State Machine",
+      "id": "STM-009",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-045"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-046"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-047"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-048"
+        }
+      ],
+      "name": "Contracts and Diagnostics State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-003",
+        "determinism_notes": [
+          "Index builds use deterministic enumeration and normalization.",
+          "When change visibility is uncertain, reconciliation replaces watch-only semantics."
+        ],
+        "initial_state": "STA-013",
+        "steady_state": "STA-015"
+      },
+      "card_type": "State Machine",
+      "id": "STM-003",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-013"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-014"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-015"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-016"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-017"
+        }
+      ],
+      "name": "Workspace Indexer State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-016",
+        "initial_state": "STA-067"
+      },
+      "card_type": "State Machine",
+      "id": "STM-014",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-067"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-068"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-069"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-070"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-071"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-072"
+        }
+      ],
+      "name": "Conformance Runner State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-008",
+        "initial_state": "STA-027",
+        "steady_state": "STA-030"
+      },
+      "card_type": "State Machine",
+      "id": "STM-006",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-027"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-028"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-029"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-030"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-031"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-032"
+        }
+      ],
+      "name": "Plan Manager State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-005",
+        "initial_state": "STA-018",
+        "steady_state": "STA-018"
+      },
+      "card_type": "State Machine",
+      "id": "STM-004",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-018"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-019"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-020"
+        }
+      ],
+      "name": "Context Provider State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-001",
+        "determinism_notes": [
+          "All reads are framed; partial frames do not surface to the router.",
+          "All writes complete or fail; failures are reported via normalized diagnostics."
+        ],
+        "initial_state": "STA-001",
+        "terminal_states": [
+          "STA-006"
+        ]
+      },
+      "card_type": "State Machine",
+      "id": "STM-001",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-001"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-002"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-003"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-004"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-005"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-006"
+        }
+      ],
+      "name": "Stdio Transport State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-012",
+        "initial_state": "STA-049",
+        "steady_state": "STA-050"
+      },
+      "card_type": "State Machine",
+      "id": "STM-010",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-049"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-050"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-051"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-052"
+        }
+      ],
+      "name": "Capability Registry State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-007",
+        "determinism_notes": [
+          "All mutations are planned before execution; dry-run produces the plan and never writes.",
+          "Where atomic operations are not possible, compensating actions are explicit and deterministic."
+        ],
+        "initial_state": "STA-021"
+      },
+      "card_type": "State Machine",
+      "id": "STM-005",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-021"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-022"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-023"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-024"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-025"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-026"
+        }
+      ],
+      "name": "File Operations Engine State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-013",
+        "initial_state": "STA-053",
+        "steady_state": "STA-054"
+      },
+      "card_type": "State Machine",
+      "id": "STM-011",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-053"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-054"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-055"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-056"
+        }
+      ],
+      "name": "Log Manager State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-015",
+        "determinism_notes": [
+          "Step ordering is explicit and stable; stop-on-failure is enforced.",
+          "Each step emits deterministic status transitions."
+        ],
+        "initial_state": "STA-061"
+      },
+      "card_type": "State Machine",
+      "id": "STM-013",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-061"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-062"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-063"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-064"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-065"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-066"
+        }
+      ],
+      "name": "Chain Orchestrator State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-002",
+        "determinism_notes": [
+          "Requests are validated before dispatch; invalid requests fail fast with deterministic taxonomy.",
+          "Stop-on-failure chaining is enforced at the router boundary."
+        ],
+        "initial_state": "STA-007",
+        "steady_state": "STA-007"
+      },
+      "card_type": "State Machine",
+      "id": "STM-002",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-007"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-008"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-009"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-010"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-011"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-012"
+        }
+      ],
+      "name": "Tool Router State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-009",
+        "determinism_notes": [
+          "Command invocation is normalized (cwd, env merge, quoting rules) according to platform constraints.",
+          "Cancellation always produces a final terminal status and flushes structured output."
+        ],
+        "initial_state": "STA-033"
+      },
+      "card_type": "State Machine",
+      "id": "STM-007",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-033"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-034"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-035"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-036"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-037"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-038"
+        }
+      ],
+      "name": "Task Runner State Machine"
+    },
+    {
+      "attributes": {
+        "component": "COM-014",
+        "initial_state": "STA-057",
+        "steady_state": "STA-057"
+      },
+      "card_type": "State Machine",
+      "id": "STM-012",
+      "links": [
+        {
+          "relationship": "has",
+          "target": "STA-057"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-058"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-059"
+        },
+        {
+          "relationship": "has",
+          "target": "STA-060"
+        }
+      ],
+      "name": "Environment Variable Manager State Machine"
+    },
+    {
+      "attributes": {},
+      "card_type": "Activity",
+      "id": "ATV-002",
+      "links": [
+        {
+          "relationship": "uses",
+          "target": "COM-007"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-011"
+        }
+      ],
+      "name": "Read and Diff Files"
+    },
+    {
+      "attributes": {},
+      "card_type": "Activity",
+      "id": "ATV-001",
+      "links": [
+        {
+          "relationship": "uses",
+          "target": "COM-002"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-003"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-011"
+        }
+      ],
+      "name": "Search Workspace"
+    },
+    {
+      "attributes": {},
+      "card_type": "Activity",
+      "id": "ATV-005",
+      "links": [
+        {
+          "relationship": "uses",
+          "target": "COM-008"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-011"
+        }
+      ],
+      "name": "Manage Plan and Progress"
+    },
+    {
+      "attributes": {},
+      "card_type": "Activity",
+      "id": "ATV-006",
+      "links": [
+        {
+          "relationship": "uses",
+          "target": "COM-012"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-011"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-013"
+        }
+      ],
+      "name": "Discover Capabilities and Environment"
+    },
+    {
+      "attributes": {},
+      "card_type": "Activity",
+      "id": "ATV-004",
+      "links": [
+        {
+          "relationship": "uses",
+          "target": "COM-009"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-010"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-013"
+        }
+      ],
+      "name": "Run and Monitor Tasks"
+    },
+    {
+      "attributes": {},
+      "card_type": "Activity",
+      "id": "ATV-003",
+      "links": [
+        {
+          "relationship": "uses",
+          "target": "COM-007"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-011"
+        }
+      ],
+      "name": "Apply Workspace Edits"
+    },
+    {
+      "attributes": {},
+      "card_type": "Driver",
+      "id": "DRI-005",
+      "links": [
+        {
+          "relationship": "drives",
+          "target": "REQ-016"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-010"
+        }
+      ],
+      "name": "Local-First and Self-Contained"
+    },
+    {
+      "attributes": {},
+      "card_type": "Driver",
+      "id": "DRI-003",
+      "links": [
+        {
+          "relationship": "drives",
+          "target": "REQ-007"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-012"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-013"
+        }
+      ],
+      "name": "Deterministic Contracts"
+    },
+    {
+      "attributes": {},
+      "card_type": "Driver",
+      "id": "DRI-002",
+      "links": [
+        {
+          "relationship": "drives",
+          "target": "REQ-003"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-014"
+        }
+      ],
+      "name": "Safety and Trust"
+    },
+    {
+      "attributes": {},
+      "card_type": "Driver",
+      "id": "DRI-001",
+      "links": [
+        {
+          "relationship": "drives",
+          "target": "REQ-001"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-002"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-004"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-005"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-006"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-008"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-009"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-011"
+        }
+      ],
+      "name": "Workflow Efficiency"
+    },
+    {
+      "attributes": {},
+      "card_type": "Driver",
+      "id": "DRI-004",
+      "links": [
+        {
+          "relationship": "drives",
+          "target": "REQ-001"
+        },
+        {
+          "relationship": "drives",
+          "target": "REQ-015"
+        }
+      ],
+      "name": "Performance and Scalability"
+    },
+    {
+      "attributes": {
+        "primary_concerns": [
+          "safety",
+          "speed",
+          "deterministic results",
+          "low token usage"
+        ]
+      },
+      "card_subtype": "End User",
+      "card_type": "Stakeholder",
+      "id": "STK-001",
+      "links": [
+        {
+          "relationship": "desires",
+          "target": "STR-001"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-002"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-003"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-004"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-005"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-006"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-007"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-008"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-009"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-010"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-011"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-012"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-013"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-014"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-015"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-016"
+        }
+      ],
+      "name": "Agent User"
+    },
+    {
+      "attributes": {},
+      "card_type": "Test",
+      "id": "TES-001",
+      "links": [
+        {
+          "relationship": "verifies",
+          "target": "FEA-007"
+        },
+        {
+          "relationship": "verifies",
+          "target": "FEA-003"
+        },
+        {
+          "relationship": "verifies",
+          "target": "FEA-010"
+        },
+        {
+          "relationship": "verifies",
+          "target": "FEA-013"
+        }
+      ],
+      "name": "Conformance Suite"
+    },
+    {
+      "attributes": {},
+      "card_type": "Asset",
+      "id": "AST-003",
+      "links": [],
+      "name": "Non-workspace Resources"
+    },
+    {
+      "attributes": {},
+      "card_type": "Asset",
+      "id": "AST-001",
+      "links": [],
+      "name": "Workspace Contents"
+    },
+    {
+      "attributes": {},
+      "card_type": "Asset",
+      "id": "AST-002",
+      "links": [],
+      "name": "Secrets and Credentials"
+    },
+    {
+      "attributes": {
+        "boundary": "workspace"
+      },
+      "card_subtype": "External System",
+      "card_type": "Data Source",
+      "id": "DSR-001",
+      "links": [
+        {
+          "relationship": "provides",
+          "target": "ART-007"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Workspace File Tree"
+    },
+    {
+      "attributes": {
+        "decision": "use-rust",
+        "doc": "docs/design/adr/0001-rust.md"
+      },
+      "card_type": "ADR",
+      "id": "ADR-001",
+      "links": [],
+      "name": "Rust as Implementation Language"
+    },
+    {
+      "attributes": {
+        "encoding": "utf-8",
+        "framing": "line-delimited where applicable",
+        "transport": "stdio"
+      },
+      "card_type": "Interface",
+      "id": "INT-001",
+      "links": [
+        {
+          "relationship": "accepts",
+          "target": "ART-001"
+        },
+        {
+          "relationship": "returns",
+          "target": "ART-002"
+        }
+      ],
+      "name": "MCP Stdio Interface"
+    },
+    {
+      "attributes": {},
+      "card_subtype": "User",
+      "card_type": "Victim",
+      "id": "VIC-001",
+      "links": [],
+      "name": "Developer / User"
+    }
+  ]
+}

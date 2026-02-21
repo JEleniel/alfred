@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-009",
+	"card_type": "Story",
+	"name": "Manage environment variables safely",
+	"description": "As an agent user, I need to set/get/remove environment variables with clear scoping rules so that automation is possible without unintentionally leaking or persisting secrets.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-009"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-020"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-010"
+		}
+	]
+}

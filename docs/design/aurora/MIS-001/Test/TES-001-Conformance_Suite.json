@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "TES-001",
+	"card_type": "Test",
+	"name": "Conformance Suite",
+	"description": "A suite that validates schema correctness, deterministic error taxonomy behavior, dry-run guarantees, and workspace boundary enforcement.",
+	"links": [
+		{
+			"relationship": "verifies",
+			"target": "FEA-007"
+		},
+		{
+			"relationship": "verifies",
+			"target": "FEA-003"
+		},
+		{
+			"relationship": "verifies",
+			"target": "FEA-010"
+		},
+		{
+			"relationship": "verifies",
+			"target": "FEA-013"
+		}
+	]
+}

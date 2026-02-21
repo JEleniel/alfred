@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-017",
+	"card_type": "State",
+	"name": "Indexer Failed",
+	"description": "Indexer encountered an unrecoverable error; it reports deterministic diagnostics and waits for explicit recovery/rebuild.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-025"
+		}
+	]
+}

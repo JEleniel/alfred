@@ -1,0 +1,77 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "THM-001",
+	"card_type": "Threat Model",
+	"name": "Alfred Threat Model",
+	"description": "Structured analysis of Alfred’s key assets, an explicit malicious-agent scenario, and the controls used to reduce risk.",
+	"links": [
+		{
+			"relationship": "includes",
+			"target": "THD-001"
+		},
+		{
+			"relationship": "includes",
+			"target": "THD-002"
+		},
+		{
+			"relationship": "includes",
+			"target": "ROW-001"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-001"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-002"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-003"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-004"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-005"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-006"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-007"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-008"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-009"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-010"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-011"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-012"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-013"
+		},
+		{
+			"relationship": "recommends",
+			"target": "CTL-014"
+		}
+	]
+}

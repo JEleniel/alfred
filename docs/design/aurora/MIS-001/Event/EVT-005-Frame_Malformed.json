@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-005",
+	"card_type": "Event",
+	"name": "Frame Malformed",
+	"description": "The incoming frame was malformed or violated framing rules.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-005"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-001",
+		"from_state": "STA-003"
+	}
+}

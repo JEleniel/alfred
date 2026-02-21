@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ART-002",
+	"card_type": "Artifact",
+	"card_subtype": "Data",
+	"name": "MCP Response",
+	"description": "A structured tool result returned over stdio, encoded as JSON or NDJSON depending on the tool and payload size.",
+	"links": [],
+	"attributes": {
+		"formats": ["json", "ndjson"],
+		"design_goal": "concise and token-conservative"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-005",
+	"card_type": "State",
+	"name": "Transport Faulted",
+	"description": "Transport encountered an unrecoverable IO/framing error; it emits a normalized diagnostic (when possible) and shuts down deterministically.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-110"
+		}
+	]
+}

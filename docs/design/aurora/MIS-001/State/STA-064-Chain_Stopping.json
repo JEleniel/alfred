@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-064",
+	"card_type": "State",
+	"name": "Chain Stopping",
+	"description": "Chain Orchestrator stops execution early due to cancellation or policy and transitions to complete.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-092"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-107"
+		}
+	]
+}

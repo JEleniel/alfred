@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-017",
+	"card_type": "Event",
+	"name": "Initial Build Required",
+	"description": "Indexer determined an initial index build/rebuild is required.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-014"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-003",
+		"from_state": "STA-013"
+	}
+}

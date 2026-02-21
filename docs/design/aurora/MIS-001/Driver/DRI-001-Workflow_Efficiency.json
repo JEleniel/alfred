@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DRI-001",
+	"card_type": "Driver",
+	"name": "Workflow Efficiency",
+	"description": "Agents need fast, composable primitives (index/search/read/diff/patch/run) to complete tasks with minimal friction.",
+	"links": [
+		{
+			"relationship": "drives",
+			"target": "REQ-001"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-002"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-004"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-005"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-006"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-008"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-009"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-011"
+		}
+	]
+}

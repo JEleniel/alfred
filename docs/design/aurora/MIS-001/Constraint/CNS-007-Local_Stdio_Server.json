@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-007",
+	"card_type": "Constraint",
+	"name": "Local Stdio Server",
+	"description": "Alfred runs locally and communicates over stdio.",
+	"links": []
+}

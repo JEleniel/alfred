@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-010",
+	"card_type": "Control",
+	"name": "Scoped Environment Management",
+	"description": "Scope environment-variable changes to Alfred-managed contexts (per-task env or managed .env files) and report resulting env deterministically; do not attempt to mutate the parent IDE/shell environment.",
+	"links": [
+		{
+			"relationship": "enforces",
+			"target": "CNS-020"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-002"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-010"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-001"
+		}
+	]
+}

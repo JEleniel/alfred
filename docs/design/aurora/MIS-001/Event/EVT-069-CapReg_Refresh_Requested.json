@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-069",
+	"card_type": "Event",
+	"name": "CapReg Refresh Requested",
+	"description": "Capability registry refresh was requested.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-051"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-010",
+		"from_state": "STA-050"
+	}
+}

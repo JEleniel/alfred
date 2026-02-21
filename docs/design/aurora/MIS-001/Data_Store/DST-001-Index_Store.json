@@ -1,0 +1,18 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DST-001",
+	"card_type": "Data Store",
+	"card_subtype": "Key-Value",
+	"name": "Index Store",
+	"description": "Local persistent storage for workspace index state and derived search metadata.",
+	"links": [
+		{
+			"relationship": "retrieves",
+			"target": "ART-005"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	]
+}

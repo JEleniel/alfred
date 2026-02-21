@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ROW-001",
+	"card_type": "Resource Owner",
+	"name": "Developer and Workspace Owner",
+	"description": "The developer (and their organization) accountable for protecting the workspace, secrets, and the host machine Alfred runs on.",
+	"links": [
+		{
+			"relationship": "owns",
+			"target": "AST-001"
+		},
+		{
+			"relationship": "owns",
+			"target": "AST-002"
+		},
+		{
+			"relationship": "owns",
+			"target": "AST-003"
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-026",
+	"card_type": "Event",
+	"name": "Context Request Received",
+	"description": "A request to resolve normalized workspace context was received.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-019"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-004",
+		"from_state": "STA-018"
+	}
+}

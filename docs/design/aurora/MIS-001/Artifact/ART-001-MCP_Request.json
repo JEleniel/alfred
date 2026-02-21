@@ -1,0 +1,12 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ART-001",
+	"card_type": "Artifact",
+	"card_subtype": "Data",
+	"name": "MCP Request",
+	"description": "A structured tool invocation request received over stdio from the MCP host.",
+	"links": [],
+	"attributes": {
+		"formats": ["json"]
+	}
+}

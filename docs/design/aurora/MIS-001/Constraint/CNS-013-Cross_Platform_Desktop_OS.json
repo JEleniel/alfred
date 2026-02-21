@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-013",
+	"card_type": "Constraint",
+	"name": "Cross-Platform Desktop OS Support",
+	"description": "Alfred MUST run on Linux, macOS, and Windows.",
+	"links": []
+}

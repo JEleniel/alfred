@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-024",
+	"card_type": "State",
+	"name": "FileOps Committing",
+	"description": "File Operations Engine finalizes writes, flushes, and records a deterministic summary (or no-op summary for dry-run).",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-111"
+		}
+	]
+}

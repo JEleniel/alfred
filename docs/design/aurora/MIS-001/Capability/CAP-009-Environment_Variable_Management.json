@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-009",
+	"card_type": "Capability",
+	"name": "Environment Variable Management",
+	"description": "Support CRUD operations for environment variables used by tools and tasks.",
+	"links": []
+}

@@ -1,0 +1,30 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-010",
+	"card_type": "State Machine",
+	"name": "Capability Registry State Machine",
+	"description": "Deterministic lifecycle for COM-012 (Capability Registry): bootstrap, serve, refresh, and recover.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-049"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-050"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-051"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-052"
+		}
+	],
+	"attributes": {
+		"component": "COM-012",
+		"initial_state": "STA-049",
+		"steady_state": "STA-050"
+	}
+}

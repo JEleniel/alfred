@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-008",
+	"card_type": "Capability",
+	"name": "Log Handling",
+	"description": "Tail and filter logs to support debugging and long-running operations.",
+	"links": []
+}

@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-010",
+	"card_type": "Risk",
+	"name": "Env Var CRUD Semantics Mislead Users",
+	"description": "Users may incorrectly assume environment-variable tools mutate the parent IDE/shell environment. Inconsistent behavior across OSes can lead to confusion or accidental secret exposure.",
+	"links": []
+}

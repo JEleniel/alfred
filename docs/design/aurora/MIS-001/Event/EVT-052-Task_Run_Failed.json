@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-052",
+	"card_type": "Event",
+	"name": "Task Run Failed",
+	"description": "Task execution failed before a complete report could be produced.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-038"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-007",
+		"from_state": "STA-035"
+	}
+}

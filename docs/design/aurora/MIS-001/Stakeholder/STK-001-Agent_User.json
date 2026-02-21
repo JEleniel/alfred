@@ -1,0 +1,77 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STK-001",
+	"card_type": "Stakeholder",
+	"card_subtype": "End User",
+	"name": "Agent User",
+	"description": "A developer/operator using an agent that depends on reliable, safe, and fast tooling for workspace workflows.",
+	"links": [
+		{
+			"relationship": "desires",
+			"target": "STR-001"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-002"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-003"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-004"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-005"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-006"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-007"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-008"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-009"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-010"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-011"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-012"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-013"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-014"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-015"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-016"
+		}
+	],
+	"attributes": {
+		"primary_concerns": ["safety", "speed", "deterministic results", "low token usage"]
+	}
+}

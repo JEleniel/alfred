@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-010",
+	"card_type": "Constraint",
+	"name": "Permission Model and Guardrails",
+	"description": "Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults.",
+	"links": []
+}

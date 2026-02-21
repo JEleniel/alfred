@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-022",
+	"card_type": "State",
+	"name": "FileOps Validating Plan",
+	"description": "File Operations Engine validates intent against workspace boundaries, permissions, and conflict rules; produces a deterministic plan.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-031"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-032"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-033"
+		}
+	]
+}

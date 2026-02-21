@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-055",
+	"card_type": "State",
+	"name": "Log Rotating",
+	"description": "Log Manager updates file handles/offsets deterministically after rotation and returns to ready.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-078"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-079"
+		}
+	]
+}

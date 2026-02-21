@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-064",
+	"card_type": "Event",
+	"name": "Diagnostics Validated",
+	"description": "Envelope validated against deterministic schema and taxonomy.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-047"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-009",
+		"from_state": "STA-046"
+	}
+}

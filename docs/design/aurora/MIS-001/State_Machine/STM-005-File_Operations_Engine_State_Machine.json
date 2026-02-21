@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-005",
+	"card_type": "State Machine",
+	"name": "File Operations Engine State Machine",
+	"description": "Deterministic mutation lifecycle for COM-007 (File Operations Engine), including dry-run planning, execution, and rollback semantics.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-021"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-022"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-023"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-024"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-025"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-026"
+		}
+	],
+	"attributes": {
+		"component": "COM-007",
+		"initial_state": "STA-021",
+		"determinism_notes": [
+			"All mutations are planned before execution; dry-run produces the plan and never writes.",
+			"Where atomic operations are not possible, compensating actions are explicit and deterministic."
+		]
+	}
+}

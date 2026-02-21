@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DRI-005",
+	"card_type": "Driver",
+	"name": "Local-First and Self-Contained",
+	"description": "Alfred must run locally over stdio without relying on external services, and should be usable across macOS/Linux/Windows.",
+	"links": [
+		{
+			"relationship": "drives",
+			"target": "REQ-016"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-010"
+		}
+	]
+}

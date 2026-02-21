@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ATV-003",
+	"card_type": "Activity",
+	"name": "Apply Workspace Edits",
+	"description": "Apply safe, bounded edits to workspace files (create/update/delete) and validate results.",
+	"links": [
+		{
+			"relationship": "uses",
+			"target": "COM-007"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-011"
+		}
+	]
+}

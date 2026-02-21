@@ -1,0 +1,26 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-004",
+	"card_type": "State Machine",
+	"name": "Context Provider State Machine",
+	"description": "Deterministic context resolution pipeline for COM-005 (Context Provider): resolve workspace root/pwd and return normalized context.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-018"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-019"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-020"
+		}
+	],
+	"attributes": {
+		"component": "COM-005",
+		"initial_state": "STA-018",
+		"steady_state": "STA-018"
+	}
+}

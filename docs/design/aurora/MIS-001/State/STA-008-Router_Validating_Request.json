@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-008",
+	"card_type": "State",
+	"name": "Router Validating Request",
+	"description": "Router validates tool name, arguments, permissions, and execution mode constraints.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-009"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-010"
+		}
+	]
+}

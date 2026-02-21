@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-084",
+	"card_type": "Event",
+	"name": "Env Response Redacted",
+	"description": "Response was redacted deterministically and is ready to return.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-057"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-012",
+		"from_state": "STA-059"
+	}
+}

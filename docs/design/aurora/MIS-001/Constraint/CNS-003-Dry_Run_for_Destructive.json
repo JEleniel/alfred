@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-003",
+	"card_type": "Constraint",
+	"name": "Dry-Run for Destructive Operations",
+	"description": "Alfred MUST provide dry-run behavior for destructive or irreversible actions.",
+	"links": []
+}

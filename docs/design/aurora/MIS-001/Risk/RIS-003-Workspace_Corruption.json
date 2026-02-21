@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-003",
+	"card_type": "Risk",
+	"name": "Workspace Corruption",
+	"description": "The workspace is modified in a damaging way (e.g., destructive edits, dependency tampering, or introducing malicious code), causing loss of integrity and trust.",
+	"links": []
+}

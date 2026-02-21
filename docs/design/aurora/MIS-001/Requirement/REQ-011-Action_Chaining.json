@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-011",
+	"card_type": "Requirement",
+	"name": "Single-Call Action Chaining",
+	"description": "Alfred MUST support single-call action chaining (e.g. search → patch → validate) with per-step status and error details.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-011"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-009"
+		}
+	]
+}

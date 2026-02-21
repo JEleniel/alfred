@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-051",
+	"card_type": "State",
+	"name": "CapReg Refreshing",
+	"description": "Capability Registry refreshes tool metadata deterministically and returns to ready.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-070"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-071"
+		}
+	]
+}

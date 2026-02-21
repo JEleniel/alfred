@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-016",
+	"card_type": "Event",
+	"name": "Failure Reported",
+	"description": "The router emitted a deterministic error response envelope.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-007"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-002",
+		"from_state": "STA-012"
+	}
+}

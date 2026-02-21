@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-009",
+	"card_type": "Feature",
+	"name": "Environment Variable Tooling",
+	"description": "CRUD operations for environment variables with policy guardrails.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-009"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-010"
+		}
+	]
+}

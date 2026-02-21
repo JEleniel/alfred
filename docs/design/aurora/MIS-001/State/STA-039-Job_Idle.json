@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-039",
+	"card_type": "State",
+	"name": "Job Idle",
+	"description": "Job Manager awaits a request to start or inspect a job.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-055"
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-047",
+	"card_type": "State",
+	"name": "Diagnostics Emitting",
+	"description": "Emits normalized, deterministic diagnostics (json/ndjson) and returns to idle.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-066"
+		}
+	]
+}

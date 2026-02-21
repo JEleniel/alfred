@@ -1,0 +1,24 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-002",
+	"card_type": "Requirement",
+	"name": "Context Awareness",
+	"description": "Alfred MUST return the current working folder (pwd) and the workspace root folder.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-002"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-002"
+		}
+	],
+	"attributes": {
+		"tool_surface": ["pwd", "workspace_root"]
+	}
+}

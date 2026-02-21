@@ -1,0 +1,12 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ART-005",
+	"card_type": "Artifact",
+	"card_subtype": "Data",
+	"name": "Index Snapshot",
+	"description": "Serialized index state used to accelerate repeated queries and reduce redundant filesystem scans.",
+	"links": [],
+	"attributes": {
+		"storage": "local"
+	}
+}

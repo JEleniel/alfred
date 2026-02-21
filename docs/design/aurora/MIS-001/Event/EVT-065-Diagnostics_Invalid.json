@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-065",
+	"card_type": "Event",
+	"name": "Diagnostics Invalid",
+	"description": "Envelope did not validate and must be converted to a deterministic internal error.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-048"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-009",
+		"from_state": "STA-046"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-042",
+	"card_type": "State",
+	"name": "Job Monitoring",
+	"description": "Job Manager tracks job progress, handles cancellation/timeouts, and collects outputs.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-060"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-061"
+		}
+	]
+}

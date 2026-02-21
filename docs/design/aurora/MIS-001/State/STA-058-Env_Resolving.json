@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-058",
+	"card_type": "State",
+	"name": "Env Resolving",
+	"description": "Environment Variable Manager applies policy guardrails and resolves effective values.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-082"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-083"
+		}
+	]
+}

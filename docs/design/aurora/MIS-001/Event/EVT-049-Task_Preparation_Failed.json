@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-049",
+	"card_type": "Event",
+	"name": "Task Preparation Failed",
+	"description": "Task preparation failed due to invalid inputs, boundary issues, or missing tools.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-038"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-007",
+		"from_state": "STA-034"
+	}
+}

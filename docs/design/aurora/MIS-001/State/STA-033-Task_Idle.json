@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-033",
+	"card_type": "State",
+	"name": "Task Idle",
+	"description": "Task Runner awaits a task execution request.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-047"
+		}
+	]
+}

@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-009",
+	"card_type": "Requirement",
+	"name": "Environment Variable CRUD",
+	"description": "Alfred MUST support CRUD operations for environment variables.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-009"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-010"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-020"
+		}
+	]
+}

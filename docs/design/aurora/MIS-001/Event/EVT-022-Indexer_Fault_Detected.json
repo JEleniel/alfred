@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-022",
+	"card_type": "Event",
+	"name": "Indexer Fault Detected",
+	"description": "Indexer detected an unrecoverable fault while serving or monitoring the index.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-017"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-003",
+		"from_state": "STA-015"
+	}
+}

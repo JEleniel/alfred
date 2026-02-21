@@ -1,0 +1,37 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-001",
+	"card_type": "Control",
+	"name": "Workspace Boundary Guard",
+	"description": "Canonicalize and validate all paths; enforce workspace boundary checks; treat symlinks, traversal sequences, and platform-specific path edge-cases as hostile inputs.",
+	"links": [
+		{
+			"relationship": "protects",
+			"target": "AST-001"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-003"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-010"
+		},
+		{
+			"relationship": "obstructs",
+			"target": "THC-001"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-001"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-003"
+		}
+	]
+}

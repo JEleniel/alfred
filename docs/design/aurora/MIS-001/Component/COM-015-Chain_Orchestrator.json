@@ -1,0 +1,22 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-015",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Chain Orchestrator",
+	"description": "Executes declared action chains in order with per-step status and stop-on-failure semantics.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-011"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-013"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	]
+}

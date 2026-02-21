@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-007",
+	"card_type": "Feature",
+	"name": "Deterministic Response Contracts",
+	"description": "Return concise JSON/NDJSON responses with stable schema versions and deterministic error taxonomy.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-007"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-005"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-008"
+		}
+	]
+}

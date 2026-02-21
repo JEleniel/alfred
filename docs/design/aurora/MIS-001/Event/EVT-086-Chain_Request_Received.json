@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-086",
+	"card_type": "Event",
+	"name": "Chain Request Received",
+	"description": "A chain execution request was received.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-062"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-013",
+		"from_state": "STA-061"
+	}
+}

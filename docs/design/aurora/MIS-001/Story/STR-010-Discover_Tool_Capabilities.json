@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-010",
+	"card_type": "Story",
+	"name": "Discover tool capabilities",
+	"description": "As an agent user, I need Alfred to advertise its tool surface, versions, and limits so that the agent can adapt behavior safely and avoid invalid calls.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-010"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-008"
+		}
+	]
+}

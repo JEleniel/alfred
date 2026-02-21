@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-037",
+	"card_type": "State",
+	"name": "Task Canceling",
+	"description": "Task Runner attempts a deterministic cancellation (signal/terminate), then reports terminal status.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-053"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-108"
+		}
+	]
+}

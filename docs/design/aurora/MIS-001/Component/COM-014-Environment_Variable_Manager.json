@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-014",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Environment Variable Manager",
+	"description": "Provides CRUD operations for environment variables with policy guardrails.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-009"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-012"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"storage": "local"
+	}
+}

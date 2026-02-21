@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-035",
+	"card_type": "State",
+	"name": "Task Running",
+	"description": "Task Runner executes the command and streams deterministic output (when requested).",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-050"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-051"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-052"
+		}
+	]
+}

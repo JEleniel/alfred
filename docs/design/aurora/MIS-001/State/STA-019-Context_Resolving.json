@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-019",
+	"card_type": "State",
+	"name": "Context Resolving",
+	"description": "Context provider resolves workspace root/pwd and returns normalized values.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-027"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-028"
+		}
+	]
+}

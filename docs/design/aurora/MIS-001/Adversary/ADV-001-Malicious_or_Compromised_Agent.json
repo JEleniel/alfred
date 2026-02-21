@@ -1,0 +1,9 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ADV-001",
+	"card_type": "Adversary",
+	"card_subtype": "Insider",
+	"name": "Malicious or Compromised Agent",
+	"description": "An agent/client that is intentionally malicious or has been compromised (prompt-injected), attempting forbidden actions such as reading outside the workspace or executing dangerous commands.",
+	"links": []
+}

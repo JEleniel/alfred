@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-006",
+	"card_type": "Control",
+	"name": "Cross-Platform Atomic Write and Replace",
+	"description": "Implement atomic writes using temp files + sync + replace semantics appropriate to each OS; detect locked destinations (common on Windows) and fail explicitly rather than partially applying changes.",
+	"links": [
+		{
+			"relationship": "protects",
+			"target": "AST-001"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-017"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-005"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-003"
+		}
+	]
+}

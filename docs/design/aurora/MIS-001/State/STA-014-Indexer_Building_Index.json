@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-014",
+	"card_type": "State",
+	"name": "Indexer Building Index",
+	"description": "Indexer enumerates workspace files and builds the derived index.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-019"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-020"
+		}
+	]
+}

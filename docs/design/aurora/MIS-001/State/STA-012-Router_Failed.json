@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-012",
+	"card_type": "State",
+	"name": "Router Failed",
+	"description": "Router produces a deterministic error response and returns to idle.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-016"
+		}
+	]
+}

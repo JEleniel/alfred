@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-011",
+	"card_type": "Story",
+	"name": "Chain actions deterministically",
+	"description": "As an agent user, I need to compose multiple tool calls into a deterministic chain with clear stop-on-failure semantics so that multi-step workflows are reliable.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-011"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-009"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-015"
+		}
+	]
+}

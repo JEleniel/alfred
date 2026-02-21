@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-008",
+	"card_type": "Feature",
+	"name": "Log Tailing and Filtering",
+	"description": "Tail and filter tool/runtime logs for debugging and monitoring long-running operations.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-008"
+		}
+	]
+}

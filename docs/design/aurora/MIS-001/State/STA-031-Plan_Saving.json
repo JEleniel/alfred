@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-031",
+	"card_type": "State",
+	"name": "Plan Saving",
+	"description": "Plan Manager persists the updated plan artifact atomically where practical and returns to ready.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-046"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-105"
+		}
+	]
+}

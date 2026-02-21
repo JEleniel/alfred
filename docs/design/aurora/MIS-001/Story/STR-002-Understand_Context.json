@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-002",
+	"card_type": "Story",
+	"name": "Understand current context",
+	"description": "As an agent user, I need Alfred to maintain and expose relevant context (workspace metadata, recent actions, and constraints) so that tool results are interpretable and I can avoid repeating expensive discovery work.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-002"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-001"
+		}
+	]
+}

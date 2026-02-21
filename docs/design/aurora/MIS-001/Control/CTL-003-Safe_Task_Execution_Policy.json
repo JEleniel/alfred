@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-003",
+	"card_type": "Control",
+	"name": "Safe Task Execution Policy",
+	"description": "Constrain task execution to safe defaults: workspace working directory, environment scrubbing, command allow/deny rules, output limits, timeouts, and a policy that prevents Alfred from becoming a general-purpose remote execution agent.",
+	"links": [
+		{
+			"relationship": "protects",
+			"target": "AST-002"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-003"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-010"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-006"
+		},
+		{
+			"relationship": "governs",
+			"target": "DST-002"
+		},
+		{
+			"relationship": "governs",
+			"target": "DST-003"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-001"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-002"
+		}
+	]
+}

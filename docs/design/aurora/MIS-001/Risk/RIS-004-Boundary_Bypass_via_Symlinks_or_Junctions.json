@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-004",
+	"card_type": "Risk",
+	"name": "Boundary Bypass via Symlinks/Junctions",
+	"description": "Workspace boundary checks can be bypassed on some OS/filesystem combinations (e.g., via symlinks/junctions) if checks are performed on untrusted path strings instead of resolved paths.",
+	"links": []
+}

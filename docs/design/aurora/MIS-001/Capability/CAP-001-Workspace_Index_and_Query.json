@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-001",
+	"card_type": "Capability",
+	"name": "Workspace Index and Query",
+	"description": "Maintain an index of workspace files and provide fast listing, search, symbol lookup, range extraction, and diff primitives.",
+	"links": []
+}

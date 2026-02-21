@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-106",
+	"card_type": "Event",
+	"name": "Rollback Failed",
+	"description": "Rollback/compensation failed and deterministic failure reporting is required.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-026"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-025"
+	}
+}

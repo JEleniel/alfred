@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-007",
+	"card_type": "Requirement",
+	"name": "JSON and NDJSON Output",
+	"description": "Alfred MUST provide tooling output as JSON or NDJSON, optimized to be concise and token-conservative.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-007"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-008"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-015"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-021"
+		}
+	]
+}

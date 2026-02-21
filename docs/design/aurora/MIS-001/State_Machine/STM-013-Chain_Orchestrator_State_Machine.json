@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-013",
+	"card_type": "State Machine",
+	"name": "Chain Orchestrator State Machine",
+	"description": "Deterministic lifecycle for COM-015 (Chain Orchestrator): build chain, execute steps, stop on failure, and report.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-061"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-062"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-063"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-064"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-065"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-066"
+		}
+	],
+	"attributes": {
+		"component": "COM-015",
+		"initial_state": "STA-061",
+		"determinism_notes": [
+			"Step ordering is explicit and stable; stop-on-failure is enforced.",
+			"Each step emits deterministic status transitions."
+		]
+	}
+}

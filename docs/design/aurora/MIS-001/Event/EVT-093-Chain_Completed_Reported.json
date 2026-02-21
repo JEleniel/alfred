@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-093",
+	"card_type": "Event",
+	"name": "Chain Completed Reported",
+	"description": "Chain completion status was reported deterministically.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-061"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-013",
+		"from_state": "STA-065"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ART-006",
+	"card_type": "Artifact",
+	"card_subtype": "Data",
+	"name": "Job Output Stream",
+	"description": "A stream of output chunks and structured status for a background job.",
+	"links": [],
+	"attributes": {
+		"formats": ["ndjson", "json"],
+		"semantics": "append-only"
+	}
+}

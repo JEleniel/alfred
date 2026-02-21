@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-025",
+	"card_type": "State",
+	"name": "FileOps Rolling Back",
+	"description": "File Operations Engine performs deterministic compensating actions for partially-completed plans.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-037"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-106"
+		}
+	]
+}

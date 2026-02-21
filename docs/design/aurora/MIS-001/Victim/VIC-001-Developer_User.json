@@ -1,0 +1,9 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "VIC-001",
+	"card_type": "Victim",
+	"card_subtype": "User",
+	"name": "Developer / User",
+	"description": "The local user running Alfred who may suffer data loss, data exfiltration, or host compromise if threats succeed.",
+	"links": []
+}

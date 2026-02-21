@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-096",
+	"card_type": "Event",
+	"name": "Conformance Tests Selected",
+	"description": "Deterministic test set selected for the current versions.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-069"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-014",
+		"from_state": "STA-068"
+	}
+}

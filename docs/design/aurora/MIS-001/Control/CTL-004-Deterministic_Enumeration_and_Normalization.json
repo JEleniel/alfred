@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-004",
+	"card_type": "Control",
+	"name": "Deterministic Enumeration and Normalization",
+	"description": "Ensure deterministic behavior across OSes by sorting enumerations, normalizing paths consistently, and defining stable output ordering rules.",
+	"links": [
+		{
+			"relationship": "protects",
+			"target": "AST-001"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-015"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-006"
+		}
+	]
+}

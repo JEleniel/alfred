@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-007",
+	"card_type": "Event",
+	"name": "Response Write Failed",
+	"description": "Writing the response failed (broken pipe, permission, or other IO error).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-005"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-001",
+		"from_state": "STA-004"
+	}
+}

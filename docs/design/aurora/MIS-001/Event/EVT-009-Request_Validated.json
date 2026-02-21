@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-009",
+	"card_type": "Event",
+	"name": "Request Validated",
+	"description": "The router validated the request (tool name, args, permissions, execution mode constraints).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-009"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-002",
+		"from_state": "STA-008"
+	}
+}

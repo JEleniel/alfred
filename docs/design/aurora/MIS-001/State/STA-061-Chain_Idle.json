@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-061",
+	"card_type": "State",
+	"name": "Chain Idle",
+	"description": "Chain Orchestrator awaits a chain execution request.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-086"
+		}
+	]
+}

@@ -1,0 +1,57 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "THD-002",
+	"card_type": "Threat Diamond",
+	"name": "Malicious Command Execution and Exfiltration",
+	"description": "A malicious/compromised agent attempts to use Alfred’s task execution capability to run dangerous commands (including commands that exfiltrate data), or to perform destructive operations that the user would not approve.",
+	"links": [
+		{
+			"relationship": "threatens",
+			"target": "AST-002"
+		},
+		{
+			"relationship": "threatens",
+			"target": "AST-003"
+		},
+		{
+			"relationship": "involves",
+			"target": "ADV-001"
+		},
+		{
+			"relationship": "uses",
+			"target": "THC-001"
+		},
+		{
+			"relationship": "impacts",
+			"target": "VIC-001"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-001"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-007"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-008"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-010"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-013"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-014"
+		},
+		{
+			"relationship": "creates",
+			"target": "RIS-002"
+		}
+	]
+}

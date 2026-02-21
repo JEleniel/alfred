@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-088",
+	"card_type": "Event",
+	"name": "Chain Build Failed",
+	"description": "Chain could not be built (invalid declaration, policy violation, or missing tools).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-066"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-013",
+		"from_state": "STA-062"
+	}
+}

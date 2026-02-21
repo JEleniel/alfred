@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-004",
+	"card_type": "Feature",
+	"name": "Project Plan Tooling",
+	"description": "Create and update a project plan capturing progress and tool/diagnostic failures.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-004"
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-095",
+	"card_type": "Event",
+	"name": "Conformance Requested",
+	"description": "A request to run conformance was received.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-068"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-014",
+		"from_state": "STA-067"
+	}
+}

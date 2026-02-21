@@ -1,0 +1,49 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "APP-001",
+	"card_type": "Application",
+	"name": "Alfred Stdio Server",
+	"description": "Single local process implementing the MCP tool surface over stdio, enforcing workspace boundaries and returning machine-readable results.",
+	"links": [
+		{
+			"relationship": "deploys to",
+			"target": "DEP-001"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-001"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-002"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-003"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-007"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-009"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-010"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-011"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-012"
+		}
+	],
+	"attributes": {
+		"transport": "stdio",
+		"io_format": ["json", "ndjson"]
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-013",
+	"card_type": "Event",
+	"name": "Operation Completed",
+	"description": "The dispatched operation completed successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-011"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-002",
+		"from_state": "STA-010"
+	}
+}

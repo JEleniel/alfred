@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-016",
+	"card_type": "Constraint",
+	"name": "Symlink and Junction-Safe Boundary Checks",
+	"description": "Workspace boundary enforcement MUST be robust to symlinks/junctions and path traversal tricks; boundary checks MUST use canonicalized/resolved paths and treat path inputs as hostile.",
+	"links": []
+}

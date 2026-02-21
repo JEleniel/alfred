@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "AST-003",
+	"card_type": "Asset",
+	"name": "Non-workspace Resources",
+	"description": "Resources outside the workspace boundary that must remain protected: non-workspace filesystem paths, the host OS/process space, and local durable state stores (index/job/plan).",
+	"links": []
+}

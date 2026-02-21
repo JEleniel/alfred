@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-023",
+	"card_type": "State",
+	"name": "FileOps Executing",
+	"description": "File Operations Engine executes the approved plan; operations are ordered deterministically.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-034"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-035"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-036"
+		}
+	]
+}

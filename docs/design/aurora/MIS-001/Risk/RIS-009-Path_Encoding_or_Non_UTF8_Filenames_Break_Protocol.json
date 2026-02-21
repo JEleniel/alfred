@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-009",
+	"card_type": "Risk",
+	"name": "Path Encoding / Non-UTF8 Filenames Break Protocol",
+	"description": "Non-UTF8 filenames or OS-specific path encodings can cause crashes, lossy reporting, or invalid JSON if not handled carefully.",
+	"links": []
+}

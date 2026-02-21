@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-060",
+	"card_type": "State",
+	"name": "Env Failed",
+	"description": "Environment Variable Manager reports a deterministic policy or IO error and returns to ready.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-085"
+		}
+	]
+}

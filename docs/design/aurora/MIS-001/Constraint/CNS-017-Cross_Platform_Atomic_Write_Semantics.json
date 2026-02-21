@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-017",
+	"card_type": "Constraint",
+	"name": "Cross-Platform Atomic Write Semantics",
+	"description": "When claiming atomic mutations, Alfred MUST implement an atomic write/replace strategy that is correct on Linux/macOS/Windows; if atomic replacement cannot be guaranteed (e.g., locked destination on Windows), Alfred MUST fail explicitly rather than partially applying changes.",
+	"links": []
+}

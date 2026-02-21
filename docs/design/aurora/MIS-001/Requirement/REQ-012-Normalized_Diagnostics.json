@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-012",
+	"card_type": "Requirement",
+	"name": "Normalized Diagnostics Contract",
+	"description": "Alfred MUST provide a normalized diagnostics contract for build/test/lint/format, with consistent schema and optional delta reporting between runs.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-012"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-015"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-021"
+		}
+	]
+}

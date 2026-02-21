@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "SYS-001",
+	"card_type": "System",
+	"name": "Alfred",
+	"description": "A local MCP tool server providing workspace indexing, safe file operations, tool/task execution, and deterministic JSON/NDJSON contracts.",
+	"links": [
+		{
+			"relationship": "integrates",
+			"target": "APP-001"
+		}
+	],
+	"attributes": {
+		"scope": "local-only",
+		"out_of_scope": ["git", "github"]
+	}
+}

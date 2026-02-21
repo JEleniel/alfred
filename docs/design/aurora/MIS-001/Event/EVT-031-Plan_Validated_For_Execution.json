@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-031",
+	"card_type": "Event",
+	"name": "Plan Validated For Execution",
+	"description": "The mutation plan validated successfully and execution is requested.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-023"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-022"
+	}
+}

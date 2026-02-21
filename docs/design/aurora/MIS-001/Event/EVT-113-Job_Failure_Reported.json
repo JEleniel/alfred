@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-113",
+	"card_type": "Event",
+	"name": "Job Failure Reported",
+	"description": "Job failure was emitted deterministically to the caller.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-039"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-008",
+		"from_state": "STA-044"
+	}
+}

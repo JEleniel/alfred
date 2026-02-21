@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-057",
+	"card_type": "State",
+	"name": "Env Ready",
+	"description": "Environment Variable Manager awaits a CRUD request.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-081"
+		}
+	]
+}

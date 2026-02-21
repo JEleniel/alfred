@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-112",
+	"card_type": "Event",
+	"name": "Task Failure Reported",
+	"description": "Task failure was emitted deterministically to the caller.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-033"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-007",
+		"from_state": "STA-038"
+	}
+}

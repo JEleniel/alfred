@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-037",
+	"card_type": "Event",
+	"name": "Rollback Completed",
+	"description": "Compensating actions completed.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-021"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-025"
+	}
+}

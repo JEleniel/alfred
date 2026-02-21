@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "AST-001",
+	"card_type": "Asset",
+	"name": "Workspace Contents",
+	"description": "Files and directories within the configured workspace boundary, including source code and project configuration.",
+	"links": []
+}

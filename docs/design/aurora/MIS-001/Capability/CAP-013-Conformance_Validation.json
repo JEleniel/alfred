@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-013",
+	"card_type": "Capability",
+	"name": "Conformance Validation",
+	"description": "Run a conformance suite that validates schemas, deterministic error taxonomy behavior, dry-run guarantees, and workspace boundary enforcement.",
+	"links": []
+}

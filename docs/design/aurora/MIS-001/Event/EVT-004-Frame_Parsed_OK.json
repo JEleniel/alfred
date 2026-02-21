@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-004",
+	"card_type": "Event",
+	"name": "Frame Parsed OK",
+	"description": "The incoming frame was parsed successfully into a request envelope.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-004"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-001",
+		"from_state": "STA-003"
+	}
+}

@@ -1,0 +1,177 @@
+{
+	"$defs": {
+		"acronym": {
+			"pattern": "^[A-Z]{3}$",
+			"type": "string"
+		},
+		"available_icons": {
+			"items": {
+				"$ref": "#/$defs/icon_name"
+			},
+			"minItems": 1,
+			"type": "array",
+			"uniqueItems": true
+		},
+		"card_common_property": {
+			"additionalProperties": false,
+			"properties": {
+				"description": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"name": {
+					"$ref": "#/$defs/non_empty"
+				}
+			},
+			"required": ["name", "description"],
+			"type": "object"
+		},
+		"card_entry": {
+			"additionalProperties": false,
+			"properties": {
+				"acronym": {
+					"$ref": "#/$defs/acronym"
+				},
+				"card_type": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"stroke": {
+					"$ref": "#/$defs/hex_color"
+				},
+				"text": {
+					"$ref": "#/$defs/hex_color"
+				},
+				"common_properties": {
+					"items": {
+						"$ref": "#/$defs/card_common_property"
+					},
+					"minItems": 1,
+					"type": "array",
+					"uniqueItems": true
+				},
+				"common_subtypes": {
+					"items": {
+						"$ref": "#/$defs/non_empty"
+					},
+					"minItems": 1,
+					"type": "array",
+					"uniqueItems": true
+				},
+				"description": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"fill": {
+					"$ref": "#/$defs/hex_color"
+				},
+				"icon": {
+					"$ref": "#/$defs/icon_name",
+					"description": "Optional SVG symbol name from the available_icons list."
+				},
+				"relationships": {
+					"items": {
+						"$ref": "#/$defs/card_relationship"
+					},
+					"minItems": 1,
+					"type": "array",
+					"uniqueItems": true
+				},
+				"shape": {
+					"$ref": "#/$defs/non_empty"
+				}
+			},
+			"required": ["card_type", "acronym", "description", "shape", "fill", "text", "stroke"],
+			"type": "object"
+		},
+		"card_relationship": {
+			"additionalProperties": false,
+			"properties": {
+				"relationship": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"target": {
+					"$ref": "#/$defs/acronym"
+				}
+			},
+			"required": ["target", "relationship"],
+			"type": "object"
+		},
+		"card_type_list": {
+			"items": {
+				"$ref": "#/$defs/acronym"
+			},
+			"minItems": 1,
+			"type": "array",
+			"uniqueItems": true
+		},
+		"cards": {
+			"items": {
+				"$ref": "#/$defs/card_entry"
+			},
+			"minItems": 1,
+			"type": "array",
+			"uniqueItems": true
+		},
+		"hex_color": {
+			"pattern": "^#[A-Fa-f0-9]{6}$",
+			"type": "string"
+		},
+		"icon_name": {
+			"minLength": 1,
+			"pattern": "^[a-z][a-z0-9-_]*$",
+			"type": "string"
+		},
+		"non_empty": {
+			"minLength": 1,
+			"type": "string"
+		},
+		"view_definition": {
+			"additionalProperties": false,
+			"properties": {
+				"description": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"included_card_types": {
+					"$ref": "#/$defs/card_type_list"
+				},
+				"name": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"root_card_types": {
+					"$ref": "#/$defs/card_type_list"
+				}
+			},
+			"required": ["name", "description", "root_card_types", "included_card_types"],
+			"type": "object"
+		},
+		"views": {
+			"description": "List of view definitions",
+			"items": {
+				"$ref": "#/$defs/view_definition"
+			},
+			"minItems": 1,
+			"type": "array",
+			"uniqueItems": true
+		}
+	},
+	"$id": "https://crystultima.org/aurora/modelconfiguration.schema.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"additionalProperties": false,
+	"description": "Schema for Aurora.modelconfiguration.json with card-centric canonical definitions, embedded appearance, and per-card relationships.",
+	"properties": {
+		"$schema": {
+			"minLength": 1,
+			"type": "string"
+		},
+		"available_icons": {
+			"$ref": "#/$defs/available_icons"
+		},
+		"cards": {
+			"$ref": "#/$defs/cards"
+		},
+		"views": {
+			"$ref": "#/$defs/views"
+		}
+	},
+	"required": ["cards", "available_icons", "views"],
+	"title": "Aurora Model Configuration Schema",
+	"type": "object"
+}

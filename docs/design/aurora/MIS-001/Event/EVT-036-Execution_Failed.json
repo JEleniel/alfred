@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-036",
+	"card_type": "Event",
+	"name": "Execution Failed",
+	"description": "Execution failed and no safe rollback is possible (or rollback already failed).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-026"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-023"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-015",
+	"card_type": "Constraint",
+	"name": "Deterministic Output Normalization",
+	"description": "Alfred MUST produce deterministic outputs across supported OSes (Linux/macOS/Windows), including stable sorting, stable path normalization, and stable formatting regardless of filesystem enumeration order or case-sensitivity defaults.",
+	"links": []
+}

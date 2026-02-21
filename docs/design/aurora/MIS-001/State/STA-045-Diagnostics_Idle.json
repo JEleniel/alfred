@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-045",
+	"card_type": "State",
+	"name": "Diagnostics Idle",
+	"description": "Contracts and Diagnostics awaits a request to validate or format an output/error.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-063"
+		}
+	]
+}

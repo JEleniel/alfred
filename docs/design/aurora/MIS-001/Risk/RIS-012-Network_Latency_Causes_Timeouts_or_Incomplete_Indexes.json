@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-012",
+	"card_type": "Risk",
+	"name": "Network Latency Causes Timeouts / Incomplete Indexing",
+	"description": "High or variable latency on network workspaces can cause indexing/search to exceed time budgets, produce partial results, or appear non-deterministic without explicit progress/timeout handling.",
+	"links": []
+}

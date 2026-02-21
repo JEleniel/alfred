@@ -1,0 +1,26 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-012",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Capability Registry",
+	"description": "Maintains discoverable metadata for Alfred tools/capabilities, including versions, schema versions, limits, and execution modes.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-010"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-010"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"versioning": "semver",
+		"schema_lockstep": true
+	}
+}

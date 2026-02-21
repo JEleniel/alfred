@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-110",
+	"card_type": "Event",
+	"name": "Transport Shutdown Completed",
+	"description": "Transport completed fault handling and transitioned to a deterministic shutdown.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-006"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-001",
+		"from_state": "STA-005"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-052",
+	"card_type": "State",
+	"name": "CapReg Failed",
+	"description": "Capability Registry reports deterministic diagnostics and transitions to bootstrapping for recovery.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-073"
+		}
+	]
+}

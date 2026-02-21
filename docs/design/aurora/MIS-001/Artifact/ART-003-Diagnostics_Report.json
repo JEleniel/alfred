@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ART-003",
+	"card_type": "Artifact",
+	"card_subtype": "Report",
+	"name": "Diagnostics Report",
+	"description": "Normalized diagnostics output emitted by build/test/lint/format tooling, optionally with deltas between runs.",
+	"links": [],
+	"attributes": {
+		"format": ["json", "ndjson"],
+		"sources": ["cargo", "pnpm", "linters", "formatters", "tasks"]
+	}
+}

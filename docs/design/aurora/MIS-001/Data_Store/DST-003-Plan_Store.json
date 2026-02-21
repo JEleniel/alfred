@@ -1,0 +1,18 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DST-003",
+	"card_type": "Data Store",
+	"card_subtype": "Object Store",
+	"name": "Plan Store",
+	"description": "Local storage for the project plan artifact (including tool/diagnostic failures and progress tracking).",
+	"links": [
+		{
+			"relationship": "retrieves",
+			"target": "ART-004"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	]
+}

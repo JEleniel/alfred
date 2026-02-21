@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-003",
+	"card_type": "Feature",
+	"name": "Safe File Mutation Tools",
+	"description": "Implement atomic CRUD (where practical), patch with conflict reporting, and bulk ops with dry-run.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-003"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-003"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-004"
+		}
+	]
+}

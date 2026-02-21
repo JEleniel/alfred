@@ -1,0 +1,32 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-005",
+	"card_type": "Requirement",
+	"name": "Task Execution",
+	"description": "Alfred MUST run named tasks (e.g. build/test) and common ecosystem commands (cargo, pnpm, lint, format).",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-005"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-018"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-019"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-020"
+		}
+	],
+	"attributes": {
+		"tool_surface": ["task_run", "cargo", "pnpm", "lint", "format"]
+	}
+}

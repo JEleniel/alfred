@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-012",
+	"card_type": "Story",
+	"name": "Get normalized diagnostics",
+	"description": "As an agent user, I need normalized, structured diagnostics so that errors and warnings can be handled programmatically and explained clearly.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-012"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-005"
+		}
+	]
+}

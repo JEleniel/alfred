@@ -1,0 +1,37 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-007",
+	"card_type": "Control",
+	"name": "Argv-Only Task Execution (No Shell Default)",
+	"description": "Default to argv-based spawning (no shell) to reduce injection risk and ensure cross-platform behavior; require explicit opt-in for shell execution with clear portability warnings.",
+	"links": [
+		{
+			"relationship": "protects",
+			"target": "AST-002"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-003"
+		},
+		{
+			"relationship": "enforces",
+			"target": "CNS-018"
+		},
+		{
+			"relationship": "obstructs",
+			"target": "THC-001"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-007"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-001"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-002"
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-040",
+	"card_type": "Event",
+	"name": "Plan Loaded",
+	"description": "Plan artifact loaded successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-029"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-006",
+		"from_state": "STA-028"
+	}
+}

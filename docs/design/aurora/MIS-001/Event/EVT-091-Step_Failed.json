@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-091",
+	"card_type": "Event",
+	"name": "Step Failed",
+	"description": "A chain step failed; stop-on-failure requires termination.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-066"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-013",
+		"from_state": "STA-063"
+	}
+}

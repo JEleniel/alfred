@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-008",
+	"card_type": "Risk",
+	"name": "Cancellation Failure / Runaway Tasks",
+	"description": "OS-specific process termination semantics can prevent timely cancellation of tasks/jobs, causing runaway resource usage or continued execution of an undesired command.",
+	"links": []
+}

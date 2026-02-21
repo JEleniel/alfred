@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-067",
+	"card_type": "State",
+	"name": "Conformance Idle",
+	"description": "Conformance Runner awaits a conformance execution request.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-095"
+		}
+	]
+}

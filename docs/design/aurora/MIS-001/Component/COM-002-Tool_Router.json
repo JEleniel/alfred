@@ -1,0 +1,70 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-002",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Tool Router",
+	"description": "Dispatches tool requests to the appropriate subsystem, enforces execution semantics for chaining, and coordinates response shaping.",
+	"links": [
+		{
+			"relationship": "composes",
+			"target": "COM-003"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-005"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-007"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-008"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-009"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-010"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-012"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-013"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-014"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-015"
+		},
+		{
+			"relationship": "composes",
+			"target": "COM-016"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-011"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-002"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"default_chain_behavior": "stop-on-failure",
+		"execution_modes": ["sync", "async"]
+	}
+}

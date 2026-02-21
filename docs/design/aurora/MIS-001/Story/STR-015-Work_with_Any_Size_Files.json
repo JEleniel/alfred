@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-015",
+	"card_type": "Story",
+	"name": "Work with any-size files",
+	"description": "As an agent user, I need Alfred to handle any-size files (including large repos and binaries) so that real-world codebases do not break the workflow.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-015"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-012"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-022"
+		}
+	]
+}

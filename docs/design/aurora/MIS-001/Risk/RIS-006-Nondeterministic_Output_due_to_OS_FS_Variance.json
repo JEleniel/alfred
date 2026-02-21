@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-006",
+	"card_type": "Risk",
+	"name": "Nondeterministic Output Across OS/Filesystems",
+	"description": "Outputs (lists, diagnostics, file enumerations) can vary across OS/filesystems due to enumeration order, case-sensitivity defaults, and path normalization differences, undermining determinism and testability.",
+	"links": []
+}

@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-008",
+	"card_type": "Control",
+	"name": "Best-Effort Cancellation Protocol",
+	"description": "Implement a cross-platform cancellation policy (terminate → wait → force kill) with bounded timeouts and consistent job-state transitions.",
+	"links": [
+		{
+			"relationship": "enforces",
+			"target": "CNS-019"
+		},
+		{
+			"relationship": "governs",
+			"target": "DST-002"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-008"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-002"
+		}
+	]
+}

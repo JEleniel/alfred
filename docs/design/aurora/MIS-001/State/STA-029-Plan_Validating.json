@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-029",
+	"card_type": "State",
+	"name": "Plan Validating",
+	"description": "Plan Manager validates schema version lockstep and deterministic structure.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-042"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-043"
+		}
+	]
+}

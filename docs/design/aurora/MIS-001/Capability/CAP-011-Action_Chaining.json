@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-011",
+	"card_type": "Capability",
+	"name": "Single-Call Action Chaining",
+	"description": "Execute multi-step actions (e.g. search → patch → validate) in declared order with per-step status and error reporting.",
+	"links": []
+}

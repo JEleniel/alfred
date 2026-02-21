@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ATV-004",
+	"card_type": "Activity",
+	"name": "Run and Monitor Tasks",
+	"description": "Run local processes, stream logs, and cancel/timeout work when needed.",
+	"links": [
+		{
+			"relationship": "uses",
+			"target": "COM-009"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-010"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-013"
+		}
+	]
+}

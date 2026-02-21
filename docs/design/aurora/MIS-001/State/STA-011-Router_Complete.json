@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-011",
+	"card_type": "State",
+	"name": "Router Complete",
+	"description": "Router finalizes the response envelope and returns to idle.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-015"
+		}
+	]
+}

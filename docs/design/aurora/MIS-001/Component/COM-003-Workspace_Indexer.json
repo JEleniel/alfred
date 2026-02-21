@@ -1,0 +1,37 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-003",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Workspace Indexer",
+	"description": "Maintains the workspace file index and supports listing/search/symbol/range/diff primitives.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-001"
+		},
+		{
+			"relationship": "includes",
+			"target": "DSR-001"
+		},
+		{
+			"relationship": "stores in",
+			"target": "DST-001"
+		},
+		{
+			"relationship": "produces",
+			"target": "ART-005"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-003"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"supports": ["ls", "grep", "rg", "symbols", "read_range", "diff"]
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-003",
+	"card_type": "Capability",
+	"name": "Safe File Operations",
+	"description": "Perform safe, bounded, and mostly-atomic workspace mutations including patching with conflict reporting and bulk operations with dry-run.",
+	"links": []
+}

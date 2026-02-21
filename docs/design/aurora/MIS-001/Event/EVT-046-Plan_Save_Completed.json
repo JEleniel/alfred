@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-046",
+	"card_type": "Event",
+	"name": "Plan Save Completed",
+	"description": "Plan save completed successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-030"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-006",
+		"from_state": "STA-031"
+	}
+}

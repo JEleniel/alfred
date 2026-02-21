@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-041",
+	"card_type": "State",
+	"name": "Job Dispatching",
+	"description": "Job Manager starts the job worker and establishes output streaming policy.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-058"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-059"
+		}
+	]
+}

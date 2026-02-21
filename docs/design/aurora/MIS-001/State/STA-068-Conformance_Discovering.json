@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-068",
+	"card_type": "State",
+	"name": "Conformance Discovering",
+	"description": "Conformance Runner selects the deterministic test set for the current schema/tool versions.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-096"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-097"
+		}
+	]
+}

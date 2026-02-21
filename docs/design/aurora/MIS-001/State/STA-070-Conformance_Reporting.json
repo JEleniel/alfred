@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-070",
+	"card_type": "State",
+	"name": "Conformance Reporting",
+	"description": "Conformance Runner emits a deterministic report of pass/fail and evidence.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-100"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-101"
+		}
+	]
+}

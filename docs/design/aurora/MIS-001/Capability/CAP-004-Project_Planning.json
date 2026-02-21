@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-004",
+	"card_type": "Capability",
+	"name": "Project Planning",
+	"description": "Create and maintain a project plan that tracks progress and captures tool/diagnostic errors.",
+	"links": []
+}

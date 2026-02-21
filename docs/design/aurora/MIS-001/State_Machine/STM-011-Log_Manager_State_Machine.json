@@ -1,0 +1,30 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-011",
+	"card_type": "State Machine",
+	"name": "Log Manager State Machine",
+	"description": "Deterministic lifecycle for COM-013 (Log Manager) for initialization, steady-state tailing, rotation, and failure fallback.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-053"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-054"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-055"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-056"
+		}
+	],
+	"attributes": {
+		"component": "COM-013",
+		"initial_state": "STA-053",
+		"steady_state": "STA-054"
+	}
+}

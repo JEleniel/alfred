@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DSR-001",
+	"card_type": "Data Source",
+	"card_subtype": "External System",
+	"name": "Workspace File Tree",
+	"description": "The on-disk workspace files and directories that Alfred is permitted to read/write.",
+	"links": [
+		{
+			"relationship": "provides",
+			"target": "ART-007"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"boundary": "workspace"
+	}
+}

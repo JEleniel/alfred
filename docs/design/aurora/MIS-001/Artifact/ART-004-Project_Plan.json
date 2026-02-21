@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ART-004",
+	"card_type": "Artifact",
+	"card_subtype": "Document",
+	"name": "Project Plan",
+	"description": "A machine-readable plan artifact tracking progress and capturing tool/diagnostic errors.",
+	"links": [],
+	"attributes": {
+		"formats": ["json", "yaml", "markdown"],
+		"note": "Exact plan format is a project-level choice; it must be consistent and tool-friendly."
+	}
+}

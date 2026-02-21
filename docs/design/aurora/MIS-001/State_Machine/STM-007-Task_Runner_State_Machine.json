@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-007",
+	"card_type": "State Machine",
+	"name": "Task Runner State Machine",
+	"description": "Deterministic execution lifecycle for COM-009 (Task Runner), including preparation, execution, cancellation, and reporting.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-033"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-034"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-035"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-036"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-037"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-038"
+		}
+	],
+	"attributes": {
+		"component": "COM-009",
+		"initial_state": "STA-033",
+		"determinism_notes": [
+			"Command invocation is normalized (cwd, env merge, quoting rules) according to platform constraints.",
+			"Cancellation always produces a final terminal status and flushes structured output."
+		]
+	}
+}

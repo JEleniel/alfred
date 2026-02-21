@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-056",
+	"card_type": "Event",
+	"name": "Job Enqueued",
+	"description": "Job request validated and enqueued successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-041"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-008",
+		"from_state": "STA-040"
+	}
+}

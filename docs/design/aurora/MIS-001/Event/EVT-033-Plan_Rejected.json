@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-033",
+	"card_type": "Event",
+	"name": "Plan Rejected",
+	"description": "Plan validation failed due to conflicts, boundary violations, or policy.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-026"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-022"
+	}
+}

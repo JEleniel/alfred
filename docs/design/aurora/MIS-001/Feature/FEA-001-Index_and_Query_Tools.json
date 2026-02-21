@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-001",
+	"card_type": "Feature",
+	"name": "Index and Query Tools",
+	"description": "Provide ls/grep/rg/symbol/range/diff primitives backed by a workspace index.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-001"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-002"
+		}
+	]
+}

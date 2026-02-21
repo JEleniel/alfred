@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-102",
+	"card_type": "Event",
+	"name": "Conformance Completed",
+	"description": "Conformance run completed and terminal status is ready to return.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-067"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-014",
+		"from_state": "STA-071"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-001",
+	"card_type": "State",
+	"name": "Transport Initializing",
+	"description": "Transport sets up stdio streams and internal buffers.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-109"
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-100",
+	"card_type": "Event",
+	"name": "Conformance Report Written",
+	"description": "Conformance report written successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-071"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-014",
+		"from_state": "STA-070"
+	}
+}

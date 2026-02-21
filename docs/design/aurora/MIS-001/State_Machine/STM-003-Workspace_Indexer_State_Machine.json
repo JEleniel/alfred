@@ -1,0 +1,38 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-003",
+	"card_type": "State Machine",
+	"name": "Workspace Indexer State Machine",
+	"description": "Deterministic indexing lifecycle for COM-003 (Workspace Indexer) supporting queries, rebuilds, and safe degradation on network/remote workspaces.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-013"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-014"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-015"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-016"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-017"
+		}
+	],
+	"attributes": {
+		"component": "COM-003",
+		"initial_state": "STA-013",
+		"steady_state": "STA-015",
+		"determinism_notes": [
+			"Index builds use deterministic enumeration and normalization.",
+			"When change visibility is uncertain, reconciliation replaces watch-only semantics."
+		]
+	}
+}

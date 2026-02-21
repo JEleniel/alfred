@@ -1,0 +1,12 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ACT-001",
+	"card_type": "Actor",
+	"card_subtype": "External System",
+	"name": "MCP Host",
+	"description": "The local MCP runtime (for example an IDE) that launches Alfred and calls its tools over stdio.",
+	"links": [],
+	"attributes": {
+		"examples": ["VS Code extension", "CLI wrapper", "agent runtime"]
+	}
+}

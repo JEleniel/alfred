@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-007",
+	"card_type": "Risk",
+	"name": "Shell Quoting / Injection / Portability Issues",
+	"description": "Shell-based task execution can introduce quoting discrepancies across Windows/macOS/Linux and elevate command-injection risk, especially under a malicious-agent scenario.",
+	"links": []
+}

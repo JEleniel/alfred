@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-059",
+	"card_type": "State",
+	"name": "Env Redacting",
+	"description": "Environment Variable Manager redacts secrets deterministically for logs/outputs and returns to ready.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-084"
+		}
+	]
+}

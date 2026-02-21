@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-013",
+	"card_type": "Requirement",
+	"name": "Deterministic Error Taxonomy",
+	"description": "Alfred MUST use deterministic and clear error taxonomy definitions.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-007"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-005"
+		}
+	]
+}

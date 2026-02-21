@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-015",
+	"card_type": "Requirement",
+	"name": "Any-Size File Operations",
+	"description": "Alfred MUST be able to perform file operations on any size file.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-001"
+		},
+		{
+			"relationship": "requires",
+			"target": "CAP-003"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-012"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-022"
+		}
+	]
+}

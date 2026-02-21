@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-072",
+	"card_type": "State",
+	"name": "Conformance Failed",
+	"description": "Conformance Runner reports deterministic diagnostics and returns to idle.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-103"
+		}
+	]
+}

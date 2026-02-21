@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-010",
+	"card_type": "Event",
+	"name": "Request Rejected",
+	"description": "The router rejected the request due to schema, policy, or boundary violations.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-012"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-002",
+		"from_state": "STA-008"
+	}
+}

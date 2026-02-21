@@ -1,0 +1,38 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ACT-002",
+	"card_type": "Actor",
+	"card_subtype": "User",
+	"name": "Agent",
+	"description": "An AI agent acting on behalf of the developer/user, invoking Alfred tools via an MCP host to inspect and modify the workspace.",
+	"links": [
+		{
+			"relationship": "performs",
+			"target": "ATV-001"
+		},
+		{
+			"relationship": "performs",
+			"target": "ATV-002"
+		},
+		{
+			"relationship": "performs",
+			"target": "ATV-003"
+		},
+		{
+			"relationship": "performs",
+			"target": "ATV-004"
+		},
+		{
+			"relationship": "performs",
+			"target": "ATV-005"
+		},
+		{
+			"relationship": "performs",
+			"target": "ATV-006"
+		}
+	],
+	"attributes": {
+		"invocation_path": "via ACT-001 (MCP Host) over stdio",
+		"operational_mode": "local-first relative to workspace host"
+	}
+}

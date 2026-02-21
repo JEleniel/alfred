@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-030",
+	"card_type": "State",
+	"name": "Plan Ready",
+	"description": "Plan Manager serves reads and accepts deterministic updates.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-044"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-045"
+		}
+	]
+}

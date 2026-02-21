@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-015",
+	"card_type": "Event",
+	"name": "Response Finalized",
+	"description": "The router finalized the success response envelope and released resources.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-007"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-002",
+		"from_state": "STA-011"
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-002",
+	"card_type": "Constraint",
+	"name": "Side-Effect Free Reads",
+	"description": "Read-only operations MUST be side-effect free.",
+	"links": []
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DRI-002",
+	"card_type": "Driver",
+	"name": "Safety and Trust",
+	"description": "Mutating tools must be safe by default: enforce workspace boundaries, support dry-run, and provide conflict-aware patching.",
+	"links": [
+		{
+			"relationship": "drives",
+			"target": "REQ-003"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-014"
+		}
+	]
+}

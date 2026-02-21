@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-053",
+	"card_type": "State",
+	"name": "Log Initializing",
+	"description": "Log Manager initializes log sources and filtering rules.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-074"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-075"
+		}
+	]
+}

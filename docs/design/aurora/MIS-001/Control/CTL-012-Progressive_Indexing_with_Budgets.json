@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-012",
+	"card_type": "Control",
+	"name": "Progressive Indexing with Time Budgets",
+	"description": "Support progressive/interruptible indexing and searches with explicit progress reporting, bounded time budgets, and deterministic partial-result signaling (especially for network workspaces).",
+	"links": [
+		{
+			"relationship": "enforces",
+			"target": "CNS-022"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-012"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-014"
+		}
+	]
+}

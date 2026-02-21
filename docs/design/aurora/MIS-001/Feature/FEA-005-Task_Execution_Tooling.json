@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-005",
+	"card_type": "Feature",
+	"name": "Task Execution Tooling",
+	"description": "Run named tasks and common commands (cargo/pnpm/lint/format) with normalized outputs.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-005"
+		}
+	]
+}

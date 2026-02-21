@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-015",
+	"card_type": "State",
+	"name": "Indexer Ready",
+	"description": "Indexer serves query primitives against the current index and schedules rebuilds when needed.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-021"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-022"
+		}
+	]
+}

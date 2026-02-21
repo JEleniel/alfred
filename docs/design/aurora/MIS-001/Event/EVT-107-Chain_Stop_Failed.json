@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-107",
+	"card_type": "Event",
+	"name": "Chain Stop Failed",
+	"description": "Chain stop/cancel handling failed and the chain must transition to deterministic failure reporting.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-066"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-013",
+		"from_state": "STA-064"
+	}
+}

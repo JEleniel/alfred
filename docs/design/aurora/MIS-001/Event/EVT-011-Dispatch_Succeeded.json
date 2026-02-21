@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-011",
+	"card_type": "Event",
+	"name": "Dispatch Succeeded",
+	"description": "The router dispatched the request to the selected subsystem successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-010"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-002",
+		"from_state": "STA-009"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-024",
+	"card_type": "Event",
+	"name": "Rebuild Failed",
+	"description": "Indexer failed during rebuild/reconciliation.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-017"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-003",
+		"from_state": "STA-016"
+	}
+}

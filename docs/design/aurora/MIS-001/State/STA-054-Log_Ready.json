@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-054",
+	"card_type": "State",
+	"name": "Log Ready",
+	"description": "Log Manager serves tail/filter requests deterministically.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-076"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-077"
+		}
+	]
+}

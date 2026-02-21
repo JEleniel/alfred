@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-026",
+	"card_type": "State",
+	"name": "FileOps Failed",
+	"description": "File Operations Engine reports a deterministic conflict/error envelope and returns to idle.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-038"
+		}
+	]
+}

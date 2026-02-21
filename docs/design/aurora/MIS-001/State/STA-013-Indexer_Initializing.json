@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-013",
+	"card_type": "State",
+	"name": "Indexer Initializing",
+	"description": "Indexer loads configuration and determines whether an initial build is required.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-017"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-018"
+		}
+	]
+}

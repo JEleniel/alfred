@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-016",
+	"card_type": "Story",
+	"name": "Run local to the workspace host",
+	"description": "As an agent user, I need Alfred to run as a local stdio server relative to the workspace host (including VS Code Remote modes) so that filesystem and process operations apply to the correct machine and remain self-contained.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-016"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-007"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-006"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-023"
+		}
+	]
+}

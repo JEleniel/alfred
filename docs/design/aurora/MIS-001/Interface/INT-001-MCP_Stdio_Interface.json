@@ -1,0 +1,22 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "INT-001",
+	"card_type": "Interface",
+	"name": "MCP Stdio Interface",
+	"description": "The stdio contract used by the MCP host to call Alfred tools and receive structured results.",
+	"links": [
+		{
+			"relationship": "accepts",
+			"target": "ART-001"
+		},
+		{
+			"relationship": "returns",
+			"target": "ART-002"
+		}
+	],
+	"attributes": {
+		"transport": "stdio",
+		"encoding": "utf-8",
+		"framing": "line-delimited where applicable"
+	}
+}

@@ -1,0 +1,30 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-012",
+	"card_type": "State Machine",
+	"name": "Environment Variable Manager State Machine",
+	"description": "Deterministic lifecycle for COM-014 (Environment Variable Manager) including policy checks and redaction.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-057"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-058"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-059"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-060"
+		}
+	],
+	"attributes": {
+		"component": "COM-014",
+		"initial_state": "STA-057",
+		"steady_state": "STA-057"
+	}
+}

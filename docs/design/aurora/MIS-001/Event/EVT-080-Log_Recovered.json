@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-080",
+	"card_type": "Event",
+	"name": "Log Recovered",
+	"description": "Log Manager recovered sufficiently to serve requests again.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-054"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-011",
+		"from_state": "STA-056"
+	}
+}

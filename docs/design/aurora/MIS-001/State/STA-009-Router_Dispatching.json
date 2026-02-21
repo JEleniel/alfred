@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-009",
+	"card_type": "State",
+	"name": "Router Dispatching",
+	"description": "Router dispatches to the appropriate subsystem and establishes response shaping rules.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-011"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-012"
+		}
+	]
+}

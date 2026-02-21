@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-050",
+	"card_type": "State",
+	"name": "CapReg Ready",
+	"description": "Capability Registry serves capability discovery requests and maintains deterministic metadata.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-069"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-072"
+		}
+	]
+}

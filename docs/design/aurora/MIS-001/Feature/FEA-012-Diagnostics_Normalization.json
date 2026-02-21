@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-012",
+	"card_type": "Feature",
+	"name": "Diagnostics Normalization",
+	"description": "Normalize diagnostics across build/test/lint/format tooling and support delta reporting.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-012"
+		}
+	]
+}

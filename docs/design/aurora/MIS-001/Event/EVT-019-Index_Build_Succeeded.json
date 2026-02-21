@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-019",
+	"card_type": "Event",
+	"name": "Index Build Succeeded",
+	"description": "Indexer completed index build successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-015"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-003",
+		"from_state": "STA-014"
+	}
+}

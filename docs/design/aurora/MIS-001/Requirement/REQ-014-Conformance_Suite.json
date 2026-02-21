@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-014",
+	"card_type": "Requirement",
+	"name": "Conformance Suite",
+	"description": "Alfred MUST include a conformance suite that validates response schemas, deterministic error taxonomy behavior, dry-run guarantees, and workspace boundary enforcement.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-013"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-003"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-005"
+		}
+	]
+}

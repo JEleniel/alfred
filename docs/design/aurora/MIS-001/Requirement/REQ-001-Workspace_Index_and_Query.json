@@ -1,0 +1,32 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-001",
+	"card_type": "Requirement",
+	"name": "Workspace Index and Query Tools",
+	"description": "Alfred MUST maintain an index of all files in the workspace and provide listing, regex search, keyword/symbol lookup, file range extraction, and diff capabilities.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-001"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-002"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-012"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-022"
+		}
+	],
+	"attributes": {
+		"tool_surface": ["ls", "grep", "rg", "symbols", "read_range", "diff"]
+	}
+}

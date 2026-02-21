@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-003",
+	"card_type": "Story",
+	"name": "Edit files safely within the workspace",
+	"description": "As an agent user, I need Alfred to read and modify files safely and only within the workspace boundary so that accidental damage and boundary escape are prevented by default.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-003"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-003"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-004"
+		}
+	]
+}

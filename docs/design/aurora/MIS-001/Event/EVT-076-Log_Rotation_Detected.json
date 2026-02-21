@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-076",
+	"card_type": "Event",
+	"name": "Log Rotation Detected",
+	"description": "A log rotation was detected requiring handle/offset refresh.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-055"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-011",
+		"from_state": "STA-054"
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-011",
+	"card_type": "Control",
+	"name": "Network FS Safe Write Strategy",
+	"description": "When operating on network-backed workspaces, avoid relying on fragile atomicity/locking assumptions; use conservative write+verify patterns and fail explicitly when safety guarantees cannot be achieved.",
+	"links": [
+		{
+			"relationship": "enforces",
+			"target": "CNS-022"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-011"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-005"
+		}
+	]
+}

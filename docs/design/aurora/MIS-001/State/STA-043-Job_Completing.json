@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-043",
+	"card_type": "State",
+	"name": "Job Completing",
+	"description": "Job Manager finalizes job status and persists a deterministic completion record, then returns to idle.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-062"
+		}
+	]
+}

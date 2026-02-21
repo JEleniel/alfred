@@ -1,0 +1,30 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-007",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "File Operations Engine",
+	"description": "Performs safe workspace mutations: atomic CRUD (where practical), patch apply with conflict reporting, and bulk ops with dry-run.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-003"
+		},
+		{
+			"relationship": "includes",
+			"target": "DSR-001"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-005"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"supports_dry_run": true,
+		"reports_conflicts": true
+	}
+}

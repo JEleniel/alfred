@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-039",
+	"card_type": "Event",
+	"name": "Plan Request Received",
+	"description": "A request to read or update the plan was received.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-028"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-006",
+		"from_state": "STA-027"
+	}
+}

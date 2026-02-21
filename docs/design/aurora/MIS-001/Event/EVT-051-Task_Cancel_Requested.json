@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-051",
+	"card_type": "Event",
+	"name": "Task Cancel Requested",
+	"description": "Cancellation was requested for the running task.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-037"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-007",
+		"from_state": "STA-035"
+	}
+}

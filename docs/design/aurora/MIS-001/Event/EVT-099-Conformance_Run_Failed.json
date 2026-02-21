@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-099",
+	"card_type": "Event",
+	"name": "Conformance Run Failed",
+	"description": "Conformance execution failed.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-072"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-014",
+		"from_state": "STA-069"
+	}
+}

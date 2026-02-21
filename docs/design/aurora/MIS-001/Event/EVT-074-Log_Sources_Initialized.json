@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-074",
+	"card_type": "Event",
+	"name": "Log Sources Initialized",
+	"description": "Log sources initialized successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-054"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-011",
+		"from_state": "STA-053"
+	}
+}

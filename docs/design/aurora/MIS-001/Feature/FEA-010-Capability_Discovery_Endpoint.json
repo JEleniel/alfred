@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-010",
+	"card_type": "Feature",
+	"name": "Capability Discovery Endpoint",
+	"description": "Report available tools and capabilities plus tool/schema versions, limits, and execution modes.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-010"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-008"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-012"
+		}
+	]
+}

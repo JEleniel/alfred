@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-013",
+	"card_type": "Feature",
+	"name": "Conformance Suite Execution",
+	"description": "Execute a conformance suite that validates schemas, taxonomy determinism, dry-run guarantees, and workspace boundary enforcement.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-013"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-003"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-005"
+		}
+	]
+}

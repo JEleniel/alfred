@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-020",
+	"card_type": "State",
+	"name": "Context Failed",
+	"description": "Context provider failed to resolve context; it reports a deterministic error and returns to ready.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-029"
+		}
+	]
+}

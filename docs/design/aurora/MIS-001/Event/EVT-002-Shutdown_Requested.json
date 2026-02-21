@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-002",
+	"card_type": "Event",
+	"name": "Shutdown Requested",
+	"description": "A shutdown was requested (EOF, host termination, or explicit stop).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-006"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-001",
+		"from_state": "STA-002"
+	}
+}

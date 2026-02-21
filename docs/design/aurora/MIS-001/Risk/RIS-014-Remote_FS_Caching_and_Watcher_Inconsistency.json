@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-014",
+	"card_type": "Risk",
+	"name": "Remote FS Caching / Watcher Inconsistency",
+	"description": "Network filesystems and remote development layers can introduce caching or delayed visibility of changes; file watching may be unreliable, causing stale indexes or confusing diff results.",
+	"links": []
+}

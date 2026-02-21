@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-036",
+	"card_type": "State",
+	"name": "Task Reporting",
+	"description": "Task Runner finalizes structured output and emits deterministic diagnostics, then returns to idle.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-054"
+		}
+	]
+}

@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-006",
+	"card_type": "State",
+	"name": "Transport Shutdown",
+	"description": "Transport closes streams and releases resources; terminal state.",
+	"links": []
+}

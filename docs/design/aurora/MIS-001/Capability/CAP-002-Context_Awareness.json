@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-002",
+	"card_type": "Capability",
+	"name": "Context Awareness",
+	"description": "Expose the current working folder and the workspace root folder to support location-aware workflows.",
+	"links": []
+}

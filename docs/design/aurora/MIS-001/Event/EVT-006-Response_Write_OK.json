@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-006",
+	"card_type": "Event",
+	"name": "Response Write OK",
+	"description": "A single framed response was written successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-002"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-001",
+		"from_state": "STA-004"
+	}
+}

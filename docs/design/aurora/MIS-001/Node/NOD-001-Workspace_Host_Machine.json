@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "NOD-001",
+	"card_type": "Node",
+	"card_subtype": "Hardware",
+	"name": "Workspace Host Machine",
+	"description": "The machine that hosts the active workspace and runs the Alfred stdio server. In VS Code Remote Development modes, this may be a remote VM/container/WSL host rather than the user's local client machine.",
+	"links": [],
+	"attributes": {
+		"platforms": ["macOS", "Linux", "Windows"],
+		"placement": "workspace-host"
+	}
+}

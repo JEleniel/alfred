@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-111",
+	"card_type": "Event",
+	"name": "FileOps Commit Finalized",
+	"description": "File operations commit/dry-run summary finalized and returned.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-021"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-024"
+	}
+}

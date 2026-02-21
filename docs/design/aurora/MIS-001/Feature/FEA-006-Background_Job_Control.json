@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-006",
+	"card_type": "Feature",
+	"name": "Background Job Control",
+	"description": "Asynchronous job execution with streaming output, cancellation/timeouts, and introspection.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-006"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-012"
+		}
+	]
+}

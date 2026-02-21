@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-008",
+	"card_type": "Story",
+	"name": "Handle logs predictably",
+	"description": "As an agent user, I need Alfred to capture and present logs in a predictable, bounded way so that I can debug failures without drowning the protocol in noise.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-008"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-012"
+		}
+	]
+}

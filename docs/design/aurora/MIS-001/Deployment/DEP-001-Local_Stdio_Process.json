@@ -1,0 +1,19 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DEP-001",
+	"card_type": "Deployment",
+	"name": "Local Stdio Process",
+	"description": "A stdio-launched process local to the workspace host (which may be remote under VS Code Remote Development), using stdio for request/response transport.",
+	"links": [
+		{
+			"relationship": "includes",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"network": "none-required",
+		"multi_user": false,
+		"supported_platforms": ["macOS", "Linux", "Windows"],
+		"mobile_platforms": "out-of-scope"
+	}
+}

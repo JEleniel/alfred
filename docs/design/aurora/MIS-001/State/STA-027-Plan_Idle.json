@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-027",
+	"card_type": "State",
+	"name": "Plan Idle",
+	"description": "Plan Manager awaits a request to read or update the plan.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-039"
+		}
+	]
+}

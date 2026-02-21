@@ -1,0 +1,29 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-009",
+	"card_type": "Control",
+	"name": "Encoding-Safe Path Handling and Reporting",
+	"description": "Treat filesystem paths as potentially non-UTF8; ensure protocol outputs remain valid UTF-8 JSON by using deterministic escaping/encoding for unrepresentable paths.",
+	"links": [
+		{
+			"relationship": "enforces",
+			"target": "CNS-021"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-001"
+		},
+		{
+			"relationship": "protects",
+			"target": "AST-003"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-009"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-006"
+		}
+	]
+}

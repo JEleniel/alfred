@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-001",
+	"card_type": "Risk",
+	"name": "Unauthorized Data Disclosure",
+	"description": "Sensitive workspace data or local secrets are disclosed to an unintended party (e.g., via tool output, logs, or command execution).",
+	"links": []
+}

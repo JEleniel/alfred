@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-038",
+	"card_type": "Event",
+	"name": "FileOps Failure Reported",
+	"description": "A deterministic file-ops failure was reported to the caller.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-021"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-026"
+	}
+}

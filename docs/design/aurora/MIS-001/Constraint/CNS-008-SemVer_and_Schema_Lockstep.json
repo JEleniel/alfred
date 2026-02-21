@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-008",
+	"card_type": "Constraint",
+	"name": "SemVer and Schema Lockstep",
+	"description": "Tool versions MUST use SemVer, and schema versions MUST remain in lockstep with tool versions.",
+	"links": []
+}

@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-009",
+	"card_type": "Constraint",
+	"name": "Stop-on-Failure Default for Chains",
+	"description": "Chained actions MUST stop on failure by default.",
+	"links": []
+}

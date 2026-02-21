@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CTL-014",
+	"card_type": "Control",
+	"name": "Watcher Fallback and Index Reconciliation",
+	"description": "Do not rely exclusively on file watching for correctness. Support periodic reconciliation, on-demand reindex, and deterministic invalidation when change visibility is uncertain (common on network/remote workspaces).",
+	"links": [
+		{
+			"relationship": "enforces",
+			"target": "CNS-022"
+		},
+		{
+			"relationship": "mitigates",
+			"target": "RIS-014"
+		}
+	]
+}

@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-012",
+	"card_type": "Capability",
+	"name": "Diagnostics Normalization",
+	"description": "Normalize build/test/lint/format diagnostics into a consistent schema and support delta reporting between runs.",
+	"links": []
+}

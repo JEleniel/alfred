@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-063",
+	"card_type": "Event",
+	"name": "Diagnostics Request Received",
+	"description": "A request to validate/format an output or error envelope was received.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-046"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-009",
+		"from_state": "STA-045"
+	}
+}

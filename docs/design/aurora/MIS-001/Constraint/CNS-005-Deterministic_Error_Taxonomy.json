@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-005",
+	"card_type": "Constraint",
+	"name": "Deterministic Error Taxonomy",
+	"description": "Error taxonomy definitions MUST be deterministic, clear, and stable across tools.",
+	"links": []
+}

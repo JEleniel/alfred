@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-048",
+	"card_type": "State",
+	"name": "Diagnostics Failed",
+	"description": "Contracts and Diagnostics encountered an internal failure and falls back to the minimal deterministic error envelope.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-114"
+		}
+	]
+}

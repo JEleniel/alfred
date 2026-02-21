@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DRI-004",
+	"card_type": "Driver",
+	"name": "Performance and Scalability",
+	"description": "Indexing/search/diff and patch operations must perform well on typical repositories and handle very large files safely.",
+	"links": [
+		{
+			"relationship": "drives",
+			"target": "REQ-001"
+		},
+		{
+			"relationship": "drives",
+			"target": "REQ-015"
+		}
+	]
+}

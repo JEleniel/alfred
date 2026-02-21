@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ATV-001",
+	"card_type": "Activity",
+	"name": "Search Workspace",
+	"description": "Search and inspect workspace files to locate relevant code and context for a task.",
+	"links": [
+		{
+			"relationship": "uses",
+			"target": "COM-002"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-003"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-011"
+		}
+	]
+}

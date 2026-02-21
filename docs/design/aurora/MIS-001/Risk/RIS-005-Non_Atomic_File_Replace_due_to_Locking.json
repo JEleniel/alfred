@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-005",
+	"card_type": "Risk",
+	"name": "Non-Atomic File Replace Due to Locking",
+	"description": "Atomic replace operations may fail or become non-atomic on some platforms (notably Windows when destination files are locked), risking partial writes or inconsistent state if not handled explicitly.",
+	"links": []
+}

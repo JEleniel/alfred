@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-069",
+	"card_type": "State",
+	"name": "Conformance Running",
+	"description": "Conformance Runner executes tests deterministically and records results.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-098"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-099"
+		}
+	]
+}

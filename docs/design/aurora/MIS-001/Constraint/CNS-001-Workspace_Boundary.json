@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CNS-001",
+	"card_type": "Constraint",
+	"name": "Workspace Boundary Enforcement",
+	"description": "Alfred MUST NOT read or write outside the current workspace.",
+	"links": []
+}

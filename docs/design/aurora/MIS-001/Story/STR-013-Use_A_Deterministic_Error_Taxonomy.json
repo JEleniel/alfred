@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-013",
+	"card_type": "Story",
+	"name": "Rely on a deterministic error taxonomy",
+	"description": "As an agent user, I need a deterministic error taxonomy so that I can branch logic safely (retry, degrade, ask for permission) without brittle string matching.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-013"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-005"
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-109",
+	"card_type": "Event",
+	"name": "Transport Initialized",
+	"description": "Stdio transport initialization completed and the transport can begin reading frames.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-002"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-001",
+		"from_state": "STA-001"
+	}
+}

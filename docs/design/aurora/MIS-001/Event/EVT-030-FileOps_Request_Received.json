@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-030",
+	"card_type": "Event",
+	"name": "FileOps Request Received",
+	"description": "A file operation request (mutation or inspection) was received.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-022"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-005",
+		"from_state": "STA-021"
+	}
+}

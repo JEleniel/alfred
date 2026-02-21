@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-040",
+	"card_type": "State",
+	"name": "Job Enqueuing",
+	"description": "Job Manager validates job request and enqueues it for deterministic scheduling.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-056"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-057"
+		}
+	]
+}

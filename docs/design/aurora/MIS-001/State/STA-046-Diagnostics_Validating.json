@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-046",
+	"card_type": "State",
+	"name": "Diagnostics Validating",
+	"description": "Validates schema and error taxonomy; invalid shapes are converted to deterministic internal errors.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-064"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-065"
+		}
+	]
+}

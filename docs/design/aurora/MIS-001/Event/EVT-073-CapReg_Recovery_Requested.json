@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-073",
+	"card_type": "Event",
+	"name": "CapReg Recovery Requested",
+	"description": "Recovery was requested for the capability registry.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-049"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-010",
+		"from_state": "STA-052"
+	}
+}

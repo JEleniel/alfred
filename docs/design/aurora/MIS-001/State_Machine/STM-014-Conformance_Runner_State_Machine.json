@@ -1,0 +1,37 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-014",
+	"card_type": "State Machine",
+	"name": "Conformance Runner State Machine",
+	"description": "Deterministic lifecycle for COM-016 (Conformance Runner): discover tests, execute, report, and complete.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-067"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-068"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-069"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-070"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-071"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-072"
+		}
+	],
+	"attributes": {
+		"component": "COM-016",
+		"initial_state": "STA-067"
+	}
+}

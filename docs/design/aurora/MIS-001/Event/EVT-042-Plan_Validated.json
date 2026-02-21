@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-042",
+	"card_type": "Event",
+	"name": "Plan Validated",
+	"description": "Plan schema/lockstep validation succeeded.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-030"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-006",
+		"from_state": "STA-029"
+	}
+}

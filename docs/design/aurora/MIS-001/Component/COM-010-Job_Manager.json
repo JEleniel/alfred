@@ -1,0 +1,30 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-010",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Job Manager",
+	"description": "Manages asynchronous jobs, streaming outputs, cancellation, timeouts, and introspection.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-006"
+		},
+		{
+			"relationship": "stores in",
+			"target": "DST-002"
+		},
+		{
+			"relationship": "produces",
+			"target": "ART-006"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-008"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	]
+}

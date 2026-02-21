@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-061",
+	"card_type": "Event",
+	"name": "Job Failed",
+	"description": "Job failed (timeout, cancellation, or runtime error).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-044"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-008",
+		"from_state": "STA-042"
+	}
+}

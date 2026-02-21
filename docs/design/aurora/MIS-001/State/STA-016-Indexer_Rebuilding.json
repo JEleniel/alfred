@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-016",
+	"card_type": "State",
+	"name": "Indexer Rebuilding",
+	"description": "Indexer performs incremental rebuild or full reconciliation (common on network/remote workspaces) and returns to ready.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-023"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-024"
+		}
+	]
+}

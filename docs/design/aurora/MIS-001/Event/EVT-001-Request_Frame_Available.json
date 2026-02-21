@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-001",
+	"card_type": "Event",
+	"name": "Request Frame Available",
+	"description": "A complete, well-framed request is available to be read from stdin.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-003"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-001",
+		"from_state": "STA-002"
+	}
+}

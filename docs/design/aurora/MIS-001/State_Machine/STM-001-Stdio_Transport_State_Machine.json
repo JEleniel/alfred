@@ -1,0 +1,42 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STM-001",
+	"card_type": "State Machine",
+	"name": "Stdio Transport State Machine",
+	"description": "Deterministic lifecycle for COM-001 (Stdio Transport) while framing requests and writing responses over stdio.",
+	"links": [
+		{
+			"relationship": "has",
+			"target": "STA-001"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-002"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-003"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-004"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-005"
+		},
+		{
+			"relationship": "has",
+			"target": "STA-006"
+		}
+	],
+	"attributes": {
+		"component": "COM-001",
+		"initial_state": "STA-001",
+		"terminal_states": ["STA-006"],
+		"determinism_notes": [
+			"All reads are framed; partial frames do not surface to the router.",
+			"All writes complete or fail; failures are reported via normalized diagnostics."
+		]
+	}
+}

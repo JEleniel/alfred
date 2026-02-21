@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-032",
+	"card_type": "State",
+	"name": "Plan Failed",
+	"description": "Plan Manager reports deterministic diagnostics and returns to idle.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-104"
+		}
+	]
+}

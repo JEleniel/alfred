@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-089",
+	"card_type": "Event",
+	"name": "Steps Completed",
+	"description": "All chain steps completed successfully.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-065"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-013",
+		"from_state": "STA-063"
+	}
+}

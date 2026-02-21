@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-006",
+	"card_type": "Capability",
+	"name": "Background Operations",
+	"description": "Run asynchronous operations with streaming output, cancellation, timeouts, and job/session introspection.",
+	"links": []
+}

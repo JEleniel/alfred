@@ -1,0 +1,18 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DST-002",
+	"card_type": "Data Store",
+	"card_subtype": "Event Log",
+	"name": "Job and Session Store",
+	"description": "Local persistent or durable storage for background job state, output streams, and session introspection metadata.",
+	"links": [
+		{
+			"relationship": "retrieves",
+			"target": "ART-006"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	]
+}

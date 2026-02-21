@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-021",
+	"card_type": "State",
+	"name": "FileOps Idle",
+	"description": "File Operations Engine awaits a mutation or inspection request.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-030"
+		}
+	]
+}

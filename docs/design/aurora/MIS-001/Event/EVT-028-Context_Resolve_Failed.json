@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-028",
+	"card_type": "Event",
+	"name": "Context Resolve Failed",
+	"description": "Workspace context could not be resolved (boundary violation, IO error, or remote-host mismatch).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-020"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-004",
+		"from_state": "STA-019"
+	}
+}

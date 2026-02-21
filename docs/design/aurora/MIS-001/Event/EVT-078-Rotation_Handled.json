@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-078",
+	"card_type": "Event",
+	"name": "Rotation Handled",
+	"description": "Rotation was handled and tailing can resume.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-054"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-011",
+		"from_state": "STA-055"
+	}
+}

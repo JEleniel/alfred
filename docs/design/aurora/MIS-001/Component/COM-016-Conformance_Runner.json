@@ -1,0 +1,30 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-016",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Conformance Runner",
+	"description": "Executes the conformance suite and reports pass/fail results for schema validity, deterministic taxonomy behavior, dry-run guarantees, and boundary enforcement.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-013"
+		},
+		{
+			"relationship": "implements",
+			"target": "TES-001"
+		},
+		{
+			"relationship": "produces",
+			"target": "ART-002"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-014"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	]
+}

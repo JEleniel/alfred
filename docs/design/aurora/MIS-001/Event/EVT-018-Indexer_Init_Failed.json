@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-018",
+	"card_type": "Event",
+	"name": "Indexer Init Failed",
+	"description": "Indexer failed to initialize configuration or workspace enumeration prerequisites.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-017"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-003",
+		"from_state": "STA-013"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-012",
+	"card_type": "Event",
+	"name": "Dispatch Failed",
+	"description": "The router failed to dispatch to the subsystem (unknown tool, internal error, or policy violation).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-012"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-002",
+		"from_state": "STA-009"
+	}
+}

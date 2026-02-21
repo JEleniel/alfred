@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-044",
+	"card_type": "Event",
+	"name": "Plan Update Requested",
+	"description": "A deterministic plan update was requested.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-031"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-006",
+		"from_state": "STA-030"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-049",
+	"card_type": "State",
+	"name": "CapReg Bootstrapping",
+	"description": "Capability Registry constructs the initial tool/capability set and validates schema lockstep.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-067"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-068"
+		}
+	]
+}

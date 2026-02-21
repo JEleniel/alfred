@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-066",
+	"card_type": "Event",
+	"name": "Diagnostics Emission Complete",
+	"description": "Diagnostics emission completed and response finalized.",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-045"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-009",
+		"from_state": "STA-047"
+	}
+}

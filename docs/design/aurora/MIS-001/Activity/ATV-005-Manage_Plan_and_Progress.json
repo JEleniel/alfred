@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ATV-005",
+	"card_type": "Activity",
+	"name": "Manage Plan and Progress",
+	"description": "Create/update a task plan and report progress incrementally with clear completion semantics.",
+	"links": [
+		{
+			"relationship": "uses",
+			"target": "COM-008"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-011"
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-004",
+	"card_type": "Requirement",
+	"name": "Project Plan Management",
+	"description": "Alfred MUST create and maintain a project plan in a common format, capturing tool/diagnostics errors and tracking progress.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-004"
+		}
+	]
+}

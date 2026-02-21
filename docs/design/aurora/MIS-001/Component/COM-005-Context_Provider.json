@@ -1,0 +1,22 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-005",
+	"card_type": "Component",
+	"card_subtype": "Subsystem",
+	"name": "Context Provider",
+	"description": "Provides location/context awareness primitives such as pwd and workspace root.",
+	"links": [
+		{
+			"relationship": "implements",
+			"target": "FEA-002"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-004"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	]
+}

@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ATV-002",
+	"card_type": "Activity",
+	"name": "Read and Diff Files",
+	"description": "Read file ranges and view diffs to understand the current state and validate intended changes.",
+	"links": [
+		{
+			"relationship": "uses",
+			"target": "COM-007"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-011"
+		}
+	]
+}

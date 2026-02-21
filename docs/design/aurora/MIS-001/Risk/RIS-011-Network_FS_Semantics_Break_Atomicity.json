@@ -1,0 +1,8 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "RIS-011",
+	"card_type": "Risk",
+	"name": "Network FS Semantics Break Atomicity",
+	"description": "Network-backed filesystems may not reliably support the atomic rename/replace semantics assumed by local filesystems, risking partial updates or inconsistent state.",
+	"links": []
+}

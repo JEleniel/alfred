@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-003",
+	"card_type": "Requirement",
+	"name": "Safe File Operations",
+	"description": "Alfred MUST provide safe file operations including atomic CRUD where practical, patching with conflict reporting, and bulk move/rename/delete/copy with dry-run support.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-003"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-001"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-003"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-004"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-010"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-016"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-017"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-021"
+		}
+	]
+}

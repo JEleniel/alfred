@@ -1,0 +1,17 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "EVT-105",
+	"card_type": "Event",
+	"name": "Plan Save Failed",
+	"description": "Plan save failed (IO error, permission issue, or atomic write failure).",
+	"links": [
+		{
+			"relationship": "transitions to",
+			"target": "STA-032"
+		}
+	],
+	"attributes": {
+		"state_machine": "STM-006",
+		"from_state": "STA-031"
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STA-002",
+	"card_type": "State",
+	"name": "Transport Listening",
+	"description": "Transport is idle and awaiting the next framed request from stdin.",
+	"links": [
+		{
+			"relationship": "handles",
+			"target": "EVT-001"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-002"
+		},
+		{
+			"relationship": "handles",
+			"target": "EVT-003"
+		}
+	]
+}

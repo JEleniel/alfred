@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-010",
+	"card_type": "Requirement",
+	"name": "Capability Discovery",
+	"description": "Alfred MUST provide a capability discovery endpoint returning tools/capabilities, tool/schema versions, limits, and execution modes.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-010"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-008"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-012"
+		}
+	]
+}

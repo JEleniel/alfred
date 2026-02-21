@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-007",
+	"card_type": "Story",
+	"name": "Receive deterministic JSON/NDJSON outputs",
+	"description": "As an agent user, I need deterministic JSON/NDJSON output shapes and ordering so that tool results are diffable, testable, and predictable across platforms and runs.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-007"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-005"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-015"
+		}
+	]
+}

@@ -1,0 +1,61 @@
+{
+	"$schema": "schemas/Aurora.card.schema.json",
+	"id": "MIS-001",
+	"card_type": "Mission",
+	"name": "Alfred Local MCP Server",
+	"description": "Provide efficient, safe, and reliable MCP tooling for common agent workflows as a local stdio server.",
+	"links": [
+		{
+			"relationship": "involves",
+			"target": "STK-001"
+		},
+		{
+			"relationship": "remediates",
+			"target": "THM-001"
+		},
+		{
+			"relationship": "involves",
+			"target": "ACT-001"
+		},
+		{
+			"relationship": "involves",
+			"target": "ACT-002"
+		},
+		{
+			"relationship": "establishes",
+			"target": "DRI-001"
+		},
+		{
+			"relationship": "establishes",
+			"target": "DRI-002"
+		},
+		{
+			"relationship": "establishes",
+			"target": "DRI-003"
+		},
+		{
+			"relationship": "establishes",
+			"target": "DRI-004"
+		},
+		{
+			"relationship": "establishes",
+			"target": "DRI-005"
+		},
+		{
+			"relationship": "necessitates",
+			"target": "SYS-001"
+		},
+		{
+			"relationship": "necessitates",
+			"target": "APP-001"
+		}
+	],
+	"attributes": {
+		"transport": "stdio",
+		"execution": "local",
+		"notes": [
+			"Alfred is an MCP stdio server running on the workspace host machine.",
+			"The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs."
+		]
+	}
+}
