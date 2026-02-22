@@ -6,7 +6,7 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 
 - Alfred MUST maintain an index of all files in the workspace and their contents
     - Alfred MUST provide file listings (`ls`)
-    - Alfred MUST provide text search with regex support (`grep`, `rg`)
+    - Alfred MUST provide text search with regex support (`grep`, `search`)
     - Alfred MUST provide keyword and symbol lookup
     - Alfred MUST provide file range extraction
     - Alfred MUST provide diff capabilities
@@ -16,7 +16,7 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 - Alfred MUST provide safe file operations
     - Alfred MUST support atomic CRUD operations where practical
     - Alfred MUST support patching with conflict reporting
-    - Alfred MUST support bulk move, rename, delete, and copy operations with dry-run support
+    - Alfred MUST support bulk move, rename, delete, and copy operations with dry-run support (`path_move`, `path_copy`, `path_delete`)
 - Alfred MUST create and maintain a project plan in a common format
     - Alfred MUST capture tool and diagnostics errors in the plan to track fixes
     - Alfred MUST track progress in the plan
@@ -31,18 +31,23 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
     - Alfred MUST provide job and session introspection
         - Alfred MUST list active background jobs with status and metadata
         - Alfred MUST return output chunks/streams and current state for a job
-        - Alfred MUST return recent tool calls and results
+        - Alfred MUST return recent tool calls and results (`session_recent`)
 - Alfred MUST provide tooling output as JSON or NDJSON
 - Alfred MUST provide log handling
     - Alfred MUST tail logs
     - Alfred MUST filter logs
 - Alfred MUST support CRUD operations for environment variables
+- Alfred MUST provide local, indexed, searchable memory
+    - Alfred MUST support CRUD operations for individual memory "facts"
+    - Alfred MUST support full-text search over stored memory
+    - The memory system MUST be offline-only and MUST NOT depend on any external service
 - Alfred MUST provide a capability discovery endpoint
     - Alfred MUST return available tools and capabilities
     - Alfred MUST return tool and schema versions
     - Alfred MUST return capability limits and execution modes
 - Alfred MUST support single-call action chaining (for example: search -> patch -> validate)
 - Alfred MUST be able to perform all file operations on any size file.
+    - For binary or very large file content, Alfred MUST support bounded byte-chunk reads and writes (`file_read_bytes`, `file_create_bytes`, `file_append_bytes`).
 
 ## Non-Functional Requirements
 
@@ -52,11 +57,6 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
     - Diagnostics SHOULD support delta reporting between runs (for example: new, unchanged, resolved)
 - Alfred MUST use deterministic and clear error taxonomy definitions
 - Alfred MUST provide dry-run behavior for destructive or irreversible actions
-- Alfred MUST include a conformance suite and the suite MUST pass for releases
-    - The suite MUST validate response schemas (JSON and NDJSON)
-    - The suite MUST validate deterministic error taxonomy behavior
-    - The suite MUST validate dry-run guarantees for destructive operations
-    - The suite MUST validate workspace boundary enforcement
 - Alfred MUST be self contained; it MUST NOT depend on any outside service.
 
 ## Versioning and Compatibility
@@ -92,6 +92,36 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 - Alfred MUST provide a permission model compliant with IDE requirements
 - Alfred MUST provide configurable policy guardrails with reasonable defaults
 
+## Libraries
+
+The following libraries have been chosen, for various reasons:
+
+- `rmcp` for the MCP interface
+- `dir_watcher` for file system watching
+- `tantivy` for indexing and search
+- `imara-diff` for diffing
+- `mpatch` for patching
+- `escargot` for cargo operations
+- `anyhow`, `thiserror` for error handling
+- `base64`, `hex`, `num-traits`, `regex`, `unicode-normalization`, `uuid` for utilities
+- `chrono` for time and date handling
+- `clap` for CLI interfaces
+- `config` for configuration file handling
+- `dirs` for standard config/data/cache directories
+- `fern`, `log` for logging
+- `r2d2`, `r2d2_sqlite`, `rusqlite` for SQLite (use `rusqlite` with the `bundled` feature)
+- `serde` (and sublibraries), `serde_json` for serialization
+- `tokio` (and sublibraries) for async runtime
+    - `tokio::process` can be used for tools like `npm` and `pnpm`
+- `url`, `urlencoding` for URL handling
+- `sha2`, and `hmac` for hashing
+
 ## Out of Scope
 
 - Alfred MUST NOT implement Git or GitHub operations handled by dedicated tools
+
+## Design references
+
+- Protocol expectations: `docs/design/Protocol.md`
+- Deterministic error taxonomy: `docs/design/ErrorTaxonomy.md`
+- Tool contracts (including Memory tools): `docs/design/ToolContracts.md`

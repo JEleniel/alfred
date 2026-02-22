@@ -4,5 +4,11 @@
 	"card_type": "Capability",
 	"name": "Background Operations",
 	"description": "Run asynchronous operations with streaming output, cancellation, timeouts, and job/session introspection.",
-	"links": []
+	"links": [],
+	"attributes": {
+		"contracts": {
+			"tool_contracts": "docs/design/ToolContracts.md"
+		},
+		"tools": ["job_status", "job_statuses", "job_cancel", "job_list", "job_read", "session_recent"]
+	}
 }

@@ -6,7 +6,10 @@ Tails and filters logs and exposes log-related tooling for debugging.
 
 ## Attributes
 
-_No attributes defined._
+- **redaction**: "deterministic"
+- **spec**: "docs/design/Protocol.md"
+- **stream_format**: "ndjson"
+
 
 ## Links
 
@@ -25,3 +28,4 @@ _No attributes defined._
 |-----------|--------|--------|
 | 2026-02-21T00:00:00Z | copilot | create |
 | 2026-02-21T02:15:00Z | copilot | change |
+| 2026-02-22T13:04:50Z | copilot | change |

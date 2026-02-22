@@ -7,7 +7,8 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 ## Attributes
 
 - **execution**: "local"
-- **notes**: ["Alfred is an MCP stdio server running on the workspace host machine.","The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs."]
+- **external_references**: ["../AlfredArchitecture.md","../AlfredOverview.md","../ErrorTaxonomy.md","../Protocol.md","../ToolContracts.md"]
+- **notes**: ["Alfred is an MCP stdio server running on the workspace host machine.","The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs.","Alfred includes an offline-only local memory capability to provide stable agent memory when online-dependent memory is unavailable."]
 - **transport**: "stdio"
 
 
@@ -22,6 +23,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - establishes [DRI-003](MIS-001/Driver/DRI-003-Deterministic_Contracts.md)
 - establishes [DRI-004](MIS-001/Driver/DRI-004-Performance_and_Scalability.md)
 - establishes [DRI-005](MIS-001/Driver/DRI-005-LocalFirst_and_SelfContained.md)
+- establishes [DRI-006](MIS-001/Driver/DRI-006-Offline_Agent_Memory_Reliability.md)
 - necessitates [SYS-001](MIS-001/System/SYS-001-Alfred.md)
 - necessitates [APP-001](MIS-001/Application/APP-001-Alfred_Stdio_Server.md)
 
@@ -35,3 +37,4 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 | 2026-02-21T00:00:00Z | copilot | create |
 | 2026-02-20T00:15:00Z | copilot | change |
 | 2026-02-21T01:34:17Z | copilot | change |
+| 2026-02-22T12:44:59Z | copilot | change |

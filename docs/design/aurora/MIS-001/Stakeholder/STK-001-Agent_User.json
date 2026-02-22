@@ -69,6 +69,10 @@
 		{
 			"relationship": "desires",
 			"target": "STR-016"
+		},
+		{
+			"relationship": "desires",
+			"target": "STR-017"
 		}
 	],
 	"attributes": {

@@ -6,7 +6,7 @@ Alfred MUST maintain an index of all files in the workspace and provide listing,
 
 ## Attributes
 
-- **tool_surface**: ["ls","grep","rg","symbols","read_range","diff"]
+- **tool_surface**: ["ls","grep","search","symbols","read_range","diff"]
 
 
 ## Links
@@ -26,3 +26,4 @@ Alfred MUST maintain an index of all files in the workspace and provide listing,
 |-----------|--------|--------|
 | 2026-02-21T00:00:00Z | copilot | create |
 | 2026-02-21T01:23:24Z | copilot | change |
+| 2026-02-22T15:41:58Z | copilot | change |

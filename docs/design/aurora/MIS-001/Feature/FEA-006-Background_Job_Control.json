@@ -3,7 +3,7 @@
 	"id": "FEA-006",
 	"card_type": "Feature",
 	"name": "Background Job Control",
-	"description": "Asynchronous job execution with streaming output, cancellation/timeouts, and introspection.",
+	"description": "Asynchronous job execution with streaming output, cancellation/timeouts, and job/session introspection.",
 	"links": [
 		{
 			"relationship": "realizes",
@@ -13,5 +13,11 @@
 			"relationship": "implies",
 			"target": "CNS-012"
 		}
-	]
+	],
+	"attributes": {
+		"contracts": {
+			"tool_contracts": "docs/design/ToolContracts.md"
+		},
+		"tools": ["job_status", "job_statuses", "job_cancel", "job_list", "job_read", "session_recent"]
+	}
 }

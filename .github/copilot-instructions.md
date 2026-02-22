@@ -32,7 +32,9 @@ If tooling limitations or system instructions prevent compliance, you MUST stop 
 
 ### Work Tracking
 
-If `docs/design/ProjectPlan.md` exists, you MUST mark work off as you complete it and keep the status up to date. The Planner owns this file, and will create and maintain the plan itself.
+You are equipped with a local memory, however it sometimes has issues due to dependency on CDN resources. In addition to your memory, use a `.agents/MEMORY.md` file as a redundant copy for situations where your pirmary memory is unavailable. Create it if not present. Do not delete this file.
+
+The project plan MUST be stored as `docs/design/ProjectPlan.md`. If one exists, you MUST mark work off as you complete it and keep the status up to date. The Planner owns this file, and will create and maintain the plan itself.
 
 You MUST ensure these minimum required elements are in your memory and kept up to date:
 
@@ -55,10 +57,11 @@ When instructed, maintain the `CHANGELOG.md` based on the git commit history and
 - You MUST NOT modify `.github/**/*` unless the user asks.
 - You MUST NOT revert changes you did not make. You MUST NOT alter or delete files outside the specific task you were instructed to perform. You are working in collaboration with others.
 - Understand and use the `generated` Git attribute (defined in `.gitattributes`).
-
+- You MUST NOT try to read a URL that ends in a data or confguration file extension, such as `yml`, `yaml`, or `toml`.
 - Files marked with the git attribute `generated` are tracked in SCM but are always generated outputs. Do not hand-edit them.
 - In Git commands that accept pathspecs, you can select or exclude generated files with `:(attr:generated)` and `:(exclude,attr:generated)`.
 - When reviewing changes, ignore `generated` files by default unless you are explicitly reviewing rendered outputs.
+- You MUST NOT attempt to run Pythomn, Node, or any other scripting language _unless_ the project is in that platform. You MUST NOT attempt to run ad-hoc scripts.
 
 ## Behavior
 

@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "STR-017",
+	"card_type": "Story",
+	"name": "Remember facts offline",
+	"description": "As an agent user, I need Alfred to store and recall stable facts offline so that my workflow remains reliable even when online memory features are unavailable.",
+	"links": [
+		{
+			"relationship": "explains",
+			"target": "REQ-017"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-006"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-010"
+		}
+	]
+}

@@ -17,5 +17,12 @@
 			"relationship": "implies",
 			"target": "CNS-008"
 		}
-	]
+	],
+	"attributes": {
+		"contracts": {
+			"protocol": "docs/design/Protocol.md",
+			"errors": "docs/design/ErrorTaxonomy.md",
+			"tool_contracts": "docs/design/ToolContracts.md"
+		}
+	}
 }

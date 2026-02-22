@@ -42,6 +42,10 @@
 			"target": "DRI-005"
 		},
 		{
+			"relationship": "establishes",
+			"target": "DRI-006"
+		},
+		{
 			"relationship": "necessitates",
 			"target": "SYS-001"
 		},
@@ -53,9 +57,17 @@
 	"attributes": {
 		"transport": "stdio",
 		"execution": "local",
+		"external_references": [
+			"../AlfredArchitecture.md",
+			"../AlfredOverview.md",
+			"../ErrorTaxonomy.md",
+			"../Protocol.md",
+			"../ToolContracts.md"
+		],
 		"notes": [
 			"Alfred is an MCP stdio server running on the workspace host machine.",
-			"The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs."
+			"The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs.",
+			"Alfred includes an offline-only local memory capability to provide stable agent memory when online-dependent memory is unavailable."
 		]
 	}
 }

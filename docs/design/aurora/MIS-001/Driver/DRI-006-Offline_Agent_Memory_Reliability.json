@@ -1,0 +1,13 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DRI-006",
+	"card_type": "Driver",
+	"name": "Offline Agent Memory Reliability",
+	"description": "Agents need a stable, offline-only memory mechanism that remains available even when online or host-provided memory features fail.",
+	"links": [
+		{
+			"relationship": "drives",
+			"target": "REQ-017"
+		}
+	]
+}

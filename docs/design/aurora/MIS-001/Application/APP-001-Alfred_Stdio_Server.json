@@ -40,6 +40,10 @@
 		{
 			"relationship": "comprises",
 			"target": "COM-012"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-017"
 		}
 	],
 	"attributes": {

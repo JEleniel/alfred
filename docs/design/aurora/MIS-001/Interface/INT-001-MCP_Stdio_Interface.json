@@ -17,6 +17,15 @@
 	"attributes": {
 		"transport": "stdio",
 		"encoding": "utf-8",
-		"framing": "line-delimited where applicable"
+		"framing": "newline-delimited JSON frames (one JSON value per line)",
+		"contracts": {
+			"protocol": "docs/design/Protocol.md",
+			"errors": "docs/design/ErrorTaxonomy.md",
+			"tool_contracts": "docs/design/ToolContracts.md"
+		},
+		"determinism": {
+			"stable_ordering": true,
+			"explicit_pagination": true
+		}
 	}
 }

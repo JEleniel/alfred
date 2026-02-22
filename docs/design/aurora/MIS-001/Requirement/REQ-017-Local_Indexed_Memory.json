@@ -1,0 +1,38 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "REQ-017",
+	"card_type": "Requirement",
+	"name": "Local Indexed Memory",
+	"description": "Alfred MUST provide a local, indexed, searchable memory store that supports CRUD for individual facts and full-text search.",
+	"links": [
+		{
+			"relationship": "requires",
+			"target": "CAP-014"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-006"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-010"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-012"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-015"
+		},
+		{
+			"relationship": "imposes",
+			"target": "CNS-005"
+		}
+	],
+	"attributes": {
+		"tool_surface": ["memory_put", "memory_get", "memory_delete", "memory_list", "memory_search"],
+		"offline_only": true,
+		"persistence": "local"
+	}
+}

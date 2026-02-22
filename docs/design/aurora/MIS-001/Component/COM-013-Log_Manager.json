@@ -26,5 +26,10 @@
 			"relationship": "runs on",
 			"target": "NOD-001"
 		}
-	]
+	],
+	"attributes": {
+		"stream_format": "ndjson",
+		"redaction": "deterministic",
+		"spec": "docs/design/Protocol.md"
+	}
 }

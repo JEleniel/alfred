@@ -1,0 +1,41 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "DST-004",
+	"card_type": "Data Store",
+	"card_subtype": "Relational",
+	"name": "Memory Store",
+	"description": "Local persistent storage for memory facts and their derived search index.",
+	"links": [
+		{
+			"relationship": "retrieves",
+			"target": "ART-008"
+		},
+		{
+			"relationship": "runs on",
+			"target": "NOD-001"
+		}
+	],
+	"attributes": {
+		"offline_only": true,
+		"durability": "persistent",
+		"stores": {
+			"user": {
+				"default_location": "<userDataDir>/alfred/alfred.sqlite3",
+				"notes": "Primary persistent store."
+			},
+			"workspace": {
+				"default_location": "<workspaceRoot>/.agents/alfred/alfred.sqlite3",
+				"optional": true
+			}
+		},
+		"effective_view": {
+			"mode_default": "merged",
+			"modes": ["merged", "prefer_workspace"],
+			"id_collision_resolution": "workspace_over_user",
+			"user_preferences": {
+				"persist_in": "user",
+				"workspace_override_allowed": true
+			}
+		}
+	}
+}

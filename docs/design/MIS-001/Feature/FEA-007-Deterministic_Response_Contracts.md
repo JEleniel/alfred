@@ -6,7 +6,8 @@ Return concise JSON/NDJSON responses with stable schema versions and determinist
 
 ## Attributes
 
-_No attributes defined._
+- **contracts**: {"errors":"docs/design/ErrorTaxonomy.md","protocol":"docs/design/Protocol.md","tool_contracts":"docs/design/ToolContracts.md"}
+
 
 ## Links
 
@@ -22,3 +23,4 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T00:00:00Z | copilot | create |
+| 2026-02-22T12:44:59Z | copilot | change |

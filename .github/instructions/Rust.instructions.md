@@ -32,6 +32,12 @@ If present, the repository's Rust formatting config (`rustfmt.toml`) is the sour
     - Exception: `todo!()` and `unimplemented!()` are permitted for clearly unimplemented paths that must fail fast and communicate intent.
 - Add documentation comments for new modules and new public items.
 - Avoid `unsafe` unless a specific API requires it.
+- Do not use functions to return a constant value.
+
+## Tests
+
+- Always create positive, negative, and security tests for all new code.
+- Place all tests in a `tests/<basename>_tests.rs` file and use `path` to link them into their parent.
 
 ## Error Handling
 

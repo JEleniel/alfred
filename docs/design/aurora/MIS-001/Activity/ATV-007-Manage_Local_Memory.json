@@ -1,0 +1,21 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "ATV-007",
+	"card_type": "Activity",
+	"name": "Manage Local Memory",
+	"description": "Create, update, delete, list, and search local memory facts for stable offline recall.",
+	"links": [
+		{
+			"relationship": "uses",
+			"target": "COM-002"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-017"
+		},
+		{
+			"relationship": "uses",
+			"target": "COM-011"
+		}
+	]
+}

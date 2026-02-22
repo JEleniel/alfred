@@ -18,6 +18,7 @@ An AI agent acting on behalf of the developer/user, invoking Alfred tools via an
 - performs [ATV-004](../Activity/ATV-004-Run_and_Monitor_Tasks.md)
 - performs [ATV-005](../Activity/ATV-005-Manage_Plan_and_Progress.md)
 - performs [ATV-006](../Activity/ATV-006-Discover_Capabilities_and_Environment.md)
+- performs [ATV-007](../Activity/ATV-007-Manage_Local_Memory.md)
 
 
 ## Version
@@ -27,3 +28,4 @@ An AI agent acting on behalf of the developer/user, invoking Alfred tools via an
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T01:34:17Z | copilot | create |
+| 2026-02-22T12:44:59Z | copilot | change |

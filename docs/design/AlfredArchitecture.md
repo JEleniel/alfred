@@ -15,7 +15,7 @@ This document summarizes Alfred’s architecture as modeled in Aurora, and point
 
 ## System context
 
-Alfred is a **local-only stdio server** designed to be run on the *workspace host* machine and invoked by a local client (for example, an IDE extension). In VS Code Remote Development modes, the workspace host (extension host) may be remote (SSH/WSL/Dev Container), but Alfred still runs *locally relative to that host*.
+Alfred is a **local-only stdio server** designed to be run on the _workspace host_ machine and invoked by a local client (for example, an IDE extension). In VS Code Remote Development modes, the workspace host (extension host) may be remote (SSH/WSL/Dev Container), but Alfred still runs _locally relative to that host_.
 
 The server:
 
@@ -37,8 +37,9 @@ At a high level, the application is a stdio transport + a tool router + a set of
     - Capability discovery advertises supported tools and versions.
 - Tool-handlers
     - Workspace indexing and search.
-    - File operations (read/write/patch) constrained to workspace.
-    - Task execution (local process runner) and background job controls.
+    - File operations (text range reads; byte-chunk reads; create/append/patch; bulk move/copy/delete) constrained to workspace.
+    - Task execution (local process runner) and background job controls (including session introspection).
+    - Local memory (offline-only), providing CRUD and search for structured facts.
     - Plan management (produce and update a project plan; support partial completion).
 
 For the model’s component view, see [Component.svg](./MIS-001/Views/Component.svg).
@@ -50,6 +51,7 @@ Alfred is intentionally local-first and uses small, explicit state stores:
 - **Workspace Index**: derived, rebuildable index of workspace structure/content used to support fast search and navigation.
 - **Plan Store**: records plan state and completion status to support incremental progress reporting.
 - **Job Store**: tracks background jobs (start/stop/status) and their logs/results.
+- **Memory Store**: persists agent memory facts and an associated local search index for offline recall.
 
 These stores are modeled as local data stores backed by the host filesystem (no external services).
 
@@ -62,6 +64,12 @@ The architecture encodes several non-negotiables:
 - **Guardrails**: workspace boundary enforcement, explicit out-of-scope behaviors, and local-only execution.
 - **Versioning discipline**: SemVer with schema/version lockstep and conformance testing.
 - **Cross-platform semantics**: filesystem/path normalization, atomic write semantics, task execution defaults, cancellation behavior, and encoding-safe path reporting are modeled explicitly via constraints `CNS-015`..`CNS-021`.
+
+For concrete contracts (including Memory CRUD/search), see:
+
+- [Protocol](./Protocol.md)
+- [Error taxonomy](./ErrorTaxonomy.md)
+- [Tool contracts](./ToolContracts.md)
 
 For the traceability view (drivers → requirements → capabilities → features → components), see [Traceability.svg](./MIS-001/Views/Traceability.svg).
 

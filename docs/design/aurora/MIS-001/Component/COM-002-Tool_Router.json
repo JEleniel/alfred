@@ -51,6 +51,10 @@
 			"target": "COM-016"
 		},
 		{
+			"relationship": "composes",
+			"target": "COM-017"
+		},
+		{
 			"relationship": "implements",
 			"target": "FEA-011"
 		},

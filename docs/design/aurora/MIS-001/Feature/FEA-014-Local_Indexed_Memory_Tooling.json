@@ -1,0 +1,25 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-014",
+	"card_type": "Feature",
+	"name": "Local Indexed Memory Tooling",
+	"description": "CRUD and full-text search tools for persistent local memory facts, backed by an index for fast recall.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-014"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-006"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-010"
+		},
+		{
+			"relationship": "implies",
+			"target": "CNS-015"
+		}
+	]
+}

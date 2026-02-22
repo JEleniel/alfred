@@ -27,6 +27,7 @@ A developer/operator using an agent that depends on reliable, safe, and fast too
 - desires [STR-014](../Story/STR-014-Trust_conformance_and_compatibility.md)
 - desires [STR-015](../Story/STR-015-Work_with_anysize_files.md)
 - desires [STR-016](../Story/STR-016-Run_local_to_the_workspace_host.md)
+- desires [STR-017](../Story/STR-017-Remember_facts_offline.md)
 
 
 ## Version
@@ -37,3 +38,4 @@ A developer/operator using an agent that depends on reliable, safe, and fast too
 |-----------|--------|--------|
 | 2026-02-21T00:00:00Z | copilot | create |
 | 2026-02-21T01:34:17Z | copilot | change |
+| 2026-02-22T12:44:59Z | copilot | change |

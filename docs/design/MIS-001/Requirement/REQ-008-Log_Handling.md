@@ -1,12 +1,13 @@
 # Requirement: REQ-008 Log Handling
 
-Alfred MUST tail and filter logs.
+Alfred MUST tail and filter logs using a standardized NDJSON log record format and deterministic redaction.
 
 
 
 ## Attributes
 
-_No attributes defined._
+- **spec**: "docs/design/Protocol.md"
+
 
 ## Links
 
@@ -20,3 +21,4 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T00:00:00Z | copilot | create |
+| 2026-02-22T13:04:50Z | copilot | change |

@@ -4,5 +4,8 @@
 	"card_type": "Constraint",
 	"name": "Deterministic Error Taxonomy",
 	"description": "Error taxonomy definitions MUST be deterministic, clear, and stable across tools.",
-	"links": []
+	"links": [],
+	"attributes": {
+		"spec": "docs/design/ErrorTaxonomy.md"
+	}
 }

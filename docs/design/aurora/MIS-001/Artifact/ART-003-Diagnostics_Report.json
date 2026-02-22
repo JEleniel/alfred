@@ -8,6 +8,14 @@
 	"links": [],
 	"attributes": {
 		"format": ["json", "ndjson"],
-		"sources": ["cargo", "pnpm", "linters", "formatters", "tasks"]
+		"sources": ["cargo", "pnpm", "linters", "formatters", "tasks"],
+		"contracts": {
+			"protocol": "docs/design/Protocol.md",
+			"errors": "docs/design/ErrorTaxonomy.md"
+		},
+		"notes": [
+			"When emitted as NDJSON, each line is a complete JSON object and the stream is append-only.",
+			"Diagnostics envelopes are designed to be validated against a deterministic schema and taxonomy."
+		]
 	}
 }

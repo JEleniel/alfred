@@ -32,6 +32,6 @@
 		}
 	],
 	"attributes": {
-		"supports": ["ls", "grep", "rg", "symbols", "read_range", "diff"]
+		"supports": ["ls", "grep", "search", "symbols", "read_range", "diff"]
 	}
 }

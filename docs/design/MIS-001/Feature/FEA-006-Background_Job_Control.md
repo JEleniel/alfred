@@ -1,12 +1,14 @@
 # Feature: FEA-006 Background Job Control
 
-Asynchronous job execution with streaming output, cancellation/timeouts, and introspection.
+Asynchronous job execution with streaming output, cancellation/timeouts, and job/session introspection.
 
 
 
 ## Attributes
 
-_No attributes defined._
+- **contracts**: {"tool_contracts":"docs/design/ToolContracts.md"}
+- **tools**: ["job_status","job_statuses","job_cancel","job_list","job_read","session_recent"]
+
 
 ## Links
 
@@ -21,3 +23,4 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T00:00:00Z | copilot | create |
+| 2026-02-22T16:01:08Z | copilot | change |

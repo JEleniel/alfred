@@ -8,6 +8,26 @@
 	"links": [],
 	"attributes": {
 		"formats": ["ndjson", "json"],
-		"semantics": "append-only"
+		"semantics": "append-only",
+		"contracts": {
+			"protocol": "docs/design/Protocol.md",
+			"errors": "docs/design/ErrorTaxonomy.md"
+		},
+		"redaction": {
+			"required": true,
+			"notes": "All stream items MUST be redacted deterministically before persistence or emission."
+		},
+		"ndjson": {
+			"rules": "Each line is a complete JSON object. Callers MUST tolerate chunking and resume using cursors/job offsets.",
+			"ordering": "Stable by emission order within the job.",
+			"item_kinds": ["log", "stdout", "stderr", "status", "progress"],
+			"log_record_schema": {
+				"timestamp": "string (RFC3339 UTC; seconds preferred; max milliseconds)",
+				"level": "string (TRACE|DEBUG|INFO|WARN|ERROR)",
+				"message": "string",
+				"source": "string (e.g., alfred::configuration::load)",
+				"extra": "object (string-to-string pairs)"
+			}
+		}
 	}
 }

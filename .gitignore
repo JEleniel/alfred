@@ -1,8 +1,3 @@
-#+#+#+#+######################################################################
-# This file is a template.
-# It is a copy of the root .gitignore with Rust-specific ignores added at top.
-#+#+#+#+######################################################################
-
 # Project specific
 # Add files and directories specific to your project that should be ignored here
 

@@ -4,9 +4,17 @@
     {
       "attributes": {
         "execution": "local",
+        "external_references": [
+          "../AlfredArchitecture.md",
+          "../AlfredOverview.md",
+          "../ErrorTaxonomy.md",
+          "../Protocol.md",
+          "../ToolContracts.md"
+        ],
         "notes": [
           "Alfred is an MCP stdio server running on the workspace host machine.",
-          "The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs."
+          "The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs.",
+          "Alfred includes an offline-only local memory capability to provide stable agent memory when online-dependent memory is unavailable."
         ],
         "transport": "stdio"
       },
@@ -50,6 +58,10 @@
           "target": "DRI-005"
         },
         {
+          "relationship": "establishes",
+          "target": "DRI-006"
+        },
+        {
           "relationship": "necessitates",
           "target": "SYS-001"
         },
@@ -89,7 +101,9 @@
       "name": "Cross-Platform Atomic Write Semantics"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "spec": "docs/design/ErrorTaxonomy.md"
+      },
       "card_type": "Constraint",
       "id": "CNS-005",
       "links": [],
@@ -480,6 +494,26 @@
         }
       ],
       "name": "Track a project plan and progress"
+    },
+    {
+      "attributes": {},
+      "card_type": "Story",
+      "id": "STR-017",
+      "links": [
+        {
+          "relationship": "explains",
+          "target": "REQ-017"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-006"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-010"
+        }
+      ],
+      "name": "Remember facts offline"
     },
     {
       "attributes": {},
@@ -2659,6 +2693,10 @@
         {
           "relationship": "performs",
           "target": "ATV-006"
+        },
+        {
+          "relationship": "performs",
+          "target": "ATV-007"
         }
       ],
       "name": "Agent"
@@ -2836,6 +2874,10 @@
         {
           "relationship": "comprises",
           "target": "COM-012"
+        },
+        {
+          "relationship": "comprises",
+          "target": "COM-017"
         }
       ],
       "name": "Alfred Stdio Server"
@@ -2869,7 +2911,13 @@
       "name": "Task Execution Tooling"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "contracts": {
+          "errors": "docs/design/ErrorTaxonomy.md",
+          "protocol": "docs/design/Protocol.md",
+          "tool_contracts": "docs/design/ToolContracts.md"
+        }
+      },
       "card_type": "Feature",
       "id": "FEA-007",
       "links": [
@@ -2918,6 +2966,42 @@
     },
     {
       "attributes": {},
+      "card_type": "Feature",
+      "id": "FEA-014",
+      "links": [
+        {
+          "relationship": "realizes",
+          "target": "CAP-014"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-006"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "implies",
+          "target": "CNS-015"
+        }
+      ],
+      "name": "Local Indexed Memory Tooling"
+    },
+    {
+      "attributes": {
+        "contracts": {
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
+        "tools": [
+          "job_status",
+          "job_statuses",
+          "job_cancel",
+          "job_list",
+          "job_read",
+          "session_recent"
+        ]
+      },
       "card_type": "Feature",
       "id": "FEA-006",
       "links": [
@@ -2981,7 +3065,25 @@
       "name": "Index and Query Tools"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "contracts": {
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
+        "tools": [
+          "file_create",
+          "file_append",
+          "file_patch",
+          "multi_file_patch",
+          "file_delete",
+          "dir_create",
+          "dir_delete",
+          "file_create_bytes",
+          "file_append_bytes",
+          "path_move",
+          "path_copy",
+          "path_delete"
+        ]
+      },
       "card_type": "Feature",
       "id": "FEA-003",
       "links": [
@@ -3113,9 +3215,56 @@
     },
     {
       "attributes": {
+        "durability": "persistent",
+        "effective_view": {
+          "id_collision_resolution": "workspace_over_user",
+          "mode_default": "merged",
+          "modes": [
+            "merged",
+            "prefer_workspace"
+          ],
+          "user_preferences": {
+            "persist_in": "user",
+            "workspace_override_allowed": true
+          }
+        },
+        "offline_only": true,
+        "stores": {
+          "user": {
+            "default_location": "<userDataDir>/alfred/alfred.sqlite3",
+            "notes": "Primary persistent store."
+          },
+          "workspace": {
+            "default_location": "<workspaceRoot>/.agents/alfred/alfred.sqlite3",
+            "optional": true
+          }
+        }
+      },
+      "card_subtype": "Relational",
+      "card_type": "Data Store",
+      "id": "DST-004",
+      "links": [
+        {
+          "relationship": "retrieves",
+          "target": "ART-008"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Memory Store"
+    },
+    {
+      "attributes": {
+        "contracts": {
+          "protocol": "docs/design/Protocol.md",
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
         "formats": [
           "json"
-        ]
+        ],
+        "frame": "MCP tool invocation request (JSON frame over stdio)"
       },
       "card_subtype": "Data",
       "card_type": "Artifact",
@@ -3136,9 +3285,65 @@
     {
       "attributes": {
         "formats": [
+          "json"
+        ],
+        "schema": {
+          "category": "string (recommended: general|user_preferences|file_specific|bootstrap_and_build)",
+          "citations": "string",
+          "created_at": "string (RFC3339 UTC; seconds preferred; max milliseconds)",
+          "fact": "string",
+          "id": "string (stable, recommended uuid)",
+          "reason": "string",
+          "subject": "string",
+          "tags": "optional array of strings (stable-sorted ascending; recommended lower-case kebab-case)",
+          "updated_at": "string (RFC3339 UTC; seconds preferred; max milliseconds)"
+        },
+        "search_fields": [
+          "subject",
+          "fact",
+          "citations",
+          "reason",
+          "tags"
+        ]
+      },
+      "card_subtype": "Data",
+      "card_type": "Artifact",
+      "id": "ART-008",
+      "links": [],
+      "name": "Memory Fact"
+    },
+    {
+      "attributes": {
+        "contracts": {
+          "errors": "docs/design/ErrorTaxonomy.md",
+          "protocol": "docs/design/Protocol.md"
+        },
+        "formats": [
           "ndjson",
           "json"
         ],
+        "ndjson": {
+          "item_kinds": [
+            "log",
+            "stdout",
+            "stderr",
+            "status",
+            "progress"
+          ],
+          "log_record_schema": {
+            "extra": "object (string-to-string pairs)",
+            "level": "string (TRACE|DEBUG|INFO|WARN|ERROR)",
+            "message": "string",
+            "source": "string (e.g., alfred::configuration::load)",
+            "timestamp": "string (RFC3339 UTC; seconds preferred; max milliseconds)"
+          },
+          "ordering": "Stable by emission order within the job.",
+          "rules": "Each line is a complete JSON object. Callers MUST tolerate chunking and resume using cursors/job offsets."
+        },
+        "redaction": {
+          "notes": "All stream items MUST be redacted deterministically before persistence or emission.",
+          "required": true
+        },
         "semantics": "append-only"
       },
       "card_subtype": "Data",
@@ -3149,9 +3354,17 @@
     },
     {
       "attributes": {
+        "contracts": {
+          "errors": "docs/design/ErrorTaxonomy.md",
+          "protocol": "docs/design/Protocol.md"
+        },
         "format": [
           "json",
           "ndjson"
+        ],
+        "notes": [
+          "When emitted as NDJSON, each line is a complete JSON object and the stream is append-only.",
+          "Diagnostics envelopes are designed to be validated against a deterministic schema and taxonomy."
         ],
         "sources": [
           "cargo",
@@ -3194,11 +3407,58 @@
     },
     {
       "attributes": {
+        "contracts": {
+          "protocol": "docs/design/Protocol.md",
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
         "design_goal": "concise and token-conservative",
+        "envelope": {
+          "failure": {
+            "fields": [
+              "status",
+              "error",
+              "meta"
+            ],
+            "status": "error"
+          },
+          "pending": {
+            "fields": [
+              "status",
+              "job_id",
+              "data",
+              "meta"
+            ],
+            "notes": "Used when a tool starts a bounded background job; the response envelope includes job_id.",
+            "status": "pending",
+            "transport_equivalent": {
+              "http_status": 202
+            }
+          },
+          "success": {
+            "fields": [
+              "status",
+              "data",
+              "meta"
+            ],
+            "status": "ok"
+          }
+        },
+        "errors": {
+          "taxonomy": "docs/design/ErrorTaxonomy.md"
+        },
         "formats": [
-          "json",
-          "ndjson"
-        ]
+          "json"
+        ],
+        "ndjson": {
+          "carriage": [
+            "background job stream (ART-006)"
+          ],
+          "rules": "Each line is a complete JSON object; item ordering is stable."
+        },
+        "redaction": {
+          "notes": "Responses MUST be deterministically redacted before emission, except where a tool contract explicitly allows returning unredacted environment values; such values MUST NOT be logged.",
+          "required": true
+        }
       },
       "card_subtype": "Data",
       "card_type": "Artifact",
@@ -3292,7 +3552,9 @@
       "name": "Safe File Operations"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "spec": "docs/design/ErrorTaxonomy.md"
+      },
       "card_type": "Requirement",
       "id": "REQ-013",
       "links": [
@@ -3356,7 +3618,9 @@
       "name": "Local-First Execution"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "spec": "docs/design/Protocol.md"
+      },
       "card_type": "Requirement",
       "id": "REQ-008",
       "links": [
@@ -3468,6 +3732,48 @@
       "name": "Normalized Diagnostics Contract"
     },
     {
+      "attributes": {
+        "offline_only": true,
+        "persistence": "local",
+        "tool_surface": [
+          "memory_put",
+          "memory_get",
+          "memory_delete",
+          "memory_list",
+          "memory_search"
+        ]
+      },
+      "card_type": "Requirement",
+      "id": "REQ-017",
+      "links": [
+        {
+          "relationship": "requires",
+          "target": "CAP-014"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-006"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-010"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-012"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-015"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS-005"
+        }
+      ],
+      "name": "Local Indexed Memory"
+    },
+    {
       "attributes": {},
       "card_type": "Requirement",
       "id": "REQ-011",
@@ -3488,7 +3794,7 @@
         "tool_surface": [
           "ls",
           "grep",
-          "rg",
+          "search",
           "symbols",
           "read_range",
           "diff"
@@ -4804,6 +5110,10 @@
           "target": "COM-016"
         },
         {
+          "relationship": "composes",
+          "target": "COM-017"
+        },
+        {
           "relationship": "implements",
           "target": "FEA-011"
         },
@@ -4895,7 +5205,7 @@
         "supports": [
           "ls",
           "grep",
-          "rg",
+          "search",
           "symbols",
           "read_range",
           "diff"
@@ -5068,6 +5378,54 @@
       "name": "Stdio Transport"
     },
     {
+      "attributes": {
+        "indexing": {
+          "default_limit": 100,
+          "filters": [
+            "subject",
+            "category",
+            "tags"
+          ],
+          "mode": "local"
+        },
+        "redaction": "deterministic",
+        "storage": {
+          "effective_view": "merged (default) or prefer_workspace",
+          "user_store": "DST-004",
+          "workspace_store": "DST-004"
+        },
+        "tool_surface": [
+          "memory_put",
+          "memory_get",
+          "memory_delete",
+          "memory_list",
+          "memory_search"
+        ]
+      },
+      "card_subtype": "Subsystem",
+      "card_type": "Component",
+      "id": "COM-017",
+      "links": [
+        {
+          "relationship": "implements",
+          "target": "FEA-014"
+        },
+        {
+          "relationship": "stores in",
+          "target": "DST-004"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART-008"
+        },
+        {
+          "relationship": "runs on",
+          "target": "NOD-001"
+        }
+      ],
+      "name": "Memory Manager"
+    },
+    {
       "attributes": {},
       "card_subtype": "Subsystem",
       "card_type": "Component",
@@ -5097,7 +5455,11 @@
       "name": "Job Manager"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "redaction": "deterministic",
+        "spec": "docs/design/Protocol.md",
+        "stream_format": "ndjson"
+      },
       "card_subtype": "Subsystem",
       "card_type": "Component",
       "id": "COM-013",
@@ -5289,7 +5651,19 @@
       "name": "Single-Call Action Chaining"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "contracts": {
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
+        "tools": [
+          "job_status",
+          "job_statuses",
+          "job_cancel",
+          "job_list",
+          "job_read",
+          "session_recent"
+        ]
+      },
       "card_type": "Capability",
       "id": "CAP-006",
       "links": [],
@@ -5303,11 +5677,42 @@
       "name": "Conformance Validation"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "contracts": {
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
+        "tools": [
+          "file_create",
+          "file_append",
+          "file_patch",
+          "multi_file_patch",
+          "file_delete",
+          "dir_create",
+          "dir_delete",
+          "file_create_bytes",
+          "file_append_bytes",
+          "path_move",
+          "path_copy",
+          "path_delete"
+        ]
+      },
       "card_type": "Capability",
       "id": "CAP-003",
       "links": [],
       "name": "Safe File Operations"
+    },
+    {
+      "attributes": {
+        "offline_only": true,
+        "supports": [
+          "crud",
+          "full_text_search"
+        ]
+      },
+      "card_type": "Capability",
+      "id": "CAP-014",
+      "links": [],
+      "name": "Local Memory"
     },
     {
       "attributes": {},
@@ -5317,7 +5722,10 @@
       "name": "Capability Discovery"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "format": "ndjson",
+        "spec": "docs/design/Protocol.md"
+      },
       "card_type": "Capability",
       "id": "CAP-008",
       "links": [],
@@ -6017,6 +6425,26 @@
     },
     {
       "attributes": {},
+      "card_type": "Activity",
+      "id": "ATV-007",
+      "links": [
+        {
+          "relationship": "uses",
+          "target": "COM-002"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-017"
+        },
+        {
+          "relationship": "uses",
+          "target": "COM-011"
+        }
+      ],
+      "name": "Manage Local Memory"
+    },
+    {
+      "attributes": {},
       "card_type": "Driver",
       "id": "DRI-005",
       "links": [
@@ -6050,6 +6478,18 @@
         }
       ],
       "name": "Deterministic Contracts"
+    },
+    {
+      "attributes": {},
+      "card_type": "Driver",
+      "id": "DRI-006",
+      "links": [
+        {
+          "relationship": "drives",
+          "target": "REQ-017"
+        }
+      ],
+      "name": "Offline Agent Memory Reliability"
     },
     {
       "attributes": {},
@@ -6199,6 +6639,10 @@
         {
           "relationship": "desires",
           "target": "STR-016"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR-017"
         }
       ],
       "name": "Agent User"
@@ -6279,8 +6723,17 @@
     },
     {
       "attributes": {
+        "contracts": {
+          "errors": "docs/design/ErrorTaxonomy.md",
+          "protocol": "docs/design/Protocol.md",
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
+        "determinism": {
+          "explicit_pagination": true,
+          "stable_ordering": true
+        },
         "encoding": "utf-8",
-        "framing": "line-delimited where applicable",
+        "framing": "newline-delimited JSON frames (one JSON value per line)",
         "transport": "stdio"
       },
       "card_type": "Interface",

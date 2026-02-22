@@ -13,5 +13,8 @@
 			"relationship": "imposes",
 			"target": "CNS-005"
 		}
-	]
+	],
+	"attributes": {
+		"spec": "docs/design/ErrorTaxonomy.md"
+	}
 }

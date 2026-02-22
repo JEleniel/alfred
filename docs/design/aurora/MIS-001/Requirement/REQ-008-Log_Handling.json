@@ -3,11 +3,14 @@
 	"id": "REQ-008",
 	"card_type": "Requirement",
 	"name": "Log Handling",
-	"description": "Alfred MUST tail and filter logs.",
+	"description": "Alfred MUST tail and filter logs using a standardized NDJSON log record format and deterministic redaction.",
 	"links": [
 		{
 			"relationship": "requires",
 			"target": "CAP-008"
 		}
-	]
+	],
+	"attributes": {
+		"spec": "docs/design/Protocol.md"
+	}
 }

@@ -7,6 +7,11 @@
 	"description": "A structured tool invocation request received over stdio from the MCP host.",
 	"links": [],
 	"attributes": {
-		"formats": ["json"]
+		"formats": ["json"],
+		"frame": "MCP tool invocation request (JSON frame over stdio)",
+		"contracts": {
+			"protocol": "docs/design/Protocol.md",
+			"tool_contracts": "docs/design/ToolContracts.md"
+		}
 	}
 }

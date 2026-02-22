@@ -4,5 +4,9 @@
 	"card_type": "Capability",
 	"name": "Log Handling",
 	"description": "Tail and filter logs to support debugging and long-running operations.",
-	"links": []
+	"links": [],
+	"attributes": {
+		"format": "ndjson",
+		"spec": "docs/design/Protocol.md"
+	}
 }

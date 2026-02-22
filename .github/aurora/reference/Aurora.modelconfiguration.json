@@ -326,6 +326,10 @@
 				},
 				{
 					"target": "INT",
+					"relationship": "calls"
+				},
+				{
+					"target": "INT",
 					"relationship": "exposes"
 				},
 				{

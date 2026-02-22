@@ -1,0 +1,12 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "CAP-014",
+	"card_type": "Capability",
+	"name": "Local Memory",
+	"description": "Store, retrieve, and search structured memory facts locally with deterministic behavior and offline-only semantics.",
+	"links": [],
+	"attributes": {
+		"supports": ["crud", "full_text_search"],
+		"offline_only": true
+	}
+}

@@ -50,6 +50,8 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[ATV-003 - Apply Workspace Edits](MIS-001/Activity/ATV-003-Apply_Workspace_Edits.md)**: Apply safe, bounded edits to workspace files (create/update/delete) and validate results.
 
+- **[ATV-007 - Manage Local Memory](MIS-001/Activity/ATV-007-Manage_Local_Memory.md)**: Create, update, delete, list, and search local memory facts for stable offline recall.
+
 ### Actor
 
 - **[ACT-002 - Agent](MIS-001/Actor/ACT-002-Agent.md)**: An AI agent acting on behalf of the developer/user, invoking Alfred tools via an MCP host to inspect and modify the workspace.
@@ -70,6 +72,8 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[ART-007 - Workspace File Content](MIS-001/Artifact/ART-007-Workspace_File_Content.md)**: File bytes and metadata read from within the workspace boundary.
 
+- **[ART-008 - Memory Fact](MIS-001/Artifact/ART-008-Memory_Fact.md)**: A single structured memory entry persisted by Alfred for offline recall and search.
+
 - **[ART-006 - Job Output Stream](MIS-001/Artifact/ART-006-Job_Output_Stream.md)**: A stream of output chunks and structured status for a background job.
 
 - **[ART-003 - Diagnostics Report](MIS-001/Artifact/ART-003-Diagnostics_Report.md)**: Normalized diagnostics output emitted by build/test/lint/format tooling, optionally with deltas between runs.
@@ -78,7 +82,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[ART-005 - Index Snapshot](MIS-001/Artifact/ART-005-Index_Snapshot.md)**: Serialized index state used to accelerate repeated queries and reduce redundant filesystem scans.
 
-- **[ART-002 - MCP Response](MIS-001/Artifact/ART-002-MCP_Response.md)**: A structured tool result returned over stdio, encoded as JSON or NDJSON depending on the tool and payload size.
+- **[ART-002 - MCP Response](MIS-001/Artifact/ART-002-MCP_Response.md)**: A structured tool result returned over stdio as a single JSON frame. Large result sets SHOULD be carried either as bounded JSON arrays/objects, or by returning a job id and streaming NDJSON via job tools.
 
 ### Asset
 
@@ -102,7 +106,9 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CAP-013 - Conformance Validation](MIS-001/Capability/CAP-013-Conformance_Validation.md)**: Run a conformance suite that validates schemas, deterministic error taxonomy behavior, dry-run guarantees, and workspace boundary enforcement.
 
-- **[CAP-003 - Safe File Operations](MIS-001/Capability/CAP-003-Safe_File_Operations.md)**: Perform safe, bounded, and mostly-atomic workspace mutations including patching with conflict reporting and bulk operations with dry-run.
+- **[CAP-003 - Safe File Operations](MIS-001/Capability/CAP-003-Safe_File_Operations.md)**: Perform safe, bounded, and mostly-atomic workspace mutations including patching with conflict reporting, bulk operations with dry-run, and bounded byte-chunk file mutation for binary/any-size files.
+
+- **[CAP-014 - Local Memory](MIS-001/Capability/CAP-014-Local_Memory.md)**: Store, retrieve, and search structured memory facts locally with deterministic behavior and offline-only semantics.
 
 - **[CAP-010 - Capability Discovery](MIS-001/Capability/CAP-010-Capability_Discovery.md)**: Expose discoverable metadata about available tools/capabilities, versions, schemas, limits, and execution modes.
 
@@ -141,6 +147,8 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[COM-016 - Conformance Runner](MIS-001/Component/COM-016-Conformance_Runner.md)**: Executes the conformance suite and reports pass/fail results for schema validity, deterministic taxonomy behavior, dry-run guarantees, and boundary enforcement.
 
 - **[COM-001 - Stdio Transport](MIS-001/Component/COM-001-Stdio_Transport.md)**: Implements stdio request/response transport and framing for MCP tool calls.
+
+- **[COM-017 - Memory Manager](MIS-001/Component/COM-017-Memory_Manager.md)**: Provides CRUD for memory facts and deterministic full-text search over stored facts, maintaining a local index. Supports subject/category/tag filtering and an effective view over user/workspace stores.
 
 - **[COM-010 - Job Manager](MIS-001/Component/COM-010-Job_Manager.md)**: Manages asynchronous jobs, streaming outputs, cancellation, timeouts, and introspection.
 
@@ -236,6 +244,8 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[DST-002 - Job and Session Store](MIS-001/Data_Store/DST-002-Job_and_Session_Store.md)**: Local persistent or durable storage for background job state, output streams, and session introspection metadata.
 
+- **[DST-004 - Memory Store](MIS-001/Data_Store/DST-004-Memory_Store.md)**: Local persistent storage for memory facts and their derived search index.
+
 ### Deployment
 
 - **[DEP-001 - Local Stdio Process](MIS-001/Deployment/DEP-001-Local_Stdio_Process.md)**: A stdio-launched process local to the workspace host (which may be remote under VS Code Remote Development), using stdio for request/response transport.
@@ -245,6 +255,8 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[DRI-005 - Local-First and Self-Contained](MIS-001/Driver/DRI-005-LocalFirst_and_SelfContained.md)**: Alfred must run locally over stdio without relying on external services, and should be usable across macOS/Linux/Windows.
 
 - **[DRI-003 - Deterministic Contracts](MIS-001/Driver/DRI-003-Deterministic_Contracts.md)**: Agents need consistent schemas, errors, and diagnostics across tools to support reliable automation and low-token summaries.
+
+- **[DRI-006 - Offline Agent Memory Reliability](MIS-001/Driver/DRI-006-Offline_Agent_Memory_Reliability.md)**: Agents need a stable, offline-only memory mechanism that remains available even when online or host-provided memory features fail.
 
 - **[DRI-002 - Safety and Trust](MIS-001/Driver/DRI-002-Safety_and_Trust.md)**: Mutating tools must be safe by default: enforce workspace boundaries, support dry-run, and provide conflict-aware patching.
 
@@ -494,7 +506,9 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[FEA-008 - Log Tailing and Filtering](MIS-001/Feature/FEA-008-Log_Tailing_and_Filtering.md)**: Tail and filter tool/runtime logs for debugging and monitoring long-running operations.
 
-- **[FEA-006 - Background Job Control](MIS-001/Feature/FEA-006-Background_Job_Control.md)**: Asynchronous job execution with streaming output, cancellation/timeouts, and introspection.
+- **[FEA-014 - Local Indexed Memory Tooling](MIS-001/Feature/FEA-014-Local_Indexed_Memory_Tooling.md)**: CRUD and full-text search tools for persistent local memory facts, backed by an index for fast recall.
+
+- **[FEA-006 - Background Job Control](MIS-001/Feature/FEA-006-Background_Job_Control.md)**: Asynchronous job execution with streaming output, cancellation/timeouts, and job/session introspection.
 
 - **[FEA-011 - Action Chaining Orchestration](MIS-001/Feature/FEA-011-Action_Chaining_Orchestration.md)**: Execute multi-step tool chains with ordered execution, per-step status, and stop-on-failure defaults.
 
@@ -502,7 +516,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[FEA-001 - Index and Query Tools](MIS-001/Feature/FEA-001-Index_and_Query_Tools.md)**: Provide ls/grep/rg/symbol/range/diff primitives backed by a workspace index.
 
-- **[FEA-003 - Safe File Mutation Tools](MIS-001/Feature/FEA-003-Safe_File_Mutation_Tools.md)**: Implement atomic CRUD (where practical), patch with conflict reporting, and bulk ops with dry-run.
+- **[FEA-003 - Safe File Mutation Tools](MIS-001/Feature/FEA-003-Safe_File_Mutation_Tools.md)**: Implement atomic CRUD (where practical), patch with conflict reporting, bulk ops with dry-run, and bounded byte-chunk file mutation for binary/any-size files.
 
 - **[FEA-004 - Project Plan Tooling](MIS-001/Feature/FEA-004-Project_Plan_Tooling.md)**: Create and update a project plan capturing progress and tool/diagnostic failures.
 
@@ -528,7 +542,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[REQ-016 - Local-First Execution](MIS-001/Requirement/REQ-016-LocalFirst_Execution.md)**: Alfred MUST run as a local stdio server relative to the workspace host (including VS Code Remote Development modes), enforce workspace boundaries, remain self-contained (no outside services), and support Linux/macOS/Windows.
 
-- **[REQ-008 - Log Handling](MIS-001/Requirement/REQ-008-Log_Handling.md)**: Alfred MUST tail and filter logs.
+- **[REQ-008 - Log Handling](MIS-001/Requirement/REQ-008-Log_Handling.md)**: Alfred MUST tail and filter logs using a standardized NDJSON log record format and deterministic redaction.
 
 - **[REQ-005 - Task Execution](MIS-001/Requirement/REQ-005-Task_Execution.md)**: Alfred MUST run named tasks (e.g. build/test) and common ecosystem commands (cargo, pnpm, lint, format).
 
@@ -537,6 +551,8 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[REQ-006 - Background Operations](MIS-001/Requirement/REQ-006-Background_Operations.md)**: Alfred MUST support asynchronous operations with streaming output, cancellation and timeout controls, and job/session introspection.
 
 - **[REQ-012 - Normalized Diagnostics Contract](MIS-001/Requirement/REQ-012-Normalized_Diagnostics_Contract.md)**: Alfred MUST provide a normalized diagnostics contract for build/test/lint/format, with consistent schema and optional delta reporting between runs.
+
+- **[REQ-017 - Local Indexed Memory](MIS-001/Requirement/REQ-017-Local_Indexed_Memory.md)**: Alfred MUST provide a local, indexed, searchable memory store that supports CRUD for individual facts and full-text search.
 
 - **[REQ-011 - Single-Call Action Chaining](MIS-001/Requirement/REQ-011-SingleCall_Action_Chaining.md)**: Alfred MUST support single-call action chaining (e.g. search → patch → validate) with per-step status and error details.
 
@@ -793,6 +809,8 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[STR-015 - Work with any-size files](MIS-001/Story/STR-015-Work_with_anysize_files.md)**: As an agent user, I need Alfred to handle any-size files (including large repos and binaries) so that real-world codebases do not break the workflow.
 
 - **[STR-004 - Track a project plan and progress](MIS-001/Story/STR-004-Track_a_project_plan_and_progress.md)**: As an agent user, I need Alfred to maintain a structured plan and completion state so that long-running work stays coherent and progress can be reported incrementally.
+
+- **[STR-017 - Remember facts offline](MIS-001/Story/STR-017-Remember_facts_offline.md)**: As an agent user, I need Alfred to store and recall stable facts offline so that my workflow remains reliable even when online memory features are unavailable.
 
 - **[STR-002 - Understand current context](MIS-001/Story/STR-002-Understand_current_context.md)**: As an agent user, I need Alfred to maintain and expose relevant context (workspace metadata, recent actions, and constraints) so that tool results are interpretable and I can avoid repeating expensive discovery work.
 
