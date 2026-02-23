@@ -6,6 +6,7 @@ use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
+use crate::configuration::AppConfig;
 use crate::errors::ToolError;
 use crate::services::ServiceContainer;
 use crate::tools::ToolRegistry;
@@ -166,7 +167,11 @@ pub fn handle_startup_frame(raw_frame: &str) -> Result<Option<String>> {
 
 	match method {
 		Some("initialize") => build_initialize_response(jsonrpc, id).map(Some),
-		Some("tools/list") => build_tools_list_response(jsonrpc, id).map(Some),
+		Some("tools/list") => {
+			let config = AppConfig::load_default().context("failed to load configuration")?;
+			let tool_names = ToolRegistry::new().tool_names_for_config(&config);
+			build_tools_list_response(jsonrpc, id, tool_names).map(Some)
+		}
 		Some(other) => build_method_not_implemented_response(jsonrpc, id, other).map(Some),
 		None => Ok(None),
 	}
@@ -196,7 +201,10 @@ pub fn handle_runtime_frame(
 
 	match method {
 		Some("initialize") => build_initialize_response(jsonrpc, id).map(Some),
-		Some("tools/list") => build_tools_list_response(jsonrpc, id).map(Some),
+		Some("tools/list") => {
+			let tool_names = ToolRegistry::new().tool_names_for_config(&services.config);
+			build_tools_list_response(jsonrpc, id, tool_names).map(Some)
+		}
 		Some("tools/call") => {
 			build_tools_call_response(jsonrpc, id, frame.get("params"), services).map(Some)
 		}
@@ -241,9 +249,8 @@ fn build_initialize_response(jsonrpc: &str, id: Value) -> Result<String> {
 	serde_json::to_string(&response).context("failed to serialize initialize response")
 }
 
-fn build_tools_list_response(jsonrpc: &str, id: Value) -> Result<String> {
-	let tools = ToolRegistry::new()
-		.tool_names()
+fn build_tools_list_response(jsonrpc: &str, id: Value, tool_names: Vec<&str>) -> Result<String> {
+	let tools = tool_names
 		.into_iter()
 		.map(|name| {
 			json!({

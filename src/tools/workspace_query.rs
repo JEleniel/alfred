@@ -15,6 +15,7 @@ use crate::services::ServiceContainer;
 use crate::services::indexer::SearchMatch;
 
 const DEFAULT_LIMIT: usize = 100;
+pub const MAX_FILE_CHUNK_BYTES: usize = 64 * 1024;
 
 /// Index-backed workspace query tools.
 #[derive(Debug, Clone, Copy, Default)]
@@ -221,6 +222,11 @@ fn handle_file_read_bytes(args: Value, services: &ServiceContainer) -> Result<Va
 		return Err(AlfredError::InvalidArgument(
 			"length must be greater than 0".to_string(),
 		));
+	}
+	if args.length > MAX_FILE_CHUNK_BYTES {
+		return Err(AlfredError::ResourceExhausted(format!(
+			"length exceeds max_file_chunk_bytes: {MAX_FILE_CHUNK_BYTES}"
+		)));
 	}
 
 	let path = normalize_required_path(args.path.as_str())?;

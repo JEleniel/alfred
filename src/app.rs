@@ -60,11 +60,12 @@ impl AlfredApp {
 
 	/// Runs the Alfred process loop skeleton.
 	pub async fn run(&self) -> Result<()> {
+		let enabled_tool_count = self.tools.tool_names_for_config(&self.config).len();
 		info!(
 			"booted {} at {} with {} tools",
 			env!("CARGO_PKG_NAME"),
 			self.config.workspace_root.display(),
-			self.tools.tool_count()
+			enabled_tool_count
 		);
 
 		let _ = &self.services;

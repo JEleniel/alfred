@@ -23,6 +23,7 @@ use self::task_runner::TaskRunner;
 /// Aggregates all long-lived services used by tool handlers.
 #[derive(Debug)]
 pub struct ServiceContainer {
+	pub config: AppConfig,
 	pub indexer: WorkspaceIndexer,
 	pub file_ops: FileOperationsEngine,
 	pub task_runner: TaskRunner,
@@ -40,6 +41,7 @@ impl ServiceContainer {
 		let runtime_log_path = default_runtime_log_path(&workspace_root);
 
 		Ok(Self {
+			config: config.clone(),
 			indexer: WorkspaceIndexer::new_with_options(
 				workspace_root.clone(),
 				config.effective_workspace_index_root(),

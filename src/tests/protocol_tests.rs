@@ -10,6 +10,7 @@ use crate::protocol::{
 	handle_runtime_frame, handle_startup_frame,
 };
 use crate::services::ServiceContainer;
+use crate::tools::workspace_query::MAX_FILE_CHUNK_BYTES;
 
 struct TestDir {
 	path: PathBuf,
@@ -60,6 +61,26 @@ fn build_services_for_fixture(with_index: bool) -> (ServiceContainer, TestDir) {
 
 	let mut config = AppConfig::load_default().expect("default config should load");
 	config.workspace_root = workspace.path.clone();
+	let services = ServiceContainer::new(config).expect("service container should build");
+	if with_index {
+		services
+			.indexer
+			.rebuild()
+			.expect("fixture index should build");
+	}
+	(services, workspace)
+}
+
+fn build_services_for_fixture_with_disabled_tools(
+	with_index: bool,
+	disabled_tools: Vec<String>,
+) -> (ServiceContainer, TestDir) {
+	let workspace = TestDir::new("protocol-tools-policy-tests");
+	copy_fixture_tree(fixture_workspace().as_path(), workspace.path.as_path());
+
+	let mut config = AppConfig::load_default().expect("default config should load");
+	config.workspace_root = workspace.path.clone();
+	config.disabled_tools = disabled_tools;
 	let services = ServiceContainer::new(config).expect("service container should build");
 	if with_index {
 		services
@@ -376,4 +397,125 @@ fn pending_envelope_includes_transport_equivalent_metadata() {
 		json!(202)
 	);
 	assert!(payload["meta"].get("warnings").is_none());
+}
+
+#[test]
+fn runtime_tools_list_omits_policy_disabled_tools() {
+	let (services, _workspace) =
+		build_services_for_fixture_with_disabled_tools(true, vec!["grep".to_string()]);
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 104,
+		"method": "tools/list",
+		"params": {}
+	});
+
+	let response = handle_runtime_frame(frame.to_string().as_str(), &services)
+		.expect("runtime frame should parse")
+		.expect("tools/list should return response");
+	let payload: Value = serde_json::from_str(&response).expect("response should be valid JSON");
+	let names = payload["result"]["tools"]
+		.as_array()
+		.expect("tools/list should return a tools array")
+		.iter()
+		.filter_map(|entry| entry.get("name").and_then(Value::as_str))
+		.collect::<Vec<_>>();
+	let mut sorted_names = names.clone();
+	sorted_names.sort_unstable();
+
+	assert!(!names.contains(&"grep"));
+	assert!(names.contains(&"workspace_dir"));
+	assert!(!names.contains(&"memory_put"));
+	assert_eq!(names, sorted_names);
+}
+
+#[test]
+fn runtime_tools_call_capabilities_returns_stable_tool_metadata() {
+	let (services, _workspace) = build_services_for_fixture(true);
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 106,
+		"method": "tools/call",
+		"params": {
+			"name": "capabilities",
+			"arguments": {}
+		}
+	});
+
+	let response = handle_runtime_frame(frame.to_string().as_str(), &services)
+		.expect("runtime frame should parse")
+		.expect("tools/call should return response");
+	let payload: Value = serde_json::from_str(&response).expect("response should be valid JSON");
+
+	assert_eq!(payload["result"]["isError"], json!(false));
+	assert_eq!(
+		payload["result"]["structuredContent"]["status"],
+		json!("ok")
+	);
+
+	let tools = payload["result"]["structuredContent"]["data"]["tools"]
+		.as_array()
+		.expect("capabilities should return a tools array");
+	let names = tools
+		.iter()
+		.filter_map(|tool| tool.get("name").and_then(Value::as_str))
+		.collect::<Vec<_>>();
+	let mut sorted_names = names.clone();
+	sorted_names.sort_unstable();
+
+	assert_eq!(names, sorted_names);
+	assert!(names.contains(&"capabilities"));
+	assert!(names.contains(&"workspace_dir"));
+	assert!(!names.contains(&"memory_put"));
+
+	for tool in tools {
+		assert_eq!(tool["version"], json!(env!("CARGO_PKG_VERSION")));
+		assert_eq!(tool["schema_version"], json!(env!("CARGO_PKG_VERSION")));
+		assert_eq!(tool["execution_modes"], json!(["sync"]));
+	}
+
+	let file_read_bytes = tools
+		.iter()
+		.find(|tool| tool["name"] == "file_read_bytes")
+		.expect("capabilities should include file_read_bytes");
+	assert_eq!(
+		file_read_bytes["limits"]["max_file_chunk_bytes"],
+		json!(MAX_FILE_CHUNK_BYTES)
+	);
+}
+
+#[test]
+fn runtime_tools_call_returns_invalid_argument_for_policy_disabled_tool() {
+	let (services, _workspace) =
+		build_services_for_fixture_with_disabled_tools(true, vec!["grep".to_string()]);
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 105,
+		"method": "tools/call",
+		"params": {
+			"name": "grep",
+			"arguments": {
+				"query": "hello"
+			}
+		}
+	});
+
+	let response = handle_runtime_frame(frame.to_string().as_str(), &services)
+		.expect("runtime frame should parse")
+		.expect("tools/call should return response");
+	let payload: Value = serde_json::from_str(&response).expect("response should be valid JSON");
+
+	assert_eq!(payload["result"]["isError"], json!(true));
+	assert_eq!(
+		payload["result"]["structuredContent"]["status"],
+		json!("error")
+	);
+	assert_eq!(
+		payload["result"]["structuredContent"]["error"]["kind"],
+		json!("invalid_argument")
+	);
+	assert_eq!(
+		payload["result"]["structuredContent"]["error"]["retryable"],
+		json!(false)
+	);
 }

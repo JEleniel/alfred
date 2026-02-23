@@ -19,11 +19,16 @@ fn rejects_path_traversal_inputs() {
 }
 
 #[test]
-fn registry_contains_memory_tools() {
+fn registry_contains_only_implemented_tools() {
 	let registry = ToolRegistry::new();
 	let names = registry.tool_names();
+	let mut sorted_names = names.clone();
+	sorted_names.sort_unstable();
 
-	assert!(names.contains(&"memory_put"));
-	assert!(names.contains(&"memory_search"));
-	assert!(registry.tool_count() >= names.len());
+	assert_eq!(names, sorted_names);
+	assert!(names.contains(&"capabilities"));
+	assert!(names.contains(&"workspace_dir"));
+	assert!(names.contains(&"grep"));
+	assert!(!names.contains(&"memory_put"));
+	assert_eq!(registry.tool_count(), names.len());
 }

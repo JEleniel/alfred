@@ -8,6 +8,7 @@ use crate::configuration::AppConfig;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
 use crate::tools::workspace_query;
+use crate::tools::workspace_query::MAX_FILE_CHUNK_BYTES;
 
 struct TestDir {
 	path: PathBuf,
@@ -139,6 +140,31 @@ fn read_range_rejects_boundary_escape_segments() {
 
 	match result {
 		Err(AlfredError::WorkspaceBoundaryViolation(_)) => {}
+		other => panic!("unexpected result: {other:?}"),
+	}
+}
+
+#[test]
+fn file_read_bytes_rejects_length_above_max_file_chunk_bytes() {
+	let (services, _workspace) = build_services(true);
+
+	let result = workspace_query::dispatch_tool_call(
+		"file_read_bytes",
+		json!({
+			"path": "alpha.txt",
+			"offset": 0,
+			"length": MAX_FILE_CHUNK_BYTES + 1
+		}),
+		&services,
+	);
+
+	match result {
+		Err(AlfredError::ResourceExhausted(message)) => {
+			assert_eq!(
+				message,
+				format!("length exceeds max_file_chunk_bytes: {MAX_FILE_CHUNK_BYTES}")
+			);
+		}
 		other => panic!("unexpected result: {other:?}"),
 	}
 }

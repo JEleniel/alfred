@@ -12,7 +12,7 @@
     - Notes: This plan is intentionally protocol-first and synchronous-first. Job tooling is planned later.
     - Status: completed
 
-2. [ ] Implement configuration loading and deterministic policy guardrails
+2. [x] Implement configuration loading and deterministic policy guardrails
     - Priority: 0
     - Cards: "CNS-010", "CNS-015", "STR-014", "STR-009"
     - Description: Load and merge user/workspace configuration and use it to deterministically govern tool exposure and safety posture.
@@ -21,9 +21,9 @@
         - Implement tool enable/disable policy (including default-disable for mutating tools).
         - Ensure both `tools/list` and runtime dispatch reflect policy.
         - Add/extend tests in `src/tests/configuration_tests.rs` for config precedence and gating behavior.
-    - Status: planned
+    - Status: completed
 
-3. [ ] Implement `capabilities` tool and make `tools/list` truthful
+3. [x] Implement `capabilities` tool and make `tools/list` truthful
     - Priority: 1
     - Cards: "CNS-008", "CNS-010", "STR-010", "ART-002"
     - Description: Provide deterministic capability discovery and ensure the MCP `tools/list` surface matches what is actually implemented and enabled.
@@ -32,7 +32,7 @@
         - Ensure `tools/list` only advertises tools that are implemented and enabled by policy.
         - Publish limits required by tool contracts (for example, file chunk limits).
         - Add protocol-level tests asserting the `capabilities` payload shape and stable ordering.
-    - Status: planned
+    - Status: completed
 
 4. [ ] Bring workspace query tools up to contract conformance
     - Priority: 1

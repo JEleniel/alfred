@@ -15,6 +15,7 @@ pub mod workspace_query;
 
 use serde_json::Value;
 
+use crate::configuration::AppConfig;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
 
@@ -59,16 +60,7 @@ impl ToolRegistry {
 		let mut names = Vec::new();
 		names.extend_from_slice(ContextTools::NAMES);
 		names.extend_from_slice(WorkspaceQueryTools::NAMES);
-		names.extend_from_slice(FileMutationTools::NAMES);
-		names.extend_from_slice(TaskExecutionTools::NAMES);
-		names.extend_from_slice(JobTools::NAMES);
-		names.extend_from_slice(SessionTools::NAMES);
-		names.extend_from_slice(LogTools::NAMES);
-		names.extend_from_slice(PlanTools::NAMES);
 		names.extend_from_slice(CapabilityTools::NAMES);
-		names.extend_from_slice(ChainTools::NAMES);
-		names.extend_from_slice(EnvironmentTools::NAMES);
-		names.extend_from_slice(MemoryTools::NAMES);
 		names.sort_unstable();
 		names
 	}
@@ -76,6 +68,14 @@ impl ToolRegistry {
 	/// Returns the total number of registered tools.
 	pub fn tool_count(&self) -> usize {
 		self.tool_names().len()
+	}
+
+	/// Returns policy-filtered tool names for a given configuration.
+	pub fn tool_names_for_config(&self, config: &AppConfig) -> Vec<&'static str> {
+		self.tool_names()
+			.into_iter()
+			.filter(|name| config.is_tool_enabled(name))
+			.collect()
 	}
 }
 
@@ -85,7 +85,17 @@ pub fn dispatch_tool_call(
 	args: Value,
 	services: &ServiceContainer,
 ) -> Result<Value, AlfredError> {
+	if !services.config.is_tool_enabled(name) {
+		return Err(AlfredError::InvalidArgument(format!(
+			"tool disabled by policy: {name}"
+		)));
+	}
+
 	if let Some(data) = context::dispatch_tool_call(name, services) {
+		return Ok(data);
+	}
+
+	if let Some(data) = capabilities::dispatch_tool_call(name, services) {
 		return Ok(data);
 	}
 
