@@ -1,6 +1,6 @@
 # Activity: ATV-005 Manage Plan and Progress
 
-Create/update a task plan and report progress incrementally with clear completion semantics.
+Create/update a project plan and report progress incrementally with clear completion semantics.
 
 
 
@@ -21,3 +21,4 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T01:34:17Z | copilot | create |
+| 2026-02-23T21:04:19Z | copilot | change |

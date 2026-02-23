@@ -27,10 +27,6 @@
 		},
 		{
 			"relationship": "comprises",
-			"target": "COM-009"
-		},
-		{
-			"relationship": "comprises",
 			"target": "COM-010"
 		},
 		{

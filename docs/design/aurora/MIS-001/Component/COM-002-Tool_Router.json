@@ -4,7 +4,7 @@
 	"card_type": "Component",
 	"card_subtype": "Subsystem",
 	"name": "Tool Router",
-	"description": "Dispatches tool requests to the appropriate subsystem, enforces execution semantics for chaining, and coordinates response shaping.",
+	"description": "Dispatches tool requests to the appropriate subsystem and coordinates deterministic response shaping.",
 	"links": [
 		{
 			"relationship": "composes",
@@ -24,10 +24,6 @@
 		},
 		{
 			"relationship": "composes",
-			"target": "COM-009"
-		},
-		{
-			"relationship": "composes",
 			"target": "COM-010"
 		},
 		{
@@ -44,19 +40,11 @@
 		},
 		{
 			"relationship": "composes",
-			"target": "COM-015"
-		},
-		{
-			"relationship": "composes",
 			"target": "COM-016"
 		},
 		{
 			"relationship": "composes",
 			"target": "COM-017"
-		},
-		{
-			"relationship": "implements",
-			"target": "FEA-011"
 		},
 		{
 			"relationship": "executes",
@@ -68,7 +56,6 @@
 		}
 	],
 	"attributes": {
-		"default_chain_behavior": "stop-on-failure",
 		"execution_modes": ["sync", "async"]
 	}
 }

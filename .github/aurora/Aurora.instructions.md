@@ -148,7 +148,7 @@ These invariant rules ensure that the model is a rooted directed graph with only
 ## Optimizations for Handling Models
 
 - Treat the mission audit log (`{mission id}/AuditLog.ndjson`) as the primary “what changed” record.
-
+- In order to extract all details for an Application, start at the APP card and work down as if rendering a view. This skips having to scan the entire model
 - The audit log is append-only NDJSON. In most workflows, appending a new entry is sufficient; avoid reading the entire file unless required.
 - Many Aurora workflows regenerate large, mechanical outputs (for example views, markdown renderings, and compact exports). These changes can overwhelm `git diff` and obscure intent.
 

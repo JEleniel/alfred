@@ -1,8 +1,0 @@
-{
-	"$schema": "../../schemas/Aurora.card.schema.json",
-	"id": "CNS-018",
-	"card_type": "Constraint",
-	"name": "No Shell by Default for Task Execution",
-	"description": "Task execution MUST default to argv-based process spawning (no shell) to avoid cross-platform quoting differences and injection risks; shell execution MUST be explicitly requested and treated as less portable.",
-	"links": []
-}

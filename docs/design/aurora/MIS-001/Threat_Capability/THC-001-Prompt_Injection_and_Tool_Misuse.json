@@ -3,6 +3,6 @@
 	"id": "THC-001",
 	"card_type": "Threat Capability",
 	"name": "Prompt Injection and Tool Misuse",
-	"description": "Capability to coerce the system into unsafe tool usage (e.g., path traversal, symlink exploitation, excessive resource use, or invoking the task runner to exfiltrate data).",
+	"description": "Capability to coerce the system into unsafe tool usage (e.g., path traversal, symlink exploitation, excessive resource use, or abusing tool outputs for exfiltration).",
 	"links": []
 }

@@ -3,6 +3,6 @@
 	"id": "CNS-019",
 	"card_type": "Constraint",
 	"name": "Cross-Platform Cancellation Semantics",
-	"description": "Background jobs and tasks MUST support best-effort cancellation with documented semantics that work on Linux/macOS/Windows (terminate → wait → force kill), acknowledging OS-specific differences.",
+	"description": "Background jobs MUST support best-effort cancellation with documented semantics that work on Linux/macOS/Windows (terminate → wait → force kill), acknowledging OS-specific differences.",
 	"links": []
 }

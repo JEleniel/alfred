@@ -24,10 +24,6 @@
 		},
 		{
 			"relationship": "desires",
-			"target": "STR-005"
-		},
-		{
-			"relationship": "desires",
 			"target": "STR-006"
 		},
 		{
@@ -45,10 +41,6 @@
 		{
 			"relationship": "desires",
 			"target": "STR-010"
-		},
-		{
-			"relationship": "desires",
-			"target": "STR-011"
 		},
 		{
 			"relationship": "desires",

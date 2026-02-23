@@ -1,6 +1,6 @@
 # Constraint: CNS-020 Environment Variable CRUD Scope
 
-Environment variable CRUD MUST be scoped to Alfred-controlled contexts (e.g., per-task environment or managed .env files). Alfred MUST NOT claim to mutate the parent IDE or shell environment across OSes.
+Environment variable CRUD MUST be scoped to Alfred-controlled contexts (e.g., managed .env files or tool-scoped environments). Alfred MUST NOT claim to mutate the parent IDE or shell environment across OSes.
 
 
 
@@ -19,3 +19,4 @@ _No links defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T01:16:57Z | copilot | create |
+| 2026-02-23T21:04:19Z | copilot | change |

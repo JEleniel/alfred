@@ -1,6 +1,6 @@
 # Control: CTL-002 Permissions and User Confirmation
 
-Require explicit permissions for sensitive tool categories (writes, deletes, patch application, and task execution). Support IDE-compliant prompts and policy defaults that assume the agent may be malicious.
+Require explicit permissions for sensitive tool categories (writes, deletes, patch application, and environment management). Support IDE-compliant prompts and policy defaults that assume the agent may be malicious.
 
 
 
@@ -27,3 +27,4 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-20T00:15:00Z | copilot | create |
+| 2026-02-23T21:04:19Z | copilot | change |

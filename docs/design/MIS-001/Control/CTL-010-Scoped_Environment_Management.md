@@ -1,6 +1,6 @@
 # Control: CTL-010 Scoped Environment Management
 
-Scope environment-variable changes to Alfred-managed contexts (per-task env or managed .env files) and report resulting env deterministically; do not attempt to mutate the parent IDE/shell environment.
+Scope environment-variable changes to Alfred-managed contexts (tool-scoped env or managed .env files) and report resulting env deterministically; do not attempt to mutate the parent IDE/shell environment.
 
 
 
@@ -23,3 +23,4 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T01:16:57Z | copilot | create |
+| 2026-02-23T21:04:19Z | copilot | change |

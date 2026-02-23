@@ -1,6 +1,6 @@
-# Threat Diamond: THD-002 Malicious Command Execution and Exfiltration
+# Threat Diamond: THD-002 Malicious Tool Misuse and Exfiltration
 
-A malicious/compromised agent attempts to use Alfred’s task execution capability to run dangerous commands (including commands that exfiltrate data), or to perform destructive operations that the user would not approve.
+A malicious/compromised agent attempts to misuse Alfred tool capabilities to exfiltrate data or perform destructive operations that the user would not approve.
 
 
 
@@ -16,8 +16,7 @@ _No attributes defined._
 - uses [THC-001](../Threat_Capability/THC-001-Prompt_Injection_and_Tool_Misuse.md)
 - impacts [VIC-001](../Victim/VIC-001-Developer_User.md)
 - creates [RIS-001](../Risk/RIS-001-Unauthorized_Data_Disclosure.md)
-- creates [RIS-007](../Risk/RIS-007-Shell_Quoting_Injection_Portability_Issues.md)
-- creates [RIS-008](../Risk/RIS-008-Cancellation_Failure_Runaway_Tasks.md)
+- creates [RIS-008](../Risk/RIS-008-Cancellation_Failure_Runaway_Jobs.md)
 - creates [RIS-010](../Risk/RIS-010-Env_Var_CRUD_Semantics_Mislead_Users.md)
 - creates [RIS-013](../Risk/RIS-013-Remote_Dev_Environment_Mismatch.md)
 - creates [RIS-014](../Risk/RIS-014-Remote_FS_Caching_Watcher_Inconsistency.md)
@@ -33,3 +32,4 @@ _No attributes defined._
 | 2026-02-20T00:15:00Z | copilot | create |
 | 2026-02-21T01:16:57Z | copilot | change |
 | 2026-02-21T01:23:24Z | copilot | change |
+| 2026-02-23T21:04:19Z | copilot | change |

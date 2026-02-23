@@ -3,6 +3,6 @@
 	"id": "CNS-020",
 	"card_type": "Constraint",
 	"name": "Environment Variable CRUD Scope",
-	"description": "Environment variable CRUD MUST be scoped to Alfred-controlled contexts (e.g., per-task environment or managed .env files). Alfred MUST NOT claim to mutate the parent IDE or shell environment across OSes.",
+	"description": "Environment variable CRUD MUST be scoped to Alfred-controlled contexts (e.g., managed .env files or tool-scoped environments). Alfred MUST NOT claim to mutate the parent IDE or shell environment across OSes.",
 	"links": []
 }

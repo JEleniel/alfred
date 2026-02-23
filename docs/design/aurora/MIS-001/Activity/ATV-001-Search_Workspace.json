@@ -3,7 +3,7 @@
 	"id": "ATV-001",
 	"card_type": "Activity",
 	"name": "Search Workspace",
-	"description": "Search and inspect workspace files to locate relevant code and context for a task.",
+	"description": "Search and inspect workspace files to locate relevant code and context for the requested change.",
 	"links": [
 		{
 			"relationship": "uses",

@@ -3,7 +3,7 @@
 	"id": "CTL-002",
 	"card_type": "Control",
 	"name": "Permissions and User Confirmation",
-	"description": "Require explicit permissions for sensitive tool categories (writes, deletes, patch application, and task execution). Support IDE-compliant prompts and policy defaults that assume the agent may be malicious.",
+	"description": "Require explicit permissions for sensitive tool categories (writes, deletes, patch application, and environment management). Support IDE-compliant prompts and policy defaults that assume the agent may be malicious.",
 	"links": [
 		{
 			"relationship": "protects",

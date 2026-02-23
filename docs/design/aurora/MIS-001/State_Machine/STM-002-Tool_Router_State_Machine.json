@@ -35,8 +35,7 @@
 		"initial_state": "STA-007",
 		"steady_state": "STA-007",
 		"determinism_notes": [
-			"Requests are validated before dispatch; invalid requests fail fast with deterministic taxonomy.",
-			"Stop-on-failure chaining is enforced at the router boundary."
+			"Requests are validated before dispatch; invalid requests fail fast with deterministic taxonomy."
 		]
 	}
 }

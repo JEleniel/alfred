@@ -20,10 +20,6 @@
 		},
 		{
 			"relationship": "performs",
-			"target": "ATV-004"
-		},
-		{
-			"relationship": "performs",
 			"target": "ATV-005"
 		},
 		{

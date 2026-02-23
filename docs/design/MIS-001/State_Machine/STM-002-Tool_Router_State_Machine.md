@@ -7,7 +7,7 @@ Deterministic request lifecycle for COM-002 (Tool Router): validate, dispatch, s
 ## Attributes
 
 - **component**: "COM-002"
-- **determinism_notes**: ["Requests are validated before dispatch; invalid requests fail fast with deterministic taxonomy.","Stop-on-failure chaining is enforced at the router boundary."]
+- **determinism_notes**: ["Requests are validated before dispatch; invalid requests fail fast with deterministic taxonomy."]
 - **initial_state**: "STA-007"
 - **steady_state**: "STA-007"
 
@@ -29,3 +29,4 @@ Deterministic request lifecycle for COM-002 (Tool Router): validate, dispatch, s
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T02:15:00Z | copilot | create |
+| 2026-02-23T21:04:19Z | copilot | change |

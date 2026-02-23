@@ -1,6 +1,6 @@
 # System: SYS-001 Alfred
 
-A local MCP tool server providing workspace indexing, safe file operations, tool/task execution, and deterministic JSON/NDJSON contracts.
+A local MCP tool server providing workspace indexing, safe file operations, and deterministic JSON/NDJSON contracts.
 
 
 
@@ -22,3 +22,4 @@ A local MCP tool server providing workspace indexing, safe file operations, tool
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T00:00:00Z | copilot | create |
+| 2026-02-23T21:04:19Z | copilot | change |

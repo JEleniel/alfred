@@ -10,10 +10,9 @@ Alfred is intended to be used via an MCP host (for example, an IDE) that:
 
 ## Framing and encoding
 
-- Transport is **stdio**.
-- Each inbound request and outbound response is a single **UTF-8 JSON** value on its own line.
+- Transport is stdio.
+- Each inbound request and outbound response is a single UTF-8 JSON value on its own line.
 - Alfred MUST reject malformed frames deterministically.
-- All protocol-visible strings MUST be valid UTF-8.
 - All protocol-visible strings MUST be valid UTF-8.
     - When interacting with filesystem paths that cannot be represented as valid Unicode text, Alfred MUST encode them deterministically before emitting JSON.
 
@@ -21,8 +20,8 @@ Alfred is intended to be used via an MCP host (for example, an IDE) that:
 
 Unless a tool contract explicitly states otherwise, all `path` values in tool inputs and outputs:
 
-- Are **workspace-relative**.
-- Use **POSIX separators** (`/`) regardless of OS.
+- Are workspace-relative.
+- Use POSIX separators (`/`) regardless of OS.
 - MUST NOT be absolute.
 
 If an incoming request provides a path using `\` separators, Alfred MUST treat them as `/` separators before normalization.
@@ -66,41 +65,36 @@ Common metadata fields:
 A failed tool result MUST be shaped as:
 
 - `status`: `"error"`
-- `error`: deterministic error object (see `docs/design/ErrorTaxonomy.md`)
+- `error`: deterministic error object (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md))
 - `meta`: common metadata
 
 ### Pending (accepted)
 
-Some tools may start a bounded background job (for example, long-running tasks or large streaming results). In that case the initial call MUST return:
+Only `bulk_fs_operations` MAY return `status: "pending"`.
+
+When accepted for background execution, the response MUST include:
 
 - `status`: `"pending"`
-- `job_id`: string
-- `data`: tool-specific initial payload
-- `meta`: common metadata
-
-`status: "pending"` is semantically equivalent to **HTTP 202 Accepted**. Since Alfred runs over stdio, this is expressed as metadata:
-
+- `data.operation_id`: string
+- `data.state`: `"queued" | "running"`
+- `data.poll_with`: `"bulk_fs_operations"`
 - `meta.transport_equivalent.http_status`: `202`
 
-## NDJSON and streaming
+Background status MUST be retrieved by calling `bulk_fs_operations` with `mode: "status"`.
 
-Some tools may produce large result sets (for example workspace search or memory search). Alfred supports two response modes:
+## NDJSON usage
 
-- **Synchronous (JSON)**: the tool returns a bounded JSON structure in the normal tool result envelope.
-- **Streaming (NDJSON via jobs)**: the tool returns `status: "pending"` with an envelope `job_id`, and the caller reads append-only NDJSON output via job tools (for example `job_read`).
+Alfred uses NDJSON for structured log persistence and exchange, but not for a standalone job-stream tool family.
 
-The job tool surface is specified in [`docs/design/ToolContracts.md`](./ToolContracts.md).
-
-Notes:
-
-- All tool calls still use normal JSON framing on stdio. “Streaming” refers to the tool's result content being delivered as NDJSON items via job tooling.
-- NDJSON items MUST be stable-ordered, and each line MUST be a complete JSON object.
+- Log records are NDJSON append-only JSON objects.
+- NDJSON items MUST be stable-ordered where ordering is contractually defined.
+- Each NDJSON line MUST be a complete JSON object.
 
 ## MCP compliance notes
 
 - Compliance with the MCP specification is paramount.
 - Alfred MUST NOT emit any out-of-band or non-MCP framing on stdio.
-- “Streaming” in Alfred is achieved by sending additional MCP/JSON frames (each line is still a JSON value) and/or by using background job tooling (`status: "pending"` + `job_id`) and streaming NDJSON items within that tool surface.
+- All asynchronous behavior is represented through standard tool envelopes (`status: "pending"`) and subsequent tool calls, not custom transport channels.
 
 ## Redaction (secrets filtering)
 
@@ -116,11 +110,9 @@ The default replacement token is `<-REDACTED->`.
 
 The deterministic redaction algorithm (detection + replacement-length fitting) is specified in [`docs/design/Redaction.md`](./Redaction.md).
 
-Exception: tools whose primary purpose is to manage non-public values (for example, environment variable tools) MAY return unredacted values in the tool result `data`. These tools MUST still avoid emitting those values into tool/runtime logs.
-
 ## Structured log record (NDJSON)
 
-Alfred emits NDJSON append only logs intended to be consumed by tools (for example via log tailing/filtering), including Alfred itself. Each NDJSON line MUST be a single JSON object with this shape:
+Alfred emits NDJSON append-only logs intended to be consumed by tooling (for example via log search/tail operations). Each NDJSON line MUST be a single JSON object with this shape:
 
 - `timestamp` (string): RFC3339 (ISO 8601) UTC timestamp (seconds preferred; max milliseconds)
 - `level` (string): `"TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR"`
@@ -130,7 +122,7 @@ Alfred emits NDJSON append only logs intended to be consumed by tools (for examp
 
 `extra` SHOULD carry any additional context (for example component ids, stable event identifiers, tool names, non-secret call parameters, and redaction metadata) without changing the top-level schema.
 
-All log records MUST be safe to idempotently round-trip through Alfred tooling (i.e., deterministic JSON and already redacted).
+All log records MUST be safe to idempotently round-trip through Alfred tooling (that is deterministic JSON and already redacted).
 
 ## Determinism requirements
 

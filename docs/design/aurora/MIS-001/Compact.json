@@ -93,13 +93,8 @@
           "configuration": "docs/design/Configuration.md",
           "tool_contracts": "docs/design/ToolContracts.md"
         },
-        "task_execution": {
-          "env_allowlist_required": true,
-          "shell_disabled_by_default": true
-        },
         "tool_exposure": {
           "calling_disabled_tool_is_error": true,
-          "chain_referencing_disabled_tool_is_error": true,
           "disabled_tools_omitted_from_capabilities": true,
           "error_kind": "invalid_argument"
         }
@@ -115,13 +110,6 @@
       "id": "CNS-014",
       "links": [],
       "name": "Mobile Platforms Out of Scope"
-    },
-    {
-      "attributes": {},
-      "card_type": "Constraint",
-      "id": "CNS-009",
-      "links": [],
-      "name": "Stop-on-Failure Default for Chains"
     },
     {
       "attributes": {},
@@ -221,13 +209,6 @@
       "id": "CNS-011",
       "links": [],
       "name": "Git and GitHub Operations Out of Scope"
-    },
-    {
-      "attributes": {},
-      "card_type": "Constraint",
-      "id": "CNS-018",
-      "links": [],
-      "name": "No Shell by Default for Task Execution"
     },
     {
       "attributes": {},
@@ -458,26 +439,6 @@
     {
       "attributes": {},
       "card_type": "Story",
-      "id": "STR-005",
-      "links": [
-        {
-          "relationship": "explains",
-          "target": "REQ-005"
-        },
-        {
-          "relationship": "implies",
-          "target": "CNS-010"
-        },
-        {
-          "relationship": "implies",
-          "target": "CNS-018"
-        }
-      ],
-      "name": "Execute local tasks with guardrails"
-    },
-    {
-      "attributes": {},
-      "card_type": "Story",
       "id": "STR-016",
       "links": [
         {
@@ -550,26 +511,6 @@
         }
       ],
       "name": "Discover tool capabilities"
-    },
-    {
-      "attributes": {},
-      "card_type": "Story",
-      "id": "STR-011",
-      "links": [
-        {
-          "relationship": "explains",
-          "target": "REQ-011"
-        },
-        {
-          "relationship": "implies",
-          "target": "CNS-009"
-        },
-        {
-          "relationship": "implies",
-          "target": "CNS-015"
-        }
-      ],
-      "name": "Chain actions deterministically"
     },
     {
       "attributes": {},
@@ -678,42 +619,6 @@
         }
       ],
       "name": "Manage environment variables safely"
-    },
-    {
-      "attributes": {},
-      "card_type": "Control",
-      "id": "CTL-007",
-      "links": [
-        {
-          "relationship": "protects",
-          "target": "AST-002"
-        },
-        {
-          "relationship": "protects",
-          "target": "AST-003"
-        },
-        {
-          "relationship": "enforces",
-          "target": "CNS-018"
-        },
-        {
-          "relationship": "obstructs",
-          "target": "THC-001"
-        },
-        {
-          "relationship": "mitigates",
-          "target": "RIS-007"
-        },
-        {
-          "relationship": "mitigates",
-          "target": "RIS-001"
-        },
-        {
-          "relationship": "mitigates",
-          "target": "RIS-002"
-        }
-      ],
-      "name": "Argv-Only Task Execution (No Shell Default)"
     },
     {
       "attributes": {},
@@ -898,46 +803,6 @@
     {
       "attributes": {},
       "card_type": "Control",
-      "id": "CTL-003",
-      "links": [
-        {
-          "relationship": "protects",
-          "target": "AST-002"
-        },
-        {
-          "relationship": "protects",
-          "target": "AST-003"
-        },
-        {
-          "relationship": "enforces",
-          "target": "CNS-010"
-        },
-        {
-          "relationship": "enforces",
-          "target": "CNS-006"
-        },
-        {
-          "relationship": "governs",
-          "target": "DST-002"
-        },
-        {
-          "relationship": "governs",
-          "target": "DST-003"
-        },
-        {
-          "relationship": "mitigates",
-          "target": "RIS-001"
-        },
-        {
-          "relationship": "mitigates",
-          "target": "RIS-002"
-        }
-      ],
-      "name": "Safe Task Execution Policy"
-    },
-    {
-      "attributes": {},
-      "card_type": "Control",
       "id": "CTL-008",
       "links": [
         {
@@ -1047,10 +912,6 @@
         {
           "relationship": "mitigates",
           "target": "RIS-013"
-        },
-        {
-          "relationship": "mitigates",
-          "target": "RIS-007"
         }
       ],
       "name": "Remote Mode Environment Introspection"
@@ -1062,21 +923,6 @@
       "id": "ADV-001",
       "links": [],
       "name": "Malicious or Compromised Agent"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-035",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-052",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-038"
-        }
-      ],
-      "name": "Task Run Failed"
     },
     {
       "attributes": {
@@ -1260,21 +1106,6 @@
     },
     {
       "attributes": {
-        "from_state": "STA-065",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-093",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-061"
-        }
-      ],
-      "name": "Chain Completed Reported"
-    },
-    {
-      "attributes": {
         "from_state": "STA-055",
         "state_machine": "STM-011"
       },
@@ -1332,21 +1163,6 @@
         }
       ],
       "name": "Shutdown Requested"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-036",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-054",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-033"
-        }
-      ],
-      "name": "Task Result Emitted"
     },
     {
       "attributes": {
@@ -1440,21 +1256,6 @@
     },
     {
       "attributes": {
-        "from_state": "STA-064",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-107",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-066"
-        }
-      ],
-      "name": "Chain Stop Failed"
-    },
-    {
-      "attributes": {
         "from_state": "STA-055",
         "state_machine": "STM-011"
       },
@@ -1467,21 +1268,6 @@
         }
       ],
       "name": "Rotation Failed"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-037",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-053",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-036"
-        }
-      ],
-      "name": "Task Canceled"
     },
     {
       "attributes": {
@@ -1515,36 +1301,6 @@
     },
     {
       "attributes": {
-        "from_state": "STA-061",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-086",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-062"
-        }
-      ],
-      "name": "Chain Request Received"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-063",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-089",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-065"
-        }
-      ],
-      "name": "Steps Completed"
-    },
-    {
-      "attributes": {
         "from_state": "STA-049",
         "state_machine": "STM-010"
       },
@@ -1557,66 +1313,6 @@
         }
       ],
       "name": "CapReg Bootstrapped"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-037",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-108",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-038"
-        }
-      ],
-      "name": "Task Cancel Failed"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-063",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-090",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-064"
-        }
-      ],
-      "name": "Stop Requested"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-035",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-051",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-037"
-        }
-      ],
-      "name": "Task Cancel Requested"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-034",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-049",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-038"
-        }
-      ],
-      "name": "Task Preparation Failed"
     },
     {
       "attributes": {
@@ -1752,21 +1448,6 @@
         }
       ],
       "name": "Plan Validated For Execution"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-066",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-094",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-061"
-        }
-      ],
-      "name": "Chain Failure Reported"
     },
     {
       "attributes": {
@@ -1995,21 +1676,6 @@
     },
     {
       "attributes": {
-        "from_state": "STA-034",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-048",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-035"
-        }
-      ],
-      "name": "Task Prepared"
-    },
-    {
-      "attributes": {
         "from_state": "STA-028",
         "state_machine": "STM-006"
       },
@@ -2190,21 +1856,6 @@
     },
     {
       "attributes": {
-        "from_state": "STA-062",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-088",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-066"
-        }
-      ],
-      "name": "Chain Build Failed"
-    },
-    {
-      "attributes": {
         "from_state": "STA-005",
         "state_machine": "STM-001"
       },
@@ -2262,21 +1913,6 @@
         }
       ],
       "name": "Env Response Redacted"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-063",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-091",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-066"
-        }
-      ],
-      "name": "Step Failed"
     },
     {
       "attributes": {
@@ -2340,21 +1976,6 @@
     },
     {
       "attributes": {
-        "from_state": "STA-038",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-112",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-033"
-        }
-      ],
-      "name": "Task Failure Reported"
-    },
-    {
-      "attributes": {
         "from_state": "STA-019",
         "state_machine": "STM-004"
       },
@@ -2415,21 +2036,6 @@
     },
     {
       "attributes": {
-        "from_state": "STA-033",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-047",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-034"
-        }
-      ],
-      "name": "Task Request Received"
-    },
-    {
-      "attributes": {
         "from_state": "STA-039",
         "state_machine": "STM-008"
       },
@@ -2460,21 +2066,6 @@
     },
     {
       "attributes": {
-        "from_state": "STA-062",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-087",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-063"
-        }
-      ],
-      "name": "Chain Built"
-    },
-    {
-      "attributes": {
         "from_state": "STA-023",
         "state_machine": "STM-005"
       },
@@ -2502,21 +2093,6 @@
         }
       ],
       "name": "Plan Validation Failed"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-035",
-        "state_machine": "STM-007"
-      },
-      "card_type": "Event",
-      "id": "EVT-050",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-036"
-        }
-      ],
-      "name": "Task Run Completed"
     },
     {
       "attributes": {
@@ -2577,21 +2153,6 @@
         }
       ],
       "name": "Conformance Completed"
-    },
-    {
-      "attributes": {
-        "from_state": "STA-064",
-        "state_machine": "STM-013"
-      },
-      "card_type": "Event",
-      "id": "EVT-092",
-      "links": [
-        {
-          "relationship": "transitions to",
-          "target": "STA-065"
-        }
-      ],
-      "name": "Chain Stopped"
     },
     {
       "attributes": {
@@ -2796,10 +2357,6 @@
         },
         {
           "relationship": "performs",
-          "target": "ATV-004"
-        },
-        {
-          "relationship": "performs",
           "target": "ATV-005"
         },
         {
@@ -2846,7 +2403,7 @@
       "card_type": "Risk",
       "id": "RIS-008",
       "links": [],
-      "name": "Cancellation Failure / Runaway Tasks"
+      "name": "Cancellation Failure / Runaway Jobs"
     },
     {
       "attributes": {},
@@ -2861,13 +2418,6 @@
       "id": "RIS-002",
       "links": [],
       "name": "Host Compromise"
-    },
-    {
-      "attributes": {},
-      "card_type": "Risk",
-      "id": "RIS-007",
-      "links": [],
-      "name": "Shell Quoting / Injection / Portability Issues"
     },
     {
       "attributes": {},
@@ -2973,10 +2523,6 @@
         },
         {
           "relationship": "comprises",
-          "target": "COM-009"
-        },
-        {
-          "relationship": "comprises",
           "target": "COM-010"
         },
         {
@@ -3009,18 +2555,6 @@
         }
       ],
       "name": "Environment Variable Tooling"
-    },
-    {
-      "attributes": {},
-      "card_type": "Feature",
-      "id": "FEA-005",
-      "links": [
-        {
-          "relationship": "realizes",
-          "target": "CAP-005"
-        }
-      ],
-      "name": "Task Execution Tooling"
     },
     {
       "attributes": {
@@ -3127,22 +2661,6 @@
         }
       ],
       "name": "Background Job Control"
-    },
-    {
-      "attributes": {},
-      "card_type": "Feature",
-      "id": "FEA-011",
-      "links": [
-        {
-          "relationship": "realizes",
-          "target": "CAP-011"
-        },
-        {
-          "relationship": "implies",
-          "target": "CNS-009"
-        }
-      ],
-      "name": "Action Chaining Orchestration"
     },
     {
       "attributes": {},
@@ -3504,8 +3022,7 @@
           "cargo",
           "pnpm",
           "linters",
-          "formatters",
-          "tasks"
+          "formatters"
         ]
       },
       "card_subtype": "Report",
@@ -3768,42 +3285,6 @@
       "name": "Log Handling"
     },
     {
-      "attributes": {
-        "tool_surface": [
-          "task_run",
-          "cargo",
-          "pnpm",
-          "lint",
-          "format"
-        ]
-      },
-      "card_type": "Requirement",
-      "id": "REQ-005",
-      "links": [
-        {
-          "relationship": "requires",
-          "target": "CAP-005"
-        },
-        {
-          "relationship": "imposes",
-          "target": "CNS-001"
-        },
-        {
-          "relationship": "imposes",
-          "target": "CNS-018"
-        },
-        {
-          "relationship": "imposes",
-          "target": "CNS-019"
-        },
-        {
-          "relationship": "imposes",
-          "target": "CNS-020"
-        }
-      ],
-      "name": "Task Execution"
-    },
-    {
       "attributes": {},
       "card_type": "Requirement",
       "id": "REQ-009",
@@ -3908,22 +3389,6 @@
         }
       ],
       "name": "Local Indexed Memory"
-    },
-    {
-      "attributes": {},
-      "card_type": "Requirement",
-      "id": "REQ-011",
-      "links": [
-        {
-          "relationship": "requires",
-          "target": "CAP-011"
-        },
-        {
-          "relationship": "imposes",
-          "target": "CNS-009"
-        }
-      ],
-      "name": "Single-Call Action Chaining"
     },
     {
       "attributes": {
@@ -4127,22 +3592,6 @@
         }
       ],
       "name": "Conformance Complete"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
-      "id": "STA-064",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-092"
-        },
-        {
-          "relationship": "handles",
-          "target": "EVT-107"
-        }
-      ],
-      "name": "Chain Stopping"
     },
     {
       "attributes": {},
@@ -4403,26 +3852,6 @@
     {
       "attributes": {},
       "card_type": "State",
-      "id": "STA-035",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-050"
-        },
-        {
-          "relationship": "handles",
-          "target": "EVT-051"
-        },
-        {
-          "relationship": "handles",
-          "target": "EVT-052"
-        }
-      ],
-      "name": "Task Running"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
       "id": "STA-032",
       "links": [
         {
@@ -4447,26 +3876,6 @@
         }
       ],
       "name": "Job Monitoring"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
-      "id": "STA-063",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-089"
-        },
-        {
-          "relationship": "handles",
-          "target": "EVT-090"
-        },
-        {
-          "relationship": "handles",
-          "target": "EVT-091"
-        }
-      ],
-      "name": "Chain Executing"
     },
     {
       "attributes": {},
@@ -4499,18 +3908,6 @@
     {
       "attributes": {},
       "card_type": "State",
-      "id": "STA-033",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-047"
-        }
-      ],
-      "name": "Task Idle"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
       "id": "STA-005",
       "links": [
         {
@@ -4535,30 +3932,6 @@
         }
       ],
       "name": "FileOps Rolling Back"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
-      "id": "STA-061",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-086"
-        }
-      ],
-      "name": "Chain Idle"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
-      "id": "STA-038",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-112"
-        }
-      ],
-      "name": "Task Failed"
     },
     {
       "attributes": {},
@@ -4687,18 +4060,6 @@
     {
       "attributes": {},
       "card_type": "State",
-      "id": "STA-065",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-093"
-        }
-      ],
-      "name": "Chain Complete"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
       "id": "STA-067",
       "links": [
         {
@@ -4822,18 +4183,6 @@
     {
       "attributes": {},
       "card_type": "State",
-      "id": "STA-066",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-094"
-        }
-      ],
-      "name": "Chain Failed"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
       "id": "STA-040",
       "links": [
         {
@@ -4898,38 +4247,6 @@
     {
       "attributes": {},
       "card_type": "State",
-      "id": "STA-037",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-053"
-        },
-        {
-          "relationship": "handles",
-          "target": "EVT-108"
-        }
-      ],
-      "name": "Task Canceling"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
-      "id": "STA-034",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-048"
-        },
-        {
-          "relationship": "handles",
-          "target": "EVT-049"
-        }
-      ],
-      "name": "Task Preparing"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
       "id": "STA-019",
       "links": [
         {
@@ -4942,18 +4259,6 @@
         }
       ],
       "name": "Context Resolving"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
-      "id": "STA-036",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-054"
-        }
-      ],
-      "name": "Task Reporting"
     },
     {
       "attributes": {},
@@ -4978,22 +4283,6 @@
         }
       ],
       "name": "FileOps Committing"
-    },
-    {
-      "attributes": {},
-      "card_type": "State",
-      "id": "STA-062",
-      "links": [
-        {
-          "relationship": "handles",
-          "target": "EVT-087"
-        },
-        {
-          "relationship": "handles",
-          "target": "EVT-088"
-        }
-      ],
-      "name": "Chain Building"
     },
     {
       "attributes": {},
@@ -5117,44 +4406,6 @@
     },
     {
       "attributes": {
-        "commands": [
-          "build",
-          "test",
-          "cargo",
-          "pnpm",
-          "lint",
-          "format"
-        ]
-      },
-      "card_subtype": "Subsystem",
-      "card_type": "Component",
-      "id": "COM-009",
-      "links": [
-        {
-          "relationship": "implements",
-          "target": "FEA-005"
-        },
-        {
-          "relationship": "produces",
-          "target": "ART-003"
-        },
-        {
-          "relationship": "stores in",
-          "target": "DST-002"
-        },
-        {
-          "relationship": "executes",
-          "target": "STM-007"
-        },
-        {
-          "relationship": "runs on",
-          "target": "NOD-001"
-        }
-      ],
-      "name": "Task Runner"
-    },
-    {
-      "attributes": {
         "error_taxonomy": "deterministic",
         "formats": [
           "json",
@@ -5190,7 +4441,6 @@
     },
     {
       "attributes": {
-        "default_chain_behavior": "stop-on-failure",
         "execution_modes": [
           "sync",
           "async"
@@ -5218,10 +4468,6 @@
         },
         {
           "relationship": "composes",
-          "target": "COM-009"
-        },
-        {
-          "relationship": "composes",
           "target": "COM-010"
         },
         {
@@ -5238,19 +4484,11 @@
         },
         {
           "relationship": "composes",
-          "target": "COM-015"
-        },
-        {
-          "relationship": "composes",
           "target": "COM-016"
         },
         {
           "relationship": "composes",
           "target": "COM-017"
-        },
-        {
-          "relationship": "implements",
-          "target": "FEA-011"
         },
         {
           "relationship": "executes",
@@ -5399,27 +4637,6 @@
         }
       ],
       "name": "Capability Registry"
-    },
-    {
-      "attributes": {},
-      "card_subtype": "Subsystem",
-      "card_type": "Component",
-      "id": "COM-015",
-      "links": [
-        {
-          "relationship": "implements",
-          "target": "FEA-011"
-        },
-        {
-          "relationship": "executes",
-          "target": "STM-013"
-        },
-        {
-          "relationship": "runs on",
-          "target": "NOD-001"
-        }
-      ],
-      "name": "Chain Orchestrator"
     },
     {
       "attributes": {},
@@ -5711,10 +4928,6 @@
         },
         {
           "relationship": "creates",
-          "target": "RIS-007"
-        },
-        {
-          "relationship": "creates",
           "target": "RIS-008"
         },
         {
@@ -5734,7 +4947,7 @@
           "target": "RIS-002"
         }
       ],
-      "name": "Malicious Command Execution and Exfiltration"
+      "name": "Malicious Tool Misuse and Exfiltration"
     },
     {
       "attributes": {},
@@ -5764,13 +4977,6 @@
       "name": "Environment Variable Management"
     },
     {
-      "attributes": {},
-      "card_type": "Capability",
-      "id": "CAP-005",
-      "links": [],
-      "name": "Task and Tool Execution"
-    },
-    {
       "attributes": {
         "contracts": {
           "tool_contracts": "docs/design/ToolContracts.md"
@@ -5789,13 +4995,6 @@
       "id": "CAP-001",
       "links": [],
       "name": "Workspace Index and Query"
-    },
-    {
-      "attributes": {},
-      "card_type": "Capability",
-      "id": "CAP-011",
-      "links": [],
-      "name": "Single-Call Action Chaining"
     },
     {
       "attributes": {
@@ -5933,10 +5132,6 @@
         },
         {
           "relationship": "recommends",
-          "target": "CTL-003"
-        },
-        {
-          "relationship": "recommends",
           "target": "CTL-004"
         },
         {
@@ -5946,10 +5141,6 @@
         {
           "relationship": "recommends",
           "target": "CTL-006"
-        },
-        {
-          "relationship": "recommends",
-          "target": "CTL-007"
         },
         {
           "relationship": "recommends",
@@ -6318,49 +5509,9 @@
     },
     {
       "attributes": {
-        "component": "COM-015",
-        "determinism_notes": [
-          "Step ordering is explicit and stable; stop-on-failure is enforced.",
-          "Each step emits deterministic status transitions."
-        ],
-        "initial_state": "STA-061"
-      },
-      "card_type": "State Machine",
-      "id": "STM-013",
-      "links": [
-        {
-          "relationship": "has",
-          "target": "STA-061"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-062"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-063"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-064"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-065"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-066"
-        }
-      ],
-      "name": "Chain Orchestrator State Machine"
-    },
-    {
-      "attributes": {
         "component": "COM-002",
         "determinism_notes": [
-          "Requests are validated before dispatch; invalid requests fail fast with deterministic taxonomy.",
-          "Stop-on-failure chaining is enforced at the router boundary."
+          "Requests are validated before dispatch; invalid requests fail fast with deterministic taxonomy."
         ],
         "initial_state": "STA-007",
         "steady_state": "STA-007"
@@ -6394,45 +5545,6 @@
         }
       ],
       "name": "Tool Router State Machine"
-    },
-    {
-      "attributes": {
-        "component": "COM-009",
-        "determinism_notes": [
-          "Command invocation is normalized (cwd, env merge, quoting rules) according to platform constraints.",
-          "Cancellation always produces a final terminal status and flushes structured output."
-        ],
-        "initial_state": "STA-033"
-      },
-      "card_type": "State Machine",
-      "id": "STM-007",
-      "links": [
-        {
-          "relationship": "has",
-          "target": "STA-033"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-034"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-035"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-036"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-037"
-        },
-        {
-          "relationship": "has",
-          "target": "STA-038"
-        }
-      ],
-      "name": "Task Runner State Machine"
     },
     {
       "attributes": {
@@ -6533,26 +5645,6 @@
         }
       ],
       "name": "Discover Capabilities and Environment"
-    },
-    {
-      "attributes": {},
-      "card_type": "Activity",
-      "id": "ATV-004",
-      "links": [
-        {
-          "relationship": "uses",
-          "target": "COM-009"
-        },
-        {
-          "relationship": "uses",
-          "target": "COM-010"
-        },
-        {
-          "relationship": "uses",
-          "target": "COM-013"
-        }
-      ],
-      "name": "Run and Monitor Tasks"
     },
     {
       "attributes": {},
@@ -6673,10 +5765,6 @@
         },
         {
           "relationship": "drives",
-          "target": "REQ-005"
-        },
-        {
-          "relationship": "drives",
           "target": "REQ-006"
         },
         {
@@ -6686,10 +5774,6 @@
         {
           "relationship": "drives",
           "target": "REQ-009"
-        },
-        {
-          "relationship": "drives",
-          "target": "REQ-011"
         }
       ],
       "name": "Workflow Efficiency"
@@ -6741,10 +5825,6 @@
         },
         {
           "relationship": "desires",
-          "target": "STR-005"
-        },
-        {
-          "relationship": "desires",
           "target": "STR-006"
         },
         {
@@ -6762,10 +5842,6 @@
         {
           "relationship": "desires",
           "target": "STR-010"
-        },
-        {
-          "relationship": "desires",
-          "target": "STR-011"
         },
         {
           "relationship": "desires",

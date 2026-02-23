@@ -3,6 +3,6 @@
 	"id": "CAP-009",
 	"card_type": "Capability",
 	"name": "Environment Variable Management",
-	"description": "Support CRUD operations for environment variables used by tools and tasks.",
+	"description": "Support CRUD operations for environment variables used by Alfred tools and managed contexts.",
 	"links": []
 }

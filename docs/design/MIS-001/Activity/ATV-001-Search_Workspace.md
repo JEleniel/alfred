@@ -1,6 +1,6 @@
 # Activity: ATV-001 Search Workspace
 
-Search and inspect workspace files to locate relevant code and context for a task.
+Search and inspect workspace files to locate relevant code and context for the requested change.
 
 
 
@@ -22,3 +22,4 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T01:34:17Z | copilot | create |
+| 2026-02-23T21:04:19Z | copilot | change |

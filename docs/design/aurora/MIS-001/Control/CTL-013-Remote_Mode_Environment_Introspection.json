@@ -3,7 +3,7 @@
 	"id": "CTL-013",
 	"card_type": "Control",
 	"name": "Remote Mode Environment Introspection",
-	"description": "Detect and report the effective execution environment (OS, shell availability, toolchain paths) from the workspace host so tasks/diagnostics are interpreted correctly in VS Code remote modes.",
+	"description": "Detect and report the effective execution environment (OS, shell availability, toolchain paths) from the workspace host so tool behavior and diagnostics are interpreted correctly in VS Code remote modes.",
 	"links": [
 		{
 			"relationship": "enforces",
@@ -12,10 +12,6 @@
 		{
 			"relationship": "mitigates",
 			"target": "RIS-013"
-		},
-		{
-			"relationship": "mitigates",
-			"target": "RIS-007"
 		}
 	]
 }

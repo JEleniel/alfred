@@ -1,5 +1,7 @@
 # Plan: Implement remaining Alfred commands
 
+This plan is aligned to the current design artifacts in `docs/design/` (notably `AlfredOverview.md`, `ToolContracts.md`, `Protocol.md`, `Configuration.md`, and `Redaction.md`). The public tool surface is intentionally consolidated; items 1–16 are retained for historical traceability, while items 17+ track the consolidated tool surfaces and any newly specified cross-cutting requirements.
+
 1. [x] Conform MCP stdio interface envelope and error taxonomy
     - Priority: 0
     - Cards: "INT-001", "ART-001", "ART-002", "CNS-005", "CNS-007", "CNS-015", "STR-007"
@@ -8,9 +10,9 @@
         - Update the tool error payload to support structured `details` (see `docs/design/ErrorTaxonomy.md`).
         - Align `ErrorKind` coverage to the design’s taxonomy and update error conversions.
         - Align `pending` envelopes to the protocol requirements in `docs/design/Protocol.md` (including transport-equivalent metadata).
-        - Update/extend `src/tests/protocol_tests.rs` and `src/tests/workspace_query_tests.rs` to assert the updated envelope and error shapes.
-    - Notes: This plan is intentionally protocol-first and synchronous-first. Job tooling is planned later.
-    - Status: completed
+        - Update/extend `tests/protocol_tests.rs` and `tests/workspace_query_tests.rs` to assert the updated envelope and error shapes.
+    - Notes: This plan is intentionally protocol-first and synchronous-first. Background work is restricted to `bulk_fs_operations` per the current design.
+    - Status: Completed
 
 2. [x] Implement configuration loading and deterministic policy guardrails
     - Priority: 0
@@ -20,8 +22,8 @@
         - Load and merge JSON config from the default user and workspace config paths.
         - Implement tool enable/disable policy (including default-disable for mutating tools).
         - Ensure both `tools/list` and runtime dispatch reflect policy.
-        - Add/extend tests in `src/tests/configuration_tests.rs` for config precedence and gating behavior.
-    - Status: completed
+        - Add/extend tests in `tests/configuration_tests.rs` for config precedence and gating behavior.
+    - Status: Completed
 
 3. [x] Implement `capabilities` tool and make `tools/list` truthful
     - Priority: 1
@@ -32,7 +34,7 @@
         - Ensure `tools/list` only advertises tools that are implemented and enabled by policy.
         - Publish limits required by tool contracts (for example, file chunk limits).
         - Add protocol-level tests asserting the `capabilities` payload shape and stable ordering.
-    - Status: completed
+    - Status: Completed
 
 4. [x] Bring workspace query tools up to contract conformance
     - Priority: 1
@@ -44,7 +46,7 @@
         - Add bounded limits for `file_read_bytes` and surface them in `capabilities.limits`.
         - Ensure index-not-ready errors for `grep`/`search` emit `tool_unavailable` with `details.reason: "index_not_ready"`.
         - Add missing tool-level tests for `ls`, `file_stat`, `file_read_bytes`, and `diff`.
-    - Status: completed
+    - Status: Completed
 
 5. [x] Implement `log_search`
     - Priority: 1
@@ -54,7 +56,7 @@
         - Implement `log_search` per `docs/design/ToolContracts.md`.
         - Add stable pagination with `cursor` and `next_cursor`.
         - Add tests covering filtering, pagination, and deterministic ordering.
-    - Status: completed
+    - Status: Completed
 
 6. [x] Implement `plan_get`
     - Priority: 1
@@ -64,7 +66,7 @@
         - Implement `plan_get` per `docs/design/ToolContracts.md`.
         - Enforce deterministic parsing and normalization.
         - Add tests for “file missing”, parse errors, and successful reads.
-    - Status: completed
+    - Status: Completed
 
 7. [x] Implement `plan_update`
     - Priority: 2
@@ -74,7 +76,7 @@
         - Implement `plan_update` per `docs/design/ToolContracts.md`.
         - Implement lock acquisition and `conflict` errors with `details.reason: "locked"`.
         - Add tests for locked writes, missing ids, and successful updates.
-    - Status: completed
+    - Status: Completed
 
 8. [x] Implement `plan_edit`
     - Priority: 2
@@ -84,7 +86,7 @@
         - Implement `plan_edit` per `docs/design/ToolContracts.md`.
         - Preserve stable ids and deterministic formatting.
         - Add tests for edit validation and stable round-tripping.
-    - Status: completed
+    - Status: Completed
 
 9. [x] Implement `plan_add`
     - Priority: 2
@@ -94,7 +96,7 @@
         - Implement `plan_add` per `docs/design/ToolContracts.md`.
         - Ensure sequential id assignment starting at 1.
         - Add tests for id assignment and concurrent add conflict behavior.
-    - Status: completed
+    - Status: Completed
 
 10. [x] Implement `plan_delete`
     - Priority: 2
@@ -103,7 +105,7 @@
     - Deliverables:
         - Implement `plan_delete` per `docs/design/ToolContracts.md`.
         - Add tests for missing ids and successful deletes.
-    - Status: completed
+    - Status: Completed
 
 11. [x] Implement `memory_put`
     - Priority: 2
@@ -113,7 +115,7 @@
         - Implement `memory_put` per `docs/design/ToolContracts.md`.
         - Ensure deterministic upsert semantics and timestamps.
         - Add tests for required fields and id stability.
-    - Status: completed
+    - Status: Completed
 
 12. [x] Implement `memory_get`
     - Priority: 2
@@ -122,7 +124,7 @@
     - Deliverables:
         - Implement `memory_get` per `docs/design/ToolContracts.md`.
         - Add tests for missing facts and successful retrieval.
-    - Status: completed
+    - Status: Completed
 
 13. [x] Implement `memory_delete`
     - Priority: 2
@@ -131,7 +133,7 @@
     - Deliverables:
         - Implement `memory_delete` per `docs/design/ToolContracts.md`.
         - Add tests for dry-run behavior and delete semantics.
-    - Status: completed
+    - Status: Completed
 
 14. [x] Implement `memory_list`
     - Priority: 2
@@ -140,7 +142,7 @@
     - Deliverables:
         - Implement `memory_list` per `docs/design/ToolContracts.md`.
         - Add tests for stable ordering, pagination, and tag filtering.
-    - Status: completed
+    - Status: Completed
 
 15. [x] Implement `memory_search`
     - Priority: 2
@@ -149,206 +151,160 @@
     - Deliverables:
         - Implement `memory_search` per `docs/design/ToolContracts.md`.
         - Add tests for deterministic ranking/ordering and tag filtering.
-    - Status: completed
+    - Status: Completed
 
-16. [ ] Implement `env_list`
-    - Priority: 2
-    - Cards: "CNS-020", "STR-009", "CNS-015"
-    - Description: List Alfred-managed environment variables (scoped to Alfred-controlled contexts).
+16. [x] Refine architecture for consolidated command surface
+    - Priority: 0
+    - Cards: "STR-001", "STR-003", "STR-004", "STR-008", "STR-017", "CNS-015"
+    - Description: Consolidate command families to reduce exposed tool count and align protocol/configuration contracts.
     - Deliverables:
-        - Implement `env_list` per `docs/design/ToolContracts.md`.
-        - Ensure values are treated as non-public information in logs.
-        - Add tests for deterministic output.
-    - Status: planned
+        - Consolidate command taxonomy to `search`, `fs_operations`, `bulk_fs_operations`, `patch`, `log_operations`, `plan_operations`, and `memory`.
+        - Remove standalone `env_*` and `job_*` command families from the architecture contract.
+        - Add `.alfred/` workspace storage root defaults and index single-location persistence rule.
+        - Remove byte-oriented filesystem operations from the architecture contract.
+        - Add duplicate-content-risk warning requirements for patch application.
+    - Status: Completed
 
-17. [ ] Implement `env_get`
+17. [ ] Implement consolidated `search` command
     - Priority: 2
-    - Cards: "CNS-020", "STR-009", "CNS-015"
-    - Description: Retrieve a single Alfred-managed environment variable.
+    - Cards: "STR-001", "CNS-001", "CNS-015"
+    - Description: Merge workspace text search behaviors into one deterministic command.
     - Deliverables:
-        - Implement `env_get` per `docs/design/ToolContracts.md`.
-        - Add tests for missing keys and successful reads.
-    - Status: planned
+        - Implement `search` per the consolidated contract.
+        - Add tests for literal/regex mode, pagination, and index-not-ready/index-disabled errors.
+    - Status: Not Started
 
-18. [ ] Implement `env_set`
+18. [ ] Implement consolidated `fs_operations` command
     - Priority: 2
-    - Cards: "CNS-020", "STR-009", "CNS-003", "CNS-015"
-    - Description: Set an Alfred-managed environment variable (supports dry-run).
+    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-004", "CNS-015"
+    - Description: Merge non-bulk file and directory operations into one deterministic command.
     - Deliverables:
-        - Implement `env_set` per `docs/design/ToolContracts.md`.
-        - Enforce deterministic validation and dry-run semantics.
-        - Add tests for dry-run and persistence semantics.
-    - Status: planned
+        - Implement operation-dispatch for list/read_range/stat/diff/create_file/append_file/delete_file/create_dir/delete_dir.
+        - Ensure text-only behavior and deterministic binary-file rejection for line-range reads.
+        - Add tests for operation-specific validation and dry-run semantics.
+    - Status: Not Started
 
-19. [ ] Implement `env_unset`
-    - Priority: 2
-    - Cards: "CNS-020", "STR-009", "CNS-003", "CNS-015"
-    - Description: Unset an Alfred-managed environment variable (supports dry-run).
-    - Deliverables:
-        - Implement `env_unset` per `docs/design/ToolContracts.md`.
-        - Add tests for missing keys and dry-run behavior.
-    - Status: planned
-
-20. [ ] Implement `list_tasks`
-    - Priority: 2
-    - Cards: "ART-003", "STR-005", "CNS-018", "CNS-010"
-    - Description: Deterministically enumerate safe tasks available in the workspace.
-    - Deliverables:
-        - Implement `list_tasks` per `docs/design/ToolContracts.md`.
-        - Add tests for filtering, pagination, and deterministic ordering.
-    - Status: planned
-
-21. [ ] Implement `task_run` (sync-only initial implementation)
-    - Priority: 2
-    - Cards: "ART-003", "STR-005", "CNS-018", "CNS-010"
-    - Description: Run a named task under guardrails, defaulting to argv-only execution and emitting normalized diagnostics.
-    - Deliverables:
-        - Implement the synchronous `task_run` path per `docs/design/ToolContracts.md`.
-        - Enforce timeouts and output bounding; surface limits via `capabilities`.
-        - Implement a safe external tool availability probe for external runners.
-        - Add tests for timeouts, failure modes, and diagnostics schema conformance.
-    - Notes: Async/pending mode is planned later alongside job tooling.
-    - Status: planned
-
-22. [ ] Implement `file_patch` (gated by config; default disabled)
+19. [ ] Implement consolidated `patch` command
     - Priority: 2
     - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-004", "CNS-017"
-    - Description: Apply deterministic single-file patches within the workspace boundary, defaulting to dry-run.
+    - Description: Replace single-file and multi-file patch tools with one multi-patch interface.
     - Deliverables:
-        - Implement `file_patch` per `docs/design/ToolContracts.md`.
-        - Enforce workspace boundary and atomic write semantics.
-        - Add tests for dry-run, conflicts, and boundary enforcement.
-    - Status: planned
+        - Implement array-based patch application with per-file results.
+        - Add duplicate-content-risk warning detection and reporting.
+        - Add tests for conflicts, dry-run behavior, and duplicate-content warnings.
+    - Status: Not Started
 
-23. [ ] Implement `multi_file_patch` (gated by config; default disabled)
+20. [ ] Implement consolidated `bulk_fs_operations` command
     - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-004", "CNS-017"
-    - Description: Apply deterministic patches across multiple files with per-file conflict reporting.
+    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015", "CNS-019"
+    - Description: Replace bulk move/copy/delete and standalone job tooling with one command that can execute and report status.
     - Deliverables:
-        - Implement `multi_file_patch` per `docs/design/ToolContracts.md`.
-        - Ensure deterministic per-file results, including conflict objects.
-        - Add tests for partial conflicts and dry-run behavior.
-    - Status: planned
+        - Implement execute/status/cancel modes with deterministic operation IDs.
+        - Support optional background mode only for this command.
+        - Ensure background acceptance uses the `pending` envelope and is polled via `bulk_fs_operations` per `docs/design/Protocol.md`.
+        - Add tests for status polling, cancellation, overwrite behavior, and recursion semantics.
+    - Status: Not Started
 
-24. [ ] Implement `file_create` (gated by config; default disabled)
+21. [ ] Implement consolidated `log_operations` command
     - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-004", "CNS-017"
-    - Description: Create files deterministically within the workspace boundary.
+    - Cards: "STR-008", "CNS-012", "CNS-015"
+    - Description: Merge log search/tail behaviors into one deterministic command.
     - Deliverables:
-        - Implement `file_create` per `docs/design/ToolContracts.md`.
-        - Add tests for existing targets, parents missing, and dry-run.
-    - Status: planned
+        - Implement `search` and bounded `tail` operations.
+        - Add tests for filtering, ordering, cursor behavior, and bounds.
+    - Status: Not Started
 
-25. [ ] Implement `file_append` (gated by config; default disabled)
+22. [ ] Implement consolidated `plan_operations` command
     - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-004", "CNS-017"
-    - Description: Append to files deterministically within the workspace boundary.
+    - Cards: "ART-004", "STR-004", "CNS-015"
+    - Description: Merge plan read/add/edit/update/delete behaviors into one deterministic command.
     - Deliverables:
-        - Implement `file_append` per `docs/design/ToolContracts.md`.
-        - Add tests for dry-run, missing targets, and deterministic byte counts.
-    - Status: planned
+        - Implement operation routing and deterministic validation.
+        - Keep lock semantics and update lock path to `.alfred/locks`.
+        - Add tests for conflict and successful writes.
+    - Status: Not Started
 
-26. [ ] Implement `file_delete` (gated by config; default disabled)
+23. [ ] Implement consolidated `memory` command
     - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015"
-    - Description: Delete files deterministically, defaulting to dry-run.
+    - Cards: "ART-008", "STR-017", "CNS-006", "CNS-015"
+    - Description: Merge memory CRUD/search operations into one deterministic command surface.
     - Deliverables:
-        - Implement `file_delete` per `docs/design/ToolContracts.md`.
-        - Add tests for missing paths and dry-run behavior.
-    - Status: planned
+        - Implement operation routing for put/get/delete/list/search.
+        - Add tests for workspace-memory storage options and merge policy behavior.
+    - Status: Not Started
 
-27. [ ] Implement `dir_create` (gated by config; default disabled)
+24. [ ] Implement workspace storage-root and index-location controls
     - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015"
-    - Description: Create directories deterministically within the workspace boundary.
+    - Cards: "CNS-015", "DST-001", "DST-004"
+    - Description: Add configurable workspace storage root and enforce single-location index persistence.
     - Deliverables:
-        - Implement `dir_create` per `docs/design/ToolContracts.md`.
-        - Add tests for parents semantics and dry-run.
-    - Status: planned
+        - Implement `workspace.storage.root` and `.alfred/` defaults.
+        - Implement `index.enabled` gating and ensure index-backed tools emit deterministic `tool_unavailable` reasons for index-disabled/index-not-ready.
+        - Implement `index.persistence.location` and non-duplication guarantees.
+        - Add tests for workspace/user location selection and migration behavior.
+    - Status: Not Started
 
-28. [ ] Implement `dir_delete` (gated by config; default disabled)
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015"
-    - Description: Delete empty directories deterministically, defaulting to dry-run.
-    - Deliverables:
-        - Implement `dir_delete` per `docs/design/ToolContracts.md`.
-        - Add tests for non-empty directories and dry-run behavior.
-    - Status: planned
-
-29. [ ] Implement `path_move` (gated by config; default disabled)
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015", "CNS-017"
-    - Description: Perform deterministic bulk move/rename operations with explicit overwrite behavior.
-    - Deliverables:
-        - Implement `path_move` per `docs/design/ToolContracts.md`.
-        - Add tests for `overwrite: false` target exists warnings, boundary enforcement, and parents creation.
-    - Status: planned
-
-30. [ ] Implement `path_copy` (sync-only initial implementation; gated by config)
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015"
-    - Description: Perform deterministic bulk copy operations with bounded synchronous behavior.
-    - Deliverables:
-        - Implement the synchronous path for `path_copy` per `docs/design/ToolContracts.md`.
-        - Ensure symlinks are copied as leaf nodes and not followed.
-        - Add tests for symlink handling, overwrite semantics, and deterministic warnings.
-    - Notes: Async/pending mode is planned later alongside job tooling.
-    - Status: planned
-
-31. [ ] Implement `file_create_bytes` (gated by config; default disabled)
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015"
-    - Description: Create files from base64-encoded bytes with bounded per-call limits.
-    - Deliverables:
-        - Implement `file_create_bytes` per `docs/design/ToolContracts.md`.
-        - Enforce per-call decoded byte bounds and publish limits in `capabilities.limits`.
-        - Add tests for invalid base64, size bounds, and dry-run.
-    - Status: planned
-
-32. [ ] Implement `file_append_bytes` (gated by config; default disabled)
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015"
-    - Description: Append base64-encoded bytes to a file with bounded per-call limits.
-    - Deliverables:
-        - Implement `file_append_bytes` per `docs/design/ToolContracts.md`.
-        - Enforce per-call decoded byte bounds and publish limits in `capabilities.limits`.
-        - Add tests for invalid base64, size bounds, and dry-run.
-    - Status: planned
-
-33. [ ] Implement `path_delete` (gated by config; default disabled)
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015"
-    - Description: Perform deterministic bulk delete operations with explicit recursion behavior.
-    - Deliverables:
-        - Implement `path_delete` per `docs/design/ToolContracts.md`.
-        - Ensure symlinks are deleted as leaf nodes and not followed.
-        - Add tests for non-empty directory warnings, recursion, and dry-run.
-    - Status: planned
-
-34. [ ] Implement `session_recent` (deferred)
+25. [x] Retire deprecated orchestration scope
     - Priority: 3
-    - Cards: "STR-014", "CNS-015"
-    - Description: Provide deterministic session introspection over recent tool calls and results (redacted and bounded).
+    - Cards: "CNS-015"
+    - Description: Deprecated multi-step orchestration support was removed from the architecture design and should not be implemented.
     - Deliverables:
-        - Implement `session_recent` per `docs/design/ToolContracts.md`.
-        - Add tests for redaction, payload bounding, and pagination.
-    - Status: planned
+        - Remove deprecated orchestration references from design requirements/contracts.
+        - Keep this plan item as historical traceability only.
+    - Status: Completed
 
-35. [ ] Implement `chain` (deferred)
-    - Priority: 3
-    - Cards: "STR-011", "CNS-009", "CNS-015"
-    - Description: Execute deterministic tool chains with stop-on-failure defaults.
+26. [ ] Implement deterministic redaction end-to-end
+    - Priority: 0
+    - Cards: "CNS-015", "CNS-021"
+    - Description: Apply deterministic NPI redaction per `docs/design/Redaction.md` across tool outputs, logs, and at ingestion time for any persisted indexes (workspace index and memory index).
     - Deliverables:
-        - Implement `chain` per `docs/design/ToolContracts.md`.
-        - Add tests covering failure propagation and deterministic step results.
-    - Status: planned
+        - Redaction detection and replacement behavior matches `docs/design/Redaction.md` (including length-fitting replacement).
+        - Redaction is applied before persistence for any indexable content (workspace index and memory index).
+        - Tool responses and structured logs are redacted deterministically and do not leak inbound request payloads.
+        - When redaction occurs, results surface a stable warning in metadata (counts only; never the original value).
+        - Configuration keys under `redaction.*` are honored as defined in `docs/design/Configuration.md`.
+    - Status: Not Started
 
-36. [ ] Implement background job tooling and async-only tools (deferred)
-    - Priority: 3
-    - Cards: "ART-006", "CNS-019", "STR-006", "STR-008"
-    - Description: Add background job tools (`job_status`, `job_statuses`, `job_cancel`, `job_list`, `job_read`) and implement async-only tools like `log_tail`.
+27. [ ] Implement encoding-safe path handling and deterministic warnings
+    - Priority: 1
+    - Cards: "CNS-021", "CTL-009"
+    - Description: Ensure all protocol-visible strings are valid UTF-8 JSON/NDJSON, and handle non-text filesystem paths deterministically per `docs/design/Protocol.md`.
     - Deliverables:
-        - Implement job tool contracts per `docs/design/ToolContracts.md`.
-        - Implement `log_tail` as an async/pending log tail that streams via `job_read`.
-        - Add tests for job cursor semantics, cancellation behavior, and bounded streaming.
-    - Status: planned
+        - Incoming `path` values accept `\\` as `/` prior to normalization.
+        - Any path that cannot be represented as Unicode text is emitted using the deterministic encoding rules in `docs/design/Protocol.md`.
+        - When encoded-path rendering occurs, results include a stable warning (for example `meta.warnings += {"kind":"path_encoded"}`).
+        - Ordering and cursor behavior remain consistent when encoded paths are present.
+    - Status: Not Started
+
+28. [ ] Retire byte-oriented filesystem operations from the exposed tool surface
+    - Priority: 1
+    - Cards: "STR-003", "CNS-015"
+    - Description: Align the exposed tool surface with the current design requirement that Alfred operates on text files only and does not expose byte-oriented filesystem operations.
+    - Deliverables:
+        - `capabilities` and `tools/list` do not advertise byte-oriented filesystem tools.
+        - Calls to retired byte-oriented filesystem tools fail deterministically with `invalid_argument` and a stable message.
+        - Equivalent workflows are supported via consolidated `fs_operations` (for text) and `patch`/`bulk_fs_operations` where applicable.
+    - Status: Not Started
+    - Dependencies: 18
+
+29. [ ] Add a conformance suite for consolidated tool contracts
+    - Priority: 1
+    - Cards: "CAP-013", "CNS-005", "CNS-015"
+    - Description: Provide an automated conformance suite that validates contract shapes, deterministic ordering, dry-run guarantees, workspace-boundary enforcement, and redaction behavior for the consolidated tool surface.
+    - Deliverables:
+        - Conformance tests cover: success/error/pending envelopes, stable ordering, pagination cursors, and deterministic error kinds.
+        - Tests cover policy gating for disabled tools (omitted from `capabilities`; calls fail with `invalid_argument`).
+        - Tests cover the index-not-ready and index-disabled failure modes for index-backed tools.
+        - Redaction and path-encoding behaviors are validated as part of conformance.
+    - Status: Not Started
+    - Dependencies: 17, 18, 19, 20, 21, 22, 23, 26, 27
+
+30. [ ] Reconcile generated Aurora model outputs with the consolidated tool surface
+    - Priority: 3
+    - Cards: "MIS-001"
+    - Description: Ensure the rendered MIS-001 model bundle under `docs/design/` remains consistent with the consolidated public tool surface described in `docs/design/ToolContracts.md`.
+    - Deliverables:
+        - Model render outputs (markdown + views) reflect the effective top-level tool surface and do not contradict `ToolContracts.md`.
+        - Any deprecated tool families are either removed from the model or clearly marked as non-exposed/not implemented.
+        - The model bundle remains valid and can be regenerated deterministically.
+    - Status: Not Started

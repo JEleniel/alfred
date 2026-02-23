@@ -1,28 +1,28 @@
 # Alfred Tool Contracts
 
-This document describes the Alfred tool surface at an implementation-ready level.
+This document describes Alfred's architecture-level tool surface at an implementation-ready level.
 
 Unless otherwise specified:
 
-- Tools are executed relative to the **workspace root**.
-- Read-only tools are side-effect free.
-- Mutating tools support a `dry_run` mode where applicable.
-- Paged list/search operations default `limit` to **100**.
+- Tools are executed relative to the workspace root.
+- Read-only operations are side-effect free.
+- Mutating operations support `dry_run` where applicable.
+- Paged operations default `limit` to `100`.
 - Line and column numbers are 1-indexed.
 
 ## Configuration and policy
 
 Alfred behavior is configurable at two levels:
 
-- **User configuration**: applies to all workspaces on a machine.
-- **Workspace configuration**: applies only within a single workspace.
+- User configuration: applies to all workspaces on a machine.
+- Workspace configuration: applies only within a single workspace.
 
 Workspace configuration MUST override user configuration.
 
-Configuration file locations are implementation-defined, but the default SHOULD be:
+Default config locations:
 
 - User: OS config directory `alfred/config.json`.
-- Workspace: `.agents/alfred/config.json` under the workspace root.
+- Workspace: `<workspaceRoot>/.alfred/config.json`.
 
 Configuration keys and defaults are defined in [`docs/design/Configuration.md`](./Configuration.md).
 
@@ -30,960 +30,386 @@ Configuration keys and defaults are defined in [`docs/design/Configuration.md`](
 
 Any tool MAY be disabled by configuration.
 
-- Disabled tools MUST be omitted from the `capabilities` tool list.
+- Disabled tools MUST be omitted from `capabilities`.
 - Calls to disabled tools MUST fail with `error.kind: "invalid_argument"` and `retryable: false`.
-- A `chain` referencing a disabled or unknown tool MUST fail immediately with `error.kind: "invalid_argument"`.
 
 ## Redaction (non-public information)
 
 Alfred MUST filter non-public information (NPI) from:
 
-- Tool responses
-- Tool/runtime logs
+- Tool responses.
+- Tool/runtime logs.
+- Search indexes and memory indexes at ingestion time.
 
 NPI includes (at minimum) secret-looking values (tokens/keys/passwords) and MAY include user-configured PII/PHI-like patterns.
 
-Even if the secret appears in the incoming call.
-
-Redaction is deterministic and uses a stable replacement token.
-
-The default replacement token is `<-REDACTED->`.
+Redaction is deterministic and uses a stable replacement token (default `<-REDACTED->`).
 
 The deterministic redaction algorithm (detection + replacement-length fitting) is specified in [`docs/design/Redaction.md`](./Redaction.md).
 
-Redaction MUST be applied:
-
-- At **index ingestion** (redacted content MUST NOT be stored or searchable).
-- To **tool outputs** (redacted content MUST NOT be emitted).
-- To **logs** and **job streams** (redacted content MUST NOT be persisted or emitted).
-
-Tools SHOULD surface redaction as a warning in the result envelope metadata (rather than failing the call).
-
-Exception: tools whose primary purpose is to manage non-public values (for example, environment variable tools) MAY return unredacted values in the tool result `data`. These tools MUST still avoid emitting those values into tool/runtime logs.
+Tools SHOULD surface redaction as a warning in result metadata rather than failing the call.
 
 ## Result envelope (all tools)
 
 All tools MUST return results using the envelope described in [`docs/design/Protocol.md`](./Protocol.md).
 
-In this document, each tool section's **Output** describes the tool result envelope's `data` payload unless explicitly stated otherwise.
+In this document, each tool section's **Output** describes the envelope `data` payload unless explicitly stated otherwise.
 
-Unless otherwise specified, each tool call is synchronous. Tools that may run long MUST either:
+Unless otherwise specified, each tool call is synchronous.
 
-- Return a bounded synchronous result, or
-- Return `status: "pending"` with an envelope `job_id` (see [`docs/design/Protocol.md`](./Protocol.md)) for subsequent retrieval.
+Only `bulk_fs_operations` MAY execute in background mode.
 
-Pending tool results MUST include `meta.transport_equivalent.http_status: 202`.
+When `bulk_fs_operations` runs in background mode, the initial call MUST return `status: "pending"` with operation metadata embedded in `data`:
 
-### Streaming results (NDJSON)
+- `operation_id`: string.
+- `state`: `"queued" | "running"`.
+- `poll_with`: fixed value `"bulk_fs_operations"`.
 
-Some tools may stream large outputs. In that case, the initial tool call returns `status: "pending"` with an envelope `job_id`, and the caller retrieves NDJSON output via job tools (for example `job_read`). See [`docs/design/Protocol.md`](./Protocol.md).
+No standalone job-control tool surface exists.
 
-## Context tools
+## Effective top-level tool surface
 
-These tools provide location awareness and are always side-effect free.
+The architecture intentionally consolidates the public command set to reduce tool-count pressure:
+
+- `workspace_dir`
+- `search`
+- `fs_operations`
+- `bulk_fs_operations`
+- `patch`
+- `log_operations`
+- `plan_operations`
+- `memory`
+- `capabilities`
+
+## Context tool
 
 ### `workspace_dir`
 
-- Purpose: Return Alfred's workspace root folder (there is no separate process working-directory concept).
+- Purpose: return Alfred's workspace root folder.
 - Execution: synchronous.
 - Input: none.
 - Output:
-    - `root`: normalized workspace root absolute path
+    - `root`: normalized workspace-root absolute path.
 
-## Workspace index and query tools
-
-These tools are backed by Alfred's workspace index and MUST enforce the workspace boundary ([CNS-001](./MIS-001/Constraint/CNS-001-Workspace_Boundary_Enforcement.md)).
-
-Unless otherwise specified:
-
-- All returned paths are workspace-relative and use `/` separators.
-- Paths MUST be normalized (convert `\\` to `/`, remove leading `./`, and collapse dot segments).
-- Output ordering is stable and defaults to case-insensitive lexicographic Unicode ordering by normalized `path`, then by position.
-
-### Stable ordering rules
-
-Unless a tool contract explicitly states otherwise, ordering by `path` MUST use these keys:
-
-1. Primary key: `casefold(path)`.
-2. Tie-breaker: the original `path` string.
-
-Both comparisons are lexicographic by Unicode scalar value. `casefold` is Unicode case folding.
-
-### `ls`
-
-- Purpose: Deterministically list workspace paths.
-- Execution: synchronous.
-- Input:
-    - `path`: optional string (default `"."`)
-    - `recursive`: optional boolean (default `false`)
-    - `include_hidden`: optional boolean (default `false`)
-    - `include_dirs`: optional boolean (default `true`)
-    - `include_files`: optional boolean (default `true`)
-    - `cursor`: optional string
-    - `limit`: optional integer
-- Output:
-    - `files`: array of strings
-    - `directories`: array of strings
-    - `next_cursor`: optional string
-
-### `read_range`
-
-- Purpose: Read a bounded range of lines from a single text file.
-- Execution: synchronous.
-- Input:
-    - `path`: string
-    - `start_line`: integer (1-indexed)
-    - `end_line`: integer (inclusive; must be `>= start_line`)
-- Output:
-    - `path`: string
-    - `start_line`: integer
-    - `end_line`: integer
-    - `text`: string
-
-Note: This command MUST return an error if an attempt is made to read a binary file.
-
-### `file_stat`
-
-- Purpose: Return deterministic file metadata.
-- Execution: synchronous.
-- Input:
-    - `path`: string
-- Output:
-    - `path`: string
-    - `kind`: string (`"file" | "dir" | "symlink" | "other"`)
-    - `size_bytes`: optional integer
-    - `modified_at`: optional string (RFC3339 UTC)
-
-Notes:
-
-- This tool MUST NOT follow symlinks when determining `kind`.
-
-### `file_read_bytes`
-
-- Purpose: Read a bounded byte range from a single file (including binary files).
-- Execution: synchronous.
-- Input:
-    - `path`: string
-    - `offset`: integer (0-indexed byte offset)
-    - `length`: integer (bytes to read; MUST be `> 0`)
-- Output:
-    - `path`: string
-    - `offset`: integer
-    - `bytes_b64`: string (base64)
-    - `bytes_read`: integer
-    - `eof`: boolean
-    - `next_offset`: integer
-
-Notes:
-
-- Output MUST be bounded; maximum `length` MUST be published in `capabilities.limits`.
-- `next_offset` MUST equal `offset + bytes_read`.
-
-### `grep`
-
-- Purpose: Search workspace text using a literal query.
-- Execution: synchronous.
-- Input:
-    - `query`: string
-    - `case_sensitive`: optional boolean (default `false`)
-    - `include_pattern`: optional string (glob applied to workspace-relative paths)
-    - `cursor`: optional string
-    - `limit`: optional integer
-- Output:
-    - `matches`: array of objects:
-        - `path`: string
-        - `line`: integer (1-indexed)
-        - `text`: string
-    - `next_cursor`: optional string
-
-Notes:
-
-- This tool is index-backed. If the workspace index is not available, the tool MUST fail with `error.kind: "tool_unavailable"`, `retryable: true`, and `details.reason: "index_not_ready"`.
+## Search tool
 
 ### `search`
 
-- Purpose: Search workspace text using a literal query or regular expression.
+- Purpose: deterministic workspace text search (literal and regex modes).
 - Execution: synchronous.
 - Input:
-    - `search`: object, one of
-        - `pattern`: string (regex)
-        - `query`: string literal
-    - `case_sensitive`: optional boolean (default `false`)
-    - `full_text`: optional boolean (default `false`)
-    - `include_pattern`: optional string (glob applied to workspace-relative paths)
-    - `exclude_pattern`: optional string (glob applied to workspace-relative paths)
-    - `cursor`: optional string
-    - `limit`: optional integer
+    - `query`: string.
+    - `mode`: optional `"literal" | "regex"` (default `"literal"`).
+    - `case_sensitive`: optional boolean (default `false`).
+    - `full_text`: optional boolean (default `false`).
+    - `include_pattern`: optional string (glob applied to workspace-relative paths).
+    - `exclude_pattern`: optional string (glob applied to workspace-relative paths).
+    - `cursor`: optional string.
+    - `limit`: optional integer.
 - Output:
     - `matches`: array of objects:
-        - `path`: string
-        - `line`: integer (1-indexed)
-        - `text`: string
-    - `next_cursor`: optional string
+        - `path`: string.
+        - `line`: integer (1-indexed).
+        - `text`: string.
+    - `next_cursor`: optional string.
 
 Notes:
 
-- This tool is index-backed. If the workspace index is not available, the tool MUST fail with `error.kind: "tool_unavailable"`, `retryable: true`, and `details.reason: "index_not_ready"`.
+- This tool is index-backed.
+- If the workspace index is not available, the tool MUST fail with:
+    - `error.kind: "tool_unavailable"`
+    - `retryable: true`
+    - `details.reason: "index_not_ready"`
 
-### `diff`
+## File and directory operations tool
 
-- Purpose: Produce a deterministic textual diff.
+### `fs_operations`
+
+- Purpose: perform all non-bulk filesystem operations through a single deterministic interface.
 - Execution: synchronous.
 - Input:
-    - `a`: one of:
-        - object:
-            - `path`: string
-            - `from`: integer (1-indexed)
-            - `to`: integer (1-indexed; inclusive; must be `>= from`)
-        - string
-    - `b`: one of:
-        - object:
-            - `path`: string
-            - `from`: integer (1-indexed)
-            - `to`: integer (1-indexed; inclusive; must be `>= from`)
-        - string
+    - `operation`: one of:
+        - `"list"`
+        - `"read_range"`
+        - `"stat"`
+        - `"diff"`
+        - `"create_file"`
+        - `"append_file"`
+        - `"delete_file"`
+        - `"create_dir"`
+        - `"delete_dir"`
+    - `args`: object whose shape depends on `operation`.
+    - `dry_run`: optional boolean (required for mutating operations; default `true`).
 - Output:
-    - `diff`: string (unified diff format)
+    - `operation`: echoed operation name.
+    - `result`: operation-specific result object.
 
-Notes:
+Supported operation contracts:
 
-- Git operations are out of scope ([CNS-011](./MIS-001/Constraint/CNS-011-Git_and_GitHub_Operations_Out_of_Scope.md)). This tool compares text/file contents; it does not perform git plumbing.
+- `list`
+    - Input args:
+        - `path`: optional string (default `"."`).
+        - `recursive`: optional boolean (default `false`).
+        - `include_hidden`: optional boolean (default `false`).
+        - `include_dirs`: optional boolean (default `true`).
+        - `include_files`: optional boolean (default `true`).
+        - `cursor`: optional string.
+        - `limit`: optional integer.
+    - Result:
+        - `files`: array of strings.
+        - `directories`: array of strings.
+        - `next_cursor`: optional string.
 
-## File mutation tools
+- `read_range`
+    - Input args:
+        - `path`: string.
+        - `start_line`: integer.
+        - `end_line`: integer (inclusive; `>= start_line`).
+    - Result:
+        - `path`: string.
+        - `start_line`: integer.
+        - `end_line`: integer.
+        - `text`: string.
+    - Note: MUST fail deterministically for non-text/binary inputs.
 
-These tools mutate workspace contents and MUST enforce:
+- `stat`
+    - Input args:
+        - `path`: string.
+    - Result:
+        - `path`: string.
+        - `kind`: `"file" | "dir" | "symlink" | "other"`.
+        - `size_bytes`: optional integer.
+        - `modified_at`: optional string (RFC3339 UTC).
 
-- Workspace boundary ([CNS-001](./MIS-001/Constraint/CNS-001-Workspace_Boundary_Enforcement.md))
-- Dry-run support for destructive operations ([CNS-003](./MIS-001/Constraint/CNS-003-DryRun_for_Destructive_Operations.md))
-- Atomic mutation guarantees per target where practical ([CNS-004](./MIS-001/Constraint/CNS-004-Atomic_Mutations_Per_Target.md))
+- `diff`
+    - Input args:
+        - `a`: one of:
+            - object:
+                - `path`: string.
+                - `from`: integer.
+                - `to`: integer.
+            - string.
+        - `b`: one of:
+            - object:
+                - `path`: string.
+                - `from`: integer.
+                - `to`: integer.
+            - string.
+    - Result:
+        - `diff`: string (unified diff format).
 
-Unless otherwise specified, all mutating tools accept:
+- `create_file`
+    - Input args:
+        - `path`: string.
+        - `content`: string.
+    - Result:
+        - `path`: string.
+        - `bytes_written`: integer.
 
-- `dry_run`: optional boolean (default `true`)
+- `append_file`
+    - Input args:
+        - `path`: string.
+        - `content`: string.
+    - Result:
+        - `path`: string.
+        - `bytes_written`: integer.
 
-### `file_create`
+- `delete_file`
+    - Input args:
+        - `path`: string.
+    - Result:
+        - `deleted`: boolean.
 
-- Purpose: Create a file deterministically.
-- Execution: synchronous.
+- `create_dir`
+    - Input args:
+        - `path`: string.
+        - `parents`: optional boolean (default `false`).
+    - Result:
+        - `created`: boolean.
+
+- `delete_dir`
+    - Input args:
+        - `path`: string.
+    - Result:
+        - `deleted`: boolean.
+
+Rules:
+
+- Byte-oriented file operations are out of scope for Alfred and MUST NOT be exposed.
+- All paths MUST be workspace-relative, normalized, and use `/` separators.
+
+## Bulk filesystem operations tool
+
+### `bulk_fs_operations`
+
+- Purpose: run deterministic bulk move/copy/delete operations, including optional background execution and built-in status retrieval.
+- Execution: synchronous or background.
 - Input:
-    - `path`: string
-    - `content`: string
-    - `dry_run`: optional boolean
+    - `mode`: one of `"execute" | "status" | "cancel"`.
+    - `operation_id`: required for `status` and `cancel`.
+    - `run_in_background`: optional boolean (valid only with `mode: "execute"`, default `false`).
+    - `operations`: required for `mode: "execute"`; array of:
+        - move:
+            - `kind`: `"move"`.
+            - `from`: string.
+            - `to`: string.
+            - `overwrite`: optional boolean (default `false`).
+            - `create_parents`: optional boolean (default `false`).
+        - copy:
+            - `kind`: `"copy"`.
+            - `from`: string.
+            - `to`: string.
+            - `overwrite`: optional boolean (default `false`).
+            - `create_parents`: optional boolean (default `false`).
+        - delete:
+            - `kind`: `"delete"`.
+            - `path`: string.
+            - `recursive`: optional boolean (default `false`).
+    - `dry_run`: optional boolean (default `true`).
 - Output:
-    - `path`: string
-    - `bytes_written`: integer
+    - `operation_id`: string.
+    - `state`: `"queued" | "running" | "succeeded" | "failed" | "canceled" | "partial"`.
+    - `summary`: object:
+        - `total`: integer.
+        - `completed`: integer.
+        - `failed`: integer.
+    - `items`: optional array of per-item results for completed operations.
 
-### `file_append`
+Rules:
 
-- Purpose: Append to a file deterministically.
-- Execution: synchronous.
-- Input:
-    - `path`: string
-    - `content`: string
-    - `dry_run`: optional boolean
-- Output:
-    - `path`: string
-    - `bytes_written`: integer
+- This is the only tool family allowed to run in background mode.
+- Status polling MUST be performed by calling this same tool with `mode: "status"`.
+- There are no standalone job tools.
 
-### `file_patch`
+## Patch tool
 
-- Purpose: Modify to an existing file deterministically.
-- Execution: synchronous.
-- Input:
-    - `path`: string
-    - `patch`: string, mpatch format
-    - `dry_run`: optional boolean
-- Output:
-    - `path`: string
-    - `bytes_written`: integer
+### `patch`
 
-### `multi_file_patch`
-
-- Purpose: Apply a multi-file patch.
+- Purpose: apply one or more text patches deterministically.
 - Execution: synchronous.
 - Input:
     - `patches`: array of objects:
-        - `path`: string
-        - `patch`: string, mpatch format
-    - `dry_run`: optional boolean
+        - `path`: string.
+        - `patch`: string (mpatch format).
+    - `dry_run`: optional boolean (default `true`).
 - Output:
     - `files`: array of objects:
-        - `path`: string
-        - `patched`: boolean
-        - `conflicts`: optional array of objects (mpatch defined)
+        - `path`: string.
+        - `patched`: boolean.
+        - `bytes_written`: optional integer.
+        - `conflicts`: optional array.
+        - `warnings`: optional array of warning objects.
 
-### `file_delete`
+Duplicate-content safeguard:
 
-- Purpose: Delete a file.
+- Alfred MUST evaluate each patch for duplicate-content risk before write.
+- If applying a patch would duplicate existing content (for example, append a full-file copy to the end of the same file), Alfred MUST emit a warning object:
+    - `kind`: `"duplicate_content_risk"`.
+    - `path`: string.
+    - `details`: optional object with deterministic detection metadata.
+- Duplicate-content risk SHOULD NOT hard-fail by default; conflicts still follow normal conflict semantics.
+
+## Log operations tool
+
+### `log_operations`
+
+- Purpose: provide deterministic log search and bounded tail access.
 - Execution: synchronous.
 - Input:
-    - `path`: string
-    - `dry_run`: optional boolean
+    - `operation`: one of `"search" | "tail"`.
+    - `args`: object depending on operation.
 - Output:
-    - No additional fields.
+    - `operation`: echoed operation name.
+    - `result`: operation-specific result object.
 
-### `dir_create`
+Supported operations:
 
-- Purpose: Create a directory or directory tree (mkdir semantics) within the workspace.
+- `search`
+    - Input args:
+        - `path`: optional string (defaults to Alfred runtime log).
+        - `query`: string.
+        - `level`: optional string.
+        - `source_prefix`: optional string.
+        - `cursor`: optional string.
+        - `limit`: optional integer.
+    - Result:
+        - `matches`: array of structured log records.
+        - `next_cursor`: optional string.
+
+- `tail`
+    - Input args:
+        - `path`: optional string (defaults to Alfred runtime log).
+        - `level_min`: optional `"TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR"`.
+        - `source_prefix`: optional string.
+        - `cursor`: optional string.
+        - `limit`: optional integer.
+    - Result:
+        - `records`: array of structured log records.
+        - `next_cursor`: optional string.
+
+## Plan operations tool
+
+### `plan_operations`
+
+- Purpose: read and mutate the workspace project plan through one command surface.
 - Execution: synchronous.
 - Input:
-    - `path`: string
-    - `parents`: boolean, equivalent to `mkdir -p` (default `false`)
-    - `dry_run`: optional boolean
+    - `operation`: one of `"get" | "add" | "edit" | "update_status" | "delete"`.
+    - `args`: object depending on operation.
 - Output:
-    - No additional fields.
+    - `operation`: echoed operation name.
+    - `result`: operation-specific payload.
 
-### `dir_delete`
+Plan location and locking:
 
-- Purpose: Delete a directory (rmdir semantics) within the workspace.
-- Execution: synchronous.
+- Default plan selection:
+    1. `docs/design/ProjectPlan.md` if present.
+    2. `ProjectPlan.md` otherwise.
+- Writes MUST be serialized using lock files under `<workspaceRoot>/.alfred/locks/`.
+
+## Memory tool
+
+### `memory`
+
+- Purpose: local/offline memory CRUD and full-text retrieval through one command surface.
+- Execution: synchronous (MAY support bounded async in future versions).
 - Input:
-    - `path`: string
-    - `dry_run`: optional boolean
+    - `operation`: one of `"put" | "get" | "delete" | "list" | "search"`.
+    - `args`: object depending on operation.
 - Output:
-    - No additional fields.
+    - `operation`: echoed operation name.
+    - `result`: operation-specific payload.
 
-Note: This is not intended to remove non-empty directories.
+Storage model:
 
-### `file_create_bytes`
-
-- Purpose: Create a file from base64-encoded bytes.
-- Execution: synchronous.
-- Input:
-    - `path`: string
-    - `bytes_b64`: string (base64)
-    - `dry_run`: optional boolean
-- Output:
-    - `path`: string
-    - `bytes_written`: integer
-
-Notes:
-
-- This tool is intended for binary content and large files where inline UTF-8 content is not suitable.
-- `bytes_b64` MUST decode to a bounded byte length per call; the limit MUST be published in `capabilities.limits`.
-
-### `file_append_bytes`
-
-- Purpose: Append base64-encoded bytes to a file.
-- Execution: synchronous.
-- Input:
-    - `path`: string
-    - `bytes_b64`: string (base64)
-    - `dry_run`: optional boolean
-- Output:
-    - `path`: string
-    - `bytes_written`: integer
-
-Notes:
-
-- For very large writes, callers SHOULD chunk content across multiple calls.
-- The server MUST remain robust for large total file sizes; only per-call payload size is bounded.
-
-### `path_move`
-
-- Purpose: Perform deterministic bulk move/rename operations (files and/or directories).
-- Execution: synchronous.
-- Input:
-    - `moves`: array of objects:
-        - `from`: string
-        - `to`: string
-    - `overwrite`: optional boolean (default `false`)
-    - `create_parents`: optional boolean (default `false`)
-    - `dry_run`: optional boolean
-- Output:
-    - `moves`: array of objects (same order as input):
-        - `from`: string
-        - `to`: string
-        - `moved`: boolean
-        - `warning`: optional string
-
-Notes:
-
-- `from` and `to` MUST be workspace-relative paths.
-- The tool MUST reject any move that would escape the workspace boundary.
-- If `overwrite` is `false` and `to` already exists, the corresponding item MUST set `moved: false` with a deterministic `warning` value (for example `"target_exists"`).
-
-### `path_copy`
-
-- Purpose: Perform deterministic bulk copy operations (files and/or directories).
-- Execution: synchronous or async (MAY return `pending` for large copies).
-- Input:
-    - `copies`: array of objects:
-        - `from`: string
-        - `to`: string
-    - `overwrite`: optional boolean (default `false`)
-    - `create_parents`: optional boolean (default `false`)
-    - `dry_run`: optional boolean
-- Output:
-    - `copies`: array of objects (same order as input):
-        - `from`: string
-        - `to`: string
-        - `copied`: boolean
-        - `warning`: optional string
-
-Notes:
-
-- For symlinks, Alfred MUST treat the symlink itself as the filesystem object to copy and MUST NOT follow it.
-- If a platform cannot copy a symlink without elevated privileges, the corresponding item MUST set `copied: false` with a deterministic `warning` value.
-
-### `path_delete`
-
-- Purpose: Perform deterministic bulk delete operations.
-- Execution: synchronous.
-- Input:
-    - `paths`: array of strings
-    - `recursive`: optional boolean (default `false`)
-    - `dry_run`: optional boolean
-- Output:
-    - `deleted`: array of objects (same order as input):
-        - `path`: string
-        - `deleted`: boolean
-        - `warning`: optional string
-
-Notes:
-
-- When `recursive` is `false`, the corresponding item MUST set `deleted: false` with a deterministic `warning` value if the path is a non-empty directory.
-- The tool MUST delete symlinks as leaf nodes and MUST NOT follow them.
-
-## Task execution tools
-
-These tools run local processes under explicit guardrails. By default, tools MUST NOT invoke a shell ([CNS-018](./MIS-001/Constraint/CNS-018-No_Shell_by_Default_for_Task_Execution.md)).
-
-Tasks using some tools, such as `npm` assume certain script names in the configuration.
-
-Long-running work SHOULD return `status: "pending"` with an envelope `job_id` (see [`docs/design/Protocol.md`](./Protocol.md)).
-
-### `list_tasks`
-
-- Purpose: List the available tasks in the current workspace (e.g. `build`, `test`) based on language(s) in use.
-- Execution: synchronous.
-- Input:
-    - `language`: optional string filter
-    - `cursor`: optional string
-    - `limit`: optional integer
-- Output (sync):
-    - `language`: string
-    - `task`: string
-    - `description`: string
-    - `parameters`: array of objects:
-        - `name`: string
-        - `type`: string
-        - `description`: string
-
-### `task_run`
-
-- Purpose: Run a named task (e.g. `build`, `test`) selected from a safe allowlist.
-- Execution: synchronous or async.
-- Input:
-    - `task`: string
-    - `parameters`: optional object, string/string name/value pairs
-    - `timeout_ms`: optional integer
-    - `async`: optional boolean (default `false`)
-- Output (sync):
-    - `exit_code`: integer
-    - `diagnostics`: object, see [ART-003 Diagnostics Report](./MIS-001/Artifact/ART-003-Diagnostics_Report.md)
-- Output (async / pending):
-    - No additional fields (the envelope includes `job_id`).
-
-Notes:
-
-- The `diagnostics` payload MUST conform to the schema at `docs/design/schemas/alfred.diagnostics.schema.json`.
-- For Rust tasks, `cargo` execution is implemented via a library integration (not by shelling out).
-- For external tools (for example `npm`/`pnpm`), Alfred MUST perform a safe availability probe (for example `--version` or `--help`) at least once per process lifetime before first use.
-
-### Task execution environment
-
-By default, tasks run with a **sanitized environment**:
-
-- Start from an allowlist of inherited variables (OS-specific defaults).
-- Overlay Alfred-managed environment variables set via `env_set`.
-
-Default allowlist:
-
-- Linux/macOS: `PATH`, `HOME`, `USER`, `TMPDIR`.
-- Windows: `PATH`, `USERPROFILE`, `TEMP`, `TMP`, `SystemRoot`.
-
-The allowlist MUST be configurable (see [`docs/design/Configuration.md`](./Configuration.md)).
-
-Tasks MUST execute with the workspace root as the working directory.
-
-### Tasks
-
-This list is not exhaustive.
-
-- Rust:
-    - `format`: `cargo fmt`
-    - `lint`: `cargo clippy`
-    - `test`: `cargo test`
-    - `run`: `cargo run`
-    - `build`: `cargo build`
-    - `release`: `cargo build --release`
-- Node (npm):
-    - `format`: `npm run format`
-    - `lint`: `npm run lint`
-    - `test`: `npm run test`
-    - `run`: `npm run dev`
-    - `build`: `npm run build`
-    - `release`: `npm run release`
-- Node (pnpm):
-    - `format`: `pnpm format`
-    - `lint`: `pnpm lint`
-    - `test`: `pnpm test`
-    - `run`: `pnpm dev`
-    - `build`: `pnpm build`
-    - `release`: `pnpm release`
-
-## Background job tools
-
-These tools provide deterministic control and retrieval for background work started by other tools.
-
-### `job_status`
-
-- Purpose: Retrieve job status.
-- Execution: synchronous.
-- Input:
-    - `job_id`: string
-- Output:
-    - `job_id`: string
-    - `state`: string (`"queued" | "running" | "succeeded" | "failed" | "canceled"`)
-    - `started_at`: optional string (RFC3339 UTC)
-    - `ended_at`: optional string (RFC3339 UTC)
-    - `exit_code`: optional integer
-
-### `job_statuses`
-
-- Purpose: Return a minimal status list for all running jobs and recently completed jobs whose output has not been fully delivered.
-- Execution: synchronous.
-- Input:
-    - None.
-- Output:
-    - `jobs`: array of objects:
-        - `job_id`: string
-        - `state`: string (`"queued" | "running" | "succeeded" | "failed" | "canceled"`)
-
-Notes:
-
-- "Recently completed" means the job is in a terminal state but still has unread output available via `job_read`.
-
-### `job_cancel`
-
-- Purpose: Request cancellation of a running job.
-- Execution: synchronous.
-- Input:
-    - `job_id`: string
-- Output:
-    - `job_id`: string
-    - `canceled`: boolean
-
-### `job_list`
-
-- Purpose: List recent jobs.
-- Execution: synchronous.
-- Input:
-    - `cursor`: optional string
-    - `limit`: optional integer
-- Output:
-    - `jobs`: array of objects:
-        - `job_id`: string
-        - `state`: string (`"queued" | "running" | "succeeded" | "failed" | "canceled"`)
-        - `started_at`: optional string (RFC3339 UTC)
-        - `ended_at`: optional string (RFC3339 UTC)
-        - `exit_code`: optional integer
-    - `next_cursor`: optional string
-
-### `job_read`
-
-- Purpose: Read a job's output stream ([ART-006 Job Output Stream](./MIS-001/Artifact/ART-006-Job_Output_Stream.md)).
-- Execution: synchronous.
-- Input:
-    - `job_id`: string
-    - `cursor`: optional string
-    - `limit`: optional integer (lines/items)
-    - `encoding`: optional `"json" | "ndjson"` (default `"ndjson"`)
-- Output:
-    - `items`: optional array (when `encoding: "json"`)
-    - `ndjson`: optional string (when `encoding: "ndjson"`)
-    - `next_cursor`: optional string
-
-Cursor semantics:
-
-- The cursor is a decimal string representing the next `seq` value to read from the job stream.
-- If `cursor` is omitted, it defaults to `"0"`.
-- `next_cursor` MUST be the decimal string for `(last_seq_returned + 1)`.
-
-Job stream schema:
-
-- When `encoding: "ndjson"`, each line in `ndjson` MUST be a complete JSON object conforming to `docs/design/schemas/alfred.job-stream-item.schema.json`.
-- When `encoding: "json"`, `items` MUST be an array of objects of the same schema.
-
-## Session introspection tools
-
-These tools provide deterministic introspection over the current Alfred process session (process lifetime).
-
-### `session_recent`
-
-- Purpose: Return recent tool calls and their results (redacted), suitable for troubleshooting and agent self-awareness.
-- Execution: synchronous.
-- Input:
-    - `cursor`: optional string
-    - `limit`: optional integer
-    - `include_args`: optional boolean (default `false`)
-    - `include_results`: optional boolean (default `false`)
-- Output:
-    - `calls`: array of objects:
-        - `id`: string
-        - `timestamp`: string (RFC3339 UTC)
-        - `tool`: string
-        - `status`: string (`"ok" | "error" | "pending"`)
-        - `job_id`: optional string
-        - `error_kind`: optional string
-        - `args`: optional object (redacted)
-        - `result`: optional object (tool result envelope; redacted and bounded)
-    - `next_cursor`: optional string
-
-Notes:
-
-- Returned `args` and `result` MUST be deterministically redacted.
-- `include_results: true` MUST still enforce a bounded payload; for larger results, the tool MUST return `pending` with a `job_id`.
-
-## Log tools
-
-Log tools tail and filter Alfred/runtime logs using the structured log record defined in [`docs/design/Protocol.md`](./Protocol.md).
-
-### `log_tail`
-
-- Purpose: Start a bounded log tail as a background job.
-- Execution: async (returns `pending`).
-- Input:
-    - `path`: optional string (defaults to the path to Alfred's log)
-    - `level_min`: optional string (`"TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR"`)
-    - `source_prefix`: optional string
-    - `lines_before`: optional integer (default 10)
-    - `since`: optional string (RFC3339 UTC)
-- Output (pending):
-    - No additional fields (the envelope includes `job_id`; use `job_read`).
-
-### `log_search`
-
-- Purpose: Search logs deterministically.
-- Execution: synchronous.
-- Input:
-    - `path`: optional string (defaults to the path to Alfred's log)
-    - `query`: string
-    - `level`: optional string
-    - `source_prefix`: optional string
-    - `cursor`: optional string
-    - `limit`: optional integer
-- Output:
-    - `matches`: array of log records
-    - `next_cursor`: optional string
-
-## Plan tools
-
-Plan tooling reads and updates the project plan ([ART-004 Project Plan](./MIS-001/Artifact/ART-004-Project_Plan.md)). The plan format is standardized, and must be human readable.
-
-### Plan file location
-
-The plan is always workspace-scoped.
-
-Default selection:
-
-1. If `docs/design/ProjectPlan.md` exists, use it.
-2. Otherwise use `ProjectPlan.md` at the workspace root.
-
-The plan path MUST be configurable via workspace configuration.
-
-### Concurrency and locking
-
-Plan writes MUST be serialized.
-
-- Before any plan write, Alfred MUST acquire an exclusive lock.
-- If the lock cannot be acquired immediately, the tool MUST fail with `error.kind: "conflict"` and `details.reason: "locked"`.
-- Locks MUST be released after the write completes.
-
-Locking is implemented via lock files under `.agents/alfred/locks/` using a deterministic lock ordering.
-
-### Plan item schema
-
-- `id` (integer): stable identifier (sequential, starting at 1)
-- `title` (string): concise label
-- `priority` (integer): 0 (Critical/Blocker) to 3 (Low)
-- `cards` (array of string): related Aurora card ids
-- `description` (string): summary of the work to be done
-- `deliverables` (array of string): specific items to be delivered
-- `acceptance_criteria` (optional string): additional criteria, beyond the deliverables, that must be met
-- `notes` (optional string): additional useful information
-- `status` (string): `"planned" | "in-progress" | "completed" | "cancelled"`
-
-**Example**:
-
-```markdown
-1. [ ] Implement MCP stdio Interface
-    - Priority: 2
-    - Cards: "INT-001", "ART-001", "ART-002"
-    - Description: Per the Aurora model, implement the stdio contract used by the MCP host to call Alfred tools and receive structured results.
-    - Deliverables:
-        - A stdio MCP interface accepting ART-001 and returning ART-002.
-        - Passing positive, negative, and security tests.
-    - Status: planned
-```
-
-### `plan_get`
-
-- Purpose: Read the current plan.
-- Execution: synchronous.
-- Input: none.
-- Output:
-    - `items`: array of plan items
-
-### `plan_update`
-
-- Purpose: Update the status of a specific plan item
-- Execution: synchronous.
-- Input:
-    - `id`: id of the item to update
-    - `status`: the new status
-- Output:
-    - No additional fields.
-
-### `plan_edit`
-
-- Purpose: Edit a plan item.
-- Execution: synchronous.
-- Input:
-    - A single plan item.
-- Output:
-    - No additional fields.
-
-### `plan_add`
-
-- Purpose: Append a plan item.
-- Execution: synchronous.
-- Input:
-    - A single plan item. `id` will be ignored.
-- Output:
-    - `id`: id of the new item.
-
-### `plan_delete`
-
-- Purpose: Remove a plan item.
-- Execution: synchronous.
-- Input:
-    - `id`: id of the item to remove
-- Output:
-    - No additional fields.
+- User store (default): persisted in user data directory.
+- Optional workspace store: persisted under `<workspaceRoot>/.alfred/` by default, configurable via `workspace.storage.root`.
+- When workspace memory storage is enabled, Alfred MAY compose effective results from user + workspace stores according to configured merge policy.
 
 ## Capability discovery
 
 ### `capabilities`
 
-- Purpose: Advertise supported tools, versions, execution modes, and limits.
+- Purpose: advertise supported tools, versions, execution modes, and limits.
 - Execution: synchronous.
 - Input: none.
 - Output:
-    - `tools`: array of objects (stable-sorted by `name`):
-        - `name`: string
-        - `version`: string (SemVer)
-        - `schema_version`: string (SemVer; lockstep with `version`)
-        - `execution_modes`: array (`"sync" | "async"`)
-        - `limits`: optional object
+    - `tools`: array of objects, stable-sorted by `name`:
+        - `name`: string.
+        - `version`: string (SemVer).
+        - `schema_version`: string (SemVer; lockstep with `version`).
+        - `execution_modes`: array (`"sync" | "background"`).
+        - `limits`: optional object.
 
-Limits (when present) SHOULD include:
+Limits SHOULD include:
 
-- `max_inline_utf8_bytes`: maximum UTF-8 payload size Alfred will accept/emit inline per call.
-- `max_file_chunk_bytes`: maximum decoded bytes supported by `file_read_bytes`, `file_create_bytes`, and `file_append_bytes` per call.
-- `max_ndjson_item_bytes`: maximum size of a single NDJSON item line emitted via job tooling.
-
-## Action chaining
-
-### `chain`
-
-- Purpose: Execute a deterministic multi-step chain in a single call.
-- Execution: synchronous or async.
-- Input:
-    - `steps`: array of objects:
-        - `tool`: string
-        - `args`: object
-    - `stop_on_failure`: optional boolean (default `true`)
-    - `mode`: optional `"sync" | "async"` (default `"sync"`)
-- Output (sync):
-    - `steps`: array of objects:
-        - `index`: integer (1-based)
-        - `tool`: string
-        - `result`: tool result envelope
-    - `stopped_early`: boolean
-- Output (async / pending):
-    - No additional fields (the envelope includes `job_id`).
-
-## Environment variable tools
-
-Environment variable CRUD is scoped to Alfred-controlled contexts ([CNS-020](./MIS-001/Constraint/CNS-020-Environment_Variable_CRUD_Scope.md)). These tools MUST NOT claim to mutate the parent IDE or shell environment across OSes.
-
-For simplicity, Alfred maintains a single internal environment variable list that is automatically made available to tools called through Alfred.
-
-Unless otherwise specified, environment variable values MUST be treated as non-public information and MUST NOT be written to tool/runtime logs.
-
-When constructing Alfred-controlled contexts from a source environment (for example, the host IDE), Alfred MUST filter the source environment to exclude non-public information (NPI) entries that should not be inherited.
-
-### `env_list`
-
-- Purpose: List environment variables in a managed context.
-- Execution: synchronous.
-- Input:
-    - None.
-- Output:
-    - `environment`: object, set of string/string key/value pairs
-
-### `env_get`
-
-- Purpose: Retrieve an environment variable from a managed context.
-- Execution: synchronous.
-- Input:
-    - `key`: string
-- Output:
-    - `value`: optional string
-
-### `env_set`
-
-- Purpose: Set an environment variable in a managed context.
-- Execution: synchronous.
-- Input:
-    - `key`: string
-    - `value`: string
-    - `dry_run`: optional boolean
-- Output:
-    - No additional fields.
-
-### `env_unset`
-
-- Purpose: Unset an environment variable in a managed context.
-- Execution: synchronous.
-- Input:
-    - `key`: string
-    - `dry_run`: optional boolean
-- Output:
-    - No additional fields.
-
-## Memory tools (local, indexed, searchable)
-
-The memory toolset provides an offline-only, persistent store for structured “facts”, plus full-text search.
-
-### Storage (user + workspace)
-
-Alfred supports two physical stores for memory facts:
-
-- **User Store (default)**: persisted in the OS user data directory under `alfred/` (for example `~/.local/alfred/alfred.sqlite3`).
-- **Workspace Store (optional)**: persisted under the workspace root in `.agents/` (default `.agents/alfred/alfred.sqlite3`).
-
-When a Workspace Store is enabled, Alfred exposes an **effective** view over both stores:
-
-- **Merged (default)**: effective set is the union of both stores; when `id` collides, Workspace overrides User.
-- **Prefer workspace**: workspace is primary; the User store is still consulted for `category: user_preferences`, then overlaid by workspace.
-
-### Fact schema
-
-A fact uses the [ART-008 Memory Fact](./MIS-001/Artifact/ART-008-Memory_Fact.md) shape (see the Aurora model), with these required fields:
-
-- `id` (string): stable identifier
-- `subject` (string)
-- `fact` (string)
-- `citations` (string)
-- `reason` (string)
-- `category` (string)
-
-Optional fields:
-
-- `tags` (array of strings): caller-controlled labels used for deterministic filtering (stable-sorted ascending; recommended lower-case `kebab-case`)
-
-Stored facts returned by tools also include:
-
-- `created_at` (string): RFC3339 UTC timestamp (seconds preferred; max milliseconds)
-- `updated_at` (string): RFC3339 UTC timestamp (seconds preferred; max milliseconds)
-
-#### Category values
-
-`category` SHOULD be one of:
-
-- `general`
-- `user_preferences`
-- `documentation_practices`
-- `coding_practices` (Include the language as a tag)
-- `preferred_libraries` (Include the language as a tag)
-- `file_specific`
-- `bootstrap_and_build`
-
-Alfred MUST treat `category` as an open set (unknown values are accepted) so callers can introduce additional categories without server upgrades.
-
-### `memory_put`
-
-- Purpose: Upsert a fact.
-- Execution: synchronous.
-- Input:
-    - A fact object
-- Output:
-    - `id`: id of the upserted fact
-
-### `memory_get`
-
-- Purpose: Retrieve a single fact by id.
-- Execution: synchronous.
-- Input:
-    - `id`: string
-- Output:
-    - `fact`: fact object
-
-### `memory_delete`
-
-- Purpose: Delete a single fact by id.
-- Execution: synchronous.
-- Input:
-    - `id`: string
-    - `dry_run`: optional boolean (default `false`)
-- Output:
-    - `deleted`: boolean
-
-### `memory_list`
-
-- Purpose: List facts deterministically.
-- Execution: synchronous.
-- Input:
-    - `cursor`: optional string
-    - `limit`: optional integer
-    - `order`: optional `"created_at" | "updated_at" | "subject"` (default `"updated_at"`)
-    - `subject`: optional string (exact match)
-    - `category`: optional string (exact match)
-    - `tags_any`: optional array of strings (match if any tag is present)
-    - `tags_and`: optional boolean (default `false`)
-- Output:
-    - `facts`: array of fact objects (bounded)
-    - `next_cursor`: optional string
-
-### `memory_search`
-
-- Purpose: Full-text search over memory facts.
-- Execution: synchronous by default; MAY support async for very large stores.
-- Input:
-    - `query`: string
-    - `limit`: optional integer
-    - `cursor`: optional string
-    - `subject`: optional string (exact match)
-    - `category`: optional string (exact match)
-    - `tags_any`: optional array of strings
-    - `tags_and`: optional boolean (default `false`)
-- Output:
-    - `matches`: array of objects:
-        - `fact`: fact object
-        - `score`: number
-        - `highlights`: optional object
+- `max_inline_utf8_bytes`: maximum inline payload size per call.
+- `max_patch_files_per_call`: maximum number of files accepted by `patch`.
+- `max_bulk_operations_per_call`: maximum operations accepted by `bulk_fs_operations`.
+- `max_log_records_per_call`: maximum records returned by `log_operations`.
 
 ## Notes on limits and determinism
 
-- All list/search tools MUST define a default `limit` (default 100).
+- All list/search tools MUST define a default `limit` (default `100`).
 - Ordering MUST be stable and documented.
 - Cursor tokens MUST be opaque and deterministic.
-
-## Default paging limits
-
-Unless otherwise specified:
-
-- `limit` default: `100`

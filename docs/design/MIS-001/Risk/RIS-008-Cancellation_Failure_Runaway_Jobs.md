@@ -1,6 +1,6 @@
-# Constraint: CNS-019 Cross-Platform Cancellation Semantics
+# Risk: RIS-008 Cancellation Failure / Runaway Jobs
 
-Background jobs MUST support best-effort cancellation with documented semantics that work on Linux/macOS/Windows (terminate → wait → force kill), acknowledging OS-specific differences.
+OS-specific process termination semantics can prevent timely cancellation of background jobs, causing runaway resource usage or continued execution of undesired work.
 
 
 

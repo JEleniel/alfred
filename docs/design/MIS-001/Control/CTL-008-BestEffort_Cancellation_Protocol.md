@@ -12,7 +12,7 @@ _No attributes defined._
 
 - enforces [CNS-019](../Constraint/CNS-019-CrossPlatform_Cancellation_Semantics.md)
 - governs [DST-002](../Data_Store/DST-002-Job_and_Session_Store.md)
-- mitigates [RIS-008](../Risk/RIS-008-Cancellation_Failure_Runaway_Tasks.md)
+- mitigates [RIS-008](../Risk/RIS-008-Cancellation_Failure_Runaway_Jobs.md)
 - mitigates [RIS-002](../Risk/RIS-002-Host_Compromise.md)
 
 

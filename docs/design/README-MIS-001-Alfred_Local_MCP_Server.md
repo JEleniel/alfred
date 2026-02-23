@@ -40,13 +40,11 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[ATV-002 - Read and Diff Files](MIS-001/Activity/ATV-002-Read_and_Diff_Files.md)**: Read file ranges and view diffs to understand the current state and validate intended changes.
 
-- **[ATV-001 - Search Workspace](MIS-001/Activity/ATV-001-Search_Workspace.md)**: Search and inspect workspace files to locate relevant code and context for a task.
+- **[ATV-001 - Search Workspace](MIS-001/Activity/ATV-001-Search_Workspace.md)**: Search and inspect workspace files to locate relevant code and context for the requested change.
 
-- **[ATV-005 - Manage Plan and Progress](MIS-001/Activity/ATV-005-Manage_Plan_and_Progress.md)**: Create/update a task plan and report progress incrementally with clear completion semantics.
+- **[ATV-005 - Manage Plan and Progress](MIS-001/Activity/ATV-005-Manage_Plan_and_Progress.md)**: Create/update a project plan and report progress incrementally with clear completion semantics.
 
 - **[ATV-006 - Discover Capabilities and Environment](MIS-001/Activity/ATV-006-Discover_Capabilities_and_Environment.md)**: Discover supported tools/versions and understand the effective execution environment (especially in remote/networked workspaces).
-
-- **[ATV-004 - Run and Monitor Tasks](MIS-001/Activity/ATV-004-Run_and_Monitor_Tasks.md)**: Run local processes, stream logs, and cancel/timeout work when needed.
 
 - **[ATV-003 - Apply Workspace Edits](MIS-001/Activity/ATV-003-Apply_Workspace_Edits.md)**: Apply safe, bounded edits to workspace files (create/update/delete) and validate results.
 
@@ -94,13 +92,9 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### Capability
 
-- **[CAP-009 - Environment Variable Management](MIS-001/Capability/CAP-009-Environment_Variable_Management.md)**: Support CRUD operations for environment variables used by tools and tasks.
-
-- **[CAP-005 - Task and Tool Execution](MIS-001/Capability/CAP-005-Task_and_Tool_Execution.md)**: Execute named tasks (build/test) and common ecosystem commands (cargo/pnpm/lint/format) with normalized outputs.
+- **[CAP-009 - Environment Variable Management](MIS-001/Capability/CAP-009-Environment_Variable_Management.md)**: Support CRUD operations for environment variables used by Alfred tools and managed contexts.
 
 - **[CAP-001 - Workspace Index and Query](MIS-001/Capability/CAP-001-Workspace_Index_and_Query.md)**: Maintain an index of workspace files and provide fast listing, search, range extraction, and diff primitives.
-
-- **[CAP-011 - Single-Call Action Chaining](MIS-001/Capability/CAP-011-SingleCall_Action_Chaining.md)**: Execute multi-step actions (e.g. search → patch → validate) in declared order with per-step status and error reporting.
 
 - **[CAP-006 - Background Operations](MIS-001/Capability/CAP-006-Background_Operations.md)**: Run asynchronous operations with streaming output, cancellation, timeouts, and job/session introspection.
 
@@ -124,11 +118,9 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### Component
 
-- **[COM-009 - Task Runner](MIS-001/Component/COM-009-Task_Runner.md)**: Runs named tasks and common ecosystem commands, capturing structured output and diagnostics.
-
 - **[COM-011 - Contracts and Diagnostics](MIS-001/Component/COM-011-Contracts_and_Diagnostics.md)**: Defines and enforces deterministic schemas for outputs, error taxonomy, and normalized diagnostics (including delta reporting).
 
-- **[COM-002 - Tool Router](MIS-001/Component/COM-002-Tool_Router.md)**: Dispatches tool requests to the appropriate subsystem, enforces execution semantics for chaining, and coordinates response shaping.
+- **[COM-002 - Tool Router](MIS-001/Component/COM-002-Tool_Router.md)**: Dispatches tool requests to the appropriate subsystem and coordinates deterministic response shaping.
 
 - **[COM-014 - Environment Variable Manager](MIS-001/Component/COM-014-Environment_Variable_Manager.md)**: Provides CRUD operations for environment variables with policy guardrails.
 
@@ -139,8 +131,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[COM-003 - Workspace Indexer](MIS-001/Component/COM-003-Workspace_Indexer.md)**: Maintains the workspace file index and supports listing/search/range/diff primitives.
 
 - **[COM-012 - Capability Registry](MIS-001/Component/COM-012-Capability_Registry.md)**: Maintains discoverable metadata for Alfred tools/capabilities, including versions, schema versions, limits, and execution modes.
-
-- **[COM-015 - Chain Orchestrator](MIS-001/Component/COM-015-Chain_Orchestrator.md)**: Executes declared action chains in order with per-step status and stop-on-failure semantics.
 
 - **[COM-008 - Plan Manager](MIS-001/Component/COM-008-Plan_Manager.md)**: Creates and maintains the project plan artifact, including capturing tool/diagnostics errors and progress.
 
@@ -156,11 +146,9 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### Constraint
 
-- **[CNS-010 - Permission Model and Guardrails](MIS-001/Constraint/CNS-010-Permission_Model_and_Guardrails.md)**: Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults. Tool exposure, task execution, and plan writes MUST be governed by deterministic policies.
+- **[CNS-010 - Permission Model and Guardrails](MIS-001/Constraint/CNS-010-Permission_Model_and_Guardrails.md)**: Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults. Tool exposure and plan writes MUST be governed by deterministic policies.
 
 - **[CNS-014 - Mobile Platforms Out of Scope](MIS-001/Constraint/CNS-014-Mobile_Platforms_Out_of_Scope.md)**: Alfred is not required to support mobile platforms (iOS/Android).
-
-- **[CNS-009 - Stop-on-Failure Default for Chains](MIS-001/Constraint/CNS-009-StoponFailure_Default_for_Chains.md)**: Chained actions MUST stop on failure by default.
 
 - **[CNS-017 - Cross-Platform Atomic Write Semantics](MIS-001/Constraint/CNS-017-CrossPlatform_Atomic_Write_Semantics.md)**: When claiming atomic mutations, Alfred MUST implement an atomic write/replace strategy that is correct on Linux/macOS/Windows; if atomic replacement cannot be guaranteed (e.g., locked destination on Windows), Alfred MUST fail explicitly rather than partially applying changes.
 
@@ -168,7 +156,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CNS-023 - VS Code Remote Development Compatibility](MIS-001/Constraint/CNS-023-VS_Code_Remote_Development_Compatibility.md)**: Alfred MUST be compatible with VS Code Remote Development modes (SSH, WSL, Dev Containers) where the extension host is remote. Alfred runs as a local stdio process relative to the extension host/workspace machine.
 
-- **[CNS-019 - Cross-Platform Cancellation Semantics](MIS-001/Constraint/CNS-019-CrossPlatform_Cancellation_Semantics.md)**: Background jobs and tasks MUST support best-effort cancellation with documented semantics that work on Linux/macOS/Windows (terminate → wait → force kill), acknowledging OS-specific differences.
+- **[CNS-019 - Cross-Platform Cancellation Semantics](MIS-001/Constraint/CNS-019-CrossPlatform_Cancellation_Semantics.md)**: Background jobs MUST support best-effort cancellation with documented semantics that work on Linux/macOS/Windows (terminate → wait → force kill), acknowledging OS-specific differences.
 
 - **[CNS-001 - Workspace Boundary Enforcement](MIS-001/Constraint/CNS-001-Workspace_Boundary_Enforcement.md)**: Alfred MUST NOT read or write outside the current workspace. All filesystem operations MUST validate workspace-relative paths and MUST prevent path traversal and symlink/junction escapes.
 
@@ -178,11 +166,9 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CNS-008 - SemVer and Schema Lockstep](MIS-001/Constraint/CNS-008-SemVer_and_Schema_Lockstep.md)**: Tool versions MUST use SemVer, and schema versions MUST remain in lockstep with tool versions.
 
-- **[CNS-020 - Environment Variable CRUD Scope](MIS-001/Constraint/CNS-020-Environment_Variable_CRUD_Scope.md)**: Environment variable CRUD MUST be scoped to Alfred-controlled contexts (e.g., per-task environment or managed .env files). Alfred MUST NOT claim to mutate the parent IDE or shell environment across OSes.
+- **[CNS-020 - Environment Variable CRUD Scope](MIS-001/Constraint/CNS-020-Environment_Variable_CRUD_Scope.md)**: Environment variable CRUD MUST be scoped to Alfred-controlled contexts (e.g., managed .env files or tool-scoped environments). Alfred MUST NOT claim to mutate the parent IDE or shell environment across OSes.
 
 - **[CNS-011 - Git and GitHub Operations Out of Scope](MIS-001/Constraint/CNS-011-Git_and_GitHub_Operations_Out_of_Scope.md)**: Alfred MUST NOT implement Git or GitHub operations handled by dedicated tools.
-
-- **[CNS-018 - No Shell by Default for Task Execution](MIS-001/Constraint/CNS-018-No_Shell_by_Default_for_Task_Execution.md)**: Task execution MUST default to argv-based process spawning (no shell) to avoid cross-platform quoting differences and injection risks; shell execution MUST be explicitly requested and treated as less portable.
 
 - **[CNS-002 - Side-Effect Free Reads](MIS-001/Constraint/CNS-002-SideEffect_Free_Reads.md)**: Read-only operations MUST be side-effect free.
 
@@ -204,8 +190,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### Control
 
-- **[CTL-007 - Argv-Only Task Execution (No Shell Default)](MIS-001/Control/CTL-007-ArgvOnly_Task_Execution_No_Shell_Default.md)**: Default to argv-based spawning (no shell) to reduce injection risk and ensure cross-platform behavior; require explicit opt-in for shell execution with clear portability warnings.
-
 - **[CTL-011 - Network FS Safe Write Strategy](MIS-001/Control/CTL-011-Network_FS_Safe_Write_Strategy.md)**: When operating on network-backed workspaces, avoid relying on fragile atomicity/locking assumptions; use conservative write+verify patterns and fail explicitly when safety guarantees cannot be achieved.
 
 - **[CTL-014 - Watcher Fallback and Index Reconciliation](MIS-001/Control/CTL-014-Watcher_Fallback_and_Index_Reconciliation.md)**: Do not rely exclusively on file watching for correctness. Support periodic reconciliation, on-demand reindex, and deterministic invalidation when change visibility is uncertain (common on network/remote workspaces).
@@ -216,11 +200,9 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CTL-009 - Encoding-Safe Path Handling and Reporting](MIS-001/Control/CTL-009-EncodingSafe_Path_Handling_and_Reporting.md)**: Treat filesystem paths as potentially non-UTF8; ensure protocol outputs remain valid UTF-8 JSON by using deterministic escaping/encoding for unrepresentable paths.
 
-- **[CTL-010 - Scoped Environment Management](MIS-001/Control/CTL-010-Scoped_Environment_Management.md)**: Scope environment-variable changes to Alfred-managed contexts (per-task env or managed .env files) and report resulting env deterministically; do not attempt to mutate the parent IDE/shell environment.
+- **[CTL-010 - Scoped Environment Management](MIS-001/Control/CTL-010-Scoped_Environment_Management.md)**: Scope environment-variable changes to Alfred-managed contexts (tool-scoped env or managed .env files) and report resulting env deterministically; do not attempt to mutate the parent IDE/shell environment.
 
-- **[CTL-002 - Permissions and User Confirmation](MIS-001/Control/CTL-002-Permissions_and_User_Confirmation.md)**: Require explicit permissions for sensitive tool categories (writes, deletes, patch application, and task execution). Support IDE-compliant prompts and policy defaults that assume the agent may be malicious.
-
-- **[CTL-003 - Safe Task Execution Policy](MIS-001/Control/CTL-003-Safe_Task_Execution_Policy.md)**: Constrain task execution to safe defaults: workspace working directory, environment scrubbing, command allow/deny rules, output limits, timeouts, and a policy that prevents Alfred from becoming a general-purpose remote execution agent.
+- **[CTL-002 - Permissions and User Confirmation](MIS-001/Control/CTL-002-Permissions_and_User_Confirmation.md)**: Require explicit permissions for sensitive tool categories (writes, deletes, patch application, and environment management). Support IDE-compliant prompts and policy defaults that assume the agent may be malicious.
 
 - **[CTL-008 - Best-Effort Cancellation Protocol](MIS-001/Control/CTL-008-BestEffort_Cancellation_Protocol.md)**: Implement a cross-platform cancellation policy (terminate → wait → force kill) with bounded timeouts and consistent job-state transitions.
 
@@ -230,7 +212,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CTL-001 - Workspace Boundary Guard](MIS-001/Control/CTL-001-Workspace_Boundary_Guard.md)**: Canonicalize and validate all paths; enforce workspace boundary checks; treat symlinks, traversal sequences, and platform-specific path edge-cases as hostile inputs.
 
-- **[CTL-013 - Remote Mode Environment Introspection](MIS-001/Control/CTL-013-Remote_Mode_Environment_Introspection.md)**: Detect and report the effective execution environment (OS, shell availability, toolchain paths) from the workspace host so tasks/diagnostics are interpreted correctly in VS Code remote modes.
+- **[CTL-013 - Remote Mode Environment Introspection](MIS-001/Control/CTL-013-Remote_Mode_Environment_Introspection.md)**: Detect and report the effective execution environment (OS, shell availability, toolchain paths) from the workspace host so tool behavior and diagnostics are interpreted correctly in VS Code remote modes.
 
 ### Data Source
 
@@ -260,13 +242,11 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[DRI-002 - Safety and Trust](MIS-001/Driver/DRI-002-Safety_and_Trust.md)**: Mutating tools must be safe by default: enforce workspace boundaries, support dry-run, and provide conflict-aware patching.
 
-- **[DRI-001 - Workflow Efficiency](MIS-001/Driver/DRI-001-Workflow_Efficiency.md)**: Agents need fast, composable primitives (index/search/read/diff/patch/run) to complete tasks with minimal friction.
+- **[DRI-001 - Workflow Efficiency](MIS-001/Driver/DRI-001-Workflow_Efficiency.md)**: Agents need fast, composable primitives (index/search/read/diff/patch) to complete work with minimal friction.
 
 - **[DRI-004 - Performance and Scalability](MIS-001/Driver/DRI-004-Performance_and_Scalability.md)**: Indexing/search/diff and patch operations must perform well on typical repositories and handle very large files safely.
 
 ### Event
-
-- **[EVT-052 - Task Run Failed](MIS-001/Event/EVT-052-Task_Run_Failed.md)**: Task execution failed before a complete report could be produced.
 
 - **[EVT-004 - Frame Parsed OK](MIS-001/Event/EVT-004-Frame_Parsed_OK.md)**: The incoming frame was parsed successfully into a request envelope.
 
@@ -292,8 +272,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[EVT-035 - Execution Requires Rollback](MIS-001/Event/EVT-035-Execution_Requires_Rollback.md)**: Execution partially completed and requires compensating actions.
 
-- **[EVT-093 - Chain Completed Reported](MIS-001/Event/EVT-093-Chain_Completed_Reported.md)**: Chain completion status was reported deterministically.
-
 - **[EVT-078 - Rotation Handled](MIS-001/Event/EVT-078-Rotation_Handled.md)**: Rotation was handled and tailing can resume.
 
 - **[EVT-070 - CapReg Refresh Succeeded](MIS-001/Event/EVT-070-CapReg_Refresh_Succeeded.md)**: Capability registry refresh succeeded.
@@ -301,8 +279,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[EVT-032 - Plan Validated For Dry-Run](MIS-001/Event/EVT-032-Plan_Validated_For_DryRun.md)**: The plan validated successfully and dry-run mode was requested (no writes).
 
 - **[EVT-002 - Shutdown Requested](MIS-001/Event/EVT-002-Shutdown_Requested.md)**: A shutdown was requested (EOF, host termination, or explicit stop).
-
-- **[EVT-054 - Task Result Emitted](MIS-001/Event/EVT-054-Task_Result_Emitted.md)**: Task result (success or failure) was emitted deterministically.
 
 - **[EVT-059 - Job Dispatch Failed](MIS-001/Event/EVT-059-Job_Dispatch_Failed.md)**: Job dispatch failed and cannot start monitoring.
 
@@ -316,29 +292,13 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[EVT-037 - Rollback Completed](MIS-001/Event/EVT-037-Rollback_Completed.md)**: Compensating actions completed.
 
-- **[EVT-107 - Chain Stop Failed](MIS-001/Event/EVT-107-Chain_Stop_Failed.md)**: Chain stop/cancel handling failed and the chain must transition to deterministic failure reporting.
-
 - **[EVT-079 - Rotation Failed](MIS-001/Event/EVT-079-Rotation_Failed.md)**: Handling rotation failed.
-
-- **[EVT-053 - Task Canceled](MIS-001/Event/EVT-053-Task_Canceled.md)**: Task cancellation completed and the terminal status is ready for reporting.
 
 - **[EVT-065 - Diagnostics Invalid](MIS-001/Event/EVT-065-Diagnostics_Invalid.md)**: Envelope did not validate and must be converted to a deterministic internal error.
 
 - **[EVT-061 - Job Failed](MIS-001/Event/EVT-061-Job_Failed.md)**: Job failed (timeout, cancellation, or runtime error).
 
-- **[EVT-086 - Chain Request Received](MIS-001/Event/EVT-086-Chain_Request_Received.md)**: A chain execution request was received.
-
-- **[EVT-089 - Steps Completed](MIS-001/Event/EVT-089-Steps_Completed.md)**: All chain steps completed successfully.
-
 - **[EVT-067 - CapReg Bootstrapped](MIS-001/Event/EVT-067-CapReg_Bootstrapped.md)**: Capability registry bootstrapped successfully.
-
-- **[EVT-108 - Task Cancel Failed](MIS-001/Event/EVT-108-Task_Cancel_Failed.md)**: Task cancellation failed and the task runner must transition to deterministic failure reporting.
-
-- **[EVT-090 - Stop Requested](MIS-001/Event/EVT-090-Stop_Requested.md)**: A stop/cancel request was received for the chain.
-
-- **[EVT-051 - Task Cancel Requested](MIS-001/Event/EVT-051-Task_Cancel_Requested.md)**: Cancellation was requested for the running task.
-
-- **[EVT-049 - Task Preparation Failed](MIS-001/Event/EVT-049-Task_Preparation_Failed.md)**: Task preparation failed due to invalid inputs, boundary issues, or missing tools.
 
 - **[EVT-095 - Conformance Requested](MIS-001/Event/EVT-095-Conformance_Requested.md)**: A request to run conformance was received.
 
@@ -357,8 +317,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[EVT-010 - Request Rejected](MIS-001/Event/EVT-010-Request_Rejected.md)**: The router rejected the request due to schema, policy, or boundary violations.
 
 - **[EVT-031 - Plan Validated For Execution](MIS-001/Event/EVT-031-Plan_Validated_For_Execution.md)**: The mutation plan validated successfully and execution is requested.
-
-- **[EVT-094 - Chain Failure Reported](MIS-001/Event/EVT-094-Chain_Failure_Reported.md)**: Chain failure was reported deterministically.
 
 - **[EVT-073 - CapReg Recovery Requested](MIS-001/Event/EVT-073-CapReg_Recovery_Requested.md)**: Recovery was requested for the capability registry.
 
@@ -390,8 +348,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[EVT-001 - Request Frame Available](MIS-001/Event/EVT-001-Request_Frame_Available.md)**: A complete, well-framed request is available to be read from stdin.
 
-- **[EVT-048 - Task Prepared](MIS-001/Event/EVT-048-Task_Prepared.md)**: Task invocation was prepared successfully (cwd/env resolved, command normalized).
-
 - **[EVT-041 - Plan Load Failed](MIS-001/Event/EVT-041-Plan_Load_Failed.md)**: Plan artifact could not be loaded.
 
 - **[EVT-006 - Response Write OK](MIS-001/Event/EVT-006-Response_Write_OK.md)**: A single framed response was written successfully.
@@ -416,8 +372,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[EVT-060 - Job Completed](MIS-001/Event/EVT-060-Job_Completed.md)**: Job completed successfully and is ready for finalization.
 
-- **[EVT-088 - Chain Build Failed](MIS-001/Event/EVT-088-Chain_Build_Failed.md)**: Chain could not be built (invalid declaration, policy violation, or missing tools).
-
 - **[EVT-110 - Transport Shutdown Completed](MIS-001/Event/EVT-110-Transport_Shutdown_Completed.md)**: Transport completed fault handling and transitioned to a deterministic shutdown.
 
 - **[EVT-017 - Initial Build Required](MIS-001/Event/EVT-017-Initial_Build_Required.md)**: Indexer determined an initial index build/rebuild is required.
@@ -425,8 +379,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[EVT-075 - Log Init Failed](MIS-001/Event/EVT-075-Log_Init_Failed.md)**: Log Manager failed to initialize log sources.
 
 - **[EVT-084 - Env Response Redacted](MIS-001/Event/EVT-084-Env_Response_Redacted.md)**: Response was redacted deterministically and is ready to return.
-
-- **[EVT-091 - Step Failed](MIS-001/Event/EVT-091-Step_Failed.md)**: A chain step failed; stop-on-failure requires termination.
 
 - **[EVT-016 - Failure Reported](MIS-001/Event/EVT-016-Failure_Reported.md)**: The router emitted a deterministic error response envelope.
 
@@ -436,8 +388,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[EVT-058 - Job Dispatched](MIS-001/Event/EVT-058-Job_Dispatched.md)**: Job worker started successfully and monitoring commenced.
 
-- **[EVT-112 - Task Failure Reported](MIS-001/Event/EVT-112-Task_Failure_Reported.md)**: Task failure was emitted deterministically to the caller.
-
 - **[EVT-027 - Context Resolved](MIS-001/Event/EVT-027-Context_Resolved.md)**: Workspace context was resolved successfully into normalized paths/values.
 
 - **[EVT-113 - Job Failure Reported](MIS-001/Event/EVT-113-Job_Failure_Reported.md)**: Job failure was emitted deterministically to the caller.
@@ -446,19 +396,13 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[EVT-011 - Dispatch Succeeded](MIS-001/Event/EVT-011-Dispatch_Succeeded.md)**: The router dispatched the request to the selected subsystem successfully.
 
-- **[EVT-047 - Task Request Received](MIS-001/Event/EVT-047-Task_Request_Received.md)**: A task execution request was received.
-
 - **[EVT-055 - Job Request Received](MIS-001/Event/EVT-055-Job_Request_Received.md)**: A request to start a job was received.
 
 - **[EVT-040 - Plan Loaded](MIS-001/Event/EVT-040-Plan_Loaded.md)**: Plan artifact loaded successfully.
 
-- **[EVT-087 - Chain Built](MIS-001/Event/EVT-087-Chain_Built.md)**: Chain validated and expanded into a deterministic step list.
-
 - **[EVT-034 - Execution Succeeded](MIS-001/Event/EVT-034-Execution_Succeeded.md)**: Plan execution succeeded and is ready to be committed/summarized.
 
 - **[EVT-043 - Plan Validation Failed](MIS-001/Event/EVT-043-Plan_Validation_Failed.md)**: Plan validation failed (schema mismatch, corrupted artifact, or lockstep violation).
-
-- **[EVT-050 - Task Run Completed](MIS-001/Event/EVT-050-Task_Run_Completed.md)**: Task execution completed and is ready for reporting.
 
 - **[EVT-066 - Diagnostics Emission Complete](MIS-001/Event/EVT-066-Diagnostics_Emission_Complete.md)**: Diagnostics emission completed and response finalized.
 
@@ -467,8 +411,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[EVT-021 - Rebuild Scheduled](MIS-001/Event/EVT-021-Rebuild_Scheduled.md)**: Indexer scheduled a rebuild/reconciliation due to detected change, staleness, or explicit request.
 
 - **[EVT-102 - Conformance Completed](MIS-001/Event/EVT-102-Conformance_Completed.md)**: Conformance run completed and terminal status is ready to return.
-
-- **[EVT-092 - Chain Stopped](MIS-001/Event/EVT-092-Chain_Stopped.md)**: Chain stopping completed and status is ready to finalize.
 
 - **[EVT-044 - Plan Update Requested](MIS-001/Event/EVT-044-Plan_Update_Requested.md)**: A deterministic plan update was requested.
 
@@ -498,8 +440,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[FEA-009 - Environment Variable Tooling](MIS-001/Feature/FEA-009-Environment_Variable_Tooling.md)**: CRUD operations for environment variables with policy guardrails.
 
-- **[FEA-005 - Task Execution Tooling](MIS-001/Feature/FEA-005-Task_Execution_Tooling.md)**: Run named tasks and common commands (cargo/pnpm/lint/format) with normalized outputs.
-
 - **[FEA-007 - Deterministic Response Contracts](MIS-001/Feature/FEA-007-Deterministic_Response_Contracts.md)**: Return concise JSON/NDJSON responses with stable schema versions and deterministic error taxonomy.
 
 - **[FEA-002 - Context Tools](MIS-001/Feature/FEA-002-Context_Tools.md)**: Expose pwd and workspace root primitives for location-aware workflows.
@@ -509,8 +449,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[FEA-014 - Local Indexed Memory Tooling](MIS-001/Feature/FEA-014-Local_Indexed_Memory_Tooling.md)**: CRUD and full-text search tools for persistent local memory facts, backed by an index for fast recall.
 
 - **[FEA-006 - Background Job Control](MIS-001/Feature/FEA-006-Background_Job_Control.md)**: Asynchronous job execution with streaming output, cancellation/timeouts, and job/session introspection.
-
-- **[FEA-011 - Action Chaining Orchestration](MIS-001/Feature/FEA-011-Action_Chaining_Orchestration.md)**: Execute multi-step tool chains with ordered execution, per-step status, and stop-on-failure defaults.
 
 - **[FEA-012 - Diagnostics Normalization](MIS-001/Feature/FEA-012-Diagnostics_Normalization.md)**: Normalize diagnostics across build/test/lint/format tooling and support delta reporting.
 
@@ -544,8 +482,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[REQ-008 - Log Handling](MIS-001/Requirement/REQ-008-Log_Handling.md)**: Alfred MUST tail and filter logs using a standardized NDJSON log record format and deterministic redaction.
 
-- **[REQ-005 - Task Execution](MIS-001/Requirement/REQ-005-Task_Execution.md)**: Alfred MUST run named tasks (e.g. build/test) and common ecosystem commands (cargo, pnpm, lint, format).
-
 - **[REQ-009 - Environment Variable CRUD](MIS-001/Requirement/REQ-009-Environment_Variable_CRUD.md)**: Alfred MUST support CRUD operations for environment variables.
 
 - **[REQ-006 - Background Operations](MIS-001/Requirement/REQ-006-Background_Operations.md)**: Alfred MUST support asynchronous operations with streaming output, cancellation and timeout controls, and job/session introspection.
@@ -553,8 +489,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[REQ-012 - Normalized Diagnostics Contract](MIS-001/Requirement/REQ-012-Normalized_Diagnostics_Contract.md)**: Alfred MUST provide a normalized diagnostics contract for build/test/lint/format, with consistent schema and optional delta reporting between runs.
 
 - **[REQ-017 - Local Indexed Memory](MIS-001/Requirement/REQ-017-Local_Indexed_Memory.md)**: Alfred MUST provide a local, indexed, searchable memory store that supports CRUD for individual facts and full-text search.
-
-- **[REQ-011 - Single-Call Action Chaining](MIS-001/Requirement/REQ-011-SingleCall_Action_Chaining.md)**: Alfred MUST support single-call action chaining (e.g. search → patch → validate) with per-step status and error details.
 
 - **[REQ-001 - Workspace Index and Query Tools](MIS-001/Requirement/REQ-001-Workspace_Index_and_Query_Tools.md)**: Alfred MUST maintain an index of all files in the workspace and provide listing, regex search, file range extraction, and diff capabilities.
 
@@ -578,15 +512,13 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[RIS-005 - Non-Atomic File Replace Due to Locking](MIS-001/Risk/RIS-005-NonAtomic_File_Replace_Due_to_Locking.md)**: Atomic replace operations may fail or become non-atomic on some platforms (notably Windows when destination files are locked), risking partial writes or inconsistent state if not handled explicitly.
 
-- **[RIS-008 - Cancellation Failure / Runaway Tasks](MIS-001/Risk/RIS-008-Cancellation_Failure_Runaway_Tasks.md)**: OS-specific process termination semantics can prevent timely cancellation of tasks/jobs, causing runaway resource usage or continued execution of an undesired command.
+- **[RIS-008 - Cancellation Failure / Runaway Jobs](MIS-001/Risk/RIS-008-Cancellation_Failure_Runaway_Jobs.md)**: OS-specific process termination semantics can prevent timely cancellation of background jobs, causing runaway resource usage or continued execution of undesired work.
 
 - **[RIS-009 - Path Encoding / Non-UTF8 Filenames Break Protocol](MIS-001/Risk/RIS-009-Path_Encoding_NonUTF8_Filenames_Break_Protocol.md)**: Non-UTF8 filenames or OS-specific path encodings can cause crashes, lossy reporting, or invalid JSON if not handled carefully.
 
 - **[RIS-002 - Host Compromise](MIS-001/Risk/RIS-002-Host_Compromise.md)**: A malicious action results in arbitrary code execution or harmful system changes on the developer machine.
 
-- **[RIS-007 - Shell Quoting / Injection / Portability Issues](MIS-001/Risk/RIS-007-Shell_Quoting_Injection_Portability_Issues.md)**: Shell-based task execution can introduce quoting discrepancies across Windows/macOS/Linux and elevate command-injection risk, especially under a malicious-agent scenario.
-
-- **[RIS-013 - Remote Dev Environment Mismatch](MIS-001/Risk/RIS-013-Remote_Dev_Environment_Mismatch.md)**: In VS Code remote modes, the workspace OS and tooling differ from the user's local machine (e.g., Linux container from Windows client). If Alfred assumes local client OS/tooling, tasks or diagnostics may behave unexpectedly.
+- **[RIS-013 - Remote Dev Environment Mismatch](MIS-001/Risk/RIS-013-Remote_Dev_Environment_Mismatch.md)**: In VS Code remote modes, the workspace OS and tooling differ from the user's local machine (e.g., Linux container from Windows client). If Alfred assumes local client OS/tooling, tool behavior or diagnostics may behave unexpectedly.
 
 - **[RIS-011 - Network FS Semantics Break Atomicity](MIS-001/Risk/RIS-011-Network_FS_Semantics_Break_Atomicity.md)**: Network-backed filesystems may not reliably support the atomic rename/replace semantics assumed by local filesystems, risking partial updates or inconsistent state.
 
@@ -613,8 +545,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[STA-053 - Log Initializing](MIS-001/State/STA-053-Log_Initializing.md)**: Log Manager initializes log sources and filtering rules.
 
 - **[STA-071 - Conformance Complete](MIS-001/State/STA-071-Conformance_Complete.md)**: Conformance Runner completes and returns to idle.
-
-- **[STA-064 - Chain Stopping](MIS-001/State/STA-064-Chain_Stopping.md)**: Chain Orchestrator stops execution early due to cancellation or policy and transitions to complete.
 
 - **[STA-009 - Router Dispatching](MIS-001/State/STA-009-Router_Dispatching.md)**: Router dispatches to the appropriate subsystem and establishes response shaping rules.
 
@@ -652,27 +582,17 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[STA-001 - Transport Initializing](MIS-001/State/STA-001-Transport_Initializing.md)**: Transport sets up stdio streams and internal buffers.
 
-- **[STA-035 - Task Running](MIS-001/State/STA-035-Task_Running.md)**: Task Runner executes the command and streams deterministic output (when requested).
-
 - **[STA-032 - Plan Failed](MIS-001/State/STA-032-Plan_Failed.md)**: Plan Manager reports deterministic diagnostics and returns to idle.
 
 - **[STA-042 - Job Monitoring](MIS-001/State/STA-042-Job_Monitoring.md)**: Job Manager tracks job progress, handles cancellation/timeouts, and collects outputs.
-
-- **[STA-063 - Chain Executing](MIS-001/State/STA-063-Chain_Executing.md)**: Chain Orchestrator executes each step in order, reporting per-step deterministic status.
 
 - **[STA-028 - Plan Loading](MIS-001/State/STA-028-Plan_Loading.md)**: Plan Manager loads the plan artifact from the workspace store.
 
 - **[STA-057 - Env Ready](MIS-001/State/STA-057-Env_Ready.md)**: Environment Variable Manager awaits a CRUD request.
 
-- **[STA-033 - Task Idle](MIS-001/State/STA-033-Task_Idle.md)**: Task Runner awaits a task execution request.
-
 - **[STA-005 - Transport Faulted](MIS-001/State/STA-005-Transport_Faulted.md)**: Transport encountered an unrecoverable IO/framing error; it emits a normalized diagnostic (when possible) and shuts down deterministically.
 
 - **[STA-025 - FileOps Rolling Back](MIS-001/State/STA-025-FileOps_Rolling_Back.md)**: File Operations Engine performs deterministic compensating actions for partially-completed plans.
-
-- **[STA-061 - Chain Idle](MIS-001/State/STA-061-Chain_Idle.md)**: Chain Orchestrator awaits a chain execution request.
-
-- **[STA-038 - Task Failed](MIS-001/State/STA-038-Task_Failed.md)**: Task Runner failed before producing a complete result; it emits a deterministic error and returns to idle.
 
 - **[STA-004 - Transport Writing Response](MIS-001/State/STA-004-Transport_Writing_Response.md)**: Transport writes a single framed response to stdout (or NDJSON stream segment), then returns to listening.
 
@@ -692,8 +612,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[STA-069 - Conformance Running](MIS-001/State/STA-069-Conformance_Running.md)**: Conformance Runner executes tests deterministically and records results.
 
-- **[STA-065 - Chain Complete](MIS-001/State/STA-065-Chain_Complete.md)**: Chain Orchestrator finalizes aggregate status and returns to idle.
-
 - **[STA-067 - Conformance Idle](MIS-001/State/STA-067-Conformance_Idle.md)**: Conformance Runner awaits a conformance execution request.
 
 - **[STA-003 - Transport Receiving](MIS-001/State/STA-003-Transport_Receiving.md)**: Transport reads from stdin and assembles a complete framed request; malformed frames transition to faulted.
@@ -712,8 +630,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[STA-070 - Conformance Reporting](MIS-001/State/STA-070-Conformance_Reporting.md)**: Conformance Runner emits a deterministic report of pass/fail and evidence.
 
-- **[STA-066 - Chain Failed](MIS-001/State/STA-066-Chain_Failed.md)**: Chain Orchestrator reports deterministic failure details and returns to idle.
-
 - **[STA-040 - Job Enqueuing](MIS-001/State/STA-040-Job_Enqueuing.md)**: Job Manager validates job request and enqueues it for deterministic scheduling.
 
 - **[STA-010 - Router Streaming or Waiting](MIS-001/State/STA-010-Router_Streaming_or_Waiting.md)**: Router streams deterministic output (NDJSON) for long operations or waits for a single response for sync operations.
@@ -722,19 +638,11 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[STA-022 - FileOps Validating Plan](MIS-001/State/STA-022-FileOps_Validating_Plan.md)**: File Operations Engine validates intent against workspace boundaries, permissions, and conflict rules; produces a deterministic plan.
 
-- **[STA-037 - Task Canceling](MIS-001/State/STA-037-Task_Canceling.md)**: Task Runner attempts a deterministic cancellation (signal/terminate), then reports terminal status.
-
-- **[STA-034 - Task Preparing](MIS-001/State/STA-034-Task_Preparing.md)**: Task Runner validates inputs, resolves context (cwd/env), and builds a deterministic invocation.
-
 - **[STA-019 - Context Resolving](MIS-001/State/STA-019-Context_Resolving.md)**: Context provider resolves workspace root/pwd and returns normalized values.
-
-- **[STA-036 - Task Reporting](MIS-001/State/STA-036-Task_Reporting.md)**: Task Runner finalizes structured output and emits deterministic diagnostics, then returns to idle.
 
 - **[STA-045 - Diagnostics Idle](MIS-001/State/STA-045-Diagnostics_Idle.md)**: Contracts and Diagnostics awaits a request to validate or format an output/error.
 
 - **[STA-024 - FileOps Committing](MIS-001/State/STA-024-FileOps_Committing.md)**: File Operations Engine finalizes writes, flushes, and records a deterministic summary (or no-op summary for dry-run).
-
-- **[STA-062 - Chain Building](MIS-001/State/STA-062-Chain_Building.md)**: Chain Orchestrator validates and expands the declared chain into a deterministic step list.
 
 - **[STA-008 - Router Validating Request](MIS-001/State/STA-008-Router_Validating_Request.md)**: Router validates tool name, arguments, permissions, and execution mode constraints.
 
@@ -774,11 +682,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[STM-011 - Log Manager State Machine](MIS-001/State_Machine/STM-011-Log_Manager_State_Machine.md)**: Deterministic lifecycle for COM-013 (Log Manager) for initialization, steady-state tailing, rotation, and failure fallback.
 
-- **[STM-013 - Chain Orchestrator State Machine](MIS-001/State_Machine/STM-013-Chain_Orchestrator_State_Machine.md)**: Deterministic lifecycle for COM-015 (Chain Orchestrator): build chain, execute steps, stop on failure, and report.
-
 - **[STM-002 - Tool Router State Machine](MIS-001/State_Machine/STM-002-Tool_Router_State_Machine.md)**: Deterministic request lifecycle for COM-002 (Tool Router): validate, dispatch, stream/wait, and finalize results.
-
-- **[STM-007 - Task Runner State Machine](MIS-001/State_Machine/STM-007-Task_Runner_State_Machine.md)**: Deterministic execution lifecycle for COM-009 (Task Runner), including preparation, execution, cancellation, and reporting.
 
 - **[STM-012 - Environment Variable Manager State Machine](MIS-001/State_Machine/STM-012-Environment_Variable_Manager_State_Machine.md)**: Deterministic lifecycle for COM-014 (Environment Variable Manager) including policy checks and redaction.
 
@@ -794,8 +698,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[STR-001 - Index and query the workspace](MIS-001/Story/STR-001-Index_and_query_the_workspace.md)**: As an agent user, I need to list files, search content, and extract file ranges deterministically so that I can answer questions and make changes with minimal tokens and surprises.
 
-- **[STR-005 - Execute local tasks with guardrails](MIS-001/Story/STR-005-Execute_local_tasks_with_guardrails.md)**: As an agent user, I need to run local processes for builds/tests/scripts with predictable quoting and permission guardrails so that task execution is useful without becoming a safety risk.
-
 - **[STR-016 - Run local to the workspace host](MIS-001/Story/STR-016-Run_local_to_the_workspace_host.md)**: As an agent user, I need Alfred to run as a local stdio server relative to the workspace host (including VS Code Remote modes) so that filesystem and process operations apply to the correct machine and remain self-contained.
 
 - **[STR-006 - Run background jobs safely](MIS-001/Story/STR-006-Run_background_jobs_safely.md)**: As an agent user, I need background operations with streaming output, cancellation, timeouts, and introspection so that expensive work does not block interactive steps or run away.
@@ -803,8 +705,6 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **[STR-012 - Get normalized diagnostics](MIS-001/Story/STR-012-Get_normalized_diagnostics.md)**: As an agent user, I need normalized, structured diagnostics so that errors and warnings can be handled programmatically and explained clearly.
 
 - **[STR-010 - Discover tool capabilities](MIS-001/Story/STR-010-Discover_tool_capabilities.md)**: As an agent user, I need Alfred to advertise its tool surface, versions, and limits so that the agent can adapt behavior safely and avoid invalid calls.
-
-- **[STR-011 - Chain actions deterministically](MIS-001/Story/STR-011-Chain_actions_deterministically.md)**: As an agent user, I need to compose multiple tool calls into a deterministic chain with clear stop-on-failure semantics so that multi-step workflows are reliable.
 
 - **[STR-015 - Work with any-size files](MIS-001/Story/STR-015-Work_with_anysize_files.md)**: As an agent user, I need Alfred to handle any-size files (including large repos and binaries) so that real-world codebases do not break the workflow.
 
@@ -820,7 +720,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### System
 
-- **[SYS-001 - Alfred](MIS-001/System/SYS-001-Alfred.md)**: A local MCP tool server providing workspace indexing, safe file operations, tool/task execution, and deterministic JSON/NDJSON contracts.
+- **[SYS-001 - Alfred](MIS-001/System/SYS-001-Alfred.md)**: A local MCP tool server providing workspace indexing, safe file operations, and deterministic JSON/NDJSON contracts.
 
 ### Test
 
@@ -828,13 +728,13 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### Threat Capability
 
-- **[THC-001 - Prompt Injection and Tool Misuse](MIS-001/Threat_Capability/THC-001-Prompt_Injection_and_Tool_Misuse.md)**: Capability to coerce the system into unsafe tool usage (e.g., path traversal, symlink exploitation, excessive resource use, or invoking the task runner to exfiltrate data).
+- **[THC-001 - Prompt Injection and Tool Misuse](MIS-001/Threat_Capability/THC-001-Prompt_Injection_and_Tool_Misuse.md)**: Capability to coerce the system into unsafe tool usage (e.g., path traversal, symlink exploitation, excessive resource use, or abusing tool outputs for exfiltration).
 
 ### Threat Diamond
 
 - **[THD-001 - Workspace Boundary Escape](MIS-001/Threat_Diamond/THD-001-Workspace_Boundary_Escape.md)**: A malicious/compromised agent attempts to read or write outside the configured workspace boundary (e.g., via path traversal, symlink tricks, or ambiguous path normalization).
 
-- **[THD-002 - Malicious Command Execution and Exfiltration](MIS-001/Threat_Diamond/THD-002-Malicious_Command_Execution_and_Exfiltration.md)**: A malicious/compromised agent attempts to use Alfred’s task execution capability to run dangerous commands (including commands that exfiltrate data), or to perform destructive operations that the user would not approve.
+- **[THD-002 - Malicious Tool Misuse and Exfiltration](MIS-001/Threat_Diamond/THD-002-Malicious_Tool_Misuse_and_Exfiltration.md)**: A malicious/compromised agent attempts to misuse Alfred tool capabilities to exfiltrate data or perform destructive operations that the user would not approve.
 
 ### Threat Model
 

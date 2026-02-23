@@ -3,6 +3,6 @@
 	"id": "RIS-013",
 	"card_type": "Risk",
 	"name": "Remote Dev Environment Mismatch",
-	"description": "In VS Code remote modes, the workspace OS and tooling differ from the user's local machine (e.g., Linux container from Windows client). If Alfred assumes local client OS/tooling, tasks or diagnostics may behave unexpectedly.",
+	"description": "In VS Code remote modes, the workspace OS and tooling differ from the user's local machine (e.g., Linux container from Windows client). If Alfred assumes local client OS/tooling, tool behavior or diagnostics may behave unexpectedly.",
 	"links": []
 }

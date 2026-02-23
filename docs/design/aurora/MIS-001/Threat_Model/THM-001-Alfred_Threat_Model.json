@@ -27,10 +27,6 @@
 		},
 		{
 			"relationship": "recommends",
-			"target": "CTL-003"
-		},
-		{
-			"relationship": "recommends",
 			"target": "CTL-004"
 		},
 		{
@@ -40,10 +36,6 @@
 		{
 			"relationship": "recommends",
 			"target": "CTL-006"
-		},
-		{
-			"relationship": "recommends",
-			"target": "CTL-007"
 		},
 		{
 			"relationship": "recommends",

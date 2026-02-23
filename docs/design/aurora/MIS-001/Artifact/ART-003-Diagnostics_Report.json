@@ -9,7 +9,7 @@
 	"attributes": {
 		"format": ["json", "ndjson"],
 		"schema": "docs/design/schemas/alfred.diagnostics.schema.json",
-		"sources": ["cargo", "pnpm", "linters", "formatters", "tasks"],
+		"sources": ["cargo", "pnpm", "linters", "formatters"],
 		"contracts": {
 			"protocol": "docs/design/Protocol.md",
 			"errors": "docs/design/ErrorTaxonomy.md"

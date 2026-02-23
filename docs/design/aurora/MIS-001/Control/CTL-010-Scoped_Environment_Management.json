@@ -3,7 +3,7 @@
 	"id": "CTL-010",
 	"card_type": "Control",
 	"name": "Scoped Environment Management",
-	"description": "Scope environment-variable changes to Alfred-managed contexts (per-task env or managed .env files) and report resulting env deterministically; do not attempt to mutate the parent IDE/shell environment.",
+	"description": "Scope environment-variable changes to Alfred-managed contexts (tool-scoped env or managed .env files) and report resulting env deterministically; do not attempt to mutate the parent IDE/shell environment.",
 	"links": [
 		{
 			"relationship": "enforces",
