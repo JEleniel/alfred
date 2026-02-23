@@ -1,6 +1,6 @@
 # Story: STR-001 Index and query the workspace
 
-As an agent user, I need to list files, search content/symbols, and extract file ranges deterministically so that I can answer questions and make changes with minimal tokens and surprises.
+As an agent user, I need to list files, search content, and extract file ranges deterministically so that I can answer questions and make changes with minimal tokens and surprises.
 
 
 
@@ -22,3 +22,4 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T01:34:17Z | copilot | create |
+| 2026-02-22T17:35:20Z | copilot | change |

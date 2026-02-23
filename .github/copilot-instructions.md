@@ -62,6 +62,7 @@ When instructed, maintain the `CHANGELOG.md` based on the git commit history and
 - In Git commands that accept pathspecs, you can select or exclude generated files with `:(attr:generated)` and `:(exclude,attr:generated)`.
 - When reviewing changes, ignore `generated` files by default unless you are explicitly reviewing rendered outputs.
 - You MUST NOT attempt to run Pythomn, Node, or any other scripting language _unless_ the project is in that platform. You MUST NOT attempt to run ad-hoc scripts.
+- You MUST NOT attempt to write outside the workspace, for any reason, including `/tmp`. You _will_ be blocked. If you need temp space use `.agents/` (create it if it doesn't exist).
 
 ## Behavior
 

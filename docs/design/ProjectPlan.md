@@ -11,8 +11,8 @@ Keep the Alfred architecture model and design artifacts implementation-ready, wi
 3. [x] Regenerate and validate the Aurora renderings and compact export.
 4. [x] Update top-level design docs to reference the new contracts and the local memory feature.
 5. [x] Align requirement-to-contract traceability for bulk file ops, any-size file IO, and session introspection.
-6. [ ] Update the Aurora model cards to reflect the expanded tool surface.
-7. [ ] Regenerate and validate the Aurora renderings and compact export.
+6. [x] Update the Aurora model cards to reflect the expanded tool surface.
+7. [x] Regenerate and validate the Aurora renderings and compact export.
 
 ## Acceptance criteria
 

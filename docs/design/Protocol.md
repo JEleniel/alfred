@@ -14,7 +14,29 @@ Alfred is intended to be used via an MCP host (for example, an IDE) that:
 - Each inbound request and outbound response is a single **UTF-8 JSON** value on its own line.
 - Alfred MUST reject malformed frames deterministically.
 - All protocol-visible strings MUST be valid UTF-8.
-    - When interacting with non-UTF8 filesystem paths, Alfred MUST encode them deterministically before emitting JSON.
+- All protocol-visible strings MUST be valid UTF-8.
+    - When interacting with filesystem paths that cannot be represented as valid Unicode text, Alfred MUST encode them deterministically before emitting JSON.
+
+## Path strings
+
+Unless a tool contract explicitly states otherwise, all `path` values in tool inputs and outputs:
+
+- Are **workspace-relative**.
+- Use **POSIX separators** (`/`) regardless of OS.
+- MUST NOT be absolute.
+
+If an incoming request provides a path using `\` separators, Alfred MUST treat them as `/` separators before normalization.
+
+### Deterministic encoding for non-text paths
+
+Filesystems can contain paths that are not valid Unicode strings (for example, arbitrary bytes on Unix, or ill-formed UTF-16 on Windows). Alfred MUST still emit valid UTF-8 JSON.
+
+When a path cannot be represented as Unicode text, Alfred MUST emit an encoded ASCII-only representation using these rules:
+
+- Unix (byte paths): represent each non-UTF-8 byte as `\xNN` (uppercase hex), and escape backslash as `\\`.
+- Windows (UTF-16): represent any unpaired surrogate 16-bit unit as `\u{XXXX}` (uppercase hex). Other code points MUST be emitted normally.
+
+When encoded path rendering occurs, Alfred SHOULD add a warning via `meta.warnings` (for example `{"kind":"path_encoded"}`) and MUST ensure ordering/cursors use the encoded representation consistently.
 
 ## Alfred tool result envelope
 
@@ -88,7 +110,11 @@ Alfred MUST filter non-public information (secrets) from responses and logs, eve
 - Alfred MUST deterministically redact secret-looking values in both structured fields and free-form messages.
 - If redaction occurs, Alfred SHOULD return a warning via `meta.warnings` rather than failing the call.
 
-Redaction uses a stable replacement token (for example, `"<redacted>"`) and SHOULD record only aggregate redaction metadata (counts/booleans), never the secret itself.
+Redaction uses a stable replacement token and SHOULD record only aggregate redaction metadata (counts/booleans), never the secret itself.
+
+The default replacement token is `<-REDACTED->`.
+
+The deterministic redaction algorithm (detection + replacement-length fitting) is specified in [`docs/design/Redaction.md`](./Redaction.md).
 
 Exception: tools whose primary purpose is to manage non-public values (for example, environment variable tools) MAY return unredacted values in the tool result `data`. These tools MUST still avoid emitting those values into tool/runtime logs.
 

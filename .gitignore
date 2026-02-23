@@ -19,6 +19,7 @@ crates-io-index/
 *.rlib
 *.rmeta
 *.so
+logs/
 
 # Visual Studio Code
 .vscode/*

@@ -3,7 +3,7 @@
 	"id": "FEA-001",
 	"card_type": "Feature",
 	"name": "Index and Query Tools",
-	"description": "Provide ls/grep/rg/symbol/range/diff primitives backed by a workspace index.",
+	"description": "Provide ls/grep/search/range/diff primitives backed by a workspace index, including deterministic file metadata and bounded byte reads.",
 	"links": [
 		{
 			"relationship": "realizes",
@@ -17,5 +17,11 @@
 			"relationship": "implies",
 			"target": "CNS-002"
 		}
-	]
+	],
+	"attributes": {
+		"contracts": {
+			"tool_contracts": "docs/design/ToolContracts.md"
+		},
+		"tools": ["ls", "grep", "search", "read_range", "diff", "file_stat", "file_read_bytes"]
+	}
 }

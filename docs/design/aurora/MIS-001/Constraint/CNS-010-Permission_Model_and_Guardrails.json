@@ -3,6 +3,34 @@
 	"id": "CNS-010",
 	"card_type": "Constraint",
 	"name": "Permission Model and Guardrails",
-	"description": "Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults.",
+	"description": "Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults. Tool exposure, task execution, and plan writes MUST be governed by deterministic policies.",
+	"attributes": {
+		"config_precedence": {
+			"workspace_overrides_user": true
+		},
+		"tool_exposure": {
+			"disabled_tools_omitted_from_capabilities": true,
+			"calling_disabled_tool_is_error": true,
+			"chain_referencing_disabled_tool_is_error": true,
+			"error_kind": "invalid_argument"
+		},
+		"external_tools": {
+			"require_probe": true,
+			"probe_methods": ["--version", "--help"],
+			"error_kind_on_missing": "tool_unavailable"
+		},
+		"task_execution": {
+			"shell_disabled_by_default": true,
+			"env_allowlist_required": true
+		},
+		"plan_writes": {
+			"require_exclusive_lock": true,
+			"error_kind_on_lock_failure": "conflict"
+		},
+		"references": {
+			"tool_contracts": "docs/design/ToolContracts.md",
+			"configuration": "docs/design/Configuration.md"
+		}
+	},
 	"links": []
 }

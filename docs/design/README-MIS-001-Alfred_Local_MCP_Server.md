@@ -78,7 +78,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[ART-003 - Diagnostics Report](MIS-001/Artifact/ART-003-Diagnostics_Report.md)**: Normalized diagnostics output emitted by build/test/lint/format tooling, optionally with deltas between runs.
 
-- **[ART-004 - Project Plan](MIS-001/Artifact/ART-004-Project_Plan.md)**: A machine-readable plan artifact tracking progress and capturing tool/diagnostic errors.
+- **[ART-004 - Project Plan](MIS-001/Artifact/ART-004-Project_Plan.md)**: A persistent Markdown plan artifact tracking the agent's progress and planned work items.
 
 - **[ART-005 - Index Snapshot](MIS-001/Artifact/ART-005-Index_Snapshot.md)**: Serialized index state used to accelerate repeated queries and reduce redundant filesystem scans.
 
@@ -98,7 +98,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CAP-005 - Task and Tool Execution](MIS-001/Capability/CAP-005-Task_and_Tool_Execution.md)**: Execute named tasks (build/test) and common ecosystem commands (cargo/pnpm/lint/format) with normalized outputs.
 
-- **[CAP-001 - Workspace Index and Query](MIS-001/Capability/CAP-001-Workspace_Index_and_Query.md)**: Maintain an index of workspace files and provide fast listing, search, symbol lookup, range extraction, and diff primitives.
+- **[CAP-001 - Workspace Index and Query](MIS-001/Capability/CAP-001-Workspace_Index_and_Query.md)**: Maintain an index of workspace files and provide fast listing, search, range extraction, and diff primitives.
 
 - **[CAP-011 - Single-Call Action Chaining](MIS-001/Capability/CAP-011-SingleCall_Action_Chaining.md)**: Execute multi-step actions (e.g. search → patch → validate) in declared order with per-step status and error reporting.
 
@@ -136,7 +136,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[COM-007 - File Operations Engine](MIS-001/Component/COM-007-File_Operations_Engine.md)**: Performs safe workspace mutations: atomic CRUD (where practical), patch apply with conflict reporting, and bulk ops with dry-run.
 
-- **[COM-003 - Workspace Indexer](MIS-001/Component/COM-003-Workspace_Indexer.md)**: Maintains the workspace file index and supports listing/search/symbol/range/diff primitives.
+- **[COM-003 - Workspace Indexer](MIS-001/Component/COM-003-Workspace_Indexer.md)**: Maintains the workspace file index and supports listing/search/range/diff primitives.
 
 - **[COM-012 - Capability Registry](MIS-001/Component/COM-012-Capability_Registry.md)**: Maintains discoverable metadata for Alfred tools/capabilities, including versions, schema versions, limits, and execution modes.
 
@@ -156,7 +156,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### Constraint
 
-- **[CNS-010 - Permission Model and Guardrails](MIS-001/Constraint/CNS-010-Permission_Model_and_Guardrails.md)**: Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults.
+- **[CNS-010 - Permission Model and Guardrails](MIS-001/Constraint/CNS-010-Permission_Model_and_Guardrails.md)**: Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults. Tool exposure, task execution, and plan writes MUST be governed by deterministic policies.
 
 - **[CNS-014 - Mobile Platforms Out of Scope](MIS-001/Constraint/CNS-014-Mobile_Platforms_Out_of_Scope.md)**: Alfred is not required to support mobile platforms (iOS/Android).
 
@@ -170,7 +170,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CNS-019 - Cross-Platform Cancellation Semantics](MIS-001/Constraint/CNS-019-CrossPlatform_Cancellation_Semantics.md)**: Background jobs and tasks MUST support best-effort cancellation with documented semantics that work on Linux/macOS/Windows (terminate → wait → force kill), acknowledging OS-specific differences.
 
-- **[CNS-001 - Workspace Boundary Enforcement](MIS-001/Constraint/CNS-001-Workspace_Boundary_Enforcement.md)**: Alfred MUST NOT read or write outside the current workspace.
+- **[CNS-001 - Workspace Boundary Enforcement](MIS-001/Constraint/CNS-001-Workspace_Boundary_Enforcement.md)**: Alfred MUST NOT read or write outside the current workspace. All filesystem operations MUST validate workspace-relative paths and MUST prevent path traversal and symlink/junction escapes.
 
 - **[CNS-003 - Dry-Run for Destructive Operations](MIS-001/Constraint/CNS-003-DryRun_for_Destructive_Operations.md)**: Alfred MUST provide dry-run behavior for destructive or irreversible actions.
 
@@ -196,7 +196,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CNS-007 - Local Stdio Server](MIS-001/Constraint/CNS-007-Local_Stdio_Server.md)**: Alfred runs locally and communicates over stdio.
 
-- **[CNS-012 - Service Level Objectives](MIS-001/Constraint/CNS-012-Service_Level_Objectives.md)**: Initial p95 latency objectives constrain implementation choices for discovery, search/lookup, patching, and background job introspection.
+- **[CNS-012 - Service Level Objectives](MIS-001/Constraint/CNS-012-Service_Level_Objectives.md)**: Initial p95 latency objectives constrain implementation choices for discovery, indexed search, patching, and background job introspection.
 
 - **[CNS-015 - Deterministic Output Normalization](MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.md)**: Alfred MUST produce deterministic outputs across supported OSes (Linux/macOS/Windows), including stable sorting, stable path normalization, and stable formatting regardless of filesystem enumeration order or case-sensitivity defaults.
 
@@ -514,7 +514,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[FEA-012 - Diagnostics Normalization](MIS-001/Feature/FEA-012-Diagnostics_Normalization.md)**: Normalize diagnostics across build/test/lint/format tooling and support delta reporting.
 
-- **[FEA-001 - Index and Query Tools](MIS-001/Feature/FEA-001-Index_and_Query_Tools.md)**: Provide ls/grep/rg/symbol/range/diff primitives backed by a workspace index.
+- **[FEA-001 - Index and Query Tools](MIS-001/Feature/FEA-001-Index_and_Query_Tools.md)**: Provide ls/grep/search/range/diff primitives backed by a workspace index, including deterministic file metadata and bounded byte reads.
 
 - **[FEA-003 - Safe File Mutation Tools](MIS-001/Feature/FEA-003-Safe_File_Mutation_Tools.md)**: Implement atomic CRUD (where practical), patch with conflict reporting, bulk ops with dry-run, and bounded byte-chunk file mutation for binary/any-size files.
 
@@ -556,7 +556,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[REQ-011 - Single-Call Action Chaining](MIS-001/Requirement/REQ-011-SingleCall_Action_Chaining.md)**: Alfred MUST support single-call action chaining (e.g. search → patch → validate) with per-step status and error details.
 
-- **[REQ-001 - Workspace Index and Query Tools](MIS-001/Requirement/REQ-001-Workspace_Index_and_Query_Tools.md)**: Alfred MUST maintain an index of all files in the workspace and provide listing, regex search, keyword/symbol lookup, file range extraction, and diff capabilities.
+- **[REQ-001 - Workspace Index and Query Tools](MIS-001/Requirement/REQ-001-Workspace_Index_and_Query_Tools.md)**: Alfred MUST maintain an index of all files in the workspace and provide listing, regex search, file range extraction, and diff capabilities.
 
 - **[REQ-004 - Project Plan Management](MIS-001/Requirement/REQ-004-Project_Plan_Management.md)**: Alfred MUST create and maintain a project plan in a common format, capturing tool/diagnostics errors and tracking progress.
 
@@ -792,7 +792,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[STR-007 - Receive deterministic JSON/NDJSON outputs](MIS-001/Story/STR-007-Receive_deterministic_JSONNDJSON_outputs.md)**: As an agent user, I need deterministic JSON/NDJSON output shapes and ordering so that tool results are diffable, testable, and predictable across platforms and runs.
 
-- **[STR-001 - Index and query the workspace](MIS-001/Story/STR-001-Index_and_query_the_workspace.md)**: As an agent user, I need to list files, search content/symbols, and extract file ranges deterministically so that I can answer questions and make changes with minimal tokens and surprises.
+- **[STR-001 - Index and query the workspace](MIS-001/Story/STR-001-Index_and_query_the_workspace.md)**: As an agent user, I need to list files, search content, and extract file ranges deterministically so that I can answer questions and make changes with minimal tokens and surprises.
 
 - **[STR-005 - Execute local tasks with guardrails](MIS-001/Story/STR-005-Execute_local_tasks_with_guardrails.md)**: As an agent user, I need to run local processes for builds/tests/scripts with predictable quoting and permission guardrails so that task execution is useful without becoming a safety risk.
 

@@ -1,0 +1,205 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://example.invalid/alfred/schemas/alfred.job-stream-item.schema.json",
+	"title": "Alfred Job Stream Item",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["seq", "timestamp", "kind", "data"],
+	"properties": {
+		"seq": {
+			"type": "integer",
+			"minimum": 0,
+			"description": "Monotonic sequence number within a job, starting at 0."
+		},
+		"timestamp": {
+			"type": "string",
+			"description": "RFC3339 UTC timestamp."
+		},
+		"kind": {
+			"type": "string",
+			"enum": ["stdout", "stderr", "log", "status", "progress", "result", "error"]
+		},
+		"data": {
+			"type": "object",
+			"description": "Kind-specific payload.",
+			"oneOf": [
+				{ "$ref": "#/$defs/stdio" },
+				{ "$ref": "#/$defs/log" },
+				{ "$ref": "#/$defs/status" },
+				{ "$ref": "#/$defs/progress" },
+				{ "$ref": "#/$defs/result" },
+				{ "$ref": "#/$defs/tool_error" }
+			]
+		}
+	},
+	"allOf": [
+		{
+			"oneOf": [
+				{
+					"properties": {
+						"kind": { "const": "stdout" },
+						"data": { "$ref": "#/$defs/stdio" }
+					}
+				},
+				{
+					"properties": {
+						"kind": { "const": "stderr" },
+						"data": { "$ref": "#/$defs/stdio" }
+					}
+				},
+				{
+					"properties": {
+						"kind": { "const": "log" },
+						"data": { "$ref": "#/$defs/log" }
+					}
+				},
+				{
+					"properties": {
+						"kind": { "const": "status" },
+						"data": { "$ref": "#/$defs/status" }
+					}
+				},
+				{
+					"properties": {
+						"kind": { "const": "progress" },
+						"data": { "$ref": "#/$defs/progress" }
+					}
+				},
+				{
+					"properties": {
+						"kind": { "const": "result" },
+						"data": { "$ref": "#/$defs/result" }
+					}
+				},
+				{
+					"properties": {
+						"kind": { "const": "error" },
+						"data": { "$ref": "#/$defs/tool_error" }
+					}
+				}
+			]
+		}
+	],
+	"$defs": {
+		"stdio": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["text"],
+			"properties": {
+				"text": { "type": "string" },
+				"truncated": { "type": "boolean" }
+			}
+		},
+		"log": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["timestamp", "level", "message", "source", "extra"],
+			"properties": {
+				"timestamp": { "type": "string" },
+				"level": { "type": "string" },
+				"message": { "type": "string" },
+				"source": { "type": "string" },
+				"extra": {
+					"type": "object",
+					"additionalProperties": { "type": "string" }
+				}
+			}
+		},
+		"status": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["state"],
+			"properties": {
+				"state": {
+					"type": "string",
+					"enum": ["queued", "running", "succeeded", "failed", "canceled"]
+				},
+				"exit_code": { "type": "integer" }
+			}
+		},
+		"progress": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"message": { "type": "string" },
+				"percent": { "type": "number", "minimum": 0, "maximum": 100 }
+			}
+		},
+		"tool_error": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["kind", "message", "retryable"],
+			"properties": {
+				"kind": { "type": "string" },
+				"message": { "type": "string" },
+				"retryable": { "type": "boolean" },
+				"details": {
+					"type": "object",
+					"description": "Tool-specific structured data (bounded by implementation).",
+					"additionalProperties": true
+				}
+			}
+		},
+		"result": {
+			"type": "object",
+			"description": "Alfred tool result envelope for a terminal job event.",
+			"additionalProperties": false,
+			"required": ["status", "meta"],
+			"properties": {
+				"status": {
+					"type": "string",
+					"enum": ["ok", "error", "pending"]
+				},
+				"job_id": { "type": "string" },
+				"data": { "description": "Tool-specific payload." },
+				"error": { "$ref": "#/$defs/tool_error" },
+				"meta": {
+					"type": "object",
+					"description": "Common metadata (see docs/design/Protocol.md).",
+					"additionalProperties": true,
+					"properties": {
+						"tool": { "type": "string" },
+						"schema_version": { "type": "string" },
+						"duration_ms": { "type": "integer", "minimum": 0 },
+						"warnings": {
+							"type": "array",
+							"items": { "type": "object" }
+						}
+					}
+				}
+			},
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"status": { "const": "ok" }
+						}
+					},
+					"then": {
+						"required": ["data"]
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"status": { "const": "error" }
+						}
+					},
+					"then": {
+						"required": ["error"]
+					}
+				},
+				{
+					"if": {
+						"properties": {
+							"status": { "const": "pending" }
+						}
+					},
+					"then": {
+						"required": ["job_id"]
+					}
+				}
+			]
+		}
+	}
+}

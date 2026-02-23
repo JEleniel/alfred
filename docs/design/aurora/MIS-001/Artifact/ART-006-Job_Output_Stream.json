@@ -8,6 +8,12 @@
 	"links": [],
 	"attributes": {
 		"formats": ["ndjson", "json"],
+		"schema": "docs/design/schemas/alfred.job-stream-item.schema.json",
+		"cursor": {
+			"type": "seq",
+			"encoding": "decimal_string",
+			"monotonic": true
+		},
 		"semantics": "append-only",
 		"contracts": {
 			"protocol": "docs/design/Protocol.md",
@@ -20,7 +26,7 @@
 		"ndjson": {
 			"rules": "Each line is a complete JSON object. Callers MUST tolerate chunking and resume using cursors/job offsets.",
 			"ordering": "Stable by emission order within the job.",
-			"item_kinds": ["log", "stdout", "stderr", "status", "progress"],
+			"item_kinds": ["log", "stdout", "stderr", "status", "progress", "result", "error"],
 			"log_record_schema": {
 				"timestamp": "string (RFC3339 UTC; seconds preferred; max milliseconds)",
 				"level": "string (TRACE|DEBUG|INFO|WARN|ERROR)",

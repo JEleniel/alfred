@@ -4,5 +4,26 @@
 	"card_type": "Constraint",
 	"name": "Deterministic Output Normalization",
 	"description": "Alfred MUST produce deterministic outputs across supported OSes (Linux/macOS/Windows), including stable sorting, stable path normalization, and stable formatting regardless of filesystem enumeration order or case-sensitivity defaults.",
+	"attributes": {
+		"ordering": {
+			"string_order": "case_insensitive_unicode_lexicographic",
+			"tie_breaker": "case_sensitive_lexicographic"
+		},
+		"pagination": {
+			"must_be_stable": true
+		},
+		"errors": {
+			"must_use_taxonomy": "docs/design/ErrorTaxonomy.md"
+		},
+		"redaction": {
+			"must_be_deterministic": true,
+			"token": "<-REDACTED->",
+			"algorithm": "docs/design/Redaction.md"
+		},
+		"references": {
+			"tool_contracts": "docs/design/ToolContracts.md",
+			"protocol": "docs/design/Protocol.md"
+		}
+	},
 	"links": []
 }

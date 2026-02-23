@@ -1,0 +1,102 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://example.invalid/alfred/schemas/alfred.config.schema.json",
+	"title": "Alfred Configuration",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"tools": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"disabled": {
+					"type": "array",
+					"items": { "type": "string" },
+					"uniqueItems": true
+				}
+			}
+		},
+		"index": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"enabled": { "type": "boolean" },
+				"persistence": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"enabled": { "type": "boolean" },
+						"path": { "type": "string" },
+						"interval_seconds": { "type": "integer", "minimum": 1 }
+					}
+				},
+				"ignore": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"patterns": {
+							"type": "array",
+							"items": { "type": "string" }
+						},
+						"always_patterns": {
+							"type": "array",
+							"items": { "type": "string" }
+						}
+					}
+				}
+			}
+		},
+		"redaction": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"enabled": { "type": "boolean" },
+				"replacement_token": { "type": "string" },
+				"preserve_length": { "type": "boolean" },
+				"rules": {
+					"type": "array",
+					"items": { "type": "object" }
+				}
+			}
+		},
+		"plan": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"path": { "type": "string" }
+			}
+		},
+		"task": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"working_directory": { "type": "string" },
+				"env": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"allowlist": {
+							"type": "array",
+							"items": { "type": "string" },
+							"uniqueItems": true
+						}
+					}
+				},
+				"external_tools": {
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"additionalProperties": false,
+						"properties": {
+							"probe_args": {
+								"type": "array",
+								"items": { "type": "string" }
+							},
+							"timeout_ms": { "type": "integer", "minimum": 1 }
+						}
+					}
+				}
+			}
+		}
+	}
+}

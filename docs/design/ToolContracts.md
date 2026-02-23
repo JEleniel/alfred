@@ -10,16 +10,54 @@ Unless otherwise specified:
 - Paged list/search operations default `limit` to **100**.
 - Line and column numbers are 1-indexed.
 
+## Configuration and policy
+
+Alfred behavior is configurable at two levels:
+
+- **User configuration**: applies to all workspaces on a machine.
+- **Workspace configuration**: applies only within a single workspace.
+
+Workspace configuration MUST override user configuration.
+
+Configuration file locations are implementation-defined, but the default SHOULD be:
+
+- User: OS config directory `alfred/config.json`.
+- Workspace: `.agents/alfred/config.json` under the workspace root.
+
+Configuration keys and defaults are defined in [`docs/design/Configuration.md`](./Configuration.md).
+
+### Tool enablement
+
+Any tool MAY be disabled by configuration.
+
+- Disabled tools MUST be omitted from the `capabilities` tool list.
+- Calls to disabled tools MUST fail with `error.kind: "invalid_argument"` and `retryable: false`.
+- A `chain` referencing a disabled or unknown tool MUST fail immediately with `error.kind: "invalid_argument"`.
+
 ## Redaction (non-public information)
 
-Alfred MUST filter non-public information (secrets) from:
+Alfred MUST filter non-public information (NPI) from:
 
 - Tool responses
 - Tool/runtime logs
 
+NPI includes (at minimum) secret-looking values (tokens/keys/passwords) and MAY include user-configured PII/PHI-like patterns.
+
 Even if the secret appears in the incoming call.
 
-Redaction is deterministic and uses a stable replacement token (for example, `"<redacted>"`). Tools SHOULD surface redaction as a warning in the result envelope metadata (rather than failing the call).
+Redaction is deterministic and uses a stable replacement token.
+
+The default replacement token is `<-REDACTED->`.
+
+The deterministic redaction algorithm (detection + replacement-length fitting) is specified in [`docs/design/Redaction.md`](./Redaction.md).
+
+Redaction MUST be applied:
+
+- At **index ingestion** (redacted content MUST NOT be stored or searchable).
+- To **tool outputs** (redacted content MUST NOT be emitted).
+- To **logs** and **job streams** (redacted content MUST NOT be persisted or emitted).
+
+Tools SHOULD surface redaction as a warning in the result envelope metadata (rather than failing the call).
 
 Exception: tools whose primary purpose is to manage non-public values (for example, environment variable tools) MAY return unredacted values in the tool result `data`. These tools MUST still avoid emitting those values into tool/runtime logs.
 
@@ -44,18 +82,9 @@ Some tools may stream large outputs. In that case, the initial tool call returns
 
 These tools provide location awareness and are always side-effect free.
 
-### `pwd`
+### `workspace_dir`
 
-- Purpose: Return Alfred's current working folder.
-- Execution: synchronous.
-- Input: none.
-- Output:
-    - `cwd`: normalized absolute string path
-    - `rcwd`: normalized workspace relative string path
-
-### `workspace_root`
-
-- Purpose: Return the configured workspace root folder.
+- Purpose: Return Alfred's workspace root folder (there is no separate process working-directory concept).
 - Execution: synchronous.
 - Input: none.
 - Output:
@@ -68,7 +97,17 @@ These tools are backed by Alfred's workspace index and MUST enforce the workspac
 Unless otherwise specified:
 
 - All returned paths are workspace-relative and use `/` separators.
-- Output ordering is stable and defaults to lexicographic by `path`, then by position.
+- Paths MUST be normalized (convert `\\` to `/`, remove leading `./`, and collapse dot segments).
+- Output ordering is stable and defaults to case-insensitive lexicographic Unicode ordering by normalized `path`, then by position.
+
+### Stable ordering rules
+
+Unless a tool contract explicitly states otherwise, ordering by `path` MUST use these keys:
+
+1. Primary key: `casefold(path)`.
+2. Tie-breaker: the original `path` string.
+
+Both comparisons are lexicographic by Unicode scalar value. `casefold` is Unicode case folding.
 
 ### `ls`
 
@@ -157,6 +196,10 @@ Notes:
         - `text`: string
     - `next_cursor`: optional string
 
+Notes:
+
+- This tool is index-backed. If the workspace index is not available, the tool MUST fail with `error.kind: "tool_unavailable"`, `retryable: true`, and `details.reason: "index_not_ready"`.
+
 ### `search`
 
 - Purpose: Search workspace text using a literal query or regular expression.
@@ -178,29 +221,9 @@ Notes:
         - `text`: string
     - `next_cursor`: optional string
 
-### `symbols`
+Notes:
 
-- Purpose: Return a deterministic list of symbols from the workspace index.
-- Execution: synchronous.
-- Input:
-    - `query`: optional string
-    - `path`: optional string (restrict to one file)
-    - `kinds`: optional array of strings (implementation-defined symbol kinds)
-    - `cursor`: optional string
-    - `limit`: optional integer
-- Output:
-    - `symbols`: array of objects:
-        - `name`: string
-        - `kind`: string
-        - `path`: string
-        - `range`: object:
-            - `start_line`: integer (1-indexed)
-            - `start_col`: integer (1-indexed)
-            - `end_line`: integer (1-indexed)
-            - `end_col`: integer (1-indexed)
-    - `next_cursor`: optional string
-
-Note: This feature depends on being able to communicate with the hosting environment's language servers for parsing.
+- This tool is index-backed. If the workspace index is not available, the tool MUST fail with `error.kind: "tool_unavailable"`, `retryable: true`, and `details.reason: "index_not_ready"`.
 
 ### `diff`
 
@@ -458,9 +481,31 @@ Long-running work SHOULD return `status: "pending"` with an envelope `job_id` (s
     - `async`: optional boolean (default `false`)
 - Output (sync):
     - `exit_code`: integer
-    - `results`: array of string, see [ART-003 Diagnostics Report](./MIS-001/Artifact/ART-003-Diagnostics_Report.md)
+    - `diagnostics`: object, see [ART-003 Diagnostics Report](./MIS-001/Artifact/ART-003-Diagnostics_Report.md)
 - Output (async / pending):
     - No additional fields (the envelope includes `job_id`).
+
+Notes:
+
+- The `diagnostics` payload MUST conform to the schema at `docs/design/schemas/alfred.diagnostics.schema.json`.
+- For Rust tasks, `cargo` execution is implemented via a library integration (not by shelling out).
+- For external tools (for example `npm`/`pnpm`), Alfred MUST perform a safe availability probe (for example `--version` or `--help`) at least once per process lifetime before first use.
+
+### Task execution environment
+
+By default, tasks run with a **sanitized environment**:
+
+- Start from an allowlist of inherited variables (OS-specific defaults).
+- Overlay Alfred-managed environment variables set via `env_set`.
+
+Default allowlist:
+
+- Linux/macOS: `PATH`, `HOME`, `USER`, `TMPDIR`.
+- Windows: `PATH`, `USERPROFILE`, `TEMP`, `TMP`, `SystemRoot`.
+
+The allowlist MUST be configurable (see [`docs/design/Configuration.md`](./Configuration.md)).
+
+Tasks MUST execute with the workspace root as the working directory.
 
 ### Tasks
 
@@ -560,6 +605,17 @@ Notes:
     - `ndjson`: optional string (when `encoding: "ndjson"`)
     - `next_cursor`: optional string
 
+Cursor semantics:
+
+- The cursor is a decimal string representing the next `seq` value to read from the job stream.
+- If `cursor` is omitted, it defaults to `"0"`.
+- `next_cursor` MUST be the decimal string for `(last_seq_returned + 1)`.
+
+Job stream schema:
+
+- When `encoding: "ndjson"`, each line in `ndjson` MUST be a complete JSON object conforming to `docs/design/schemas/alfred.job-stream-item.schema.json`.
+- When `encoding: "json"`, `items` MUST be an array of objects of the same schema.
+
 ## Session introspection tools
 
 These tools provide deterministic introspection over the current Alfred process session (process lifetime).
@@ -625,6 +681,27 @@ Log tools tail and filter Alfred/runtime logs using the structured log record de
 ## Plan tools
 
 Plan tooling reads and updates the project plan ([ART-004 Project Plan](./MIS-001/Artifact/ART-004-Project_Plan.md)). The plan format is standardized, and must be human readable.
+
+### Plan file location
+
+The plan is always workspace-scoped.
+
+Default selection:
+
+1. If `docs/design/ProjectPlan.md` exists, use it.
+2. Otherwise use `ProjectPlan.md` at the workspace root.
+
+The plan path MUST be configurable via workspace configuration.
+
+### Concurrency and locking
+
+Plan writes MUST be serialized.
+
+- Before any plan write, Alfred MUST acquire an exclusive lock.
+- If the lock cannot be acquired immediately, the tool MUST fail with `error.kind: "conflict"` and `details.reason: "locked"`.
+- Locks MUST be released after the write completes.
+
+Locking is implemented via lock files under `.agents/alfred/locks/` using a deterministic lock ordering.
 
 ### Plan item schema
 
@@ -801,7 +878,7 @@ Alfred supports two physical stores for memory facts:
 When a Workspace Store is enabled, Alfred exposes an **effective** view over both stores:
 
 - **Merged (default)**: effective set is the union of both stores; when `id` collides, Workspace overrides User.
-- **Prefer workspace**: workspace is primary; the User store is still consulted for `category: preferences`, then overlaid by workspace.
+- **Prefer workspace**: workspace is primary; the User store is still consulted for `category: user_preferences`, then overlaid by workspace.
 
 ### Fact schema
 
@@ -837,7 +914,7 @@ Stored facts returned by tools also include:
 
 Alfred MUST treat `category` as an open set (unknown values are accepted) so callers can introduce additional categories without server upgrades.
 
-### `memory_save`
+### `memory_put`
 
 - Purpose: Upsert a fact.
 - Execution: synchronous.

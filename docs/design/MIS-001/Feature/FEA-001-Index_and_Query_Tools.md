@@ -1,12 +1,14 @@
 # Feature: FEA-001 Index and Query Tools
 
-Provide ls/grep/rg/symbol/range/diff primitives backed by a workspace index.
+Provide ls/grep/search/range/diff primitives backed by a workspace index, including deterministic file metadata and bounded byte reads.
 
 
 
 ## Attributes
 
-_No attributes defined._
+- **contracts**: {"tool_contracts":"docs/design/ToolContracts.md"}
+- **tools**: ["ls","grep","search","read_range","diff","file_stat","file_read_bytes"]
+
 
 ## Links
 
@@ -22,3 +24,5 @@ _No attributes defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T00:00:00Z | copilot | create |
+| 2026-02-22T16:11:03Z | copilot | change |
+| 2026-02-22T17:35:20Z | copilot | change |

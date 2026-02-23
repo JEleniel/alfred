@@ -4,5 +4,29 @@
 	"card_type": "Constraint",
 	"name": "UTF-8 Protocol and Path Encoding Handling",
 	"description": "Alfred’s protocol outputs MUST be valid UTF-8 JSON/NDJSON. When encountering non-UTF8 filesystem paths or OS-specific path encodings, Alfred MUST handle them safely and report them deterministically (e.g., escaped/encoded representations) rather than crashing or producing invalid JSON.",
+	"attributes": {
+		"protocol_encoding": {
+			"json_must_be_utf8": true
+		},
+		"tool_path_format": {
+			"encoding": "utf-8",
+			"workspace_relative_posix": true
+		},
+		"separator_normalization": {
+			"normalize_backslash_to_slash": true
+		},
+		"non_text_fs_paths": {
+			"unix": {
+				"escape_format": "\\xNN"
+			},
+			"windows": {
+				"escape_format": "\\u{XXXX}",
+				"note": "ill-formed UTF-16 surrogate units may be escaped"
+			}
+		},
+		"references": {
+			"protocol": "docs/design/Protocol.md"
+		}
+	},
 	"links": []
 }

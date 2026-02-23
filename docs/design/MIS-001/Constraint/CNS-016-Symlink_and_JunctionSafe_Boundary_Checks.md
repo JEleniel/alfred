@@ -6,7 +6,11 @@ Workspace boundary enforcement MUST be robust to symlinks/junctions and path tra
 
 ## Attributes
 
-_No attributes defined._
+- **error_on_escape**: {"kind":"permission_denied","message":"symlink/junction escapes workspace"}
+- **must_enforce_boundary_after_resolution**: true
+- **platform_notes**: {"windows":{"junctions_must_be_validated":true}}
+- **treat_as_user_intent**: true
+
 
 ## Links
 
@@ -19,3 +23,4 @@ _No links defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T01:16:57Z | copilot | create |
+| 2026-02-22T17:35:20Z | copilot | change |

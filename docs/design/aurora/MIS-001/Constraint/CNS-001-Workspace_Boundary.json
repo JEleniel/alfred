@@ -3,6 +3,30 @@
 	"id": "CNS-001",
 	"card_type": "Constraint",
 	"name": "Workspace Boundary Enforcement",
-	"description": "Alfred MUST NOT read or write outside the current workspace.",
+	"description": "Alfred MUST NOT read or write outside the current workspace. All filesystem operations MUST validate workspace-relative paths and MUST prevent path traversal and symlink/junction escapes.",
+	"attributes": {
+		"policy": {
+			"scope": "workspace_root_only",
+			"enforcement_points": ["request_validation", "filesystem_resolution", "index_ingestion"],
+			"windows": {
+				"treat_junction_as_symlink": true
+			}
+		},
+		"path_rules": {
+			"tool_paths_are_workspace_relative": true,
+			"path_separator": "/",
+			"reject_absolute_paths": true,
+			"reject_path_traversal": true,
+			"normalize_backslash_to_slash": true
+		},
+		"workspace_escape_prevention": {
+			"resolve_to_realpath_before_use": true,
+			"must_verify_resolved_target_under_root": true
+		},
+		"error_on_violation": {
+			"kind": "permission_denied",
+			"message": "path escapes workspace"
+		}
+	},
 	"links": []
 }

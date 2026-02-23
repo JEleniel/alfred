@@ -7,12 +7,11 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 - Alfred MUST maintain an index of all files in the workspace and their contents
     - Alfred MUST provide file listings (`ls`)
     - Alfred MUST provide text search with regex support (`grep`, `search`)
-    - Alfred MUST provide keyword and symbol lookup
     - Alfred MUST provide file range extraction
     - Alfred MUST provide diff capabilities
 - Alfred MUST provide location and context awareness
-    - Alfred MUST return the current working folder (`pwd`)
-    - Alfred MUST return the workspace root folder
+    - Alfred MUST return the workspace root folder (`workspace_dir`)
+    - Alfred MUST return the configured workspace root folder (`workspace_root`)
 - Alfred MUST provide safe file operations
     - Alfred MUST support atomic CRUD operations where practical
     - Alfred MUST support patching with conflict reporting
@@ -80,7 +79,7 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 ## Service Level Objectives
 
 - Capability discovery p95 latency MUST be <= 100 ms
-- Indexed search and symbol lookup p95 latency MUST be <= 500 ms for typical repositories
+- Indexed search p95 latency MUST be <= 500 ms for typical repositories
 - File patch/apply p95 latency MUST be <= 1000 ms for files up to 1 MB
 - Background job status update freshness MUST be <= 2 s
 - Cancellation acknowledgment p95 latency MUST be <= 3 s

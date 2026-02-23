@@ -4,10 +4,16 @@
 	"card_type": "Artifact",
 	"card_subtype": "Document",
 	"name": "Project Plan",
-	"description": "A machine-readable plan artifact tracking progress and capturing tool/diagnostic errors.",
+	"description": "A persistent Markdown plan artifact tracking the agent's progress and planned work items.",
 	"links": [],
 	"attributes": {
-		"formats": ["json", "yaml", "markdown"],
-		"note": "Exact plan format is a project-level choice; it must be consistent and tool-friendly."
+		"format": "markdown",
+		"default_location": "docs/design/ProjectPlan.md",
+		"fallback_location": "ProjectPlan.md",
+		"locking": {
+			"exclusive_lock_required": true,
+			"lock_dir": ".agents/alfred/locks"
+		},
+		"note": "Plan writes are serialized via locking to avoid concurrent agent corruption."
 	}
 }

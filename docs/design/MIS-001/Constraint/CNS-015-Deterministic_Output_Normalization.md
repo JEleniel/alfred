@@ -6,7 +6,12 @@ Alfred MUST produce deterministic outputs across supported OSes (Linux/macOS/Win
 
 ## Attributes
 
-_No attributes defined._
+- **errors**: {"must_use_taxonomy":"docs/design/ErrorTaxonomy.md"}
+- **ordering**: {"string_order":"case_insensitive_unicode_lexicographic","tie_breaker":"case_sensitive_lexicographic"}
+- **pagination**: {"must_be_stable":true}
+- **redaction**: {"algorithm":"docs/design/Redaction.md","must_be_deterministic":true,"token":"<-REDACTED->"}
+- **references**: {"protocol":"docs/design/Protocol.md","tool_contracts":"docs/design/ToolContracts.md"}
+
 
 ## Links
 
@@ -19,3 +24,4 @@ _No links defined._
 | Timestamp | Editor | Change |
 |-----------|--------|--------|
 | 2026-02-21T01:16:57Z | copilot | create |
+| 2026-02-22T17:35:20Z | copilot | change |

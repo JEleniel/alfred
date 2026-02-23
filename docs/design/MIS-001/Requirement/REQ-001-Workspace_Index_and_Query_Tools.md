@@ -1,12 +1,12 @@
 # Requirement: REQ-001 Workspace Index and Query Tools
 
-Alfred MUST maintain an index of all files in the workspace and provide listing, regex search, keyword/symbol lookup, file range extraction, and diff capabilities.
+Alfred MUST maintain an index of all files in the workspace and provide listing, regex search, file range extraction, and diff capabilities.
 
 
 
 ## Attributes
 
-- **tool_surface**: ["ls","grep","search","symbols","read_range","diff"]
+- **tool_surface**: ["ls","grep","search","read_range","diff"]
 
 
 ## Links
@@ -27,3 +27,4 @@ Alfred MUST maintain an index of all files in the workspace and provide listing,
 | 2026-02-21T00:00:00Z | copilot | create |
 | 2026-02-21T01:23:24Z | copilot | change |
 | 2026-02-22T15:41:58Z | copilot | change |
+| 2026-02-22T17:35:20Z | copilot | change |

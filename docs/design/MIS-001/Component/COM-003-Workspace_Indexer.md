@@ -1,12 +1,12 @@
 # Component (Subsystem): COM-003 Workspace Indexer
 
-Maintains the workspace file index and supports listing/search/symbol/range/diff primitives.
+Maintains the workspace file index and supports listing/search/range/diff primitives.
 
 
 
 ## Attributes
 
-- **supports**: ["ls","grep","search","symbols","read_range","diff"]
+- **supports**: ["ls","grep","search","read_range","diff"]
 
 
 ## Links
@@ -28,3 +28,4 @@ Maintains the workspace file index and supports listing/search/symbol/range/diff
 | 2026-02-21T00:00:00Z | copilot | create |
 | 2026-02-21T02:15:00Z | copilot | change |
 | 2026-02-22T15:41:58Z | copilot | change |
+| 2026-02-22T17:35:20Z | copilot | change |

@@ -73,7 +73,37 @@
       "name": "Alfred Local MCP Server"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "config_precedence": {
+          "workspace_overrides_user": true
+        },
+        "external_tools": {
+          "error_kind_on_missing": "tool_unavailable",
+          "probe_methods": [
+            "--version",
+            "--help"
+          ],
+          "require_probe": true
+        },
+        "plan_writes": {
+          "error_kind_on_lock_failure": "conflict",
+          "require_exclusive_lock": true
+        },
+        "references": {
+          "configuration": "docs/design/Configuration.md",
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
+        "task_execution": {
+          "env_allowlist_required": true,
+          "shell_disabled_by_default": true
+        },
+        "tool_exposure": {
+          "calling_disabled_tool_is_error": true,
+          "chain_referencing_disabled_tool_is_error": true,
+          "disabled_tools_omitted_from_capabilities": true,
+          "error_kind": "invalid_argument"
+        }
+      },
       "card_type": "Constraint",
       "id": "CNS-010",
       "links": [],
@@ -124,7 +154,34 @@
       "name": "Cross-Platform Cancellation Semantics"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "error_on_violation": {
+          "kind": "permission_denied",
+          "message": "path escapes workspace"
+        },
+        "path_rules": {
+          "normalize_backslash_to_slash": true,
+          "path_separator": "/",
+          "reject_absolute_paths": true,
+          "reject_path_traversal": true,
+          "tool_paths_are_workspace_relative": true
+        },
+        "policy": {
+          "enforcement_points": [
+            "request_validation",
+            "filesystem_resolution",
+            "index_ingestion"
+          ],
+          "scope": "workspace_root_only",
+          "windows": {
+            "treat_junction_as_symlink": true
+          }
+        },
+        "workspace_escape_prevention": {
+          "must_verify_resolved_target_under_root": true,
+          "resolve_to_realpath_before_use": true
+        }
+      },
       "card_type": "Constraint",
       "id": "CNS-001",
       "links": [],
@@ -187,7 +244,19 @@
       "name": "Cross-Platform Desktop OS Support"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "error_on_escape": {
+          "kind": "permission_denied",
+          "message": "symlink/junction escapes workspace"
+        },
+        "must_enforce_boundary_after_resolution": true,
+        "platform_notes": {
+          "windows": {
+            "junctions_must_be_validated": true
+          }
+        },
+        "treat_as_user_intent": true
+      },
       "card_type": "Constraint",
       "id": "CNS-016",
       "links": [],
@@ -220,7 +289,7 @@
           "cancellation_ack": 3000,
           "capability_discovery": 100,
           "file_patch_apply_up_to_1mb": 1000,
-          "indexed_search_and_symbol_lookup": 500,
+          "indexed_search": 500,
           "job_status_freshness": 2000
         }
       },
@@ -230,14 +299,57 @@
       "name": "Service Level Objectives"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "errors": {
+          "must_use_taxonomy": "docs/design/ErrorTaxonomy.md"
+        },
+        "ordering": {
+          "string_order": "case_insensitive_unicode_lexicographic",
+          "tie_breaker": "case_sensitive_lexicographic"
+        },
+        "pagination": {
+          "must_be_stable": true
+        },
+        "redaction": {
+          "algorithm": "docs/design/Redaction.md",
+          "must_be_deterministic": true,
+          "token": "<-REDACTED->"
+        },
+        "references": {
+          "protocol": "docs/design/Protocol.md",
+          "tool_contracts": "docs/design/ToolContracts.md"
+        }
+      },
       "card_type": "Constraint",
       "id": "CNS-015",
       "links": [],
       "name": "Deterministic Output Normalization"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "non_text_fs_paths": {
+          "unix": {
+            "escape_format": "\\xNN"
+          },
+          "windows": {
+            "escape_format": "\\u{XXXX}",
+            "note": "ill-formed UTF-16 surrogate units may be escaped"
+          }
+        },
+        "protocol_encoding": {
+          "json_must_be_utf8": true
+        },
+        "references": {
+          "protocol": "docs/design/Protocol.md"
+        },
+        "separator_normalization": {
+          "normalize_backslash_to_slash": true
+        },
+        "tool_path_format": {
+          "encoding": "utf-8",
+          "workspace_relative_posix": true
+        }
+      },
       "card_type": "Constraint",
       "id": "CNS-021",
       "links": [],
@@ -3045,7 +3157,20 @@
       "name": "Diagnostics Normalization"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "contracts": {
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
+        "tools": [
+          "ls",
+          "grep",
+          "search",
+          "read_range",
+          "diff",
+          "file_stat",
+          "file_read_bytes"
+        ]
+      },
       "card_type": "Feature",
       "id": "FEA-001",
       "links": [
@@ -3318,6 +3443,11 @@
           "errors": "docs/design/ErrorTaxonomy.md",
           "protocol": "docs/design/Protocol.md"
         },
+        "cursor": {
+          "encoding": "decimal_string",
+          "monotonic": true,
+          "type": "seq"
+        },
         "formats": [
           "ndjson",
           "json"
@@ -3328,7 +3458,9 @@
             "stdout",
             "stderr",
             "status",
-            "progress"
+            "progress",
+            "result",
+            "error"
           ],
           "log_record_schema": {
             "extra": "object (string-to-string pairs)",
@@ -3344,6 +3476,7 @@
           "notes": "All stream items MUST be redacted deterministically before persistence or emission.",
           "required": true
         },
+        "schema": "docs/design/schemas/alfred.job-stream-item.schema.json",
         "semantics": "append-only"
       },
       "card_subtype": "Data",
@@ -3366,6 +3499,7 @@
           "When emitted as NDJSON, each line is a complete JSON object and the stream is append-only.",
           "Diagnostics envelopes are designed to be validated against a deterministic schema and taxonomy."
         ],
+        "schema": "docs/design/schemas/alfred.diagnostics.schema.json",
         "sources": [
           "cargo",
           "pnpm",
@@ -3382,12 +3516,14 @@
     },
     {
       "attributes": {
-        "formats": [
-          "json",
-          "yaml",
-          "markdown"
-        ],
-        "note": "Exact plan format is a project-level choice; it must be consistent and tool-friendly."
+        "default_location": "docs/design/ProjectPlan.md",
+        "fallback_location": "ProjectPlan.md",
+        "format": "markdown",
+        "locking": {
+          "exclusive_lock_required": true,
+          "lock_dir": ".agents/alfred/locks"
+        },
+        "note": "Plan writes are serialized via locking to avoid concurrent agent corruption."
       },
       "card_subtype": "Document",
       "card_type": "Artifact",
@@ -3795,7 +3931,6 @@
           "ls",
           "grep",
           "search",
-          "symbols",
           "read_range",
           "diff"
         ]
@@ -5206,7 +5341,6 @@
           "ls",
           "grep",
           "search",
-          "symbols",
           "read_range",
           "diff"
         ]
@@ -5637,7 +5771,20 @@
       "name": "Task and Tool Execution"
     },
     {
-      "attributes": {},
+      "attributes": {
+        "contracts": {
+          "tool_contracts": "docs/design/ToolContracts.md"
+        },
+        "tools": [
+          "ls",
+          "grep",
+          "search",
+          "read_range",
+          "diff",
+          "file_stat",
+          "file_read_bytes"
+        ]
+      },
       "card_type": "Capability",
       "id": "CAP-001",
       "links": [],
