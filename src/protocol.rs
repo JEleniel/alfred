@@ -1,11 +1,15 @@
 //! Protocol envelope models for tool responses.
 
+use std::time::Instant;
+
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 use crate::errors::ToolError;
+use crate::services::ServiceContainer;
 use crate::tools::ToolRegistry;
+use crate::tools::dispatch_tool_call;
 
 const JSONRPC_VERSION: &str = "2.0";
 const MCP_PROTOCOL_VERSION: &str = "2025-11-05";
@@ -22,16 +26,41 @@ pub struct ToolMeta {
 	pub tool: String,
 	pub schema_version: String,
 	pub duration_ms: Option<u128>,
+	#[serde(skip_serializing_if = "Vec::is_empty", default)]
 	pub warnings: Vec<ToolWarning>,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub transport_equivalent: Option<TransportEquivalent>,
+}
+
+/// Transport-equivalent metadata for stdio responses.
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
+pub struct TransportEquivalent {
+	pub http_status: u16,
+}
+
+impl TransportEquivalent {
+	fn accepted() -> Self {
+		Self { http_status: 202 }
+	}
 }
 
 /// Deterministic result envelope used by all tools.
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
 #[serde(tag = "status", rename_all = "snake_case")]
 pub enum ToolResponse<T> {
-	Ok { data: T, meta: ToolMeta },
-	Error { error: ToolError, meta: ToolMeta },
-	Pending { job_id: String, meta: ToolMeta },
+	Ok {
+		data: T,
+		meta: ToolMeta,
+	},
+	Error {
+		error: ToolError,
+		meta: ToolMeta,
+	},
+	Pending {
+		job_id: String,
+		data: T,
+		meta: ToolMeta,
+	},
 }
 
 impl<T> ToolResponse<T> {
@@ -46,8 +75,9 @@ impl<T> ToolResponse<T> {
 	}
 
 	/// Creates a pending tool response.
-	pub fn pending(job_id: String, meta: ToolMeta) -> Self {
-		Self::Pending { job_id, meta }
+	pub fn pending(job_id: String, data: T, mut meta: ToolMeta) -> Self {
+		meta.transport_equivalent = Some(TransportEquivalent::accepted());
+		Self::Pending { job_id, data, meta }
 	}
 }
 
@@ -142,6 +172,39 @@ pub fn handle_startup_frame(raw_frame: &str) -> Result<Option<String>> {
 	}
 }
 
+/// Handles runtime frames, including tool invocation calls.
+pub fn handle_runtime_frame(
+	raw_frame: &str,
+	services: &ServiceContainer,
+) -> Result<Option<String>> {
+	let frame = serde_json::from_str::<Value>(raw_frame)
+		.context("failed to parse inbound JSON-RPC frame")?;
+
+	let method = frame.get("method").and_then(Value::as_str);
+	if method == Some("notifications/initialized") {
+		return Ok(None);
+	}
+
+	let Some(id) = frame.get("id").cloned() else {
+		return Ok(None);
+	};
+
+	let jsonrpc = frame
+		.get("jsonrpc")
+		.and_then(Value::as_str)
+		.unwrap_or(JSONRPC_VERSION);
+
+	match method {
+		Some("initialize") => build_initialize_response(jsonrpc, id).map(Some),
+		Some("tools/list") => build_tools_list_response(jsonrpc, id).map(Some),
+		Some("tools/call") => {
+			build_tools_call_response(jsonrpc, id, frame.get("params"), services).map(Some)
+		}
+		Some(other) => build_method_not_implemented_response(jsonrpc, id, other).map(Some),
+		None => Ok(None),
+	}
+}
+
 fn normalize_workspace_folders(raw_folders: &[Value]) -> Value {
 	let folders = raw_folders
 		.iter()
@@ -203,6 +266,95 @@ fn build_tools_list_response(jsonrpc: &str, id: Value) -> Result<String> {
 	});
 
 	serde_json::to_string(&response).context("failed to serialize tools/list response")
+}
+
+fn build_tools_call_response(
+	jsonrpc: &str,
+	id: Value,
+	params: Option<&Value>,
+	services: &ServiceContainer,
+) -> Result<String> {
+	let (tool_name, arguments) = match parse_tool_call_params(params) {
+		Ok(values) => values,
+		Err(message) => return build_invalid_params_response(jsonrpc, id, message.as_str()),
+	};
+
+	let started = Instant::now();
+	let (response_body, is_error) =
+		match dispatch_tool_call(tool_name.as_str(), arguments, services) {
+			Ok(data) => (
+				ToolResponse::ok(data, tool_meta(tool_name.as_str(), started)),
+				false,
+			),
+			Err(error) => (
+				ToolResponse::<Value>::error(error.into(), tool_meta(tool_name.as_str(), started)),
+				true,
+			),
+		};
+
+	let structured_content = serde_json::to_value(response_body)
+		.context("failed to serialize tool-call response envelope")?;
+	let text_content = serde_json::to_string(&structured_content)
+		.context("failed to serialize tool-call response text content")?;
+	let response = json!({
+		"jsonrpc": jsonrpc,
+		"id": id,
+		"result": {
+			"content": [
+				{
+					"type": "text",
+					"text": text_content,
+				}
+			],
+			"structuredContent": structured_content,
+			"isError": is_error,
+		},
+	});
+
+	serde_json::to_string(&response).context("failed to serialize tools/call response")
+}
+
+fn parse_tool_call_params(params: Option<&Value>) -> std::result::Result<(String, Value), String> {
+	let Some(params) = params.and_then(Value::as_object) else {
+		return Err("tools/call params must be an object".to_string());
+	};
+
+	let Some(name) = params.get("name").and_then(Value::as_str) else {
+		return Err("tools/call params.name must be a string".to_string());
+	};
+
+	let arguments = params
+		.get("arguments")
+		.cloned()
+		.unwrap_or_else(|| json!({}));
+	if !arguments.is_object() {
+		return Err("tools/call params.arguments must be an object".to_string());
+	}
+
+	Ok((name.to_string(), arguments))
+}
+
+fn build_invalid_params_response(jsonrpc: &str, id: Value, message: &str) -> Result<String> {
+	let response = json!({
+		"jsonrpc": jsonrpc,
+		"id": id,
+		"error": {
+			"code": -32602,
+			"message": message,
+		},
+	});
+
+	serde_json::to_string(&response).context("failed to serialize invalid-params response")
+}
+
+fn tool_meta(name: &str, started: Instant) -> ToolMeta {
+	ToolMeta {
+		tool: name.to_string(),
+		schema_version: env!("CARGO_PKG_VERSION").to_string(),
+		duration_ms: Some(started.elapsed().as_millis()),
+		warnings: Vec::new(),
+		transport_equivalent: None,
+	}
 }
 
 fn build_method_not_implemented_response(jsonrpc: &str, id: Value, method: &str) -> Result<String> {

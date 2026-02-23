@@ -13,6 +13,11 @@ pub mod session;
 pub mod task_execution;
 pub mod workspace_query;
 
+use serde_json::Value;
+
+use crate::errors::AlfredError;
+use crate::services::ServiceContainer;
+
 use self::capabilities::CapabilityTools;
 use self::chain::ChainTools;
 use self::context::ContextTools;
@@ -72,4 +77,23 @@ impl ToolRegistry {
 	pub fn tool_count(&self) -> usize {
 		self.tool_names().len()
 	}
+}
+
+/// Dispatches a single tool call to the appropriate tool group implementation.
+pub fn dispatch_tool_call(
+	name: &str,
+	args: Value,
+	services: &ServiceContainer,
+) -> Result<Value, AlfredError> {
+	if let Some(data) = context::dispatch_tool_call(name, services) {
+		return Ok(data);
+	}
+
+	if let Some(data) = workspace_query::dispatch_tool_call(name, args, services)? {
+		return Ok(data);
+	}
+
+	Err(AlfredError::InvalidArgument(format!(
+		"tool not implemented: {name}"
+	)))
 }

@@ -1,6 +1,32 @@
+use std::fs;
 use std::path::PathBuf;
+use std::thread;
+use std::time::Duration;
+
+use uuid::Uuid;
 
 use crate::services::indexer::{SearchMatch, WorkspaceIndexer};
+
+struct TestDir {
+	path: PathBuf,
+}
+
+impl TestDir {
+	fn new() -> Self {
+		let path = std::env::current_dir()
+			.expect("workspace root should resolve")
+			.join("tmp")
+			.join(format!("indexer-watch-tests-{}", Uuid::new_v4()));
+		fs::create_dir_all(&path).expect("test directory should be created");
+		Self { path }
+	}
+}
+
+impl Drop for TestDir {
+	fn drop(&mut self) {
+		let _ = fs::remove_dir_all(&self.path);
+	}
+}
 
 fn fixture_root() -> PathBuf {
 	std::env::current_dir()
@@ -10,9 +36,20 @@ fn fixture_root() -> PathBuf {
 		.join("indexer")
 }
 
+fn new_test_indexer(workspace_root: PathBuf, index_root: PathBuf) -> WorkspaceIndexer {
+	WorkspaceIndexer::new_with_options(
+		workspace_root,
+		index_root,
+		Duration::from_millis(120),
+		Duration::from_millis(80),
+	)
+	.expect("indexer should construct")
+}
+
 #[test]
 fn rebuild_indexes_workspace_files_and_directories() {
-	let indexer = WorkspaceIndexer::new(fixture_root());
+	let storage = TestDir::new();
+	let indexer = new_test_indexer(fixture_root(), storage.path.clone());
 	let stats = indexer.rebuild().expect("index rebuild should succeed");
 
 	assert_eq!(stats.indexed_files, 3);
@@ -32,7 +69,8 @@ fn rebuild_indexes_workspace_files_and_directories() {
 
 #[test]
 fn grep_literal_finds_matches_with_casefold_sorting() {
-	let indexer = WorkspaceIndexer::new(fixture_root());
+	let storage = TestDir::new();
+	let indexer = new_test_indexer(fixture_root(), storage.path.clone());
 	indexer.rebuild().expect("index rebuild should succeed");
 
 	let matches = indexer.grep_literal("hello", false);
@@ -55,7 +93,8 @@ fn grep_literal_finds_matches_with_casefold_sorting() {
 
 #[test]
 fn search_regex_finds_expected_lines() {
-	let indexer = WorkspaceIndexer::new(fixture_root());
+	let storage = TestDir::new();
+	let indexer = new_test_indexer(fixture_root(), storage.path.clone());
 	indexer.rebuild().expect("index rebuild should succeed");
 
 	let matches = indexer
@@ -69,11 +108,82 @@ fn search_regex_finds_expected_lines() {
 
 #[test]
 fn read_range_returns_requested_lines() {
-	let indexer = WorkspaceIndexer::new(fixture_root());
+	let storage = TestDir::new();
+	let indexer = new_test_indexer(fixture_root(), storage.path.clone());
 	indexer.rebuild().expect("index rebuild should succeed");
 
 	let text = indexer
 		.read_range("alpha.txt", 1, 2)
 		.expect("read_range should succeed");
 	assert_eq!(text, "Hello from alpha\nSecond line");
+}
+
+#[test]
+fn watch_thread_starts_only_once() {
+	let storage = TestDir::new();
+	let indexer = new_test_indexer(fixture_root(), storage.path.clone());
+	indexer.rebuild().expect("index rebuild should succeed");
+
+	let first = indexer
+		.start_watch_thread()
+		.expect("first watch-thread start should succeed");
+	let second = indexer
+		.start_watch_thread()
+		.expect("second watch-thread start call should succeed");
+
+	assert!(first);
+	assert!(!second);
+	indexer.stop_watch_thread();
+}
+
+#[test]
+fn watch_thread_reindexes_on_save() {
+	let test_dir = TestDir::new();
+	let storage = TestDir::new();
+	let file_path = test_dir.path.join("watched.txt");
+	fs::write(&file_path, "one\ntwo\n").expect("fixture file should be written");
+
+	let indexer = new_test_indexer(test_dir.path.clone(), storage.path.clone());
+	indexer.rebuild().expect("index rebuild should succeed");
+	indexer
+		.start_watch_thread()
+		.expect("watch thread should start");
+
+	thread::sleep(Duration::from_millis(200));
+	fs::write(&file_path, "updated\ntwo\n").expect("fixture file should be updated");
+
+	let mut updated = false;
+	for _ in 0..30 {
+		thread::sleep(Duration::from_millis(150));
+		if let Ok(text) = indexer.read_range("watched.txt", 1, 1)
+			&& text == "updated"
+		{
+			updated = true;
+			break;
+		}
+	}
+
+	indexer.stop_watch_thread();
+	assert!(updated, "watch thread should reindex saved file changes");
+}
+
+#[test]
+fn initialize_loads_persisted_index_for_workspace() {
+	let workspace = TestDir::new();
+	let storage = TestDir::new();
+	let file_path = workspace.path.join("persisted.txt");
+	fs::write(&file_path, "persist me\n").expect("workspace file should be written");
+
+	let first = new_test_indexer(workspace.path.clone(), storage.path.clone());
+	first.rebuild().expect("first index build should succeed");
+	drop(first);
+
+	fs::remove_file(&file_path).expect("workspace file should be removed");
+
+	let second = new_test_indexer(workspace.path.clone(), storage.path.clone());
+	second
+		.initialize()
+		.expect("index should load from persisted storage");
+
+	assert_eq!(second.list_files(), vec!["persisted.txt".to_string()]);
 }

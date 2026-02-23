@@ -1,5 +1,6 @@
 //! Deterministic error taxonomy types.
 
+use serde_json::Value;
 use thiserror::Error;
 
 /// Canonical error kind values used in tool envelopes.
@@ -8,11 +9,14 @@ use thiserror::Error;
 pub enum ErrorKind {
 	InvalidArgument,
 	PermissionDenied,
+	WorkspaceBoundaryViolation,
 	Conflict,
 	NotFound,
 	ToolUnavailable,
 	ResourceExhausted,
 	Timeout,
+	Canceled,
+	IoError,
 	Internal,
 }
 
@@ -22,6 +26,8 @@ pub struct ToolError {
 	pub kind: ErrorKind,
 	pub message: String,
 	pub retryable: bool,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub details: Option<Value>,
 }
 
 /// Internal crate-level error enum.
@@ -31,16 +37,25 @@ pub enum AlfredError {
 	InvalidArgument(String),
 	#[error("permission denied: {0}")]
 	PermissionDenied(String),
+	#[error("workspace boundary violation: {0}")]
+	WorkspaceBoundaryViolation(String),
 	#[error("conflict: {0}")]
 	Conflict(String),
 	#[error("not found: {0}")]
 	NotFound(String),
-	#[error("tool unavailable: {0}")]
-	ToolUnavailable(String),
+	#[error("tool unavailable: {message}")]
+	ToolUnavailable {
+		message: String,
+		details: Option<Value>,
+	},
 	#[error("resource exhausted: {0}")]
 	ResourceExhausted(String),
 	#[error("timeout: {0}")]
 	Timeout(String),
+	#[error("canceled: {0}")]
+	Canceled(String),
+	#[error("io error: {0}")]
+	IoError(String),
 	#[error("internal: {0}")]
 	Internal(String),
 }
@@ -52,41 +67,67 @@ impl From<AlfredError> for ToolError {
 				kind: ErrorKind::InvalidArgument,
 				message,
 				retryable: false,
+				details: None,
 			},
 			AlfredError::PermissionDenied(message) => Self {
 				kind: ErrorKind::PermissionDenied,
 				message,
 				retryable: false,
+				details: None,
+			},
+			AlfredError::WorkspaceBoundaryViolation(message) => Self {
+				kind: ErrorKind::WorkspaceBoundaryViolation,
+				message,
+				retryable: false,
+				details: None,
 			},
 			AlfredError::Conflict(message) => Self {
 				kind: ErrorKind::Conflict,
 				message,
-				retryable: true,
+				retryable: false,
+				details: None,
 			},
 			AlfredError::NotFound(message) => Self {
 				kind: ErrorKind::NotFound,
 				message,
 				retryable: false,
+				details: None,
 			},
-			AlfredError::ToolUnavailable(message) => Self {
+			AlfredError::ToolUnavailable { message, details } => Self {
 				kind: ErrorKind::ToolUnavailable,
 				message,
 				retryable: true,
+				details,
 			},
 			AlfredError::ResourceExhausted(message) => Self {
 				kind: ErrorKind::ResourceExhausted,
 				message,
 				retryable: true,
+				details: None,
 			},
 			AlfredError::Timeout(message) => Self {
 				kind: ErrorKind::Timeout,
 				message,
 				retryable: true,
+				details: None,
+			},
+			AlfredError::Canceled(message) => Self {
+				kind: ErrorKind::Canceled,
+				message,
+				retryable: true,
+				details: None,
+			},
+			AlfredError::IoError(message) => Self {
+				kind: ErrorKind::IoError,
+				message,
+				retryable: true,
+				details: None,
 			},
 			AlfredError::Internal(message) => Self {
 				kind: ErrorKind::Internal,
 				message,
-				retryable: false,
+				retryable: true,
+				details: None,
 			},
 		}
 	}

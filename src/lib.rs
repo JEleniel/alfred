@@ -39,3 +39,7 @@ mod logging_tests;
 #[cfg(test)]
 #[path = "tests/indexer_tests.rs"]
 mod indexer_tests;
+
+#[cfg(test)]
+#[path = "tests/workspace_query_tests.rs"]
+mod workspace_query_tests;
