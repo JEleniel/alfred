@@ -168,3 +168,124 @@ fn file_read_bytes_rejects_length_above_max_file_chunk_bytes() {
 		other => panic!("unexpected result: {other:?}"),
 	}
 }
+
+#[test]
+fn ls_returns_normalized_stable_sorted_entries() {
+	let (services, _workspace) = build_services(true);
+
+	let data = workspace_query::dispatch_tool_call(
+		"ls",
+		json!({
+			"path": "./nested/../",
+			"recursive": false
+		}),
+		&services,
+	)
+	.expect("ls should succeed")
+	.expect("ls should return data");
+
+	assert_eq!(data["files"], json!(["alpha.txt", "Zeta.txt"]));
+	assert_eq!(data["directories"], json!(["nested"]));
+	assert!(data["next_cursor"].is_null());
+}
+
+#[test]
+fn file_stat_returns_normalized_file_metadata() {
+	let (services, _workspace) = build_services(true);
+
+	let data = workspace_query::dispatch_tool_call(
+		"file_stat",
+		json!({"path": "./nested/../alpha.txt"}),
+		&services,
+	)
+	.expect("file_stat should succeed")
+	.expect("file_stat should return data");
+
+	assert_eq!(data["path"], json!("alpha.txt"));
+	assert_eq!(data["kind"], json!("file"));
+	assert!(data["size_bytes"].as_u64().is_some_and(|value| value > 0));
+	assert!(data["modified_at"].as_str().is_some());
+}
+
+#[test]
+fn file_read_bytes_returns_chunk_and_next_offset() {
+	let (services, _workspace) = build_services(true);
+
+	let data = workspace_query::dispatch_tool_call(
+		"file_read_bytes",
+		json!({
+			"path": "./nested/../alpha.txt",
+			"offset": 0,
+			"length": 5
+		}),
+		&services,
+	)
+	.expect("file_read_bytes should succeed")
+	.expect("file_read_bytes should return data");
+
+	assert_eq!(data["path"], json!("alpha.txt"));
+	assert_eq!(data["bytes_b64"], json!("SGVsbG8="));
+	assert_eq!(data["bytes_read"], json!(5));
+	assert_eq!(data["eof"], json!(false));
+	assert_eq!(data["next_offset"], json!(5));
+}
+
+#[test]
+fn diff_returns_deterministic_unified_diff() {
+	let (services, _workspace) = build_services(true);
+
+	let data = workspace_query::dispatch_tool_call(
+		"diff",
+		json!({
+			"a": {
+				"path": "./nested/../alpha.txt",
+				"from": 1,
+				"to": 1
+			},
+			"b": {
+				"path": "nested/beta.md",
+				"from": 1,
+				"to": 1
+			}
+		}),
+		&services,
+	)
+	.expect("diff should succeed")
+	.expect("diff should return data");
+
+	assert_eq!(
+		data["diff"],
+		json!("--- a\n+++ b\n@@ -1,1 +1,1 @@\n-Hello from alpha\n+Hello from beta\n")
+	);
+}
+
+#[test]
+fn read_range_rejects_binary_non_text_input_deterministically() {
+	let (services, workspace) = build_services(false);
+	fs::write(
+		workspace.path.join("binary.bin"),
+		[0xFF_u8, 0xFE_u8, 0x00_u8, 0x01_u8],
+	)
+	.expect("binary fixture should be written");
+	services
+		.indexer
+		.rebuild()
+		.expect("index should rebuild with binary fixture");
+
+	let result = workspace_query::dispatch_tool_call(
+		"read_range",
+		json!({
+			"path": "binary.bin",
+			"start_line": 1,
+			"end_line": 1
+		}),
+		&services,
+	);
+
+	match result {
+		Err(AlfredError::InvalidArgument(message)) => {
+			assert_eq!(message, "file is not available as UTF-8 text: binary.bin");
+		}
+		other => panic!("unexpected result: {other:?}"),
+	}
+}

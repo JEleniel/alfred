@@ -575,7 +575,12 @@ fn unified_diff(left: &str, right: &str) -> String {
 
 fn map_indexer_error(error: anyhow::Error) -> AlfredError {
 	let message = error.to_string();
-	if message.contains("invalid regex") || message.contains("line numbers") {
+	if message.contains("invalid regex")
+		|| message.contains("line numbers")
+		|| message.contains("end_line must be greater than or equal to start_line")
+		|| message.contains("requested line range is out of bounds")
+		|| message.contains("file is not available as UTF-8 text")
+	{
 		return AlfredError::InvalidArgument(message);
 	}
 	if message.contains("not found") {

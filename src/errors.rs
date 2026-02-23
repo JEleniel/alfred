@@ -41,6 +41,11 @@ pub enum AlfredError {
 	WorkspaceBoundaryViolation(String),
 	#[error("conflict: {0}")]
 	Conflict(String),
+	#[error("conflict: {message}")]
+	ConflictWithDetails {
+		message: String,
+		details: Option<Value>,
+	},
 	#[error("not found: {0}")]
 	NotFound(String),
 	#[error("tool unavailable: {message}")]
@@ -86,6 +91,12 @@ impl From<AlfredError> for ToolError {
 				message,
 				retryable: false,
 				details: None,
+			},
+			AlfredError::ConflictWithDetails { message, details } => Self {
+				kind: ErrorKind::Conflict,
+				message,
+				retryable: false,
+				details,
 			},
 			AlfredError::NotFound(message) => Self {
 				kind: ErrorKind::NotFound,

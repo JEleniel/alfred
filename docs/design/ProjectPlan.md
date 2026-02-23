@@ -34,7 +34,7 @@
         - Add protocol-level tests asserting the `capabilities` payload shape and stable ordering.
     - Status: completed
 
-4. [ ] Bring workspace query tools up to contract conformance
+4. [x] Bring workspace query tools up to contract conformance
     - Priority: 1
     - Cards: "ART-007", "CNS-001", "CNS-015", "STR-001", "STR-015"
     - Description: Tighten the existing workspace query tools (`workspace_dir`, `ls`, `read_range`, `file_stat`, `file_read_bytes`, `grep`, `search`, `diff`) to match their tool contracts.
@@ -44,19 +44,19 @@
         - Add bounded limits for `file_read_bytes` and surface them in `capabilities.limits`.
         - Ensure index-not-ready errors for `grep`/`search` emit `tool_unavailable` with `details.reason: "index_not_ready"`.
         - Add missing tool-level tests for `ls`, `file_stat`, `file_read_bytes`, and `diff`.
-    - Status: planned
+    - Status: completed
 
-5. [ ] Implement `log_search`
+5. [x] Implement `log_search`
     - Priority: 1
     - Cards: "STR-008", "CNS-012", "CNS-015"
-    - Description: Implement deterministic log searching over Alfred’s structured runtime logs.
+    - Description: Implement deterministic log searching over Alfred’s structured runtime logs or logs at a path provided by the agent, within the workspace. This is one of the few exceptions where we let the agent see outside the sandbox, but _only_ Alfred's logs.
     - Deliverables:
         - Implement `log_search` per `docs/design/ToolContracts.md`.
         - Add stable pagination with `cursor` and `next_cursor`.
         - Add tests covering filtering, pagination, and deterministic ordering.
-    - Status: planned
+    - Status: completed
 
-6. [ ] Implement `plan_get`
+6. [x] Implement `plan_get`
     - Priority: 1
     - Cards: "ART-004", "STR-004", "CNS-015"
     - Description: Return the current plan items from the workspace-scoped project plan file.
@@ -64,9 +64,9 @@
         - Implement `plan_get` per `docs/design/ToolContracts.md`.
         - Enforce deterministic parsing and normalization.
         - Add tests for “file missing”, parse errors, and successful reads.
-    - Status: planned
+    - Status: completed
 
-7. [ ] Implement `plan_update`
+7. [x] Implement `plan_update`
     - Priority: 2
     - Cards: "ART-004", "STR-004", "CNS-015"
     - Description: Update the status of a specific plan item with serialized writes and deterministic conflicts.
@@ -74,9 +74,9 @@
         - Implement `plan_update` per `docs/design/ToolContracts.md`.
         - Implement lock acquisition and `conflict` errors with `details.reason: "locked"`.
         - Add tests for locked writes, missing ids, and successful updates.
-    - Status: planned
+    - Status: completed
 
-8. [ ] Implement `plan_edit`
+8. [x] Implement `plan_edit`
     - Priority: 2
     - Cards: "ART-004", "STR-004", "CNS-015"
     - Description: Edit a full plan item deterministically.
@@ -84,9 +84,9 @@
         - Implement `plan_edit` per `docs/design/ToolContracts.md`.
         - Preserve stable ids and deterministic formatting.
         - Add tests for edit validation and stable round-tripping.
-    - Status: planned
+    - Status: completed
 
-9. [ ] Implement `plan_add`
+9. [x] Implement `plan_add`
     - Priority: 2
     - Cards: "ART-004", "STR-004", "CNS-015"
     - Description: Append a new plan item deterministically (server assigns id).
@@ -94,16 +94,16 @@
         - Implement `plan_add` per `docs/design/ToolContracts.md`.
         - Ensure sequential id assignment starting at 1.
         - Add tests for id assignment and concurrent add conflict behavior.
-    - Status: planned
+    - Status: completed
 
-10. [ ] Implement `plan_delete`
+10. [x] Implement `plan_delete`
     - Priority: 2
     - Cards: "ART-004", "STR-004", "CNS-015"
     - Description: Remove a plan item by id deterministically.
     - Deliverables:
         - Implement `plan_delete` per `docs/design/ToolContracts.md`.
         - Add tests for missing ids and successful deletes.
-    - Status: planned
+    - Status: completed
 
 11. [ ] Implement `memory_put`
     - Priority: 2

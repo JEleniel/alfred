@@ -43,3 +43,11 @@ mod indexer_tests;
 #[cfg(test)]
 #[path = "tests/workspace_query_tests.rs"]
 mod workspace_query_tests;
+
+#[cfg(test)]
+#[path = "tests/log_tools_tests.rs"]
+mod log_tools_tests;
+
+#[cfg(test)]
+#[path = "tests/plan_tools_tests.rs"]
+mod plan_tools_tests;

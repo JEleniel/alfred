@@ -52,7 +52,7 @@ impl ServiceContainer {
 			task_runner: TaskRunner::new(workspace_root.clone()),
 			jobs: JobManager::new(),
 			logs: LogManager::new(runtime_log_path),
-			plan_store: PlanStore::new(plan_path),
+			plan_store: PlanStore::new(workspace_root.clone(), plan_path),
 			memory_store: MemoryStore::new(
 				config.user_config_path.with_file_name("alfred.sqlite3"),
 				workspace_root.join(".agents/alfred/alfred.sqlite3"),
