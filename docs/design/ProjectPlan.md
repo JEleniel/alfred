@@ -105,7 +105,7 @@
         - Add tests for missing ids and successful deletes.
     - Status: completed
 
-11. [ ] Implement `memory_put`
+11. [x] Implement `memory_put`
     - Priority: 2
     - Cards: "ART-008", "STR-017", "CNS-006", "CNS-015"
     - Description: Upsert a memory fact into the local persistent store.
@@ -113,43 +113,43 @@
         - Implement `memory_put` per `docs/design/ToolContracts.md`.
         - Ensure deterministic upsert semantics and timestamps.
         - Add tests for required fields and id stability.
-    - Status: planned
+    - Status: completed
 
-12. [ ] Implement `memory_get`
+12. [x] Implement `memory_get`
     - Priority: 2
     - Cards: "ART-008", "STR-017", "CNS-015"
     - Description: Retrieve a single memory fact by id.
     - Deliverables:
         - Implement `memory_get` per `docs/design/ToolContracts.md`.
         - Add tests for missing facts and successful retrieval.
-    - Status: planned
+    - Status: completed
 
-13. [ ] Implement `memory_delete`
+13. [x] Implement `memory_delete`
     - Priority: 2
     - Cards: "ART-008", "STR-017", "CNS-003", "CNS-015"
     - Description: Delete a memory fact deterministically (with optional dry-run).
     - Deliverables:
         - Implement `memory_delete` per `docs/design/ToolContracts.md`.
         - Add tests for dry-run behavior and delete semantics.
-    - Status: planned
+    - Status: completed
 
-14. [ ] Implement `memory_list`
+14. [x] Implement `memory_list`
     - Priority: 2
     - Cards: "ART-008", "STR-017", "CNS-015"
     - Description: Deterministically list memory facts with stable ordering and pagination.
     - Deliverables:
         - Implement `memory_list` per `docs/design/ToolContracts.md`.
         - Add tests for stable ordering, pagination, and tag filtering.
-    - Status: planned
+    - Status: completed
 
-15. [ ] Implement `memory_search`
+15. [x] Implement `memory_search`
     - Priority: 2
     - Cards: "ART-008", "STR-017", "CNS-015"
     - Description: Full-text search over memory facts.
     - Deliverables:
         - Implement `memory_search` per `docs/design/ToolContracts.md`.
         - Add tests for deterministic ranking/ordering and tag filtering.
-    - Status: planned
+    - Status: completed
 
 16. [ ] Implement `env_list`
     - Priority: 2

@@ -51,3 +51,7 @@ mod log_tools_tests;
 #[cfg(test)]
 #[path = "tests/plan_tools_tests.rs"]
 mod plan_tools_tests;
+
+#[cfg(test)]
+#[path = "tests/memory_tools_tests.rs"]
+mod memory_tools_tests;

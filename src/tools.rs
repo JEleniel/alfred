@@ -62,6 +62,7 @@ impl ToolRegistry {
 		names.extend_from_slice(WorkspaceQueryTools::NAMES);
 		names.extend_from_slice(LogTools::NAMES);
 		names.extend_from_slice(PlanTools::NAMES);
+		names.extend_from_slice(MemoryTools::NAMES);
 		names.extend_from_slice(CapabilityTools::NAMES);
 		names.sort_unstable();
 		names
@@ -106,6 +107,10 @@ pub fn dispatch_tool_call(
 	}
 
 	if let Some(data) = plan::dispatch_tool_call(name, args.clone(), services)? {
+		return Ok(data);
+	}
+
+	if let Some(data) = memory::dispatch_tool_call(name, args.clone(), services)? {
 		return Ok(data);
 	}
 

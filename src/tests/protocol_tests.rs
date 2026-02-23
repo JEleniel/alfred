@@ -80,7 +80,9 @@ fn build_services_for_fixture_with_disabled_tools(
 
 	let mut config = AppConfig::load_default().expect("default config should load");
 	config.workspace_root = workspace.path.clone();
-	config.disabled_tools = disabled_tools;
+	config.disabled_tools.extend(disabled_tools);
+	config.disabled_tools.sort_unstable();
+	config.disabled_tools.dedup();
 	let services = ServiceContainer::new(config).expect("service container should build");
 	if with_index {
 		services
