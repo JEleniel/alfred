@@ -35,6 +35,7 @@ If present, the repository's Markdown lint config (`.markdownlint-cli2.jsonc`) i
 - You MAY use inline HTML but SHOULD avoid it unless it is necessary.
 - You MUST use leading and trailing pipe characters for all table rows and ensure consistent column counts in every row.
 - Keep blank lines around tables, code blocks, callouts, and headings.
+- Prefer direct links `[]()` over reference style links `[][]`.
 
 ## Frontmatter
 
@@ -43,4 +44,4 @@ If present, the repository's Markdown lint config (`.markdownlint-cli2.jsonc`) i
 
 ## Tips
 
-- Don't waste a lot of time manually formatting Markdown, if `markdownlint-cli2` is available (and it is in the IDE) use it instead.
+- Don't waste a lot of time manually formatting Markdown, if `markdownlint-cli2` is available use it instead.

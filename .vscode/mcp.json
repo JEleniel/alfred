@@ -1,0 +1,10 @@
+{
+	"servers": {
+		"Alfred": {
+			"type": "stdio",
+			"command": "/Users/jeleniel/repos/alfred/target/debug/alfred",
+			"args": []
+		}
+	},
+	"inputs": []
+}

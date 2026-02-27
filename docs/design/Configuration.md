@@ -29,7 +29,7 @@ Configuration is merged deterministically.
 
 ## Schema
 
-The workspace and user configuration format is JSON and MUST conform to `docs/design/schemas/alfred.config.schema.json`.
+The workspace and user configuration format is JSON and MUST conform to `schemas/alfred.config.schema.json`.
 
 ## Keys
 

@@ -22,8 +22,3 @@ NDJSON (newline-delimited JSON) stores one complete JSON value per line (typical
 - Prefer append-only updates when the file is a log (add a new line; do not edit existing lines).
 - Preserve existing entry order unless the consuming tool explicitly defines a different ordering.
 - Avoid changing existing lines unless necessary; minimize diffs.
-
-## Validation (best-effort)
-
-- If a JSON Schema exists for the per-line entry shape, validate edited or added lines against it.
-- If validation is not possible (offline/private schema), do not block changes solely for that reason; record that validation could not be performed.

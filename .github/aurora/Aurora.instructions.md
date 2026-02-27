@@ -30,8 +30,8 @@ Each model is identified by its `Mission` ID.
 ### Getting started
 
 1. Create or locate the model home folder: `aurora/` (located at `docs/design/aurora/` by default).
-2. Ensure `aurora/schemas/` contains `Aurora.audit.schema.json`, `Aurora.card.schema.json`, `Aurora.compact.schema.json`, and `Aurora.modelconfiguration.schema.json`. If missing, copy them from `.github/aurora/schemas/`. Do not copy the Markdown files.
-3. Ensure `aurora/reference/` contains `Aurora.modelconfiguration.json` and `SVGTemplate.svgz`. If missing, copy them from `.github/aurora/reference/`. Do not copy the Markdown files.
+2. Ensure `aurora/schemas/` contains `Aurora.audit.schema.json`, `Aurora.card.schema.json`, `Aurora.compact.schema.json`, `Aurora.modelconfiguration.schema.json`, and `Aurora.viewconfiguration.schema.json`. If missing, copy them from `.github/aurora/schemas/`. Do not copy the Markdown files.
+3. Ensure `aurora/reference/` contains `Aurora.modelconfiguration.json`, `Aurora.viewconfiguration.json`, and `SVGTemplate.svgz`. If missing, copy them from `.github/aurora/reference/`. Do not copy the Markdown files.
 4. Create the `Mission` card in the model home (`aurora/`).
 5. Add other cards under `{mission id}/{card type folder}/` and link them from existing cards.
 6. Append to `{mission id}/AuditLog.ndjson` for every change event. One entry may include changes to multiple cards.
@@ -69,13 +69,19 @@ Cards represent architectural elements (nouns). A card contains properties of th
 
 Card field structure is defined exclusively in `schemas/Aurora.card.schema.json`.
 
-When present, the optional `icon` value MUST match an icon id in `reference/Aurora.modelconfiguration.json` (`appearance.available_icons`).
+When present, the optional `icon` value MUST match an icon id in `reference/Aurora.viewconfiguration.json` (`available_icons`).
 
 **Example `id`s**:
 
 - MIS-001
 - DRI-001
 - DRI-002
+
+#### External References
+
+In order to allow for the inclusion of artifacts, such as JSON schemas, ADR documents, URLs and other external material, the `external_references` field can contain an array of strings, each of which is a _relative_ path or URL to the external material. When rendered to Markdown these will become links.
+
+The default location for such material is `docs/design/references/`.
 
 #### ID acronym consistency
 
@@ -87,10 +93,15 @@ A canonical set of cards and relationships is included. The canonical set is des
 
 Extension rule (minimal): use canonical cards and relationships by default. Add non-canonical types only when no canonical option is semantically correct, and preserve all graph invariants.
 
-Canonical card types, relationships, appearance, and view definitions are defined in the model configuration registry:
+Canonical card types, relationships, and view definitions are defined in the model configuration registry:
 
 - [Aurora Model Configuration](reference/Aurora.modelconfiguration.json)
 - [Aurora Model Configuration Schema](schemas/Aurora.modelconfiguration.schema.json)
+
+Canonical view appearance defaults, which are only used by the rendering tools, (including `available_icons`) are defined in the view configuration registry:
+
+- [Aurora View Configuration](reference/Aurora.viewconfiguration.json)
+- [Aurora View Configuration Schema](schemas/Aurora.viewconfiguration.schema.json)
 
 ### File and Folder Structure
 
@@ -128,10 +139,12 @@ aurora
   │    ├─ Aurora.audit.schema.json
   │    ├─ Aurora.card.schema.json
   │    ├─ Aurora.compact.schema.json
-  │    └─ Aurora.modelconfiguration.schema.json
+  │    ├─ Aurora.modelconfiguration.schema.json
+  │    └─ Aurora.viewconfiguration.schema.json
   ├─ reference
   │    ├─ SVGTemplate.svg
-  │    └─ Aurora.modelconfiguration.json
+  │    ├─ Aurora.modelconfiguration.json
+  │    └─ Aurora.viewconfiguration.json
   ├─ MIS-001-Enable_Deterministic_Aurora_CLI_Tooling.json
   └─ MIS-002-Write_User_Documentation_for_Aurora.json
 ... etc
@@ -147,10 +160,11 @@ These invariant rules ensure that the model is a rooted directed graph with only
 
 ## Optimizations for Handling Models
 
+- Unless making changes to the model, the compact model should cover everything an agent needs to implement.
 - Treat the mission audit log (`{mission id}/AuditLog.ndjson`) as the primary “what changed” record.
 - In order to extract all details for an Application, start at the APP card and work down as if rendering a view. This skips having to scan the entire model
 - The audit log is append-only NDJSON. In most workflows, appending a new entry is sufficient; avoid reading the entire file unless required.
 - Many Aurora workflows regenerate large, mechanical outputs (for example views, markdown renderings, and compact exports). These changes can overwhelm `git diff` and obscure intent.
-
+- The `Aurora.viewconfiguration.json` and `Aurora.viewconfiguration.schema.json` do not need to be read by agents; they are only needed by the rendering tools.
 - The cards are easy to locate and self-indexing, so there is generally no need to keep more than three cards in active memory.
 - It is better to run `aurora_cli validate` than to manually load the schemas to validate. Only load schemas when necessary.

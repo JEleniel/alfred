@@ -8,7 +8,7 @@
 	"links": [],
 	"attributes": {
 		"formats": ["ndjson", "json"],
-		"schema": "docs/design/schemas/alfred.job-stream-item.schema.json",
+		"schema": "schemas/alfred.job-stream-item.schema.json",
 		"cursor": {
 			"type": "seq",
 			"encoding": "decimal_string",

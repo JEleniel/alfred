@@ -1,5 +1,7 @@
 # Project specific
-# Add files and directories specific to your project that should be ignored here
+# The Alfred workspace index and database files
+.alfred/
+!.alfred/config.json
 
 # Rust
 .analyze/
@@ -8,6 +10,10 @@ debug/
 mutants.out*/
 target/
 *.d
+**/*.rs.bk
+*.crate
+*.profraw
+*.profdata
 cargo-install-update-lock
 Cargo.lock
 Cargo.toml.orig
@@ -19,73 +25,40 @@ crates-io-index/
 *.rlib
 *.rmeta
 *.so
-logs/
 
-# Visual Studio Code
-.vscode/*
-!.vscode/*.code-snippets
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/settings.*.json
-!.vscode/settings.json
-!.vscode/tasks.json
-.history/
-.vscode-test
-*.vsix
-.codacy
+# ----- Uncomment this section to exclude Aurora model generated files -----
+# ----- Aurora model generated files -----
+docs/design/README-MIS-*.md
+docs/design/MIS-*.md
+docs/design/MIS-*/**/*
+docs/design/aurora/MIS-*/Compact.json
+# ----- End of Aurora model generated files -----
 
-# JetBrains IDEs
-.idea/
-*.iml
-
-# Vim swap files
-*.swp
-*.swo
-*.swx
-
-#Ignore IDE specific AI instructions
-.github/instructions/IDE.instructions.md
+# Agent scratch files
 .agents/
 
-# Archive Files
-*.7z
-*.bz2
-*.bzip
-*.bzip2
-*.cab
-*.deb
-*.dmg
-*.egg
-*.gem
-*.gz
-*.gzip
-*.iso
-*.jar
-*.lzma
-*.msi
-*.msix
-*.msm
-*.msp
-*.rar
-*.rpm
-*.tar
-*.tgz
-*.txz
-*.tzst
-*.xar
-*.xpi
-*.xz
-*.zip
-*.zst
+# Secrets, credentials, and settings
+.env*
+!.env.example
+*.cert
+*.crt
+*.csr
+*.der
+*.jks
+*.key
+*.keystore
+*.p12
+*.pem
+*.pfx
+*.pvk
 
-# Backup Files
-*.bk
-*.bak
-*.gho
-*.ori
-*.orig
+# Configuration Files
+config.json
+!config.default.json
+!config.example.json
+!config.schema.json
 
-# Cache, Temporary, and Other Common Files
+# Cache and temporary files
 .cache/
 .temp/
 temp/
@@ -97,16 +70,7 @@ tmp/
 # direnv
 .direnv/
 
-# Security Files
-*.cert
-*.crt
-*.key
-*.keystore
-*.p12
-*.pem
-*.pfx
-
-# Logs and Diagnostics
+# Logs and diagnostics
 logs/
 *.log
 *-debug.log*
@@ -122,31 +86,24 @@ coverage.xml
 test-results/
 
 # Runtime data
-*.pfx
+pids/
 *.pid
 *.pid.lock
 *.seed
-pids/
 
-# Diff Files
+# Diff/Patch files
 *.diff
 *.patch
 
-# Configuration Files
-.env*
-!.env.example
-config.json
-!config.default.json
-!config.example.json
-
-# Linux Cruft
+# Platform-specific Cruft
+## Linux
 *~
 .directory
 .fuse_hidden*
 .nfs*
 .Trash-*
 
-# Windows Cruft
+## Windows
 $RECYCLE.BIN/
 [Dd]esktop.ini
 ehthumbs.db
@@ -156,7 +113,7 @@ ehthumbs_vista.db
 Thumbs.db
 Thumbs.db:encryptable
 
-# MacOS Cruft
+## macOS
 ._*
 .apdisk
 .AppleDB

@@ -1,0 +1,87 @@
+{
+	"$defs": {
+		"acronym": {
+			"pattern": "^[A-Z]{3}$",
+			"type": "string"
+		},
+		"hex_color": {
+			"pattern": "^#[A-Fa-f0-9]{6}$",
+			"type": "string"
+		},
+		"icon_name": {
+			"minLength": 1,
+			"pattern": "^[a-z][a-z0-9-_]*$",
+			"type": "string"
+		},
+		"non_empty": {
+			"minLength": 1,
+			"type": "string"
+		},
+		"available_icons": {
+			"items": {
+				"$ref": "#/$defs/icon_name"
+			},
+			"type": "array",
+			"uniqueItems": true
+		},
+		"card_appearance": {
+			"additionalProperties": true,
+			"properties": {
+				"acronym": {
+					"$ref": "#/$defs/acronym"
+				},
+				"shape": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"fill": {
+					"$ref": "#/$defs/hex_color"
+				},
+				"stroke": {
+					"$ref": "#/$defs/hex_color"
+				},
+				"color": {
+					"$ref": "#/$defs/hex_color"
+				},
+				"text": {
+					"$ref": "#/$defs/hex_color"
+				},
+				"icon": {
+					"$ref": "#/$defs/icon_name",
+					"description": "Optional SVG group id from available_icons."
+				}
+			},
+			"required": ["acronym", "shape", "fill"],
+			"type": "object",
+			"anyOf": [{ "required": ["stroke"] }, { "required": ["color"] }]
+		},
+		"cards": {
+			"items": {
+				"$ref": "#/$defs/card_appearance"
+			},
+			"type": "array",
+			"uniqueItems": true
+		}
+	},
+	"$id": "https://crystultima.org/aurora/viewconfiguration.schema.json",
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"additionalProperties": true,
+	"description": "Schema for Aurora.viewconfiguration.json with rendering appearance and available icon definitions.",
+	"properties": {
+		"$schema": {
+			"minLength": 1,
+			"type": "string"
+		},
+		"version": {
+			"$ref": "#/$defs/non_empty"
+		},
+		"available_icons": {
+			"$ref": "#/$defs/available_icons"
+		},
+		"cards": {
+			"$ref": "#/$defs/cards"
+		}
+	},
+	"required": ["available_icons", "cards"],
+	"title": "Aurora View Configuration Schema",
+	"type": "object"
+}

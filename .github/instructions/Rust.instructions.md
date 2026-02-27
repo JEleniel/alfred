@@ -4,16 +4,14 @@ applyTo: '*.rs'
 
 # Rust Coding Guide
 
-Formatting and style conventions for Rust source code in this repository.
-
 If present, the repository's Rust formatting config (`rustfmt.toml`) is the source of truth for formatting.
 
 ## Formatting Rules
 
-- **Edition**: Use Rust 2024+ unless `Cargo.toml` specifies older. Do not use `mod.rs`.
-- **Organization**: Use cohesive modules; minimize top-level `*.rs` sprawl.
-- **Formatting**: use `cargo fmt`.
-- **Indentation**: Prefer hard tabs.
+- **Edition**: Use the edition specified in `Cargo.toml` (assume Rust 2024+ unless specified otherwise).
+- **Organization**: Organize code into cohesive modules; minimize top-level `*.rs` sprawl. Do not use `mod.rs`.
+- **Formatting**: Use `cargo fmt`.
+- **Indentation**: Use spaces; let `rustfmt` enforce indentation and alignment.
 - **Line endings**: Use `\n`.
 - **Comments and docs**:
     - Keep comments accurate and up to date.
@@ -32,24 +30,14 @@ If present, the repository's Rust formatting config (`rustfmt.toml`) is the sour
     - Exception: `todo!()` and `unimplemented!()` are permitted for clearly unimplemented paths that must fail fast and communicate intent.
 - Add documentation comments for new modules and new public items.
 - Avoid `unsafe` unless a specific API requires it.
-- Do not use functions to return a constant value.
-
-## Tests
-
-- Always create positive, negative, and security tests for all new code.
-- Place all tests in a `tests/<basename>_tests.rs` file and use `path` to link them into their parent.
+- Do not use functions that _only_ return a constant value.
+- Configure logging to write `TRACE`, `DEBUG`, `INFO`, and `WARN` to stdout and `ERROR` to stderr. Optionally log to a structured file.
 
 ## Error Handling
 
 - Library code SHOULD return typed errors (prefer `thiserror`).
-- Executables and application boundaries MUST use `anyhow` for ergonomic context (`anyhow::Context`) and `anyhow::Result`.
-- Prefer `?` plus `#[from]` when mapping between error types.
+- Executables and application boundaries (anywhere control leaves our code) MUST use `anyhow`.
 - All errors MUST be either handled or logged. The code should crash only if there is no choice.
-
-## Notes
-
-- For services, configure TLS to use TLS 1.3 unless the user explicitly requires otherwise.
-- For services, configure logging to write `TRACE`, `DEBUG`, `INFO`, and `WARN` to stdout and `ERROR` to stderr.
 
 ## Acceptance Criteria
 

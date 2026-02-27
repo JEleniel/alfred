@@ -1,149 +1,10 @@
 {
 	"$schema": "../schemas/Aurora.modelconfiguration.schema.json",
-	"available_icons": [
-		"alarm",
-		"anchor",
-		"audio",
-		"balance_scale",
-		"bank",
-		"bar_chart",
-		"battery",
-		"battery_low",
-		"beetle",
-		"bell",
-		"biohazard",
-		"bolt",
-		"bomb",
-		"books",
-		"box",
-		"brick",
-		"bulb",
-		"card",
-		"card_file_box",
-		"card_index",
-		"card_index_dividers",
-		"chains",
-		"chart_decreasing",
-		"chart_increasing",
-		"check",
-		"chequered_flag",
-		"circle_red",
-		"classical_building",
-		"clock",
-		"clockwise_vertical_arrows",
-		"closed_book",
-		"cloud",
-		"collision",
-		"commercial",
-		"compass",
-		"construction",
-		"control_knobs",
-		"copyright",
-		"corner_square",
-		"counterclockwise_arrows_button",
-		"crane",
-		"cross_mark_button",
-		"crossed_swords",
-		"desktop",
-		"diamond",
-		"diskette",
-		"dollarsign",
-		"double_exclamation_mark",
-		"earth",
-		"electric_plug",
-		"email",
-		"exclamation",
-		"exclamation_question_mark",
-		"filing_cabinet",
-		"flag_red",
-		"folder",
-		"folder_open",
-		"gear",
-		"globe_with_meridians",
-		"group",
-		"hammer",
-		"hammer_and_pick",
-		"hammer_and_wrench",
-		"hook",
-		"hourglass",
-		"inbox_tray",
-		"industrial",
-		"key",
-		"laptop",
-		"large_blue_diamond",
-		"large_orange_diamond",
-		"ledger",
-		"level_slider",
-		"lifepreserver",
-		"link",
-		"lock",
-		"lock_and_key",
-		"locked_pen",
-		"magic_wand",
-		"magnifying_glass_tilted_left",
-		"memo",
-		"mobile",
-		"moneybag",
-		"no_entry",
-		"no_passing_fire",
-		"office",
-		"outbox_tray",
-		"page_facing_up",
-		"pen_black",
-		"pen_blue",
-		"person",
-		"pick",
-		"pirate_flag",
-		"police_car_light",
-		"ppe",
-		"printer",
-		"prohibited",
-		"puzzle_piece",
-		"question",
-		"radiation",
-		"receipt",
-		"recycle",
-		"red_triangle_pointed_down",
-		"red_triangle_pointed_up",
-		"registered",
-		"repeat_button",
-		"rescue_workers_helmet",
-		"robot",
-		"safety_vest",
-		"school",
-		"screwdriver",
-		"search",
-		"shield",
-		"skull_and_crossbones",
-		"speaker_high_volume",
-		"spider_web",
-		"spiral_calendar",
-		"star",
-		"stop_sign",
-		"stopwatch",
-		"straight_ruler",
-		"tag",
-		"target",
-		"thermometer",
-		"toolbox",
-		"trash_basket",
-		"unlocked",
-		"vertical_traffic_light",
-		"video",
-		"warning",
-		"wheelchair_symbol",
-		"wrench"
-	],
 	"cards": [
 		{
 			"acronym": "ATV",
 			"card_type": "Activity",
 			"description": "Discrete step within a process.",
-			"shape": "double-rectangle",
-			"fill": "#4c1d95",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "hammer",
 			"relationships": [
 				{
 					"target": "ATV",
@@ -172,11 +33,6 @@
 			"card_type": "Actor",
 			"common_subtypes": ["User", "Admin", "External System", "Regulator"],
 			"description": "External role interacting with or obligating the system.",
-			"shape": "rounded-rectangle",
-			"fill": "#1a2e05",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "person",
 			"relationships": [
 				{
 					"target": "ATV",
@@ -189,11 +45,6 @@
 			"card_type": "Stakeholder",
 			"common_subtypes": ["Customer", "End User", "Operator", "Manager", "Regulator"],
 			"description": "Person, group, or role with an interest in or affected by the system.",
-			"shape": "rounded-rectangle",
-			"fill": "#1a2e05",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "group",
 			"relationships": [
 				{
 					"target": "STR",
@@ -204,23 +55,13 @@
 		{
 			"acronym": "ADR",
 			"card_type": "ADR",
-			"description": "Architectural Decision Record capturing a significant decision, alternatives considered, rationale, trade-offs, and consequences.",
-			"shape": "ruler",
-			"fill": "#1f2937",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "straight_ruler"
+			"description": "Architectural Decision Record capturing a significant decision, alternatives considered, rationale, trade-offs, and consequences."
 		},
 		{
 			"acronym": "ART",
 			"card_type": "Artifact",
 			"common_subtypes": ["Document", "Data", "Diagram", "Code", "Model", "Report"],
 			"description": "Concrete work product produced or consumed by the system.",
-			"shape": "document",
-			"icon": "page_facing_up",
-			"fill": "#1e293b",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
 			"relationships": [
 				{
 					"target": "ART",
@@ -247,21 +88,12 @@
 		{
 			"acronym": "AST",
 			"card_type": "Asset",
-			"description": "Valuable information/resources requiring protection.",
-			"shape": "document",
-			"fill": "#334155",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "lockandkey"
+			"description": "Valuable information/resources requiring protection."
 		},
 		{
 			"acronym": "CAP",
 			"card_type": "Capability",
 			"description": "Implementation-independent ability that satisfies requirements.",
-			"shape": "rounded-rectangle",
-			"fill": "#052e16",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
 			"relationships": [
 				{
 					"target": "PRO",
@@ -273,11 +105,6 @@
 			"acronym": "SYS",
 			"card_type": "System",
 			"description": "Top-level software system composed of applications and components.",
-			"shape": "folder",
-			"fill": "#1e40af",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "robot",
 			"relationships": [
 				{
 					"target": "APP",
@@ -289,11 +116,6 @@
 			"acronym": "APP",
 			"card_type": "Application",
 			"description": "Deployable application within a system, composed of components.",
-			"shape": "rectangle",
-			"fill": "#1e40af",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "crane",
 			"relationships": [
 				{
 					"target": "COM",
@@ -310,11 +132,6 @@
 			"card_type": "Component",
 			"common_subtypes": ["API", "Library", "Service", "Module", "Subsystem", "Class"],
 			"description": "Modular unit with a single responsibility and explicit interfaces.",
-			"shape": "component",
-			"fill": "#1e40af",
-			"icon": "puzzle_piece",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
 			"relationships": [
 				{
 					"target": "COM",
@@ -363,10 +180,6 @@
 			"card_type": "Data Store",
 			"common_subtypes": ["Relational", "Object Store", "Event Log", "Key-Value", "Graph"],
 			"description": "Persistent storage system that holds artifacts and data for retrieval and lineage.",
-			"shape": "cylinder",
-			"fill": "#5b21b6",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
 			"relationships": [
 				{
 					"target": "ART",
@@ -382,11 +195,6 @@
 			"acronym": "CON",
 			"card_type": "Condition",
 			"description": "Process-domain branching condition used by activities/processes; not used for state-machine branching.",
-			"shape": "diamond",
-			"fill": "#422006",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "large_blue_diamond",
 			"relationships": [
 				{
 					"target": "ATV",
@@ -406,11 +214,6 @@
 			"acronym": "CNS",
 			"card_type": "Constraint",
 			"description": "Rule limiting allowable behavior or solutions.",
-			"shape": "ruler",
-			"fill": "#082f49",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "stop_sign",
 			"relationships": [
 				{
 					"target": "REQ",
@@ -422,11 +225,6 @@
 			"acronym": "CTL",
 			"card_type": "Control",
 			"description": "Mechanism governing or constraining a process.",
-			"shape": "ruler",
-			"fill": "#713f12",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "shield",
 			"relationships": [
 				{
 					"target": "RIS",
@@ -458,11 +256,6 @@
 			"acronym": "DEP",
 			"card_type": "Deployment",
 			"description": "Defined environment or configuration where software executes.",
-			"shape": "octagon",
-			"fill": "#1e1b4b",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "red_triangle_pointed_up",
 			"relationships": [
 				{
 					"target": "NOD",
@@ -475,10 +268,6 @@
 			"card_type": "Data Source",
 			"common_subtypes": ["External System", "Upstream Feed", "Sensor", "Third-Party API"],
 			"description": "Origin of artifacts and data entering the system, used to model provenance and lineage.",
-			"shape": "cylinder",
-			"fill": "#0e7490",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
 			"relationships": [
 				{
 					"target": "ART",
@@ -494,11 +283,6 @@
 			"acronym": "DRI",
 			"card_type": "Driver",
 			"description": "Motivation explaining why requirements exist.",
-			"shape": "rounded-rectangle",
-			"fill": "#064e3b",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "compass",
 			"relationships": [
 				{
 					"target": "REQ",
@@ -510,11 +294,6 @@
 			"acronym": "EVT",
 			"card_type": "Event",
 			"description": "State-machine event that causes transitions or predicate evaluation; distinct from process-domain triggers.",
-			"shape": "trapezoid",
-			"fill": "#5b21b6",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "alarm",
 			"relationships": [
 				{
 					"target": "STA",
@@ -538,11 +317,6 @@
 			"acronym": "FEA",
 			"card_type": "Feature",
 			"description": "Externally observable behavior realizing one or more requirements.",
-			"shape": "rectangle",
-			"fill": "#14532d",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "level_slider",
 			"relationships": [
 				{
 					"target": "CAP",
@@ -558,11 +332,6 @@
 			"acronym": "INT",
 			"card_type": "Interface",
 			"description": "Contract governing interaction across a boundary.",
-			"shape": "interface",
-			"fill": "#102080",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "ellectric_plug",
 			"relationships": [
 				{
 					"target": "ART",
@@ -578,11 +347,6 @@
 			"acronym": "MIS",
 			"card_type": "Mission",
 			"description": "Root intent that spawns every downstream driver.",
-			"shape": "octagon",
-			"fill": "#022c22",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "anchor",
 			"relationships": [
 				{
 					"target": "DRI",
@@ -618,22 +382,12 @@
 			"acronym": "NOD",
 			"card_type": "Node",
 			"common_subtypes": ["Container", "Virtual Machine", "Hardware"],
-			"description": "Logical/physical execution environment hosting components or stores.",
-			"shape": "box",
-			"fill": "#312e81",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "computer"
+			"description": "Logical/physical execution environment hosting components or stores."
 		},
 		{
 			"acronym": "PRD",
 			"card_type": "Predicate",
 			"description": "State-machine branching predicate that evaluates to true/false; distinct from process-domain conditions.",
-			"shape": "diamond",
-			"fill": "#581c87",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "large_orange_diamond",
 			"relationships": [
 				{
 					"target": "STA",
@@ -653,11 +407,6 @@
 			"acronym": "PRO",
 			"card_type": "Process",
 			"description": "Ordered sequence of activities/decisions enabling a capability.",
-			"shape": "octagon",
-			"fill": "#2e1065",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "repeat_button",
 			"relationships": [
 				{
 					"target": "ATV",
@@ -681,11 +430,6 @@
 			"acronym": "REQ",
 			"card_type": "Requirement",
 			"description": "Verifiable statement of need/obligation.",
-			"shape": "rounded-rectangle",
-			"fill": "#065f46",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "check",
 			"relationships": [
 				{
 					"target": "CAP",
@@ -704,22 +448,12 @@
 		{
 			"acronym": "RIS",
 			"card_type": "Risk",
-			"description": "Potential for loss/harm from threats/vulnerabilities.",
-			"shape": "hexagon",
-			"fill": "#881337",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "warning"
+			"description": "Potential for loss/harm from threats/vulnerabilities."
 		},
 		{
 			"acronym": "STA",
 			"card_type": "State",
 			"description": "Observable condition that persists until a transition.",
-			"shape": "ellipse",
-			"fill": "#701a75",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "tag",
 			"relationships": [
 				{
 					"target": "STA",
@@ -739,11 +473,6 @@
 			"acronym": "STM",
 			"card_type": "State Machine",
 			"description": "Behavioral model defining allowable states/transitions.",
-			"shape": "octagon",
-			"fill": "#4a044e",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "gear",
 			"relationships": [
 				{
 					"target": "STA",
@@ -755,11 +484,6 @@
 			"acronym": "STR",
 			"card_type": "Story",
 			"description": "Narrative expressing desired behavior/outcome; should follow the “`As an ___ I want/need ___.`” format.",
-			"shape": "rectangle",
-			"fill": "#365314",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "card",
 			"relationships": [
 				{
 					"target": "REQ",
@@ -775,11 +499,6 @@
 			"acronym": "TES",
 			"card_type": "Test",
 			"description": "Procedure verifying that a feature satisfies requirements.",
-			"shape": "hexagon",
-			"fill": "#022c22",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "ppe",
 			"relationships": [
 				{
 					"target": "FEA",
@@ -791,11 +510,6 @@
 			"acronym": "THD",
 			"card_type": "Threat Diamond",
 			"description": "Threat rendered as a diamond (diagramming variant).",
-			"shape": "diamond",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "diamond",
 			"relationships": [
 				{
 					"target": "AST",
@@ -830,43 +544,23 @@
 				"Organized Crime",
 				"Nation State"
 			],
-			"description": "Threat source: actor with intent and capability to cause harm.",
-			"shape": "rounded-rectangle",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "pirate_flag"
+			"description": "Threat source: actor with intent and capability to cause harm."
 		},
 		{
 			"acronym": "THC",
 			"card_type": "Threat Capability",
-			"description": "Skills, access, tooling, or resources enabling an adversary to execute threats.",
-			"shape": "rounded-rectangle",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "bomb"
+			"description": "Skills, access, tooling, or resources enabling an adversary to execute threats."
 		},
 		{
 			"acronym": "VIC",
 			"card_type": "Victim",
 			"common_subtypes": ["User", "Organization", "System", "Data"],
-			"description": "Entity that suffers impact when a threat is realized.",
-			"shape": "rounded-rectangle",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "target"
+			"description": "Entity that suffers impact when a threat is realized."
 		},
 		{
 			"acronym": "ROW",
 			"card_type": "Resource Owner",
 			"description": "Role accountable for an asset/resource and its protection.",
-			"shape": "rounded-rectangle",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "key",
 			"relationships": [
 				{
 					"target": "AST",
@@ -878,11 +572,6 @@
 			"acronym": "THM",
 			"card_type": "Threat Model",
 			"description": "Structured analysis of assets, adversaries, threats, and mitigations.",
-			"shape": "octagon",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "no_passing_fire",
 			"relationships": [
 				{
 					"target": "THD",
@@ -902,11 +591,6 @@
 			"acronym": "TRG",
 			"card_type": "Trigger",
 			"description": "Process-domain trigger that initiates activities/conditions; distinct from state-machine events.",
-			"shape": "trapezoid",
-			"fill": "#78350f",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "bolt",
 			"relationships": [
 				{
 					"target": "ATV",
@@ -926,11 +610,6 @@
 			"acronym": "VND",
 			"card_type": "Vendor",
 			"description": "Third party providing products/services integrated into the system.",
-			"shape": "rounded-rectangle",
-			"fill": "#1a2e05",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "office",
 			"relationships": [
 				{
 					"target": "APP",
