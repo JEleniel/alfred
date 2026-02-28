@@ -10,6 +10,10 @@ Workspace context was resolved successfully into normalized paths/values.
 - **state_machine**: "STM-004"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-018](../State/STA-018-Context_Ready.md)

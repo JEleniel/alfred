@@ -2,7 +2,7 @@
 	"$schema": "../../schemas/Aurora.card.schema.json",
 	"id": "CAP-009",
 	"card_type": "Capability",
-	"name": "Environment Variable Management",
-	"description": "Support CRUD operations for environment variables used by Alfred tools and managed contexts.",
+	"name": "Scoped Environment Handling",
+	"description": "Constrain any environment-variable behavior to Alfred-controlled contexts and avoid exposing standalone environment-variable CRUD tooling.",
 	"links": []
 }

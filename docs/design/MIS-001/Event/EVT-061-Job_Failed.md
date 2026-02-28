@@ -10,6 +10,10 @@ Job failed (timeout, cancellation, or runtime error).
 - **state_machine**: "STM-008"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-044](../State/STA-044-Job_Failed.md)

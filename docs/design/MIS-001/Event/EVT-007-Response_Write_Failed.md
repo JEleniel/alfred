@@ -10,6 +10,10 @@ Writing the response failed (broken pipe, permission, or other IO error).
 - **state_machine**: "STM-001"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-005](../State/STA-005-Transport_Faulted.md)

@@ -11,6 +11,10 @@ Tails and filters logs and exposes log-related tooling for debugging.
 - **stream_format**: "ndjson"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - implements [FEA-008](../Feature/FEA-008-Log_Tailing_and_Filtering.md)

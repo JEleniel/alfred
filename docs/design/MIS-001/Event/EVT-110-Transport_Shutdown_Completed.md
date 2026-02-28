@@ -10,6 +10,10 @@ Transport completed fault handling and transitioned to a deterministic shutdown.
 - **state_machine**: "STM-001"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-006](../State/STA-006-Transport_Shutdown.md)

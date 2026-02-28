@@ -8,6 +8,10 @@ Log Manager reports deterministic diagnostics and falls back to minimal log acce
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-080](../Event/EVT-080-Log_Recovered.md)

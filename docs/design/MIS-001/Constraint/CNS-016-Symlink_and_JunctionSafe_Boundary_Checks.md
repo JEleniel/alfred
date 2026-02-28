@@ -12,6 +12,10 @@ Workspace boundary enforcement MUST be robust to symlinks/junctions and path tra
 - **treat_as_user_intent**: true
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

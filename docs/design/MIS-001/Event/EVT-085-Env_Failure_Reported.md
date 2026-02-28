@@ -10,6 +10,10 @@ A deterministic environment-variable error was reported.
 - **state_machine**: "STM-012"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-057](../State/STA-057-Env_Ready.md)

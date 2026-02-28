@@ -8,6 +8,10 @@ Transport writes a single framed response to stdout (or NDJSON stream segment), 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-006](../Event/EVT-006-Response_Write_OK.md)

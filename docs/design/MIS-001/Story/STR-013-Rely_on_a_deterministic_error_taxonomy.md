@@ -8,6 +8,10 @@ As an agent user, I need a deterministic error taxonomy so that I can branch log
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-013](../Requirement/REQ-013-Deterministic_Error_Taxonomy.md)

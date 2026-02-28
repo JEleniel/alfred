@@ -8,6 +8,10 @@ Normalize build/test/lint/format diagnostics into a consistent schema and suppor
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

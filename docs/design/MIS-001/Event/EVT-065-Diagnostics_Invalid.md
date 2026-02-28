@@ -10,6 +10,10 @@ Envelope did not validate and must be converted to a deterministic internal erro
 - **state_machine**: "STM-009"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-048](../State/STA-048-Diagnostics_Failed.md)

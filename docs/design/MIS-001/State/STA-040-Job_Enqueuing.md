@@ -8,6 +8,10 @@ Job Manager validates job request and enqueues it for deterministic scheduling.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-056](../Event/EVT-056-Job_Enqueued.md)

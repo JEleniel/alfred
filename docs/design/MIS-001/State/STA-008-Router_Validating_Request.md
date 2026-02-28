@@ -8,6 +8,10 @@ Router validates tool name, arguments, permissions, and execution mode constrain
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-009](../Event/EVT-009-Request_Validated.md)

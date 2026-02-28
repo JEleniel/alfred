@@ -8,6 +8,10 @@ Search and inspect workspace files to locate relevant code and context for the r
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - uses [COM-002](../Component/COM-002-Tool_Router.md)

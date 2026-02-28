@@ -8,6 +8,10 @@ File Operations Engine validates intent against workspace boundaries, permission
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-031](../Event/EVT-031-Plan_Validated_For_Execution.md)

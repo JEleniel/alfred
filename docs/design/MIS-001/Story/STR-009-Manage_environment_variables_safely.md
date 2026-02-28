@@ -8,9 +8,13 @@ As an agent user, I need to set/get/remove environment variables with clear scop
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
-- explains [REQ-009](../Requirement/REQ-009-Environment_Variable_CRUD.md)
+- explains [REQ-009](../Requirement/REQ-009-Scoped_Environment_Handling.md)
 - implies [CNS-020](../Constraint/CNS-020-Environment_Variable_CRUD_Scope.md)
 - implies [CNS-010](../Constraint/CNS-010-Permission_Model_and_Guardrails.md)
 

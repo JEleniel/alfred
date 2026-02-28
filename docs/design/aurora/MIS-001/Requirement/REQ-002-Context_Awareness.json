@@ -3,7 +3,7 @@
 	"id": "REQ-002",
 	"card_type": "Requirement",
 	"name": "Context Awareness",
-	"description": "Alfred MUST return the current working folder (pwd) and the workspace root folder.",
+	"description": "Alfred MUST return the workspace root folder.",
 	"links": [
 		{
 			"relationship": "requires",
@@ -19,6 +19,6 @@
 		}
 	],
 	"attributes": {
-		"tool_surface": ["pwd", "workspace_root"]
+		"tool_surface": ["workspace_dir"]
 	}
 }

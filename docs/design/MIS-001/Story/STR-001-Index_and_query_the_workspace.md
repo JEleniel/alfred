@@ -8,6 +8,10 @@ As an agent user, I need to list files, search content, and extract file ranges 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-001](../Requirement/REQ-001-Workspace_Index_and_Query_Tools.md)

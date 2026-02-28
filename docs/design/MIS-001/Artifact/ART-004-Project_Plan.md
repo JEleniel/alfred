@@ -9,9 +9,13 @@ A persistent Markdown plan artifact tracking the agent's progress and planned wo
 - **default_location**: "docs/design/ProjectPlan.md"
 - **fallback_location**: "ProjectPlan.md"
 - **format**: "markdown"
-- **locking**: {"exclusive_lock_required":true,"lock_dir":".agents/alfred/locks"}
-- **note**: "Plan writes are serialized via locking to avoid concurrent agent corruption."
+- **note**: "Plan writes are atomic (temp + rename). Concurrent writers are unsupported; last-write-wins behavior is acceptable."
+- **write_semantics**: {"atomic":true,"concurrent_writers":"unsupported_last_write_wins","lock_files":false}
 
+
+## References
+
+_No references defined._
 
 ## Links
 

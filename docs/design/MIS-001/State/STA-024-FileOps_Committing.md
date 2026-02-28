@@ -8,6 +8,10 @@ File Operations Engine finalizes writes, flushes, and records a deterministic su
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-111](../Event/EVT-111-FileOps_Commit_Finalized.md)

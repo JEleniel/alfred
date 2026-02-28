@@ -1,14 +1,18 @@
 # Capability: CAP-006 Background Operations
 
-Run asynchronous operations with streaming output, cancellation, timeouts, and job/session introspection.
+Run bounded background operations via bulk filesystem execution with in-command status polling.
 
 
 
 ## Attributes
 
 - **contracts**: {"tool_contracts":"docs/design/ToolContracts.md"}
-- **tools**: ["job_status","job_statuses","job_cancel","job_list","job_read","session_recent"]
+- **tools**: ["bulk_fs_operations"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

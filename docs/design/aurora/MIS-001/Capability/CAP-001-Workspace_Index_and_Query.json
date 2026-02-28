@@ -3,12 +3,12 @@
 	"id": "CAP-001",
 	"card_type": "Capability",
 	"name": "Workspace Index and Query",
-	"description": "Maintain an index of workspace files and provide fast listing, search, range extraction, and diff primitives.",
+	"description": "Maintain an index of workspace files and provide fast, deterministic search and file inspection primitives.",
 	"links": [],
 	"attributes": {
 		"contracts": {
 			"tool_contracts": "docs/design/ToolContracts.md"
 		},
-		"tools": ["ls", "grep", "search", "read_range", "diff", "file_stat", "file_read_bytes"]
+		"tools": ["search", "fs"]
 	}
 }

@@ -9,6 +9,10 @@ A developer/operator using an agent that depends on reliable, safe, and fast too
 - **primary_concerns**: ["safety","speed","deterministic results","low token usage"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - desires [STR-001](../Story/STR-001-Index_and_query_the_workspace.md)

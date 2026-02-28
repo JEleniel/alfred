@@ -8,6 +8,10 @@ Indexing/search/diff and patch operations must perform well on typical repositor
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - drives [REQ-001](../Requirement/REQ-001-Workspace_Index_and_Query_Tools.md)

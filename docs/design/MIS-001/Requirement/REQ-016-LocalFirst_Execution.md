@@ -8,6 +8,10 @@ Alfred MUST run as a local stdio server relative to the workspace host (includin
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-007](../Capability/CAP-007-Deterministic_Contracts.md)

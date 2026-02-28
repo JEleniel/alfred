@@ -10,6 +10,10 @@ A deterministic plan update was requested.
 - **state_machine**: "STM-006"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-031](../State/STA-031-Plan_Saving.md)

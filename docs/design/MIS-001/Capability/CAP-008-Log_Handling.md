@@ -10,6 +10,10 @@ Tail and filter logs to support debugging and long-running operations.
 - **spec**: "docs/design/Protocol.md"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

@@ -8,11 +8,15 @@ Scope environment-variable changes to Alfred-managed contexts (tool-scoped env o
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - enforces [CNS-020](../Constraint/CNS-020-Environment_Variable_CRUD_Scope.md)
 - protects [AST-002](../Asset/AST-002-Secrets_and_Credentials.md)
-- mitigates [RIS-010](../Risk/RIS-010-Env_Var_CRUD_Semantics_Mislead_Users.md)
+- mitigates [RIS-010](../Risk/RIS-010-Environment_Handling_Semantics_Mislead_Users.md)
 - mitigates [RIS-001](../Risk/RIS-001-Unauthorized_Data_Disclosure.md)
 
 

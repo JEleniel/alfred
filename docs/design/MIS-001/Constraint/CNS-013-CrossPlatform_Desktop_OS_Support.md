@@ -8,6 +8,10 @@ Alfred MUST run on Linux, macOS, and Windows.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

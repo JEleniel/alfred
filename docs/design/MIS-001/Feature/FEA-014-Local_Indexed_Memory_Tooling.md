@@ -8,6 +8,10 @@ CRUD and full-text search tools for persistent local memory facts, backed by an 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - realizes [CAP-014](../Capability/CAP-014-Local_Memory.md)

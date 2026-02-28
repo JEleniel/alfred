@@ -10,6 +10,10 @@ A request to run conformance was received.
 - **state_machine**: "STM-014"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-068](../State/STA-068-Conformance_Discovering.md)

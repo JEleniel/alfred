@@ -8,6 +8,10 @@ A malicious/compromised agent attempts to misuse Alfred tool capabilities to exf
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - threatens [AST-002](../Asset/AST-002-Secrets_and_Credentials.md)
@@ -17,7 +21,7 @@ _No attributes defined._
 - impacts [VIC-001](../Victim/VIC-001-Developer_User.md)
 - creates [RIS-001](../Risk/RIS-001-Unauthorized_Data_Disclosure.md)
 - creates [RIS-008](../Risk/RIS-008-Cancellation_Failure_Runaway_Jobs.md)
-- creates [RIS-010](../Risk/RIS-010-Env_Var_CRUD_Semantics_Mislead_Users.md)
+- creates [RIS-010](../Risk/RIS-010-Environment_Handling_Semantics_Mislead_Users.md)
 - creates [RIS-013](../Risk/RIS-013-Remote_Dev_Environment_Mismatch.md)
 - creates [RIS-014](../Risk/RIS-014-Remote_FS_Caching_Watcher_Inconsistency.md)
 - creates [RIS-002](../Risk/RIS-002-Host_Compromise.md)

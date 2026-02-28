@@ -12,6 +12,10 @@ Deterministic lifecycle for COM-001 (Stdio Transport) while framing requests and
 - **terminal_states**: ["STA-006"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-001](../State/STA-001-Transport_Initializing.md)

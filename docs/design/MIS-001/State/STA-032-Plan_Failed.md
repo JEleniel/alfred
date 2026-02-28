@@ -8,6 +8,10 @@ Plan Manager reports deterministic diagnostics and returns to idle.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-104](../Event/EVT-104-Plan_Failure_Reported.md)

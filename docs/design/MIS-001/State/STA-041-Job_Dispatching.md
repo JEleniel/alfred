@@ -8,6 +8,10 @@ Job Manager starts the job worker and establishes output streaming policy.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-058](../Event/EVT-058-Job_Dispatched.md)

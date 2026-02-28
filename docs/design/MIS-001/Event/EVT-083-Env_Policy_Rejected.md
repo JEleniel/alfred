@@ -10,6 +10,10 @@ Policy checks rejected the request.
 - **state_machine**: "STM-012"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-060](../State/STA-060-Env_Failed.md)

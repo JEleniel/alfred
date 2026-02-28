@@ -8,6 +8,10 @@ Alfred MUST provide dry-run behavior for destructive or irreversible actions.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

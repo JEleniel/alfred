@@ -8,6 +8,10 @@ Local persistent or durable storage for background job state, output streams, an
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - retrieves [ART-006](../Artifact/ART-006-Job_Output_Stream.md)

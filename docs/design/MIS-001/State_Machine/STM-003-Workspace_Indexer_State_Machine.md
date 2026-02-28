@@ -12,6 +12,10 @@ Deterministic indexing lifecycle for COM-003 (Workspace Indexer) supporting quer
 - **steady_state**: "STA-015"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-013](../State/STA-013-Indexer_Initializing.md)

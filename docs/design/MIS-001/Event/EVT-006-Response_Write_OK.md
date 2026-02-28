@@ -10,6 +10,10 @@ A single framed response was written successfully.
 - **state_machine**: "STM-001"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-002](../State/STA-002-Transport_Listening.md)

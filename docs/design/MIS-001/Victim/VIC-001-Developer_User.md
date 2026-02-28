@@ -8,6 +8,10 @@ The local user running Alfred who may suffer data loss, data exfiltration, or ho
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

@@ -1,7 +1,4 @@
 # Project specific
-# The Alfred workspace index and database files
-.alfred/
-!.alfred/config.json
 
 # Rust
 .analyze/

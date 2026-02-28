@@ -10,6 +10,10 @@ Plan artifact loaded successfully.
 - **state_machine**: "STM-006"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-029](../State/STA-029-Plan_Validating.md)

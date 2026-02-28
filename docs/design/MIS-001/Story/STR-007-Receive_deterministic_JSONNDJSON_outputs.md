@@ -8,6 +8,10 @@ As an agent user, I need deterministic JSON/NDJSON output shapes and ordering so
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-007](../Requirement/REQ-007-JSON_and_NDJSON_Output.md)

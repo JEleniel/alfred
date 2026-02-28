@@ -10,6 +10,10 @@ Single local process implementing the MCP tool surface over stdio, enforcing wor
 - **transport**: "stdio"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - deploys to [DEP-001](../Deployment/DEP-001-Local_Stdio_Process.md)

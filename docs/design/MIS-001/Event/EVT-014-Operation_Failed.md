@@ -10,6 +10,10 @@ The dispatched operation failed (deterministic taxonomy error).
 - **state_machine**: "STM-002"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-012](../State/STA-012-Router_Failed.md)

@@ -8,6 +8,10 @@ Alfred MUST be compatible with VS Code Remote Development modes (SSH, WSL, Dev C
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

@@ -10,6 +10,10 @@ The plan validated successfully and dry-run mode was requested (no writes).
 - **state_machine**: "STM-005"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-024](../State/STA-024-FileOps_Committing.md)

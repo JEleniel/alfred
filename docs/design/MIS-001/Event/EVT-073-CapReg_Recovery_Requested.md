@@ -10,6 +10,10 @@ Recovery was requested for the capability registry.
 - **state_machine**: "STM-010"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-049](../State/STA-049-CapReg_Bootstrapping.md)

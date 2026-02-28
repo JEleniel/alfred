@@ -1,13 +1,17 @@
 # Requirement: REQ-002 Context Awareness
 
-Alfred MUST return the current working folder (pwd) and the workspace root folder.
+Alfred MUST return the workspace root folder.
 
 
 
 ## Attributes
 
-- **tool_surface**: ["pwd","workspace_root"]
+- **tool_surface**: ["workspace_dir"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

@@ -8,6 +8,10 @@ Alfred MUST tolerate workspaces located on network-backed filesystems (e.g., SMB
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

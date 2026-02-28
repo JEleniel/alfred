@@ -10,6 +10,10 @@ Capability registry refresh was requested.
 - **state_machine**: "STM-010"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-051](../State/STA-051-CapReg_Refreshing.md)

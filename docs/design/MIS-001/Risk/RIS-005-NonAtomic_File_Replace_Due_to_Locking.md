@@ -8,6 +8,10 @@ Atomic replace operations may fail or become non-atomic on some platforms (notab
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

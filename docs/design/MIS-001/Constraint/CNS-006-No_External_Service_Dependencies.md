@@ -8,6 +8,10 @@ Alfred MUST be self-contained and MUST NOT depend on any outside service.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

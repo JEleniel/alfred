@@ -8,6 +8,10 @@ Alfred MUST provide safe file operations including atomic CRUD where practical, 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-003](../Capability/CAP-003-Safe_File_Operations.md)

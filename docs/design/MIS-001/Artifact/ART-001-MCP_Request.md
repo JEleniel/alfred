@@ -11,6 +11,10 @@ A structured tool invocation request received over stdio from the MCP host.
 - **frame**: "MCP tool invocation request (JSON frame over stdio)"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

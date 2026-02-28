@@ -8,6 +8,10 @@ Conformance Runner completes and returns to idle.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-102](../Event/EVT-102-Conformance_Completed.md)

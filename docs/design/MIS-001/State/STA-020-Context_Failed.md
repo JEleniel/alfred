@@ -8,6 +8,10 @@ Context provider failed to resolve context; it reports a deterministic error and
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-029](../Event/EVT-029-Context_Failure_Reported.md)

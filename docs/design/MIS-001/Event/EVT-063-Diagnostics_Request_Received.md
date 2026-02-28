@@ -10,6 +10,10 @@ A request to validate/format an output or error envelope was received.
 - **state_machine**: "STM-009"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-046](../State/STA-046-Diagnostics_Validating.md)

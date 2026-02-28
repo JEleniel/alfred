@@ -8,6 +8,10 @@ Conformance Runner emits a deterministic report of pass/fail and evidence.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-100](../Event/EVT-100-Conformance_Report_Written.md)

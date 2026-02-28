@@ -10,6 +10,10 @@ Job worker started successfully and monitoring commenced.
 - **state_machine**: "STM-008"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-042](../State/STA-042-Job_Monitoring.md)

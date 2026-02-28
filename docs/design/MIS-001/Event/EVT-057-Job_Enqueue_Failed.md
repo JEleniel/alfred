@@ -10,6 +10,10 @@ Job enqueue failed due to invalid inputs or internal errors.
 - **state_machine**: "STM-008"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-044](../State/STA-044-Job_Failed.md)

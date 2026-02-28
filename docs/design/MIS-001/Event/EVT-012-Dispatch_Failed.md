@@ -10,6 +10,10 @@ The router failed to dispatch to the subsystem (unknown tool, internal error, or
 - **state_machine**: "STM-002"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-012](../State/STA-012-Router_Failed.md)

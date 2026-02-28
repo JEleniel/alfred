@@ -10,6 +10,10 @@ Policy checks succeeded and an output is ready for deterministic redaction.
 - **state_machine**: "STM-012"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-059](../State/STA-059-Env_Redacting.md)

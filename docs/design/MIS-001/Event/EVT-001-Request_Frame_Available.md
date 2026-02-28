@@ -10,6 +10,10 @@ A complete, well-framed request is available to be read from stdin.
 - **state_machine**: "STM-001"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-003](../State/STA-003-Transport_Receiving.md)

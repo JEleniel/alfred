@@ -10,6 +10,10 @@ Diagnostics emission completed and response finalized.
 - **state_machine**: "STM-009"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-045](../State/STA-045-Diagnostics_Idle.md)

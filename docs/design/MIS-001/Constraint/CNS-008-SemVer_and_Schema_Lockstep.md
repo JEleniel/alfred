@@ -8,6 +8,10 @@ Tool versions MUST use SemVer, and schema versions MUST remain in lockstep with 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

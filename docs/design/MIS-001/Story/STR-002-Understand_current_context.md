@@ -8,6 +8,10 @@ As an agent user, I need Alfred to maintain and expose relevant context (workspa
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-002](../Requirement/REQ-002-Context_Awareness.md)

@@ -8,6 +8,10 @@ As an agent user, I need Alfred to store and recall stable facts offline so that
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-017](../Requirement/REQ-017-Local_Indexed_Memory.md)

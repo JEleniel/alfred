@@ -8,6 +8,10 @@ Transport is idle and awaiting the next framed request from stdin.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-001](../Event/EVT-001-Request_Frame_Available.md)

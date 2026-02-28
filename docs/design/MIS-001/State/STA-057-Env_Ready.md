@@ -8,6 +8,10 @@ Environment Variable Manager awaits a CRUD request.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-081](../Event/EVT-081-Env_Request_Received.md)

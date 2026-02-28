@@ -8,6 +8,10 @@ Provides location/context awareness primitives such as pwd and workspace root.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - implements [FEA-002](../Feature/FEA-002-Context_Tools.md)

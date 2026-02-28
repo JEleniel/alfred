@@ -8,6 +8,10 @@ Indexer loads configuration and determines whether an initial build is required.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-017](../Event/EVT-017-Initial_Build_Required.md)

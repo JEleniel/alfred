@@ -9,9 +9,13 @@ Normalized diagnostics output emitted by build/test/lint/format tooling, optiona
 - **contracts**: {"errors":"docs/design/ErrorTaxonomy.md","protocol":"docs/design/Protocol.md"}
 - **format**: ["json","ndjson"]
 - **notes**: ["When emitted as NDJSON, each line is a complete JSON object and the stream is append-only.","Diagnostics envelopes are designed to be validated against a deterministic schema and taxonomy."]
-- **schema**: "docs/design/schemas/alfred.diagnostics.schema.json"
+- **schema**: "schemas/alfred.diagnostics.schema.json"
 - **sources**: ["cargo","pnpm","linters","formatters"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

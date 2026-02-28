@@ -10,6 +10,10 @@ Capability registry refresh succeeded.
 - **state_machine**: "STM-010"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-050](../State/STA-050-CapReg_Ready.md)

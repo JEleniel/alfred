@@ -1,12 +1,16 @@
 # Requirement: REQ-006 Background Operations
 
-Alfred MUST support asynchronous operations with streaming output, cancellation and timeout controls, and job/session introspection.
+Alfred MUST support asynchronous execution for bulk filesystem operations only, with deterministic status polling and cancellation via the same tool surface (no standalone job/session introspection tools).
 
 
 
 ## Attributes
 
 _No attributes defined._
+
+## References
+
+_No references defined._
 
 ## Links
 

@@ -2,8 +2,8 @@
 	"$schema": "../../schemas/Aurora.card.schema.json",
 	"id": "REQ-009",
 	"card_type": "Requirement",
-	"name": "Environment Variable CRUD",
-	"description": "Alfred MUST support CRUD operations for environment variables.",
+	"name": "Scoped Environment Handling",
+	"description": "Alfred MUST NOT expose standalone environment-variable CRUD tools. If environment-variable behavior is supported, it MUST be scoped to Alfred-controlled contexts (for example managed .env files or tool-scoped environments) and MUST NOT claim to mutate the parent IDE or shell environment.",
 	"links": [
 		{
 			"relationship": "requires",

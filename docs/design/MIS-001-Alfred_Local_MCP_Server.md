@@ -12,6 +12,10 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 - **transport**: "stdio"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - involves [STK-001](MIS-001/Stakeholder/STK-001-Agent_User.md)

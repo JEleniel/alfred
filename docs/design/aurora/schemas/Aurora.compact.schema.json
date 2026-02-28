@@ -10,6 +10,14 @@
 					"additionalProperties": true,
 					"type": "object"
 				},
+				"external_references": {
+					"items": {
+						"$ref": "#/definitions/non_empty"
+					},
+					"minItems": 1,
+					"type": "array",
+					"uniqueItems": true
+				},
 				"boundary": {
 					"minLength": 1,
 					"type": "string"

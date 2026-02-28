@@ -8,6 +8,10 @@ Use resolved/canonical paths for workspace boundary enforcement, accounting for 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - protects [AST-001](../Asset/AST-001-Workspace_Contents.md)

@@ -6,8 +6,12 @@ Alfred MUST maintain an index of all files in the workspace and provide listing,
 
 ## Attributes
 
-- **tool_surface**: ["ls","grep","search","read_range","diff"]
+- **tool_surface**: ["search","fs_operations"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

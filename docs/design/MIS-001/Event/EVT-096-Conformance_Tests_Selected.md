@@ -10,6 +10,10 @@ Deterministic test set selected for the current versions.
 - **state_machine**: "STM-014"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-069](../State/STA-069-Conformance_Running.md)

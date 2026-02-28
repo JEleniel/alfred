@@ -8,6 +8,10 @@ Environment Variable Manager redacts secrets deterministically for logs/outputs 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-084](../Event/EVT-084-Env_Response_Redacted.md)

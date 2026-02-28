@@ -11,6 +11,10 @@ Deterministic context resolution pipeline for COM-005 (Context Provider): resolv
 - **steady_state**: "STA-018"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-018](../State/STA-018-Context_Ready.md)

@@ -10,6 +10,10 @@ A tool request envelope was received from the transport.
 - **state_machine**: "STM-002"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-008](../State/STA-008-Router_Validating_Request.md)

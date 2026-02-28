@@ -8,6 +8,10 @@ Detect and report the effective execution environment (OS, shell availability, t
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - enforces [CNS-023](../Constraint/CNS-023-VS_Code_Remote_Development_Compatibility.md)

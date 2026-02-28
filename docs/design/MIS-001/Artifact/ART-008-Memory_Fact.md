@@ -11,6 +11,10 @@ A single structured memory entry persisted by Alfred for offline recall and sear
 - **search_fields**: ["subject","fact","citations","reason","tags"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

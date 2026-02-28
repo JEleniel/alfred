@@ -8,6 +8,10 @@ Context provider resolves workspace root/pwd and returns normalized values.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-027](../Event/EVT-027-Context_Resolved.md)

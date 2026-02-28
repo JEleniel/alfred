@@ -10,6 +10,10 @@ A deterministic context error was reported to the caller.
 - **state_machine**: "STM-004"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-018](../State/STA-018-Context_Ready.md)

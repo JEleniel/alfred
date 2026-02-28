@@ -27,6 +27,6 @@
 		}
 	],
 	"attributes": {
-		"tool_surface": ["ls", "grep", "search", "read_range", "diff"]
+		"tool_surface": ["search", "fs"]
 	}
 }

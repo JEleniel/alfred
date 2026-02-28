@@ -8,6 +8,10 @@ Local storage for the project plan artifact (including tool/diagnostic failures 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - retrieves [ART-004](../Artifact/ART-004-Project_Plan.md)

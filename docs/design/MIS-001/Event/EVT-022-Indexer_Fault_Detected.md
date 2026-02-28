@@ -10,6 +10,10 @@ Indexer detected an unrecoverable fault while serving or monitoring the index.
 - **state_machine**: "STM-003"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-017](../State/STA-017-Indexer_Failed.md)

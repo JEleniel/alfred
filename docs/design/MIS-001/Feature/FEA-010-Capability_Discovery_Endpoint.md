@@ -8,6 +8,10 @@ Report available tools and capabilities plus tool/schema versions, limits, and e
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - realizes [CAP-010](../Capability/CAP-010-Capability_Discovery.md)

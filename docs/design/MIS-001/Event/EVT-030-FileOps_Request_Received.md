@@ -10,6 +10,10 @@ A file operation request (mutation or inspection) was received.
 - **state_machine**: "STM-005"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-022](../State/STA-022-FileOps_Validating_Plan.md)

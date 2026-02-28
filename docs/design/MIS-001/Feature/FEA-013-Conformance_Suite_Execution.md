@@ -8,6 +8,10 @@ Execute a conformance suite that validates schemas, taxonomy determinism, dry-ru
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - realizes [CAP-013](../Capability/CAP-013-Conformance_Validation.md)

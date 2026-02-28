@@ -10,6 +10,10 @@ A local MCP tool server providing workspace indexing, safe file operations, and 
 - **scope**: "local-only"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - integrates [APP-001](../Application/APP-001-Alfred_Stdio_Server.md)

@@ -8,6 +8,10 @@ A suite that validates schema correctness, deterministic error taxonomy behavior
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - verifies [FEA-007](../Feature/FEA-007-Deterministic_Response_Contracts.md)

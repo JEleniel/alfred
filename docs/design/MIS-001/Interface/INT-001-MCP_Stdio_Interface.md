@@ -13,6 +13,10 @@ The stdio contract used by the MCP host to call Alfred tools and receive structu
 - **transport**: "stdio"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - accepts [ART-001](../Artifact/ART-001-MCP_Request.md)

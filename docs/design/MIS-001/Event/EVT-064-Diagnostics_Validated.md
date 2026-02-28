@@ -10,6 +10,10 @@ Envelope validated against deterministic schema and taxonomy.
 - **state_machine**: "STM-009"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-047](../State/STA-047-Diagnostics_Emitting.md)

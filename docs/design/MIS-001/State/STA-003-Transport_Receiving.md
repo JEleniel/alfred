@@ -8,6 +8,10 @@ Transport reads from stdin and assembles a complete framed request; malformed fr
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-004](../Event/EVT-004-Frame_Parsed_OK.md)

@@ -1,12 +1,16 @@
 # Feature: FEA-002 Context Tools
 
-Expose pwd and workspace root primitives for location-aware workflows.
+Expose the workspace root primitive for location-aware workflows.
 
 
 
 ## Attributes
 
 _No attributes defined._
+
+## References
+
+_No references defined._
 
 ## Links
 

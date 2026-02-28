@@ -9,6 +9,10 @@ Return concise JSON/NDJSON responses with stable schema versions and determinist
 - **contracts**: {"errors":"docs/design/ErrorTaxonomy.md","protocol":"docs/design/Protocol.md","tool_contracts":"docs/design/ToolContracts.md"}
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - realizes [CAP-007](../Capability/CAP-007-Deterministic_Contracts.md)

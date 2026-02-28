@@ -1,14 +1,18 @@
 # Capability: CAP-001 Workspace Index and Query
 
-Maintain an index of workspace files and provide fast listing, search, range extraction, and diff primitives.
+Maintain an index of workspace files and provide fast, deterministic search and file inspection primitives.
 
 
 
 ## Attributes
 
 - **contracts**: {"tool_contracts":"docs/design/ToolContracts.md"}
-- **tools**: ["ls","grep","search","read_range","diff","file_stat","file_read_bytes"]
+- **tools**: ["search","fs_operations"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

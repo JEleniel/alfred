@@ -10,6 +10,10 @@ Performs safe workspace mutations: atomic CRUD (where practical), patch apply wi
 - **supports_dry_run**: true
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - implements [FEA-003](../Feature/FEA-003-Safe_File_Mutation_Tools.md)

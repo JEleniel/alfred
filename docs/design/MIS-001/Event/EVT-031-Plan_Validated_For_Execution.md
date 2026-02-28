@@ -10,6 +10,10 @@ The mutation plan validated successfully and execution is requested.
 - **state_machine**: "STM-005"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-023](../State/STA-023-FileOps_Executing.md)

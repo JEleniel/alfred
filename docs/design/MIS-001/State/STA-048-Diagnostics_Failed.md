@@ -8,6 +8,10 @@ Contracts and Diagnostics encountered an internal failure and falls back to the 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-114](../Event/EVT-114-Diagnostics_Failure_Emitted.md)

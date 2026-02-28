@@ -8,6 +8,10 @@ In VS Code remote modes, the workspace OS and tooling differ from the user's loc
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

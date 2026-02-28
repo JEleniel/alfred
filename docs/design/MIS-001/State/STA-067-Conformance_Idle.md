@@ -8,6 +8,10 @@ Conformance Runner awaits a conformance execution request.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-095](../Event/EVT-095-Conformance_Requested.md)

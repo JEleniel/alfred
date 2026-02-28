@@ -8,6 +8,10 @@ Plan Manager serves reads and accepts deterministic updates.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-044](../Event/EVT-044-Plan_Update_Requested.md)

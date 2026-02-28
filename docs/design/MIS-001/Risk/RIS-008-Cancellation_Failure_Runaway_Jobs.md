@@ -8,6 +8,10 @@ OS-specific process termination semantics can prevent timely cancellation of bac
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

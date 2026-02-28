@@ -8,8 +8,12 @@ Alfred MUST provide a local, indexed, searchable memory store that supports CRUD
 
 - **offline_only**: true
 - **persistence**: "local"
-- **tool_surface**: ["memory_put","memory_get","memory_delete","memory_list","memory_search"]
+- **tool_surface**: ["memory"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

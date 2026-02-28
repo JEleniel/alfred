@@ -8,6 +8,10 @@ Capability Registry serves capability discovery requests and maintains determini
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-069](../Event/EVT-069-CapReg_Refresh_Requested.md)

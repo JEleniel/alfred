@@ -8,6 +8,10 @@ Router dispatches to the appropriate subsystem and establishes response shaping 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-011](../Event/EVT-011-Dispatch_Succeeded.md)

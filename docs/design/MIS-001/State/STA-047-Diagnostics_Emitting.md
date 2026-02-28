@@ -8,6 +8,10 @@ Emits normalized, deterministic diagnostics (json/ndjson) and returns to idle.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-066](../Event/EVT-066-Diagnostics_Emission_Complete.md)

@@ -8,6 +8,10 @@ Structured analysis of Alfred’s key assets, an explicit malicious-agent scenar
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - includes [THD-001](../Threat_Diamond/THD-001-Workspace_Boundary_Escape.md)

@@ -8,6 +8,10 @@ Transport encountered an unrecoverable IO/framing error; it emits a normalized d
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-110](../Event/EVT-110-Transport_Shutdown_Completed.md)

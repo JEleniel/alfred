@@ -8,6 +8,10 @@ Capability to coerce the system into unsafe tool usage (e.g., path traversal, sy
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

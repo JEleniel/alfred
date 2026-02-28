@@ -8,6 +8,10 @@ Alfred MUST provide a normalized diagnostics contract for build/test/lint/format
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-012](../Capability/CAP-012-Diagnostics_Normalization.md)

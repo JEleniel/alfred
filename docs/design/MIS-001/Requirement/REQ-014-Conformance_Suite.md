@@ -8,6 +8,10 @@ Alfred MUST include a conformance suite that validates response schemas, determi
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-013](../Capability/CAP-013-Conformance_Validation.md)

@@ -1,14 +1,18 @@
 # Feature: FEA-001 Index and Query Tools
 
-Provide ls/grep/search/range/diff primitives backed by a workspace index, including deterministic file metadata and bounded byte reads.
+Provide deterministic index-backed workspace search plus file inspection primitives.
 
 
 
 ## Attributes
 
 - **contracts**: {"tool_contracts":"docs/design/ToolContracts.md"}
-- **tools**: ["ls","grep","search","read_range","diff","file_stat","file_read_bytes"]
+- **tools**: ["search","fs_operations"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

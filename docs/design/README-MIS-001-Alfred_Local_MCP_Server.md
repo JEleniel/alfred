@@ -80,7 +80,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[ART-005 - Index Snapshot](MIS-001/Artifact/ART-005-Index_Snapshot.md)**: Serialized index state used to accelerate repeated queries and reduce redundant filesystem scans.
 
-- **[ART-002 - MCP Response](MIS-001/Artifact/ART-002-MCP_Response.md)**: A structured tool result returned over stdio as a single JSON frame. Large result sets SHOULD be carried either as bounded JSON arrays/objects, or by returning a job id and streaming NDJSON via job tools.
+- **[ART-002 - MCP Response](MIS-001/Artifact/ART-002-MCP_Response.md)**: A structured tool result returned over stdio as a single JSON frame. Large result sets SHOULD be carried as bounded JSON arrays/objects. Background execution is limited and exposed only via the bulk filesystem operations contract (no standalone job tools).
 
 ### Asset
 
@@ -92,15 +92,15 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### Capability
 
-- **[CAP-009 - Environment Variable Management](MIS-001/Capability/CAP-009-Environment_Variable_Management.md)**: Support CRUD operations for environment variables used by Alfred tools and managed contexts.
+- **[CAP-009 - Scoped Environment Handling](MIS-001/Capability/CAP-009-Scoped_Environment_Handling.md)**: Constrain any environment-variable behavior to Alfred-controlled contexts and avoid exposing standalone environment-variable CRUD tooling.
 
-- **[CAP-001 - Workspace Index and Query](MIS-001/Capability/CAP-001-Workspace_Index_and_Query.md)**: Maintain an index of workspace files and provide fast listing, search, range extraction, and diff primitives.
+- **[CAP-001 - Workspace Index and Query](MIS-001/Capability/CAP-001-Workspace_Index_and_Query.md)**: Maintain an index of workspace files and provide fast, deterministic search and file inspection primitives.
 
-- **[CAP-006 - Background Operations](MIS-001/Capability/CAP-006-Background_Operations.md)**: Run asynchronous operations with streaming output, cancellation, timeouts, and job/session introspection.
+- **[CAP-006 - Background Operations](MIS-001/Capability/CAP-006-Background_Operations.md)**: Run bounded background operations via bulk filesystem execution with in-command status polling.
 
 - **[CAP-013 - Conformance Validation](MIS-001/Capability/CAP-013-Conformance_Validation.md)**: Run a conformance suite that validates schemas, deterministic error taxonomy behavior, dry-run guarantees, and workspace boundary enforcement.
 
-- **[CAP-003 - Safe File Operations](MIS-001/Capability/CAP-003-Safe_File_Operations.md)**: Perform safe, bounded, and mostly-atomic workspace mutations including patching with conflict reporting, bulk operations with dry-run, and bounded byte-chunk file mutation for binary/any-size files.
+- **[CAP-003 - Safe File Operations](MIS-001/Capability/CAP-003-Safe_File_Operations.md)**: Perform safe, bounded, and mostly-atomic workspace mutations including patching with conflict reporting and bulk operations with dry-run.
 
 - **[CAP-014 - Local Memory](MIS-001/Capability/CAP-014-Local_Memory.md)**: Store, retrieve, and search structured memory facts locally with deterministic behavior and offline-only semantics.
 
@@ -114,7 +114,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CAP-012 - Diagnostics Normalization](MIS-001/Capability/CAP-012-Diagnostics_Normalization.md)**: Normalize build/test/lint/format diagnostics into a consistent schema and support delta reporting between runs.
 
-- **[CAP-002 - Context Awareness](MIS-001/Capability/CAP-002-Context_Awareness.md)**: Expose the current working folder and the workspace root folder to support location-aware workflows.
+- **[CAP-002 - Context Awareness](MIS-001/Capability/CAP-002-Context_Awareness.md)**: Expose the workspace root folder to support location-aware workflows.
 
 ### Component
 
@@ -122,7 +122,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[COM-002 - Tool Router](MIS-001/Component/COM-002-Tool_Router.md)**: Dispatches tool requests to the appropriate subsystem and coordinates deterministic response shaping.
 
-- **[COM-014 - Environment Variable Manager](MIS-001/Component/COM-014-Environment_Variable_Manager.md)**: Provides CRUD operations for environment variables with policy guardrails.
+- **[COM-014 - Environment Variable Manager](MIS-001/Component/COM-014-Environment_Variable_Manager.md)**: Provides scoped environment handling for internal operations (for example, constructing safe subprocess/task environments) under policy guardrails. No standalone environment-variable CRUD tools are exposed.
 
 - **[COM-005 - Context Provider](MIS-001/Component/COM-005-Context_Provider.md)**: Provides location/context awareness primitives such as pwd and workspace root.
 
@@ -166,7 +166,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CNS-008 - SemVer and Schema Lockstep](MIS-001/Constraint/CNS-008-SemVer_and_Schema_Lockstep.md)**: Tool versions MUST use SemVer, and schema versions MUST remain in lockstep with tool versions.
 
-- **[CNS-020 - Environment Variable CRUD Scope](MIS-001/Constraint/CNS-020-Environment_Variable_CRUD_Scope.md)**: Environment variable CRUD MUST be scoped to Alfred-controlled contexts (e.g., managed .env files or tool-scoped environments). Alfred MUST NOT claim to mutate the parent IDE or shell environment across OSes.
+- **[CNS-020 - Environment Variable CRUD Scope](MIS-001/Constraint/CNS-020-Environment_Variable_CRUD_Scope.md)**: Alfred MUST NOT expose standalone environment-variable CRUD tools. If environment-variable behavior is supported, it MUST be scoped to Alfred-controlled contexts (e.g., managed .env files or tool-scoped environments) and MUST NOT claim to mutate the parent IDE or shell environment across OSes.
 
 - **[CNS-011 - Git and GitHub Operations Out of Scope](MIS-001/Constraint/CNS-011-Git_and_GitHub_Operations_Out_of_Scope.md)**: Alfred MUST NOT implement Git or GitHub operations handled by dedicated tools.
 
@@ -182,7 +182,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[CNS-007 - Local Stdio Server](MIS-001/Constraint/CNS-007-Local_Stdio_Server.md)**: Alfred runs locally and communicates over stdio.
 
-- **[CNS-012 - Service Level Objectives](MIS-001/Constraint/CNS-012-Service_Level_Objectives.md)**: Initial p95 latency objectives constrain implementation choices for discovery, indexed search, patching, and background job introspection.
+- **[CNS-012 - Service Level Objectives](MIS-001/Constraint/CNS-012-Service_Level_Objectives.md)**: Initial p95 latency objectives constrain implementation choices for discovery, indexed search, patching, and background status polling.
 
 - **[CNS-015 - Deterministic Output Normalization](MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.md)**: Alfred MUST produce deterministic outputs across supported OSes (Linux/macOS/Windows), including stable sorting, stable path normalization, and stable formatting regardless of filesystem enumeration order or case-sensitivity defaults.
 
@@ -438,23 +438,23 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 ### Feature
 
-- **[FEA-009 - Environment Variable Tooling](MIS-001/Feature/FEA-009-Environment_Variable_Tooling.md)**: CRUD operations for environment variables with policy guardrails.
+- **[FEA-009 - Scoped Environment Handling](MIS-001/Feature/FEA-009-Scoped_Environment_Handling.md)**: If supported, constrain environment-variable behavior to Alfred-controlled contexts and enforce deterministic redaction and policy guardrails; do not expose standalone environment-variable CRUD tools.
 
 - **[FEA-007 - Deterministic Response Contracts](MIS-001/Feature/FEA-007-Deterministic_Response_Contracts.md)**: Return concise JSON/NDJSON responses with stable schema versions and deterministic error taxonomy.
 
-- **[FEA-002 - Context Tools](MIS-001/Feature/FEA-002-Context_Tools.md)**: Expose pwd and workspace root primitives for location-aware workflows.
+- **[FEA-002 - Context Tools](MIS-001/Feature/FEA-002-Context_Tools.md)**: Expose the workspace root primitive for location-aware workflows.
 
 - **[FEA-008 - Log Tailing and Filtering](MIS-001/Feature/FEA-008-Log_Tailing_and_Filtering.md)**: Tail and filter tool/runtime logs for debugging and monitoring long-running operations.
 
 - **[FEA-014 - Local Indexed Memory Tooling](MIS-001/Feature/FEA-014-Local_Indexed_Memory_Tooling.md)**: CRUD and full-text search tools for persistent local memory facts, backed by an index for fast recall.
 
-- **[FEA-006 - Background Job Control](MIS-001/Feature/FEA-006-Background_Job_Control.md)**: Asynchronous job execution with streaming output, cancellation/timeouts, and job/session introspection.
+- **[FEA-006 - Background Bulk Operations](MIS-001/Feature/FEA-006-Background_Bulk_Operations.md)**: Support background-capable bulk filesystem operations with deterministic status polling via the same tool surface.
 
 - **[FEA-012 - Diagnostics Normalization](MIS-001/Feature/FEA-012-Diagnostics_Normalization.md)**: Normalize diagnostics across build/test/lint/format tooling and support delta reporting.
 
-- **[FEA-001 - Index and Query Tools](MIS-001/Feature/FEA-001-Index_and_Query_Tools.md)**: Provide ls/grep/search/range/diff primitives backed by a workspace index, including deterministic file metadata and bounded byte reads.
+- **[FEA-001 - Index and Query Tools](MIS-001/Feature/FEA-001-Index_and_Query_Tools.md)**: Provide deterministic index-backed workspace search plus file inspection primitives.
 
-- **[FEA-003 - Safe File Mutation Tools](MIS-001/Feature/FEA-003-Safe_File_Mutation_Tools.md)**: Implement atomic CRUD (where practical), patch with conflict reporting, bulk ops with dry-run, and bounded byte-chunk file mutation for binary/any-size files.
+- **[FEA-003 - Safe File Mutation Tools](MIS-001/Feature/FEA-003-Safe_File_Mutation_Tools.md)**: Implement atomic CRUD (where practical), patch with conflict reporting, and bulk operations with dry-run.
 
 - **[FEA-004 - Project Plan Tooling](MIS-001/Feature/FEA-004-Project_Plan_Tooling.md)**: Create and update a project plan capturing progress and tool/diagnostic failures.
 
@@ -482,9 +482,9 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[REQ-008 - Log Handling](MIS-001/Requirement/REQ-008-Log_Handling.md)**: Alfred MUST tail and filter logs using a standardized NDJSON log record format and deterministic redaction.
 
-- **[REQ-009 - Environment Variable CRUD](MIS-001/Requirement/REQ-009-Environment_Variable_CRUD.md)**: Alfred MUST support CRUD operations for environment variables.
+- **[REQ-009 - Scoped Environment Handling](MIS-001/Requirement/REQ-009-Scoped_Environment_Handling.md)**: Alfred MUST NOT expose standalone environment-variable CRUD tools. If environment-variable behavior is supported, it MUST be scoped to Alfred-controlled contexts (for example managed .env files or tool-scoped environments) and MUST NOT claim to mutate the parent IDE or shell environment.
 
-- **[REQ-006 - Background Operations](MIS-001/Requirement/REQ-006-Background_Operations.md)**: Alfred MUST support asynchronous operations with streaming output, cancellation and timeout controls, and job/session introspection.
+- **[REQ-006 - Background Operations](MIS-001/Requirement/REQ-006-Background_Operations.md)**: Alfred MUST support asynchronous execution for bulk filesystem operations only, with deterministic status polling and cancellation via the same tool surface (no standalone job/session introspection tools).
 
 - **[REQ-012 - Normalized Diagnostics Contract](MIS-001/Requirement/REQ-012-Normalized_Diagnostics_Contract.md)**: Alfred MUST provide a normalized diagnostics contract for build/test/lint/format, with consistent schema and optional delta reporting between runs.
 
@@ -498,7 +498,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[REQ-015 - Any-Size File Operations](MIS-001/Requirement/REQ-015-AnySize_File_Operations.md)**: Alfred MUST be able to perform file operations on any size file.
 
-- **[REQ-002 - Context Awareness](MIS-001/Requirement/REQ-002-Context_Awareness.md)**: Alfred MUST return the current working folder (pwd) and the workspace root folder.
+- **[REQ-002 - Context Awareness](MIS-001/Requirement/REQ-002-Context_Awareness.md)**: Alfred MUST return the workspace root folder.
 
 - **[REQ-007 - JSON and NDJSON Output](MIS-001/Requirement/REQ-007-JSON_and_NDJSON_Output.md)**: Alfred MUST provide tooling output as JSON or NDJSON, optimized to be concise and token-conservative.
 
@@ -522,7 +522,7 @@ Provide efficient, safe, and reliable MCP tooling for common agent workflows as 
 
 - **[RIS-011 - Network FS Semantics Break Atomicity](MIS-001/Risk/RIS-011-Network_FS_Semantics_Break_Atomicity.md)**: Network-backed filesystems may not reliably support the atomic rename/replace semantics assumed by local filesystems, risking partial updates or inconsistent state.
 
-- **[RIS-010 - Env Var CRUD Semantics Mislead Users](MIS-001/Risk/RIS-010-Env_Var_CRUD_Semantics_Mislead_Users.md)**: Users may incorrectly assume environment-variable tools mutate the parent IDE/shell environment. Inconsistent behavior across OSes can lead to confusion or accidental secret exposure.
+- **[RIS-010 - Environment Handling Semantics Mislead Users](MIS-001/Risk/RIS-010-Environment_Handling_Semantics_Mislead_Users.md)**: Users may incorrectly assume Alfred can mutate the parent IDE/shell environment. Inconsistent environment-handling behavior across OSes can lead to confusion or accidental secret exposure. Mitigation: do not expose standalone environment-variable CRUD tools; any environment overrides MUST be scoped to Alfred-invoked operations only.
 
 - **[RIS-014 - Remote FS Caching / Watcher Inconsistency](MIS-001/Risk/RIS-014-Remote_FS_Caching_Watcher_Inconsistency.md)**: Network filesystems and remote development layers can introduce caching or delayed visibility of changes; file watching may be unreliable, causing stale indexes or confusing diff results.
 

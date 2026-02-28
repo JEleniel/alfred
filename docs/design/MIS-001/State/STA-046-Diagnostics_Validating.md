@@ -8,6 +8,10 @@ Validates schema and error taxonomy; invalid shapes are converted to determinist
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-064](../Event/EVT-064-Diagnostics_Validated.md)

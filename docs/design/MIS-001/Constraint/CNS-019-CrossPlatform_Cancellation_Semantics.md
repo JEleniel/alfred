@@ -8,6 +8,10 @@ Background jobs MUST support best-effort cancellation with documented semantics 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

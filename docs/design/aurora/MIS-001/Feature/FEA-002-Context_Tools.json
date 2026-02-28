@@ -3,7 +3,7 @@
 	"id": "FEA-002",
 	"card_type": "Feature",
 	"name": "Context Tools",
-	"description": "Expose pwd and workspace root primitives for location-aware workflows.",
+	"description": "Expose the workspace root primitive for location-aware workflows.",
 	"links": [
 		{
 			"relationship": "realizes",

@@ -8,6 +8,10 @@ Alfred MUST provide tooling output as JSON or NDJSON, optimized to be concise an
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-007](../Capability/CAP-007-Deterministic_Contracts.md)

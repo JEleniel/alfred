@@ -8,6 +8,10 @@ Implement a cross-platform cancellation policy (terminate → wait → force kil
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - enforces [CNS-019](../Constraint/CNS-019-CrossPlatform_Cancellation_Semantics.md)

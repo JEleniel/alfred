@@ -9,6 +9,10 @@ The on-disk workspace files and directories that Alfred is permitted to read/wri
 - **boundary**: "workspace"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - provides [ART-007](../Artifact/ART-007-Workspace_File_Content.md)

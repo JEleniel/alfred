@@ -8,6 +8,10 @@ File Operations Engine reports a deterministic conflict/error envelope and retur
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-038](../Event/EVT-038-FileOps_Failure_Reported.md)

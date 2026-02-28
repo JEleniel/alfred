@@ -10,6 +10,10 @@ A request to read or update the plan was received.
 - **state_machine**: "STM-006"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-028](../State/STA-028-Plan_Loading.md)

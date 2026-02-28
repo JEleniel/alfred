@@ -8,6 +8,10 @@ Plan Manager loads the plan artifact from the workspace store.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-040](../Event/EVT-040-Plan_Loaded.md)

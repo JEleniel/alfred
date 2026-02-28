@@ -8,6 +8,10 @@ Treat filesystem paths as potentially non-UTF8; ensure protocol outputs remain v
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - enforces [CNS-021](../Constraint/CNS-021-UTF8_Protocol_and_Path_Encoding_Handling.md)

@@ -8,6 +8,10 @@ Alfred MUST create and maintain a project plan in a common format, capturing too
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-004](../Capability/CAP-004-Project_Planning.md)

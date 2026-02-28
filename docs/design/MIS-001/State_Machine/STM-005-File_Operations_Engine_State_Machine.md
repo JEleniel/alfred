@@ -11,6 +11,10 @@ Deterministic mutation lifecycle for COM-007 (File Operations Engine), including
 - **initial_state**: "STA-021"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-021](../State/STA-021-FileOps_Idle.md)

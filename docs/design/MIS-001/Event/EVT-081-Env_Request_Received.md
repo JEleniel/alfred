@@ -10,6 +10,10 @@ An environment variable CRUD request was received.
 - **state_machine**: "STM-012"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-058](../State/STA-058-Env_Resolving.md)

@@ -8,6 +8,10 @@ Indexer serves query primitives against the current index and schedules rebuilds
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-021](../Event/EVT-021-Rebuild_Scheduled.md)

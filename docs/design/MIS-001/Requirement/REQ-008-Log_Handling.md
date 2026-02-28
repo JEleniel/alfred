@@ -9,6 +9,10 @@ Alfred MUST tail and filter logs using a standardized NDJSON log record format a
 - **spec**: "docs/design/Protocol.md"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-008](../Capability/CAP-008-Log_Handling.md)

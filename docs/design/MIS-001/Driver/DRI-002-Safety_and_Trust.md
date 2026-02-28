@@ -8,6 +8,10 @@ Mutating tools must be safe by default: enforce workspace boundaries, support dr
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - drives [REQ-003](../Requirement/REQ-003-Safe_File_Operations.md)

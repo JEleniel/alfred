@@ -8,6 +8,10 @@ Workspace boundary checks can be bypassed on some OS/filesystem combinations (e.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

@@ -8,6 +8,10 @@ Router streams deterministic output (NDJSON) for long operations or waits for a 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-013](../Event/EVT-013-Operation_Completed.md)

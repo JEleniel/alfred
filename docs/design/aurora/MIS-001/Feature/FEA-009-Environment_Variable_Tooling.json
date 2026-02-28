@@ -2,8 +2,8 @@
 	"$schema": "../../schemas/Aurora.card.schema.json",
 	"id": "FEA-009",
 	"card_type": "Feature",
-	"name": "Environment Variable Tooling",
-	"description": "CRUD operations for environment variables with policy guardrails.",
+	"name": "Scoped Environment Handling",
+	"description": "If supported, constrain environment-variable behavior to Alfred-controlled contexts and enforce deterministic redaction and policy guardrails; do not expose standalone environment-variable CRUD tools.",
 	"links": [
 		{
 			"relationship": "realizes",

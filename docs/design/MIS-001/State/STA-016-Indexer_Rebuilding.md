@@ -8,6 +8,10 @@ Indexer performs incremental rebuild or full reconciliation (common on network/r
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-023](../Event/EVT-023-Rebuild_Succeeded.md)

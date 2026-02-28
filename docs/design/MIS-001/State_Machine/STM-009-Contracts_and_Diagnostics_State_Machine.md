@@ -10,6 +10,10 @@ Deterministic validation and emission lifecycle for COM-011 (Contracts and Diagn
 - **initial_state**: "STA-045"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-045](../State/STA-045-Diagnostics_Idle.md)

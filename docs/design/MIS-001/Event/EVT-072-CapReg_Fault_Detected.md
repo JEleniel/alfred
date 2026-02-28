@@ -10,6 +10,10 @@ Capability registry detected an unrecoverable fault.
 - **state_machine**: "STM-010"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-052](../State/STA-052-CapReg_Failed.md)

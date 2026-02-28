@@ -8,9 +8,13 @@ Alfred’s protocol outputs MUST be valid UTF-8 JSON/NDJSON. When encountering n
 
 - **non_text_fs_paths**: {"unix":{"escape_format":"\\xNN"},"windows":{"escape_format":"\\u{XXXX}","note":"ill-formed UTF-16 surrogate units may be escaped"}}
 - **protocol_encoding**: {"json_must_be_utf8":true}
-- **references**: {"protocol":"docs/design/Protocol.md"}
 - **separator_normalization**: {"normalize_backslash_to_slash":true}
 - **tool_path_format**: {"encoding":"utf-8","workspace_relative_posix":true}
+
+
+## References
+
+- [docs/design/Protocol.md](../../aurora/MIS-001/Constraint/docs/design/Protocol.md)
 
 
 ## Links

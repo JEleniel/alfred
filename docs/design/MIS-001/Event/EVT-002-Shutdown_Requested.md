@@ -10,6 +10,10 @@ A shutdown was requested (EOF, host termination, or explicit stop).
 - **state_machine**: "STM-001"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-006](../State/STA-006-Transport_Shutdown.md)

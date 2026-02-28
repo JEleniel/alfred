@@ -8,6 +8,10 @@ Canonicalize and validate all paths; enforce workspace boundary checks; treat sy
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - protects [AST-001](../Asset/AST-001-Workspace_Contents.md)

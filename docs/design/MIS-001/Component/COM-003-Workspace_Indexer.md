@@ -9,6 +9,10 @@ Maintains the workspace file index and supports listing/search/range/diff primit
 - **supports**: ["ls","grep","search","read_range","diff"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - implements [FEA-001](../Feature/FEA-001-Index_and_Query_Tools.md)

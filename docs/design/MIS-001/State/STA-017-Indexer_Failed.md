@@ -8,6 +8,10 @@ Indexer encountered an unrecoverable error; it reports deterministic diagnostics
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-025](../Event/EVT-025-Manual_Rebuild_Requested.md)

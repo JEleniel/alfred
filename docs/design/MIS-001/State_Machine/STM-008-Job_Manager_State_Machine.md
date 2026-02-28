@@ -11,6 +11,10 @@ Deterministic asynchronous lifecycle for COM-010 (Job Manager): enqueue, dispatc
 - **initial_state**: "STA-039"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-039](../State/STA-039-Job_Idle.md)

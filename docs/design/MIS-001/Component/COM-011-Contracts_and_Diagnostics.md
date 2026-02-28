@@ -10,6 +10,10 @@ Defines and enforces deterministic schemas for outputs, error taxonomy, and norm
 - **formats**: ["json","ndjson"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - implements [FEA-007](../Feature/FEA-007-Deterministic_Response_Contracts.md)

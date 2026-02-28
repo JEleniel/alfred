@@ -8,6 +8,10 @@ Creates and maintains the project plan artifact, including capturing tool/diagno
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - implements [FEA-004](../Feature/FEA-004-Project_Plan_Tooling.md)

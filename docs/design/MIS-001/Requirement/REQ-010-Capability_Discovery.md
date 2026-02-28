@@ -8,6 +8,10 @@ Alfred MUST provide a capability discovery endpoint returning tools/capabilities
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-010](../Capability/CAP-010-Capability_Discovery.md)

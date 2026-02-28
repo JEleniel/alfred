@@ -9,6 +9,10 @@ Dispatches tool requests to the appropriate subsystem and coordinates determinis
 - **execution_modes**: ["sync","async"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - composes [COM-003](COM-003-Workspace_Indexer.md)

@@ -8,6 +8,10 @@ As an agent user, I need normalized, structured diagnostics so that errors and w
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-012](../Requirement/REQ-012-Normalized_Diagnostics_Contract.md)

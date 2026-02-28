@@ -10,6 +10,10 @@ Implements stdio request/response transport and framing for MCP tool calls.
 - **transport**: "stdio"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - exposes [INT-001](../Interface/INT-001-MCP_Stdio_Interface.md)

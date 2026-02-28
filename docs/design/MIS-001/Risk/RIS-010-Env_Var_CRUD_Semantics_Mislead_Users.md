@@ -8,6 +8,10 @@ Users may incorrectly assume environment-variable tools mutate the parent IDE/sh
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

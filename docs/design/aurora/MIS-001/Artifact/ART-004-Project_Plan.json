@@ -10,10 +10,11 @@
 		"format": "markdown",
 		"default_location": "docs/design/ProjectPlan.md",
 		"fallback_location": "ProjectPlan.md",
-		"locking": {
-			"exclusive_lock_required": true,
-			"lock_dir": ".agents/alfred/locks"
+		"write_semantics": {
+			"atomic": true,
+			"lock_files": false,
+			"concurrent_writers": "unsupported_last_write_wins"
 		},
-		"note": "Plan writes are serialized via locking to avoid concurrent agent corruption."
+		"note": "Plan writes are atomic (temp + rename). Concurrent writers are unsupported; last-write-wins behavior is acceptable."
 	}
 }

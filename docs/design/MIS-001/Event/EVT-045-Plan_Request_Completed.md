@@ -10,6 +10,10 @@ The plan read/update request completed and the response was finalized.
 - **state_machine**: "STM-006"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-027](../State/STA-027-Plan_Idle.md)

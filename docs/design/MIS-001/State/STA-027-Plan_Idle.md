@@ -8,6 +8,10 @@ Plan Manager awaits a request to read or update the plan.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-039](../Event/EVT-039-Plan_Request_Received.md)

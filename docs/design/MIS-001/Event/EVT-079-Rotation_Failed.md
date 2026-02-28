@@ -10,6 +10,10 @@ Handling rotation failed.
 - **state_machine**: "STM-011"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-056](../State/STA-056-Log_Failed.md)

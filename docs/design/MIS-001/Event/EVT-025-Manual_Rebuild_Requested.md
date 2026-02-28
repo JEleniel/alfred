@@ -10,6 +10,10 @@ An explicit request was made to rebuild/reconcile the index.
 - **state_machine**: "STM-003"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-014](../State/STA-014-Indexer_Building_Index.md)

@@ -10,6 +10,10 @@ Conformance failure was reported deterministically.
 - **state_machine**: "STM-014"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-067](../State/STA-067-Conformance_Idle.md)

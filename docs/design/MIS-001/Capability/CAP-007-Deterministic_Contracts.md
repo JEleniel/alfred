@@ -8,6 +8,10 @@ Provide concise JSON/NDJSON responses with deterministic error taxonomy, schema 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

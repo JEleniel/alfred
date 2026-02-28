@@ -8,6 +8,10 @@ Network-backed filesystems may not reliably support the atomic rename/replace se
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

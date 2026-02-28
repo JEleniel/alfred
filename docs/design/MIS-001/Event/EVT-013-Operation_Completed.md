@@ -10,6 +10,10 @@ The dispatched operation completed successfully.
 - **state_machine**: "STM-002"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-011](../State/STA-011-Router_Complete.md)

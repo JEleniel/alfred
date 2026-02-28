@@ -2,8 +2,8 @@
 	"$schema": "../../schemas/Aurora.card.schema.json",
 	"id": "FEA-006",
 	"card_type": "Feature",
-	"name": "Background Job Control",
-	"description": "Asynchronous job execution with streaming output, cancellation/timeouts, and job/session introspection.",
+	"name": "Background Bulk Operations",
+	"description": "Support background-capable bulk filesystem operations with deterministic status polling via the same tool surface.",
 	"links": [
 		{
 			"relationship": "realizes",
@@ -18,6 +18,6 @@
 		"contracts": {
 			"tool_contracts": "docs/design/ToolContracts.md"
 		},
-		"tools": ["job_status", "job_statuses", "job_cancel", "job_list", "job_read", "session_recent"]
+		"tools": ["bulk_fs"]
 	}
 }

@@ -9,8 +9,12 @@ Provides CRUD for memory facts and deterministic full-text search over stored fa
 - **indexing**: {"default_limit":100,"filters":["subject","category","tags"],"mode":"local"}
 - **redaction**: "deterministic"
 - **storage**: {"effective_view":"merged (default) or prefer_workspace","user_store":"DST-004","workspace_store":"DST-004"}
-- **tool_surface**: ["memory_put","memory_get","memory_delete","memory_list","memory_search"]
+- **tool_surface**: ["memory"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

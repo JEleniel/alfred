@@ -8,6 +8,10 @@ Context provider is ready to resolve context for a request.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-026](../Event/EVT-026-Context_Request_Received.md)

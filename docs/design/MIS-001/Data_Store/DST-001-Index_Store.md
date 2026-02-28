@@ -8,6 +8,10 @@ Local persistent storage for workspace index state and derived search metadata.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - retrieves [ART-005](../Artifact/ART-005-Index_Snapshot.md)

@@ -10,6 +10,10 @@ Conformance execution completed and is ready for reporting.
 - **state_machine**: "STM-014"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-070](../State/STA-070-Conformance_Reporting.md)

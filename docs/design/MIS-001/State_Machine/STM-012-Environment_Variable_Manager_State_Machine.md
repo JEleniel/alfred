@@ -11,6 +11,10 @@ Deterministic lifecycle for COM-014 (Environment Variable Manager) including pol
 - **steady_state**: "STA-057"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-057](../State/STA-057-Env_Ready.md)

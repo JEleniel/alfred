@@ -12,6 +12,10 @@ Alfred MUST NOT read or write outside the current workspace. All filesystem oper
 - **workspace_escape_prevention**: {"must_verify_resolved_target_under_root":true,"resolve_to_realpath_before_use":true}
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

@@ -11,6 +11,10 @@ Deterministic lifecycle for COM-012 (Capability Registry): bootstrap, serve, ref
 - **steady_state**: "STA-050"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-049](../State/STA-049-CapReg_Bootstrapping.md)

@@ -10,6 +10,10 @@ Indexer determined an initial index build/rebuild is required.
 - **state_machine**: "STM-003"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-014](../State/STA-014-Indexer_Building_Index.md)

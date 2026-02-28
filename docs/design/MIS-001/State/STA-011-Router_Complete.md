@@ -8,6 +8,10 @@ Router finalizes the response envelope and returns to idle.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-015](../Event/EVT-015-Response_Finalized.md)

@@ -8,6 +8,10 @@ Job Manager reports deterministic diagnostics and returns to idle.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-113](../Event/EVT-113-Job_Failure_Reported.md)

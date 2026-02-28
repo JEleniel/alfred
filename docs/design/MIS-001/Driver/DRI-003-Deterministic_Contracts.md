@@ -8,6 +8,10 @@ Agents need consistent schemas, errors, and diagnostics across tools to support 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - drives [REQ-007](../Requirement/REQ-007-JSON_and_NDJSON_Output.md)

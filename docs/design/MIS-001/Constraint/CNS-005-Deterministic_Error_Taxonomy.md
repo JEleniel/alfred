@@ -9,6 +9,10 @@ Error taxonomy definitions MUST be deterministic, clear, and stable across tools
 - **spec**: "docs/design/ErrorTaxonomy.md"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

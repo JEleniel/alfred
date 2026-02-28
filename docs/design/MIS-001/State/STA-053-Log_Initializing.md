@@ -8,6 +8,10 @@ Log Manager initializes log sources and filtering rules.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-074](../Event/EVT-074-Log_Sources_Initialized.md)

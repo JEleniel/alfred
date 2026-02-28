@@ -8,6 +8,10 @@ Plan Manager persists the updated plan artifact atomically where practical and r
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-046](../Event/EVT-046-Plan_Save_Completed.md)

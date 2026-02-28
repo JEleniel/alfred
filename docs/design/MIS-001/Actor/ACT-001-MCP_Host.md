@@ -9,6 +9,10 @@ The local MCP runtime (for example an IDE) that launches Alfred and calls its to
 - **examples**: ["VS Code extension","CLI wrapper","agent runtime"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

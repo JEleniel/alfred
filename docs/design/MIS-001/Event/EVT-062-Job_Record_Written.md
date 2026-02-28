@@ -10,6 +10,10 @@ Job completion record written and response finalized.
 - **state_machine**: "STM-008"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-039](../State/STA-039-Job_Idle.md)

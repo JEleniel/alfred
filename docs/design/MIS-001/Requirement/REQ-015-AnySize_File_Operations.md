@@ -8,6 +8,10 @@ Alfred MUST be able to perform file operations on any size file.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-001](../Capability/CAP-001-Workspace_Index_and_Query.md)

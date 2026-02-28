@@ -8,6 +8,10 @@ Normalize diagnostics across build/test/lint/format tooling and support delta re
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - realizes [CAP-012](../Capability/CAP-012-Diagnostics_Normalization.md)

@@ -8,6 +8,10 @@ Apply safe, bounded edits to workspace files (create/update/delete) and validate
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - uses [COM-007](../Component/COM-007-File_Operations_Engine.md)

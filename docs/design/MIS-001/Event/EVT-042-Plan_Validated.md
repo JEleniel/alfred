@@ -10,6 +10,10 @@ Plan schema/lockstep validation succeeded.
 - **state_machine**: "STM-006"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-030](../State/STA-030-Plan_Ready.md)

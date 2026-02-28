@@ -10,6 +10,10 @@ A deterministic file-ops failure was reported to the caller.
 - **state_machine**: "STM-005"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-021](../State/STA-021-FileOps_Idle.md)

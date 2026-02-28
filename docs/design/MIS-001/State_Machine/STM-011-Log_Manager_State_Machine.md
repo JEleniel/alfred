@@ -11,6 +11,10 @@ Deterministic lifecycle for COM-013 (Log Manager) for initialization, steady-sta
 - **steady_state**: "STA-054"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-053](../State/STA-053-Log_Initializing.md)

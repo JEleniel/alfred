@@ -3,14 +3,14 @@
 	"id": "CNS-012",
 	"card_type": "Constraint",
 	"name": "Service Level Objectives",
-	"description": "Initial p95 latency objectives constrain implementation choices for discovery, indexed search, patching, and background job introspection.",
+	"description": "Initial p95 latency objectives constrain implementation choices for discovery, indexed search, patching, and background status polling.",
 	"links": [],
 	"attributes": {
 		"p95_targets_ms": {
 			"capability_discovery": 100,
 			"indexed_search": 500,
 			"file_patch_apply_up_to_1mb": 1000,
-			"job_status_freshness": 2000,
+			"bulk_status_freshness": 2000,
 			"cancellation_ack": 3000
 		}
 	}

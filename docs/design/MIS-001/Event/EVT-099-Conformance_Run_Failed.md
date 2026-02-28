@@ -10,6 +10,10 @@ Conformance execution failed.
 - **state_machine**: "STM-014"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-072](../State/STA-072-Conformance_Failed.md)

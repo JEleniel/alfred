@@ -10,6 +10,10 @@ Job request validated and enqueued successfully.
 - **state_machine**: "STM-008"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-041](../State/STA-041-Job_Dispatching.md)

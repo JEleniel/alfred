@@ -8,6 +8,10 @@ Contracts and Diagnostics awaits a request to validate or format an output/error
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-063](../Event/EVT-063-Diagnostics_Request_Received.md)

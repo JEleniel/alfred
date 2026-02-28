@@ -10,6 +10,10 @@ Maintains discoverable metadata for Alfred tools/capabilities, including version
 - **versioning**: "semver"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - implements [FEA-010](../Feature/FEA-010-Capability_Discovery_Endpoint.md)

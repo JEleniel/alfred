@@ -10,6 +10,10 @@ An AI agent acting on behalf of the developer/user, invoking Alfred tools via an
 - **operational_mode**: "local-first relative to workspace host"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - performs [ATV-001](../Activity/ATV-001-Search_Workspace.md)

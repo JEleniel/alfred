@@ -10,6 +10,10 @@ Indexer completed index build successfully.
 - **state_machine**: "STM-003"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-015](../State/STA-015-Indexer_Ready.md)

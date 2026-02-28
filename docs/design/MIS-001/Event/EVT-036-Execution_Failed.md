@@ -10,6 +10,10 @@ Execution failed and no safe rollback is possible (or rollback already failed).
 - **state_machine**: "STM-005"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-026](../State/STA-026-FileOps_Failed.md)

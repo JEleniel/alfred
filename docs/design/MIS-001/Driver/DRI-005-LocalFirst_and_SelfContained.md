@@ -8,6 +8,10 @@ Alfred must run locally over stdio without relying on external services, and sho
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - drives [REQ-016](../Requirement/REQ-016-LocalFirst_Execution.md)

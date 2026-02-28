@@ -8,6 +8,10 @@ Job Manager tracks job progress, handles cancellation/timeouts, and collects out
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-060](../Event/EVT-060-Job_Completed.md)

@@ -8,6 +8,10 @@ The workspace is modified in a damaging way (e.g., destructive edits, dependency
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

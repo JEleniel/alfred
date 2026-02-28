@@ -8,6 +8,10 @@ As an agent user, I need a conformance suite so that tool behavior remains consi
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-014](../Requirement/REQ-014-Conformance_Suite.md)

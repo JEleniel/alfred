@@ -10,6 +10,10 @@ Execution partially completed and requires compensating actions.
 - **state_machine**: "STM-005"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-025](../State/STA-025-FileOps_Rolling_Back.md)

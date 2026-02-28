@@ -10,6 +10,10 @@ Plan validation failed due to conflicts, boundary violations, or policy.
 - **state_machine**: "STM-005"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-026](../State/STA-026-FileOps_Failed.md)

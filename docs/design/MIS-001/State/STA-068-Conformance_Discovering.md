@@ -8,6 +8,10 @@ Conformance Runner selects the deterministic test set for the current schema/too
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-096](../Event/EVT-096-Conformance_Tests_Selected.md)

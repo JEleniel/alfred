@@ -8,6 +8,10 @@ Read file ranges and view diffs to understand the current state and validate int
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - uses [COM-007](../Component/COM-007-File_Operations_Engine.md)

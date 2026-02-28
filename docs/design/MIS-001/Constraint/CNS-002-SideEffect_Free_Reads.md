@@ -8,6 +8,10 @@ Read-only operations MUST be side-effect free.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

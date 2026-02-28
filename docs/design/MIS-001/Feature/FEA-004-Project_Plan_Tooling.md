@@ -8,6 +8,10 @@ Create and update a project plan capturing progress and tool/diagnostic failures
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - realizes [CAP-004](../Capability/CAP-004-Project_Planning.md)

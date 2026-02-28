@@ -10,6 +10,10 @@ Job completed successfully and is ready for finalization.
 - **state_machine**: "STM-008"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-043](../State/STA-043-Job_Completing.md)

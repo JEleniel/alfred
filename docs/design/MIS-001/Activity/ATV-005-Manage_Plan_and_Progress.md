@@ -8,6 +8,10 @@ Create/update a project plan and report progress incrementally with clear comple
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - uses [COM-008](../Component/COM-008-Plan_Manager.md)

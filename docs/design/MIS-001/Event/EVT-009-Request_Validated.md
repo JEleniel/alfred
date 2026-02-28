@@ -10,6 +10,10 @@ The router validated the request (tool name, args, permissions, execution mode c
 - **state_machine**: "STM-002"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-009](../State/STA-009-Router_Dispatching.md)

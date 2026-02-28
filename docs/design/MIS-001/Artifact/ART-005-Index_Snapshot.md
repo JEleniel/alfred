@@ -9,6 +9,10 @@ Serialized index state used to accelerate repeated queries and reduce redundant 
 - **storage**: "local"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

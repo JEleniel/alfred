@@ -8,6 +8,10 @@ Job Manager finalizes job status and persists a deterministic completion record,
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-062](../Event/EVT-062-Job_Record_Written.md)

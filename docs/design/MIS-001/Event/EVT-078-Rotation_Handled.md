@@ -10,6 +10,10 @@ Rotation was handled and tailing can resume.
 - **state_machine**: "STM-011"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-054](../State/STA-054-Log_Ready.md)

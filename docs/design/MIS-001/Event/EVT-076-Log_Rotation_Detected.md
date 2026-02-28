@@ -10,6 +10,10 @@ A log rotation was detected requiring handle/offset refresh.
 - **state_machine**: "STM-011"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-055](../State/STA-055-Log_Rotating.md)

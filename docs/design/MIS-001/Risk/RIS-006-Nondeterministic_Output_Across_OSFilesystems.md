@@ -8,6 +8,10 @@ Outputs (lists, diagnostics, file enumerations) can vary across OS/filesystems d
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

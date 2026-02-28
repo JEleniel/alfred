@@ -8,6 +8,10 @@ Router awaits the next validated framed tool call from the transport.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-008](../Event/EVT-008-Tool_Request_Received.md)

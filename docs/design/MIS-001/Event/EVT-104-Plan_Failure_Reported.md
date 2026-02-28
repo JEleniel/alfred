@@ -10,6 +10,10 @@ A deterministic plan manager failure was reported.
 - **state_machine**: "STM-006"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-027](../State/STA-027-Plan_Idle.md)

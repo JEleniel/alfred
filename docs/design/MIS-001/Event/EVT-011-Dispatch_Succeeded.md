@@ -10,6 +10,10 @@ The router dispatched the request to the selected subsystem successfully.
 - **state_machine**: "STM-002"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-010](../State/STA-010-Router_Streaming_or_Waiting.md)

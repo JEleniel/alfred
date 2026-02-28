@@ -1,31 +1,29 @@
 {
 	"$schema": "../../schemas/Aurora.card.schema.json",
-	"id": "CNS-010",
-	"card_type": "Constraint",
-	"name": "Permission Model and Guardrails",
-	"description": "Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults. Tool exposure and plan writes MUST be governed by deterministic policies.",
 	"attributes": {
 		"config_precedence": {
 			"workspace_overrides_user": true
 		},
-		"tool_exposure": {
-			"disabled_tools_omitted_from_capabilities": true,
-			"calling_disabled_tool_is_error": true,
-			"error_kind": "invalid_argument"
-		},
 		"external_tools": {
-			"require_probe": true,
+			"error_kind_on_missing": "tool_unavailable",
 			"probe_methods": ["--version", "--help"],
-			"error_kind_on_missing": "tool_unavailable"
+			"require_probe": true
 		},
 		"plan_writes": {
-			"require_exclusive_lock": true,
-			"error_kind_on_lock_failure": "conflict"
+			"atomic_write_required": true,
+			"lock_files_forbidden": true,
+			"concurrent_writers": "unsupported_last_write_wins"
 		},
-		"references": {
-			"tool_contracts": "docs/design/ToolContracts.md",
-			"configuration": "docs/design/Configuration.md"
+		"tool_exposure": {
+			"calling_disabled_tool_is_error": true,
+			"disabled_tools_omitted_from_capabilities": true,
+			"error_kind": "invalid_argument"
 		}
 	},
-	"links": []
+	"card_type": "Constraint",
+	"description": "Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults. Tool exposure and plan writes MUST be governed by deterministic policies.",
+	"external_references": ["docs/design/ToolContracts.md", "docs/design/Configuration.md"],
+	"id": "CNS-010",
+	"links": [],
+	"name": "Permission Model and Guardrails"
 }

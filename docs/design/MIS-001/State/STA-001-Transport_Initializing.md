@@ -8,6 +8,10 @@ Transport sets up stdio streams and internal buffers.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-109](../Event/EVT-109-Transport_Initialized.md)

@@ -8,6 +8,10 @@ Discover supported tools/versions and understand the effective execution environ
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - uses [COM-012](../Component/COM-012-Capability_Registry.md)

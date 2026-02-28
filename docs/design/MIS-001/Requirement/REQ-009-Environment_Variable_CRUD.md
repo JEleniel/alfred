@@ -8,6 +8,10 @@ Alfred MUST support CRUD operations for environment variables.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-009](../Capability/CAP-009-Environment_Variable_Management.md)

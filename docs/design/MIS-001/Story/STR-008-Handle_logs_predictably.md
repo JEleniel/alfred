@@ -8,6 +8,10 @@ As an agent user, I need Alfred to capture and present logs in a predictable, bo
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-008](../Requirement/REQ-008-Log_Handling.md)

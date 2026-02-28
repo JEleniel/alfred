@@ -10,6 +10,10 @@ The machine that hosts the active workspace and runs the Alfred stdio server. In
 - **platforms**: ["macOS","Linux","Windows"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

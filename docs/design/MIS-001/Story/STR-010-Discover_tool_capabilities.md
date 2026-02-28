@@ -8,6 +8,10 @@ As an agent user, I need Alfred to advertise its tool surface, versions, and lim
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-010](../Requirement/REQ-010-Capability_Discovery.md)

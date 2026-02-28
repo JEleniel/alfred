@@ -12,6 +12,10 @@ Deterministic request lifecycle for COM-002 (Tool Router): validate, dispatch, s
 - **steady_state**: "STA-007"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-007](../State/STA-007-Router_Idle.md)

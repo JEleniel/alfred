@@ -8,6 +8,10 @@ Indexer enumerates workspace files and builds the derived index.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-019](../Event/EVT-019-Index_Build_Succeeded.md)

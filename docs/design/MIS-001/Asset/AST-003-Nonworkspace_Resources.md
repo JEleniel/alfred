@@ -8,6 +8,10 @@ Resources outside the workspace boundary that must remain protected: non-workspa
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

@@ -8,6 +8,10 @@ The developer (and their organization) accountable for protecting the workspace,
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - owns [AST-001](../Asset/AST-001-Workspace_Contents.md)

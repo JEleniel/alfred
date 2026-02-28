@@ -9,6 +9,10 @@ Alfred MUST use deterministic and clear error taxonomy definitions.
 - **spec**: "docs/design/ErrorTaxonomy.md"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - requires [CAP-007](../Capability/CAP-007-Deterministic_Contracts.md)

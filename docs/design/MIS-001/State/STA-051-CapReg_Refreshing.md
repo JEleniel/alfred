@@ -8,6 +8,10 @@ Capability Registry refreshes tool metadata deterministically and returns to rea
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-070](../Event/EVT-070-CapReg_Refresh_Succeeded.md)

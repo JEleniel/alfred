@@ -8,6 +8,10 @@ Job Manager awaits a request to start or inspect a job.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-055](../Event/EVT-055-Job_Request_Received.md)

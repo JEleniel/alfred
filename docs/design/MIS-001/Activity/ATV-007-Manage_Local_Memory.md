@@ -8,6 +8,10 @@ Create, update, delete, list, and search local memory facts for stable offline r
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - uses [COM-002](../Component/COM-002-Tool_Router.md)

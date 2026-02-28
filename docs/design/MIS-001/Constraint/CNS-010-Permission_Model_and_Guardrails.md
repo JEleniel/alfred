@@ -8,9 +8,14 @@ Alfred MUST provide an IDE-compliant permission model and configurable policy gu
 
 - **config_precedence**: {"workspace_overrides_user":true}
 - **external_tools**: {"error_kind_on_missing":"tool_unavailable","probe_methods":["--version","--help"],"require_probe":true}
-- **plan_writes**: {"error_kind_on_lock_failure":"conflict","require_exclusive_lock":true}
-- **references**: {"configuration":"docs/design/Configuration.md","tool_contracts":"docs/design/ToolContracts.md"}
+- **plan_writes**: {"atomic_write_required":true,"concurrent_writers":"unsupported_last_write_wins","lock_files_forbidden":true}
 - **tool_exposure**: {"calling_disabled_tool_is_error":true,"disabled_tools_omitted_from_capabilities":true,"error_kind":"invalid_argument"}
+
+
+## References
+
+- [docs/design/ToolContracts.md](../../aurora/MIS-001/Constraint/docs/design/ToolContracts.md)
+- [docs/design/Configuration.md](../../aurora/MIS-001/Constraint/docs/design/Configuration.md)
 
 
 ## Links

@@ -24,7 +24,7 @@
 		}
 	],
 	"attributes": {
-		"tool_surface": ["memory_put", "memory_get", "memory_delete", "memory_list", "memory_search"],
+		"tool_surface": ["memory"],
 		"indexing": {
 			"mode": "local",
 			"filters": ["subject", "category", "tags"],

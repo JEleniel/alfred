@@ -11,6 +11,10 @@ Deterministic lifecycle for COM-008 (Plan Manager) for loading, validating, upda
 - **steady_state**: "STA-030"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-027](../State/STA-027-Plan_Idle.md)

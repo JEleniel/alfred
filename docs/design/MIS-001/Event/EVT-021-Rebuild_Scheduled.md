@@ -10,6 +10,10 @@ Indexer scheduled a rebuild/reconciliation due to detected change, staleness, or
 - **state_machine**: "STM-003"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-016](../State/STA-016-Indexer_Rebuilding.md)

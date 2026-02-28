@@ -8,6 +8,10 @@ Alfred runs locally and communicates over stdio.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

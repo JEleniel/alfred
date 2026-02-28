@@ -10,6 +10,10 @@ Rust is chosen for Alfred to achieve high performance, strong safety guarantees,
 - **doc**: "docs/design/adr/0001-rust.md"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

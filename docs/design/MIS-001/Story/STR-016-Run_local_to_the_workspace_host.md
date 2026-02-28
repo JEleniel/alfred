@@ -8,6 +8,10 @@ As an agent user, I need Alfred to run as a local stdio server relative to the w
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-016](../Requirement/REQ-016-LocalFirst_Execution.md)

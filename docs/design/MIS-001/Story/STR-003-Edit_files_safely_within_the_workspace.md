@@ -8,6 +8,10 @@ As an agent user, I need Alfred to read and modify files safely and only within 
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-003](../Requirement/REQ-003-Safe_File_Operations.md)

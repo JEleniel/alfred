@@ -10,6 +10,10 @@ A request to start a job was received.
 - **state_machine**: "STM-008"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-040](../State/STA-040-Job_Enqueuing.md)

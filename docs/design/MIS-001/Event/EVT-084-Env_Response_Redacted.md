@@ -10,6 +10,10 @@ Response was redacted deterministically and is ready to return.
 - **state_machine**: "STM-012"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-057](../State/STA-057-Env_Ready.md)

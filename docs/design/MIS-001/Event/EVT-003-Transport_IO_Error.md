@@ -10,6 +10,10 @@ An unrecoverable IO error occurred while reading/writing stdio.
 - **state_machine**: "STM-001"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-005](../State/STA-005-Transport_Faulted.md)

@@ -4,7 +4,7 @@
 	"card_type": "Artifact",
 	"card_subtype": "Data",
 	"name": "MCP Response",
-	"description": "A structured tool result returned over stdio as a single JSON frame. Large result sets SHOULD be carried either as bounded JSON arrays/objects, or by returning a job id and streaming NDJSON via job tools.",
+	"description": "A structured tool result returned over stdio as a single JSON frame. Large result sets SHOULD be carried as bounded JSON arrays/objects. Background execution is limited and exposed only via the bulk filesystem operations contract (no standalone job tools).",
 	"links": [],
 	"attributes": {
 		"formats": ["json"],
@@ -15,11 +15,11 @@
 			},
 			"pending": {
 				"status": "pending",
-				"fields": ["status", "job_id", "data", "meta"],
+				"fields": ["status", "data", "meta"],
 				"transport_equivalent": {
 					"http_status": 202
 				},
-				"notes": "Used when a tool starts a bounded background job; the response envelope includes job_id."
+				"notes": "Used only when bulk filesystem operations run in background mode; the response data includes operation metadata and a poll-with hint."
 			},
 			"failure": {
 				"status": "error",
@@ -28,10 +28,6 @@
 		},
 		"errors": {
 			"taxonomy": "docs/design/ErrorTaxonomy.md"
-		},
-		"ndjson": {
-			"carriage": ["background job stream (ART-006)"],
-			"rules": "Each line is a complete JSON object; item ordering is stable."
 		},
 		"contracts": {
 			"protocol": "docs/design/Protocol.md",

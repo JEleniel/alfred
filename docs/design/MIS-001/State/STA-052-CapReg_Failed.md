@@ -8,6 +8,10 @@ Capability Registry reports deterministic diagnostics and transitions to bootstr
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-073](../Event/EVT-073-CapReg_Recovery_Requested.md)

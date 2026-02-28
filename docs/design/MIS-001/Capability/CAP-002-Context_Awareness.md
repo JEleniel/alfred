@@ -1,12 +1,16 @@
 # Capability: CAP-002 Context Awareness
 
-Expose the current working folder and the workspace root folder to support location-aware workflows.
+Expose the workspace root folder to support location-aware workflows.
 
 
 
 ## Attributes
 
 _No attributes defined._
+
+## References
+
+_No references defined._
 
 ## Links
 

@@ -3,7 +3,7 @@
 	"id": "FEA-001",
 	"card_type": "Feature",
 	"name": "Index and Query Tools",
-	"description": "Provide ls/grep/search/range/diff primitives backed by a workspace index, including deterministic file metadata and bounded byte reads.",
+	"description": "Provide deterministic index-backed workspace search plus file inspection primitives.",
 	"links": [
 		{
 			"relationship": "realizes",
@@ -22,6 +22,6 @@
 		"contracts": {
 			"tool_contracts": "docs/design/ToolContracts.md"
 		},
-		"tools": ["ls", "grep", "search", "read_range", "diff", "file_stat", "file_read_bytes"]
+		"tools": ["search", "fs"]
 	}
 }

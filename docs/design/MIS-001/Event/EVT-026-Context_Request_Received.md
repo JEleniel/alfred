@@ -10,6 +10,10 @@ A request to resolve normalized workspace context was received.
 - **state_machine**: "STM-004"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-019](../State/STA-019-Context_Resolving.md)

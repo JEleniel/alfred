@@ -10,7 +10,12 @@ Alfred MUST produce deterministic outputs across supported OSes (Linux/macOS/Win
 - **ordering**: {"string_order":"case_insensitive_unicode_lexicographic","tie_breaker":"case_sensitive_lexicographic"}
 - **pagination**: {"must_be_stable":true}
 - **redaction**: {"algorithm":"docs/design/Redaction.md","must_be_deterministic":true,"token":"<-REDACTED->"}
-- **references**: {"protocol":"docs/design/Protocol.md","tool_contracts":"docs/design/ToolContracts.md"}
+
+
+## References
+
+- [docs/design/ToolContracts.md](../../aurora/MIS-001/Constraint/docs/design/ToolContracts.md)
+- [docs/design/Protocol.md](../../aurora/MIS-001/Constraint/docs/design/Protocol.md)
 
 
 ## Links

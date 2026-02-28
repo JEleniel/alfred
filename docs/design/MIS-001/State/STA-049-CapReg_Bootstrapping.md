@@ -8,6 +8,10 @@ Capability Registry constructs the initial tool/capability set and validates sch
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-067](../Event/EVT-067-CapReg_Bootstrapped.md)

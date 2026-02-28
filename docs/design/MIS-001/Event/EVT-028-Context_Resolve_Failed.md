@@ -10,6 +10,10 @@ Workspace context could not be resolved (boundary violation, IO error, or remote
 - **state_machine**: "STM-004"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-020](../State/STA-020-Context_Failed.md)

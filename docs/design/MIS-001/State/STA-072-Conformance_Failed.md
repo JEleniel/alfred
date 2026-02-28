@@ -8,6 +8,10 @@ Conformance Runner reports deterministic diagnostics and returns to idle.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-103](../Event/EVT-103-Conformance_Failed_Reported.md)

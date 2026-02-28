@@ -8,6 +8,10 @@ Conformance Runner executes tests deterministically and records results.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-098](../Event/EVT-098-Conformance_Run_Completed.md)

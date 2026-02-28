@@ -8,6 +8,10 @@ Ensure deterministic behavior across OSes by sorting enumerations, normalizing p
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - protects [AST-001](../Asset/AST-001-Workspace_Contents.md)

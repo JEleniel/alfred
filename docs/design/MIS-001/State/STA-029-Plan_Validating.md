@@ -8,6 +8,10 @@ Plan Manager validates schema version lockstep and deterministic structure.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-042](../Event/EVT-042-Plan_Validated.md)

@@ -8,6 +8,10 @@ Log Manager serves tail/filter requests deterministically.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-076](../Event/EVT-076-Log_Rotation_Detected.md)

@@ -8,6 +8,10 @@ Non-UTF8 filenames or OS-specific path encodings can cause crashes, lossy report
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

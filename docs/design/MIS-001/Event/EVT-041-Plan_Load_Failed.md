@@ -10,6 +10,10 @@ Plan artifact could not be loaded.
 - **state_machine**: "STM-006"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-032](../State/STA-032-Plan_Failed.md)

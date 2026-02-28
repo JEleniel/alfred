@@ -8,6 +8,10 @@ Log Manager updates file handles/offsets deterministically after rotation and re
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-078](../Event/EVT-078-Rotation_Handled.md)

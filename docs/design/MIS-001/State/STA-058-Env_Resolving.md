@@ -8,6 +8,10 @@ Environment Variable Manager applies policy guardrails and resolves effective va
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-082](../Event/EVT-082-Env_Policy_Accepted.md)

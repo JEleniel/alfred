@@ -8,6 +8,10 @@ Alfred MUST NOT implement Git or GitHub operations handled by dedicated tools.
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

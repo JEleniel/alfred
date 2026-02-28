@@ -8,6 +8,10 @@ Tail and filter tool/runtime logs for debugging and monitoring long-running oper
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - realizes [CAP-008](../Capability/CAP-008-Log_Handling.md)

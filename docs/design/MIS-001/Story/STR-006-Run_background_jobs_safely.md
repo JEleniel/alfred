@@ -8,6 +8,10 @@ As an agent user, I need background operations with streaming output, cancellati
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - explains [REQ-006](../Requirement/REQ-006-Background_Operations.md)

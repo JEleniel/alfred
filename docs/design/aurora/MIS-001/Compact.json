@@ -86,12 +86,9 @@
           "require_probe": true
         },
         "plan_writes": {
-          "error_kind_on_lock_failure": "conflict",
-          "require_exclusive_lock": true
-        },
-        "references": {
-          "configuration": "docs/design/Configuration.md",
-          "tool_contracts": "docs/design/ToolContracts.md"
+          "atomic_write_required": true,
+          "concurrent_writers": "unsupported_last_write_wins",
+          "lock_files_forbidden": true
         },
         "tool_exposure": {
           "calling_disabled_tool_is_error": true,
@@ -100,6 +97,10 @@
         }
       },
       "card_type": "Constraint",
+      "external_references": [
+        "docs/design/ToolContracts.md",
+        "docs/design/Configuration.md"
+      ],
       "id": "CNS-010",
       "links": [],
       "name": "Permission Model and Guardrails"
@@ -267,11 +268,11 @@
     {
       "attributes": {
         "p95_targets_ms": {
+          "bulk_status_freshness": 2000,
           "cancellation_ack": 3000,
           "capability_discovery": 100,
           "file_patch_apply_up_to_1mb": 1000,
-          "indexed_search": 500,
-          "job_status_freshness": 2000
+          "indexed_search": 500
         }
       },
       "card_type": "Constraint",
@@ -295,13 +296,13 @@
           "algorithm": "docs/design/Redaction.md",
           "must_be_deterministic": true,
           "token": "<-REDACTED->"
-        },
-        "references": {
-          "protocol": "docs/design/Protocol.md",
-          "tool_contracts": "docs/design/ToolContracts.md"
         }
       },
       "card_type": "Constraint",
+      "external_references": [
+        "docs/design/ToolContracts.md",
+        "docs/design/Protocol.md"
+      ],
       "id": "CNS-015",
       "links": [],
       "name": "Deterministic Output Normalization"
@@ -320,9 +321,6 @@
         "protocol_encoding": {
           "json_must_be_utf8": true
         },
-        "references": {
-          "protocol": "docs/design/Protocol.md"
-        },
         "separator_normalization": {
           "normalize_backslash_to_slash": true
         },
@@ -332,6 +330,9 @@
         }
       },
       "card_type": "Constraint",
+      "external_references": [
+        "docs/design/Protocol.md"
+      ],
       "id": "CNS-021",
       "links": [],
       "name": "UTF-8 Protocol and Path Encoding Handling"
@@ -2438,7 +2439,7 @@
       "card_type": "Risk",
       "id": "RIS-010",
       "links": [],
-      "name": "Env Var CRUD Semantics Mislead Users"
+      "name": "Environment Handling Semantics Mislead Users"
     },
     {
       "attributes": {},
@@ -2554,7 +2555,7 @@
           "target": "CNS-010"
         }
       ],
-      "name": "Environment Variable Tooling"
+      "name": "Scoped Environment Handling"
     },
     {
       "attributes": {
@@ -2640,12 +2641,7 @@
           "tool_contracts": "docs/design/ToolContracts.md"
         },
         "tools": [
-          "job_status",
-          "job_statuses",
-          "job_cancel",
-          "job_list",
-          "job_read",
-          "session_recent"
+          "bulk_fs_operations"
         ]
       },
       "card_type": "Feature",
@@ -2660,7 +2656,7 @@
           "target": "CNS-012"
         }
       ],
-      "name": "Background Job Control"
+      "name": "Background Bulk Operations"
     },
     {
       "attributes": {},
@@ -2680,13 +2676,8 @@
           "tool_contracts": "docs/design/ToolContracts.md"
         },
         "tools": [
-          "ls",
-          "grep",
           "search",
-          "read_range",
-          "diff",
-          "file_stat",
-          "file_read_bytes"
+          "fs_operations"
         ]
       },
       "card_type": "Feature",
@@ -2713,18 +2704,9 @@
           "tool_contracts": "docs/design/ToolContracts.md"
         },
         "tools": [
-          "file_create",
-          "file_append",
-          "file_patch",
-          "multi_file_patch",
-          "file_delete",
-          "dir_create",
-          "dir_delete",
-          "file_create_bytes",
-          "file_append_bytes",
-          "path_move",
-          "path_copy",
-          "path_delete"
+          "fs_operations",
+          "bulk_fs_operations",
+          "patch"
         ]
       },
       "card_type": "Feature",
@@ -2861,29 +2843,34 @@
         "durability": "persistent",
         "effective_view": {
           "id_collision_resolution": "workspace_over_user",
+          "id_format": "uuid",
+          "id_issued_by": "alfred",
           "mode_default": "merged",
           "modes": [
             "merged",
             "prefer_workspace"
           ],
+          "scope_required_for_writes": true,
           "user_preferences": {
             "persist_in": "user",
             "workspace_override_allowed": true
-          }
+          },
+          "workspace_relocated_default_location": "<userDataDir>/alfred/<workspace_id>/data/memory/"
         },
         "offline_only": true,
         "stores": {
           "user": {
-            "default_location": "<userDataDir>/alfred/alfred.sqlite3",
-            "notes": "Primary persistent store."
+            "default_location": "<userDataDir>/alfred/memory/",
+            "notes": "User-scoped (global) memory store and index."
           },
           "workspace": {
-            "default_location": "<workspaceRoot>/.agents/alfred/alfred.sqlite3",
+            "default_location": "<workspaceRoot>/.alfred/memory/",
+            "notes": "Workspace-scoped memory store and index (when enabled).",
             "optional": true
           }
         }
       },
-      "card_subtype": "Relational",
+      "card_subtype": "Index",
       "card_type": "Data Store",
       "id": "DST-004",
       "links": [
@@ -2994,7 +2981,7 @@
           "notes": "All stream items MUST be redacted deterministically before persistence or emission.",
           "required": true
         },
-        "schema": "docs/design/schemas/alfred.job-stream-item.schema.json",
+        "schema": "schemas/alfred.job-stream-item.schema.json",
         "semantics": "append-only"
       },
       "card_subtype": "Data",
@@ -3017,7 +3004,7 @@
           "When emitted as NDJSON, each line is a complete JSON object and the stream is append-only.",
           "Diagnostics envelopes are designed to be validated against a deterministic schema and taxonomy."
         ],
-        "schema": "docs/design/schemas/alfred.diagnostics.schema.json",
+        "schema": "schemas/alfred.diagnostics.schema.json",
         "sources": [
           "cargo",
           "pnpm",
@@ -3036,11 +3023,12 @@
         "default_location": "docs/design/ProjectPlan.md",
         "fallback_location": "ProjectPlan.md",
         "format": "markdown",
-        "locking": {
-          "exclusive_lock_required": true,
-          "lock_dir": ".agents/alfred/locks"
-        },
-        "note": "Plan writes are serialized via locking to avoid concurrent agent corruption."
+        "note": "Plan writes are atomic (temp + rename). Concurrent writers are unsupported; last-write-wins behavior is acceptable.",
+        "write_semantics": {
+          "atomic": true,
+          "concurrent_writers": "unsupported_last_write_wins",
+          "lock_files": false
+        }
       },
       "card_subtype": "Document",
       "card_type": "Artifact",
@@ -3077,11 +3065,10 @@
           "pending": {
             "fields": [
               "status",
-              "job_id",
               "data",
               "meta"
             ],
-            "notes": "Used when a tool starts a bounded background job; the response envelope includes job_id.",
+            "notes": "Used only when bulk filesystem operations run in background mode; the response data includes operation metadata and a poll-with hint.",
             "status": "pending",
             "transport_equivalent": {
               "http_status": 202
@@ -3102,12 +3089,6 @@
         "formats": [
           "json"
         ],
-        "ndjson": {
-          "carriage": [
-            "background job stream (ART-006)"
-          ],
-          "rules": "Each line is a complete JSON object; item ordering is stable."
-        },
         "redaction": {
           "notes": "Responses MUST be deterministically redacted before emission, except where a tool contract explicitly allows returning unredacted environment values; such values MUST NOT be logged.",
           "required": true
@@ -3302,7 +3283,7 @@
           "target": "CNS-020"
         }
       ],
-      "name": "Environment Variable CRUD"
+      "name": "Scoped Environment Handling"
     },
     {
       "attributes": {},
@@ -3353,11 +3334,7 @@
         "offline_only": true,
         "persistence": "local",
         "tool_surface": [
-          "memory_put",
-          "memory_get",
-          "memory_delete",
-          "memory_list",
-          "memory_search"
+          "memory"
         ]
       },
       "card_type": "Requirement",
@@ -3393,11 +3370,8 @@
     {
       "attributes": {
         "tool_surface": [
-          "ls",
-          "grep",
           "search",
-          "read_range",
-          "diff"
+          "fs_operations"
         ]
       },
       "card_type": "Requirement",
@@ -3485,8 +3459,7 @@
     {
       "attributes": {
         "tool_surface": [
-          "pwd",
-          "workspace_root"
+          "workspace_dir"
         ]
       },
       "card_type": "Requirement",
@@ -4746,11 +4719,7 @@
           "workspace_store": "DST-004"
         },
         "tool_surface": [
-          "memory_put",
-          "memory_get",
-          "memory_delete",
-          "memory_list",
-          "memory_search"
+          "memory"
         ]
       },
       "card_subtype": "Subsystem",
@@ -4974,7 +4943,7 @@
       "card_type": "Capability",
       "id": "CAP-009",
       "links": [],
-      "name": "Environment Variable Management"
+      "name": "Scoped Environment Handling"
     },
     {
       "attributes": {
@@ -4982,13 +4951,8 @@
           "tool_contracts": "docs/design/ToolContracts.md"
         },
         "tools": [
-          "ls",
-          "grep",
           "search",
-          "read_range",
-          "diff",
-          "file_stat",
-          "file_read_bytes"
+          "fs_operations"
         ]
       },
       "card_type": "Capability",
@@ -5002,12 +4966,7 @@
           "tool_contracts": "docs/design/ToolContracts.md"
         },
         "tools": [
-          "job_status",
-          "job_statuses",
-          "job_cancel",
-          "job_list",
-          "job_read",
-          "session_recent"
+          "bulk_fs_operations"
         ]
       },
       "card_type": "Capability",
@@ -5028,18 +4987,9 @@
           "tool_contracts": "docs/design/ToolContracts.md"
         },
         "tools": [
-          "file_create",
-          "file_append",
-          "file_patch",
-          "multi_file_patch",
-          "file_delete",
-          "dir_create",
-          "dir_delete",
-          "file_create_bytes",
-          "file_append_bytes",
-          "path_move",
-          "path_copy",
-          "path_delete"
+          "fs_operations",
+          "bulk_fs_operations",
+          "patch"
         ]
       },
       "card_type": "Capability",

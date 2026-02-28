@@ -10,6 +10,10 @@ The incoming frame was parsed successfully into a request envelope.
 - **state_machine**: "STM-001"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - transitions to [STA-004](../State/STA-004-Transport_Writing_Response.md)

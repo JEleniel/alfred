@@ -8,6 +8,10 @@ Environment Variable Manager reports a deterministic policy or IO error and retu
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 - handles [EVT-085](../Event/EVT-085-Env_Failure_Reported.md)

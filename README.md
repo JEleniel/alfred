@@ -1,5 +1,12 @@
 # Alfred
 
+[![License](https://img.shields.io/github/license/JEleniel/alfred?style=plastic)](#license)
+[![Release](https://img.shields.io/github/v/release/JEleniel/alfred?style=plastic)](https://github.com/JEleniel/alfred/releases)
+[![Issues](https://img.shields.io/github/issues/JEleniel/alfred?style=plastic)](https://github.com/JEleniel/alfred/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/JEleniel/alfred?style=plastic)](https://github.com/JEleniel/alfred/pulls)
+
+[![Rust 2024](https://img.shields.io/badge/2024-gray?style=plastic&logo=rust&logoColor=white&label=Rust&labelColor=orange)](https://rust-lang.org)
+
 Alfred is a local-only [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) stdio server that provides deterministic, workspace-scoped tools for common “agent in a repo” workflows.
 
 Alfred is designed to be launched by an MCP host (for example an IDE extension) as a subprocess and to communicate exclusively over stdin/stdout using newline-delimited UTF-8 JSON frames.
@@ -16,10 +23,10 @@ Alfred is designed to be launched by an MCP host (for example an IDE extension) 
 The currently registered tools are:
 
 - `workspace_dir`
-- Workspace queries: `ls`, `read_range`, `file_stat`, `file_read_bytes`, `grep`, `search`, `diff`
+- Workspace queries: `ls`, `read_range`, `file_stat`, `grep`, `search`, `diff`
 - Logs: `log_search`
-- Project plan: `plan_get`
-- Memory (read-only by default): `memory_get`, `memory_list`, `memory_search`
+- Project plan: `plan_get`, `plan_update`, `plan_edit`, `plan_add`, `plan_delete`
+- Memory: `memory_put`, `memory_get`, `memory_delete`, `memory_list`, `memory_search`
 - `capabilities`
 
 Notes:
@@ -55,7 +62,7 @@ Alfred reads optional JSON configuration files and currently uses them primarily
 
 Default locations:
 
-- Workspace: `.agents/alfred/config.json`
+- Workspace: `.alfred/config.json`
 - User: OS config directory `alfred/config.json` (exact path depends on platform)
 
 You can disable additional tools by adding them to `tools.disabled`:
@@ -63,7 +70,7 @@ You can disable additional tools by adding them to `tools.disabled`:
 ```json
 {
     "tools": {
-        "disabled": ["file_read_bytes"]
+        "disabled": ["search"]
     }
 }
 ```
@@ -72,12 +79,12 @@ For the intended full configuration schema, see [`schemas/alfred.config.schema.j
 
 ### Environment variables
 
-| Variable                                | Description                                                                                                            | Default   |
-| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------- |
-| `ALFRED_RUNTIME_LOG_RETENTION_DAYS`     | Days to keep rotated runtime log archives.                                                                             | `7`       |
-| `ALFRED_INDEX_PERSISTENCE_LOCATION`     | Where to persist the workspace index (`user`-data location by default; set to `workspace` for `.agents/alfred/index`). | user data |
-| `ALFRED_INDEX_PERSIST_INTERVAL_SECONDS` | Persist interval for the workspace index writer.                                                                       | `5`       |
-| `ALFRED_INDEX_WATCH_DEBOUNCE_MILLIS`    | Debounce window for filesystem watch events.                                                                           | `250`     |
+| Variable                                | Description                                                                                                                            | Default   |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `ALFRED_RUNTIME_LOG_RETENTION_DAYS`     | Days to keep rotated runtime log archives.                                                                                             | `7`       |
+| `ALFRED_INDEX_PERSISTENCE_LOCATION`     | Where to persist the workspace index (`workspace` by default for `.alfred/index`; set to `user` for `.alfred/index/<workspace_hash>`). | workspace |
+| `ALFRED_INDEX_PERSIST_INTERVAL_SECONDS` | Persist interval for the workspace index writer.                                                                                       | `5`       |
+| `ALFRED_INDEX_WATCH_DEBOUNCE_MILLIS`    | Debounce window for filesystem watch events.                                                                                           | `250`     |
 
 ## Development
 
@@ -96,6 +103,10 @@ Most design/contract documentation lives under `docs/design/`:
 - [`docs/design/Protocol.md`](./docs/design/Protocol.md)
 - [`docs/design/ToolContracts.md`](./docs/design/ToolContracts.md)
 
+## Versioning
+
+The package version is defined in [`Cargo.toml`](./Cargo.toml) (currently `0.1.0`). Until Alfred reaches `1.0.0`, expect breaking changes as the tool surface and contracts evolve.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). This project uses the [Developer Certificate of Origin](DCO.md) and expects a DCO sign-off on commits.
@@ -107,6 +118,11 @@ See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
 ## Support
 
 See [SUPPORT.md](SUPPORT.md) for support channels and troubleshooting pointers.
+
+## Acknowledgements
+
+- Badges by [Shields.io](https://shields.io/)
+- Protocol: [Model Context Protocol](https://modelcontextprotocol.io/)
 
 ## License
 

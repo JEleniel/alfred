@@ -1,14 +1,18 @@
 # Capability: CAP-003 Safe File Operations
 
-Perform safe, bounded, and mostly-atomic workspace mutations including patching with conflict reporting, bulk operations with dry-run, and bounded byte-chunk file mutation for binary/any-size files.
+Perform safe, bounded, and mostly-atomic workspace mutations including patching with conflict reporting and bulk operations with dry-run.
 
 
 
 ## Attributes
 
 - **contracts**: {"tool_contracts":"docs/design/ToolContracts.md"}
-- **tools**: ["file_create","file_append","file_patch","multi_file_patch","file_delete","dir_create","dir_delete","file_create_bytes","file_append_bytes","path_move","path_copy","path_delete"]
+- **tools**: ["fs_operations","bulk_fs_operations","patch"]
 
+
+## References
+
+_No references defined._
 
 ## Links
 

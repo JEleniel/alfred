@@ -12,6 +12,10 @@ A stdio-launched process local to the workspace host (which may be remote under 
 - **supported_platforms**: ["macOS","Linux","Windows"]
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - includes [NOD-001](../Node/NOD-001-Workspace_Host_Machine.md)

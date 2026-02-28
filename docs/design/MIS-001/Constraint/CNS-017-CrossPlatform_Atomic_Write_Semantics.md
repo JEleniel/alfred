@@ -8,6 +8,10 @@ When claiming atomic mutations, Alfred MUST implement an atomic write/replace st
 
 _No attributes defined._
 
+## References
+
+_No references defined._
+
 ## Links
 
 _No links defined._

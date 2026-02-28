@@ -10,6 +10,10 @@ Deterministic lifecycle for COM-016 (Conformance Runner): discover tests, execut
 - **initial_state**: "STA-067"
 
 
+## References
+
+_No references defined._
+
 ## Links
 
 - has [STA-067](../State/STA-067-Conformance_Idle.md)
