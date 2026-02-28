@@ -100,6 +100,8 @@ pub fn classify_wire_frame(raw_frame: &str) -> &'static str {
 		"initialize" => "initialize_request",
 		"tools/list" => "tools_list_request",
 		"tools/call" => "tools_call_request",
+		"prompts/list" => "prompts_list_request",
+		"prompts/get" => "prompts_get_request",
 		"notifications/initialized" => "initialized_notification",
 		_ if frame.get("id").is_some() => "request",
 		_ => "notification",
@@ -172,6 +174,12 @@ pub fn handle_startup_frame(raw_frame: &str) -> Result<Option<String>> {
 			let tool_names = ToolRegistry::new().tool_names_for_config(&config);
 			build_tools_list_response(jsonrpc, id, tool_names).map(Some)
 		}
+		Some("prompts/list") => build_prompts_list_response(jsonrpc, id).map(Some),
+		Some("prompts/get") => {
+			let config = AppConfig::load_default().context("failed to load configuration")?;
+			build_prompts_get_response(jsonrpc, id, frame.get("params"), config.workspace_root)
+				.map(Some)
+		}
 		Some(other) => build_method_not_implemented_response(jsonrpc, id, other).map(Some),
 		None => Ok(None),
 	}
@@ -208,6 +216,14 @@ pub fn handle_runtime_frame(
 		Some("tools/call") => {
 			build_tools_call_response(jsonrpc, id, frame.get("params"), services).map(Some)
 		}
+		Some("prompts/list") => build_prompts_list_response(jsonrpc, id).map(Some),
+		Some("prompts/get") => build_prompts_get_response(
+			jsonrpc,
+			id,
+			frame.get("params"),
+			services.indexer.workspace_root().to_path_buf(),
+		)
+		.map(Some),
 		Some(other) => build_method_not_implemented_response(jsonrpc, id, other).map(Some),
 		None => Ok(None),
 	}
@@ -236,6 +252,9 @@ fn build_initialize_response(jsonrpc: &str, id: Value) -> Result<String> {
 			"protocolVersion": MCP_PROTOCOL_VERSION,
 			"capabilities": {
 				"tools": {
+					"listChanged": false,
+				},
+				"prompts": {
 					"listChanged": false,
 				},
 			},
@@ -273,6 +292,83 @@ fn build_tools_list_response(jsonrpc: &str, id: Value, tool_names: Vec<&str>) ->
 	});
 
 	serde_json::to_string(&response).context("failed to serialize tools/list response")
+}
+
+fn build_prompts_list_response(jsonrpc: &str, id: Value) -> Result<String> {
+	let prompts = vec![json!({
+		"name": "alfred_agent",
+		"description": "Instructions for using Alfred MCP tools effectively.",
+		"arguments": [],
+	})];
+
+	let response = json!({
+		"jsonrpc": jsonrpc,
+		"id": id,
+		"result": {
+			"prompts": prompts,
+		},
+	});
+
+	serde_json::to_string(&response).context("failed to serialize prompts/list response")
+}
+
+fn build_prompts_get_response(
+	jsonrpc: &str,
+	id: Value,
+	params: Option<&Value>,
+	workspace_root: std::path::PathBuf,
+) -> Result<String> {
+	let prompt_name = match parse_prompts_get_params(params) {
+		Ok(name) => name,
+		Err(message) => return build_invalid_params_response(jsonrpc, id, message.as_str()),
+	};
+
+	let workspace_root = workspace_root.to_string_lossy().to_string();
+	let (description, text) = match prompt_name.as_str() {
+		"alfred_agent" => (
+			"Alfred MCP usage prompt".to_string(),
+			format!(
+				"You are operating against an Alfred MCP server for a Rust workspace at: {workspace_root}.\n\nUse tools conservatively and deterministically:\n- Use `capabilities` or `tools/list` to discover tool names.\n- Prefer patch-based edits via the `patch` tool (dry-run by default) and only then apply.\n- Use `patch` with operation `revert` only to undo the latest applied patch batch.\n- Use `status` to check index readiness and memory usage before expensive queries.\n\nWhen modifying files: keep changes minimal, avoid rewriting entire files, and respect workspace boundaries."
+			),
+		),
+		_ => {
+			let message = format!("prompt not found: {prompt_name}");
+			return build_invalid_params_response(jsonrpc, id, message.as_str());
+		}
+	};
+
+	let response = json!({
+		"jsonrpc": jsonrpc,
+		"id": id,
+		"result": {
+			"description": description,
+			"messages": [
+				{
+					"role": "user",
+					"content": [
+						{
+							"type": "text",
+							"text": text,
+						}
+					]
+				}
+			]
+		}
+	});
+
+	serde_json::to_string(&response).context("failed to serialize prompts/get response")
+}
+
+fn parse_prompts_get_params(params: Option<&Value>) -> std::result::Result<String, String> {
+	let Some(params) = params.and_then(Value::as_object) else {
+		return Err("prompts/get params must be an object".to_string());
+	};
+
+	let Some(name) = params.get("name").and_then(Value::as_str) else {
+		return Err("prompts/get params.name must be a string".to_string());
+	};
+
+	Ok(name.to_string())
 }
 
 fn build_tools_call_response(

@@ -32,23 +32,27 @@ impl AlfredApp {
 		);
 		let services = ServiceContainer::new(config.clone())
 			.context("failed to construct service container")?;
-		let index_start = Instant::now();
-		let index_stats = services
-			.indexer
-			.initialize()
-			.context("failed to initialize workspace index")?;
-		let index_ready_ms = index_start.elapsed().as_millis();
-		info!(
-			"workspace index ready index_ready_ms={} indexed_files={} indexed_directories={} indexed_text_files={}",
-			index_ready_ms,
-			index_stats.indexed_files,
-			index_stats.indexed_directories,
-			index_stats.indexed_text_files,
-		);
-		services
-			.indexer
-			.start_watch_thread()
-			.context("failed to start workspace index watch thread")?;
+		if config.index_enabled {
+			let index_start = Instant::now();
+			let index_stats = services
+				.indexer
+				.initialize()
+				.context("failed to initialize workspace index")?;
+			let index_ready_ms = index_start.elapsed().as_millis();
+			info!(
+				"workspace index ready index_ready_ms={} indexed_files={} indexed_directories={} indexed_text_files={}",
+				index_ready_ms,
+				index_stats.indexed_files,
+				index_stats.indexed_directories,
+				index_stats.indexed_text_files,
+			);
+			services
+				.indexer
+				.start_watch_thread()
+				.context("failed to start workspace index watch thread")?;
+		} else {
+			info!("workspace index disabled by configuration");
+		}
 		let tools = ToolRegistry::new();
 
 		Ok(Self {

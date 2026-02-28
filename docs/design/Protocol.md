@@ -35,7 +35,7 @@ When a path cannot be represented as Unicode text, Alfred MUST emit an encoded A
 - Unix (byte paths): represent each non-UTF-8 byte as `\xNN` (uppercase hex), and escape backslash as `\\`.
 - Windows (UTF-16): represent any unpaired surrogate 16-bit unit as `\u{XXXX}` (uppercase hex). Other code points MUST be emitted normally.
 
-When encoded path rendering occurs, Alfred SHOULD add a warning via `meta.warnings` (for example `{"kind":"path_encoded"}`) and MUST ensure ordering/cursors use the encoded representation consistently.
+When encoded path rendering occurs, Alfred SHOULD add a warning via top-level `warnings` (for example `{"kind":"path_encoded"}`) and MUST ensure ordering/cursors use the encoded representation consistently.
 
 ## Alfred tool result envelope
 
@@ -53,34 +53,43 @@ A successful tool result MUST be shaped as:
 - `data`: tool-specific payload
 - `meta`: common metadata
 
+Optional top-level fields:
+
+- `warnings`: array of warning objects
+- `errors`: array of deterministic error objects (intended for command-level non-fatal errors)
+
 Common metadata fields:
 
 - `tool`: tool name
 - `schema_version`: SemVer string for the tool result schema (lockstep with tool version)
 - `duration_ms`: integer duration as observed by Alfred
-- `warnings`: optional array of warning objects
+- `transport_equivalent`: optional transport-equivalent metadata
 
 ### Failure
 
 A failed tool result MUST be shaped as:
 
 - `status`: `"error"`
-- `error`: deterministic error object (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md))
+- `errors`: non-empty array of deterministic error objects (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md))
 - `meta`: common metadata
+
+Optional top-level fields:
+
+- `warnings`: array of warning objects
 
 ### Pending (accepted)
 
-Only `bulk_fs_operations` MAY return `status: "pending"`.
+Only `fs` bulk execution MAY return `status: "pending"`.
 
 When accepted for background execution, the response MUST include:
 
 - `status`: `"pending"`
 - `data.operation_id`: string
 - `data.state`: `"queued" | "running"`
-- `data.poll_with`: `"bulk_fs_operations"`
+- `data.poll_with`: `"fs"`
 - `meta.transport_equivalent.http_status`: `202`
 
-Background status MUST be retrieved by calling `bulk_fs_operations` with `mode: "status"`.
+Background status MUST be retrieved by calling `fs` with `operation: "bulk"` and `args.mode: "status"`.
 
 ## NDJSON usage
 
@@ -94,7 +103,23 @@ Alfred uses NDJSON for structured log persistence and exchange, but not for a st
 
 - Compliance with the MCP specification is paramount.
 - Alfred MUST NOT emit any out-of-band or non-MCP framing on stdio.
-- All asynchronous behavior is represented through standard tool envelopes (`status: "pending"`) and subsequent tool calls, not custom transport channels.
+- Background execution is represented through standard tool envelopes (`status: "pending"`) and subsequent tool calls.
+- Streaming behavior (for example `logs.follow`) is represented by emitting repeated, normal tool result envelopes over time.
+    - Each streamed emission MUST use the standard tool result envelope shape.
+    - Streaming MUST remain MCP-compliant: Alfred MUST emit only valid JSON-RPC/MCP frames (never raw NDJSON or other non-MCP output).
+    - Streaming intent MUST be discoverable via `capabilities` as an `execution_modes` entry (for example `"stream"`).
+    - To simplify client handling and avoid multiplexing, Alfred MUST allow at most one active stream at a time.
+
+## Prompts
+
+Alfred supports MCP prompt discovery and retrieval for agent guidance:
+
+- `prompts/list`
+- `prompts/get`
+
+Alfred MUST advertise prompt support in `initialize.result.capabilities.prompts`:
+
+- `listChanged`: boolean.
 
 ## Redaction (secrets filtering)
 
@@ -102,7 +127,7 @@ Alfred MUST filter non-public information (secrets) from responses and logs, eve
 
 - Alfred MUST NOT emit raw inbound request payloads into logs.
 - Alfred MUST deterministically redact secret-looking values in both structured fields and free-form messages.
-- If redaction occurs, Alfred SHOULD return a warning via `meta.warnings` rather than failing the call.
+- If redaction occurs, Alfred SHOULD return a warning via top-level `warnings` rather than failing the call.
 
 Redaction uses a stable replacement token and SHOULD record only aggregate redaction metadata (counts/booleans), never the secret itself.
 

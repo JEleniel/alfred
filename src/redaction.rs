@@ -17,7 +17,7 @@ pub struct Redactor {
 
 impl Redactor {
 	/// Builds the default redaction policy used by logging.
-	pub fn default() -> Result<Self> {
+	pub fn try_default() -> Result<Self> {
 		let structured_key_rule = Regex::new(
 			r#"(?i)(\b(?:password|passwd|pwd|secret|token|api[_-]?key|authorization|cookie|set-cookie)\b\s*[:=]\s*)(?:Bearer\s+[^\s,;]+|"[^"]*"|'[^']*'|[^\s,;]+)"#,
 		)
@@ -55,5 +55,11 @@ impl Redactor {
 				format!("Bearer {}", self.replacement_token).as_str(),
 			)
 			.into_owned()
+	}
+}
+
+impl Default for Redactor {
+	fn default() -> Self {
+		Self::try_default().expect("default redaction policy should compile")
 	}
 }

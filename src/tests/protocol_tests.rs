@@ -10,7 +10,6 @@ use crate::protocol::{
 	handle_runtime_frame, handle_startup_frame,
 };
 use crate::services::ServiceContainer;
-use crate::tools::workspace_query::MAX_FILE_CHUNK_BYTES;
 
 struct TestDir {
 	path: PathBuf,
@@ -59,8 +58,12 @@ fn build_services_for_fixture(with_index: bool) -> (ServiceContainer, TestDir) {
 	let workspace = TestDir::new("protocol-tools-tests");
 	copy_fixture_tree(fixture_workspace().as_path(), workspace.path.as_path());
 
-	let mut config = AppConfig::load_default().expect("default config should load");
-	config.workspace_root = workspace.path.clone();
+	let config = AppConfig::load_from_paths(
+		workspace.path.clone(),
+		workspace.path.join("missing-user-config.json"),
+		workspace.path.join(".alfred").join("config.json"),
+	)
+	.expect("config should load from explicit paths");
 	let services = ServiceContainer::new(config).expect("service container should build");
 	if with_index {
 		services
@@ -78,8 +81,12 @@ fn build_services_for_fixture_with_disabled_tools(
 	let workspace = TestDir::new("protocol-tools-policy-tests");
 	copy_fixture_tree(fixture_workspace().as_path(), workspace.path.as_path());
 
-	let mut config = AppConfig::load_default().expect("default config should load");
-	config.workspace_root = workspace.path.clone();
+	let mut config = AppConfig::load_from_paths(
+		workspace.path.clone(),
+		workspace.path.join("missing-user-config.json"),
+		workspace.path.join(".alfred").join("config.json"),
+	)
+	.expect("config should load from explicit paths");
 	config.disabled_tools.extend(disabled_tools);
 	config.disabled_tools.sort_unstable();
 	config.disabled_tools.dedup();
@@ -124,6 +131,39 @@ fn classifies_tools_list_request() {
 	assert_eq!(
 		classify_wire_frame(frame.to_string().as_str()),
 		"tools_list_request"
+	);
+}
+
+#[test]
+fn classifies_prompts_list_request() {
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 10,
+		"method": "prompts/list",
+		"params": {}
+	});
+
+	assert_eq!(
+		classify_wire_frame(frame.to_string().as_str()),
+		"prompts_list_request"
+	);
+}
+
+#[test]
+fn classifies_prompts_get_request() {
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 11,
+		"method": "prompts/get",
+		"params": {
+			"name": "alfred_agent",
+			"arguments": {}
+		}
+	});
+
+	assert_eq!(
+		classify_wire_frame(frame.to_string().as_str()),
+		"prompts_get_request"
 	);
 }
 
@@ -185,6 +225,57 @@ fn returns_tools_list_with_workspace_tools() {
 		.as_array()
 		.expect("tools/list should return tools array");
 	assert!(tools.iter().any(|tool| tool["name"] == "workspace_dir"));
+}
+
+#[test]
+fn returns_prompts_list_with_alfred_agent_prompt() {
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 12,
+		"method": "prompts/list",
+		"params": {}
+	});
+
+	let response = handle_startup_frame(frame.to_string().as_str())
+		.expect("request frame should parse")
+		.expect("request with id should produce response");
+	let response_json: Value =
+		serde_json::from_str(&response).expect("response should be valid JSON");
+	assert_eq!(response_json["id"], json!(12));
+
+	let prompts = response_json["result"]["prompts"]
+		.as_array()
+		.expect("prompts/list should return prompts array");
+	assert!(
+		prompts
+			.iter()
+			.any(|prompt| prompt["name"] == "alfred_agent")
+	);
+}
+
+#[test]
+fn runtime_prompts_get_includes_workspace_root() {
+	let (services, workspace) = build_services_for_fixture(true);
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 13,
+		"method": "prompts/get",
+		"params": {
+			"name": "alfred_agent",
+			"arguments": {}
+		}
+	});
+
+	let response = handle_runtime_frame(frame.to_string().as_str(), &services)
+		.expect("runtime frame should parse")
+		.expect("request with id should produce response");
+	let response_json: Value =
+		serde_json::from_str(&response).expect("response should be valid JSON");
+	assert_eq!(response_json["id"], json!(13));
+	let text = response_json["result"]["messages"][0]["content"][0]["text"]
+		.as_str()
+		.unwrap_or_default();
+	assert!(text.contains(workspace.path.to_string_lossy().as_ref()));
 }
 
 #[test]
@@ -468,6 +559,7 @@ fn runtime_tools_call_capabilities_returns_stable_tool_metadata() {
 	assert_eq!(names, sorted_names);
 	assert!(names.contains(&"capabilities"));
 	assert!(names.contains(&"workspace_dir"));
+	assert!(!names.contains(&"file_read_bytes"));
 	assert!(!names.contains(&"memory_put"));
 
 	for tool in tools {
@@ -475,15 +567,6 @@ fn runtime_tools_call_capabilities_returns_stable_tool_metadata() {
 		assert_eq!(tool["schema_version"], json!(env!("CARGO_PKG_VERSION")));
 		assert_eq!(tool["execution_modes"], json!(["sync"]));
 	}
-
-	let file_read_bytes = tools
-		.iter()
-		.find(|tool| tool["name"] == "file_read_bytes")
-		.expect("capabilities should include file_read_bytes");
-	assert_eq!(
-		file_read_bytes["limits"]["max_file_chunk_bytes"],
-		json!(MAX_FILE_CHUNK_BYTES)
-	);
 }
 
 #[test]

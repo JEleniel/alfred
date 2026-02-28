@@ -18,6 +18,32 @@
 				}
 			}
 		},
+		"storage": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"user": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"location": {
+							"type": "string",
+							"enum": ["os", "workspace"]
+						}
+					}
+				},
+				"workspace": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"location": {
+							"type": "string",
+							"enum": ["workspace", "user"]
+						}
+					}
+				}
+			}
+		},
 		"workspace": {
 			"type": "object",
 			"additionalProperties": false,
@@ -57,24 +83,6 @@
 						"interval_seconds": {
 							"type": "integer",
 							"minimum": 1
-						}
-					}
-				},
-				"ignore": {
-					"type": "object",
-					"additionalProperties": false,
-					"properties": {
-						"patterns": {
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
-						},
-						"always_patterns": {
-							"type": "array",
-							"items": {
-								"type": "string"
-							}
 						}
 					}
 				}
@@ -137,6 +145,29 @@
 					"type": "array",
 					"items": {
 						"type": "object"
+					}
+				}
+			}
+		},
+		"logging": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"runtime": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"location": {
+							"type": "string",
+							"enum": ["auto", "workspace", "user_logs", "user_data", "system_logs"]
+						},
+						"path": {
+							"type": "string"
+						},
+						"retention_days": {
+							"type": "integer",
+							"minimum": 1
+						}
 					}
 				}
 			}

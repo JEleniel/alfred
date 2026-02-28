@@ -14,7 +14,7 @@ use uuid::Uuid;
 use zip::write::SimpleFileOptions;
 use zip::{CompressionMethod, ZipWriter};
 
-use crate::configuration::{AppConfig, default_runtime_log_path};
+use crate::configuration::AppConfig;
 use crate::redaction::Redactor;
 
 static LOGGER_READY: OnceLock<()> = OnceLock::new();
@@ -25,7 +25,7 @@ pub fn init_logging(config: &AppConfig) -> Result<()> {
 		return Ok(());
 	}
 
-	let runtime_log_path = default_runtime_log_path(&config.workspace_root);
+	let runtime_log_path = config.effective_runtime_log_path();
 
 	configure_trace_logger(
 		runtime_log_path.as_path(),
@@ -52,7 +52,7 @@ fn configure_trace_logger(runtime_log_path: &Path, retention_days: u64) -> Resul
 
 	rotate_runtime_log(runtime_log_path, retention_days)?;
 
-	let redactor = Redactor::default()?;
+	let redactor = Redactor::try_default()?;
 	let file_dispatch = build_file_dispatch(redactor, runtime_log_path)?;
 
 	Dispatch::new()

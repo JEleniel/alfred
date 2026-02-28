@@ -2,7 +2,7 @@ use crate::redaction::{DEFAULT_REPLACEMENT_TOKEN, Redactor};
 
 #[test]
 fn redacts_structured_secret_fields() {
-	let redactor = Redactor::default().expect("redactor should initialize");
+	let redactor = Redactor::try_default().expect("redactor should initialize");
 	let input = "token=abc123 password: letmein api_key='abc-def'";
 	let output = redactor.redact_text(input);
 
@@ -13,7 +13,7 @@ fn redacts_structured_secret_fields() {
 
 #[test]
 fn redacts_email_and_bearer_patterns() {
-	let redactor = Redactor::default().expect("redactor should initialize");
+	let redactor = Redactor::try_default().expect("redactor should initialize");
 	let input = "Contact admin@example.com with Authorization: Bearer abc.def.ghi";
 	let output = redactor.redact_text(input);
 
@@ -24,7 +24,7 @@ fn redacts_email_and_bearer_patterns() {
 
 #[test]
 fn preserves_non_sensitive_text() {
-	let redactor = Redactor::default().expect("redactor should initialize");
+	let redactor = Redactor::try_default().expect("redactor should initialize");
 	let input = "workspace indexed with 42 files";
 	let output = redactor.redact_text(input);
 

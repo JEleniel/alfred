@@ -12,7 +12,7 @@ description: The skill of performing thorough reviews of code, documentation, an
     - Use the full Aurora instructions only when applying the Architecture skill.
 - In order to ensure enough context for the review, break it down into manageable chunks and/or delegate it to subagents as needed. You may also ask for additional information or clarification from the user if necessary.
 - If the user asks for "feedback", treat it as informal feedback (not a formal review) and provide your feedback in your response.
-- If the user asks for a "review", treat it as a formal review and write the results to the appropriate files.
+- Only if the user asks for a "formal review", treat it as a formal review and write the results to the appropriate files.
 - If unsure whether it is formal or not, ask.
 - You MUST NOT alter code, documentation, or other files except the review output files.
 - Reviews recommend improvements and fixes. Reviews do not make decisions and do not record decisions.

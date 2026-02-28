@@ -8,8 +8,10 @@ pub mod file_mutation;
 pub mod jobs;
 pub mod logs;
 pub mod memory;
+pub mod patch;
 pub mod plan;
 pub mod session;
+pub mod status;
 pub mod task_execution;
 pub mod workspace_query;
 
@@ -27,8 +29,10 @@ use self::file_mutation::FileMutationTools;
 use self::jobs::JobTools;
 use self::logs::LogTools;
 use self::memory::MemoryTools;
+use self::patch::PatchTools;
 use self::plan::PlanTools;
 use self::session::SessionTools;
+use self::status::StatusTools;
 use self::task_execution::TaskExecutionTools;
 use self::workspace_query::WorkspaceQueryTools;
 
@@ -38,6 +42,8 @@ pub struct ToolRegistry {
 	pub context: ContextTools,
 	pub workspace_query: WorkspaceQueryTools,
 	pub file_mutation: FileMutationTools,
+	pub patch: PatchTools,
+	pub status: StatusTools,
 	pub task_execution: TaskExecutionTools,
 	pub jobs: JobTools,
 	pub session: SessionTools,
@@ -61,6 +67,8 @@ impl ToolRegistry {
 		names.extend_from_slice(ContextTools::NAMES);
 		names.extend_from_slice(WorkspaceQueryTools::NAMES);
 		names.extend_from_slice(LogTools::NAMES);
+		names.extend_from_slice(PatchTools::NAMES);
+		names.extend_from_slice(StatusTools::NAMES);
 		names.extend_from_slice(PlanTools::NAMES);
 		names.extend_from_slice(MemoryTools::NAMES);
 		names.extend_from_slice(CapabilityTools::NAMES);
@@ -111,6 +119,14 @@ pub fn dispatch_tool_call(
 	}
 
 	if let Some(data) = memory::dispatch_tool_call(name, args.clone(), services)? {
+		return Ok(data);
+	}
+
+	if let Some(data) = patch::dispatch_tool_call(name, args.clone(), services)? {
+		return Ok(data);
+	}
+
+	if let Some(data) = status::dispatch_tool_call(name, args.clone(), services)? {
 		return Ok(data);
 	}
 

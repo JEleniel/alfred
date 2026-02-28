@@ -8,6 +8,12 @@ pub struct JobManager {
 	next_id: AtomicU64,
 }
 
+impl Default for JobManager {
+	fn default() -> Self {
+		Self::new()
+	}
+}
+
 impl JobManager {
 	/// Creates a new in-memory job manager.
 	pub fn new() -> Self {

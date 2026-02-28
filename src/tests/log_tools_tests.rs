@@ -56,8 +56,12 @@ fn build_services() -> (ServiceContainer, TestDir) {
 	let workspace = TestDir::new("log-search-tests");
 	copy_fixture_tree(fixture_workspace().as_path(), workspace.path.as_path());
 
-	let mut config = AppConfig::load_default().expect("default config should load");
-	config.workspace_root = workspace.path.clone();
+	let config = AppConfig::load_from_paths(
+		workspace.path.clone(),
+		workspace.path.join("missing-user-config.json"),
+		workspace.path.join(".alfred").join("config.json"),
+	)
+	.expect("config should load from explicit paths");
 	let services = ServiceContainer::new(config).expect("service container should build");
 	(services, workspace)
 }
@@ -81,7 +85,7 @@ fn write_log_file(path: &Path, records: &[Value]) {
 #[test]
 fn log_search_filters_and_preserves_file_order() {
 	let (services, workspace) = build_services();
-	let log_path = workspace.path.join("logs/runtime.ndjson");
+	let log_path = workspace.path.join(".alfred/logs/runtime.ndjson");
 	write_log_file(
 		log_path.as_path(),
 		&[
@@ -119,7 +123,7 @@ fn log_search_filters_and_preserves_file_order() {
 	let data = dispatch_tool_call(
 		"log_search",
 		json!({
-			"path": "logs/runtime.ndjson",
+			"path": ".alfred/logs/runtime.ndjson",
 			"query": "build",
 			"level": "info",
 			"source_prefix": "alfred::task"
@@ -140,7 +144,7 @@ fn log_search_filters_and_preserves_file_order() {
 #[test]
 fn log_search_supports_stable_pagination() {
 	let (services, workspace) = build_services();
-	let log_path = workspace.path.join("logs/runtime.ndjson");
+	let log_path = workspace.path.join(".alfred/logs/runtime.ndjson");
 	write_log_file(
 		log_path.as_path(),
 		&[
@@ -171,7 +175,7 @@ fn log_search_supports_stable_pagination() {
 	let first_page = dispatch_tool_call(
 		"log_search",
 		json!({
-			"path": "logs/runtime.ndjson",
+			"path": ".alfred/logs/runtime.ndjson",
 			"query": "build",
 			"limit": 2
 		}),
@@ -188,7 +192,7 @@ fn log_search_supports_stable_pagination() {
 	let second_page = dispatch_tool_call(
 		"log_search",
 		json!({
-			"path": "logs/runtime.ndjson",
+			"path": ".alfred/logs/runtime.ndjson",
 			"query": "build",
 			"cursor": "2",
 			"limit": 2
@@ -207,7 +211,7 @@ fn log_search_supports_stable_pagination() {
 #[test]
 fn log_search_rejects_invalid_cursor() {
 	let (services, workspace) = build_services();
-	let log_path = workspace.path.join("logs/runtime.ndjson");
+	let log_path = workspace.path.join(".alfred/logs/runtime.ndjson");
 	write_log_file(
 		log_path.as_path(),
 		&[json!({
@@ -222,7 +226,7 @@ fn log_search_rejects_invalid_cursor() {
 	let result = dispatch_tool_call(
 		"log_search",
 		json!({
-			"path": "logs/runtime.ndjson",
+			"path": ".alfred/logs/runtime.ndjson",
 			"query": "build",
 			"cursor": "oops"
 		}),

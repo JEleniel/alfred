@@ -83,8 +83,8 @@ Exact regex definitions and additional PII/PHI-like patterns are configurable (s
 
 ## Metadata and warnings
 
-When redaction occurs, Alfred SHOULD emit a warning in tool result metadata:
+When redaction occurs, Alfred SHOULD emit a warning in the tool result envelope (see [`docs/design/Protocol.md`](./Protocol.md)):
 
-- `meta.warnings += {"kind":"redaction","redacted_spans":<count>}`
+- `warnings += {"kind":"redaction","redacted_spans":<count>}`
 
 Warnings MUST NOT include the original secret values.

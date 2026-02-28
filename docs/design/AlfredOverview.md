@@ -7,30 +7,32 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 - Alfred MUST maintain an index of all files in the workspace and their contents.
 - Alfred MUST provide a consolidated tool surface that minimizes command-count overhead.
     - Alfred MUST expose `search` for workspace text search (literal and regex).
-    - Alfred MUST expose `fs_operations` for file and directory operations (non-bulk).
-    - Alfred MUST expose `bulk_fs_operations` for bulk move/copy/delete operations.
+    - Alfred MUST expose `fs` for file and directory operations, including deterministic bulk move/copy/delete operations.
     - Alfred MUST expose `patch` for one-or-more patch applications.
-    - Alfred MUST expose `log_operations` for deterministic log search/tail operations.
-    - Alfred MUST expose `plan_operations` for project-plan CRUD/update operations.
+    - Alfred MUST expose `logs` for deterministic log search/tail operations.
+    - Alfred MUST expose `plan` for project-plan CRUD/update operations.
     - Alfred MUST expose `memory` for memory CRUD/search operations.
 - Alfred MUST provide location and context awareness.
     - Alfred MUST return the workspace root folder (`workspace_dir`).
 - Alfred MUST provide safe file operations.
     - Alfred MUST support atomic CRUD operations where practical.
-    - Alfred MUST support patching with conflict reporting and duplicate-content-risk warnings.
+    - Alfred MUST support patching with conflict reporting and a duplicate-content safeguard (hard refusal).
     - Alfred MUST support bulk operations with dry-run support.
 - Alfred MUST create and maintain a project plan in a common format.
     - Alfred MUST capture tool and diagnostics errors in the plan to track fixes.
     - Alfred MUST track progress in the plan.
-- Alfred MUST support constrained background operations.
-    - Only `bulk_fs_operations` MAY run in the background.
-    - Background status MUST be retrievable using `bulk_fs_operations` itself.
+- Alfred MUST support constrained background and streaming operations.
+    - Bulk filesystem execution MAY run in the background and MUST be pollable via `fs` itself.
+    - `logs` MAY support a streaming follow operation.
+    - When streaming is supported, Alfred MUST allow at most one active stream at a time.
     - Alfred MUST NOT expose standalone job-control commands.
 - Alfred MUST provide tooling output as JSON or NDJSON where contractually applicable.
 - Alfred MUST provide local, indexed, searchable memory.
     - Alfred MUST support CRUD operations for individual memory facts.
     - Alfred MUST support full-text search over stored memory.
     - The memory system MUST be offline-only and MUST NOT depend on any external service.
+    - The memory system MUST support explicit memory scopes (`user` and `workspace`) and return the storage scope for retrieved/search results.
+    - Alfred MUST issue UUIDs for memory facts at creation time.
 - Alfred MUST provide a capability discovery endpoint.
     - Alfred MUST return available tools and capabilities.
     - Alfred MUST return tool and schema versions.
@@ -47,6 +49,7 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 - Alfred MUST use deterministic and clear error taxonomy definitions.
 - Alfred MUST provide dry-run behavior for destructive or irreversible actions.
 - Alfred MUST be self-contained and MUST NOT depend on any outside service.
+    - Alfred MUST rotate runtime logs on server startup and retain a bounded history (default 7 days), with archives stored in ZIP form.
 
 ## Versioning and Compatibility
 
@@ -57,7 +60,7 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 
 ## Execution Semantics
 
-- Every tool MUST declare its execution mode as synchronous or background-capable.
+- Every tool MUST declare its execution mode as synchronous, background-capable, and/or streaming.
 - Read-only operations MUST be side-effect free.
 - Mutating operations SHOULD be atomic per target where practical.
 - Cancellation MUST be best-effort and MUST return final operation state when available.
@@ -93,7 +96,7 @@ The following libraries have been chosen, for various reasons:
 - `config` for configuration file handling.
 - `dirs` for standard config/data/cache directories.
 - `fern`, `log` for logging.
-- `r2d2`, `r2d2_sqlite`, `rusqlite` for SQLite (use `rusqlite` with the `bundled` feature).
+- `zip` for log archiving.
 - `serde` (and sublibraries), `serde_json` for serialization.
 - `tokio` (and sublibraries) for async runtime.
 - `url`, `urlencoding` for URL handling.

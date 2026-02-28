@@ -34,8 +34,12 @@ impl Drop for TestDir {
 
 fn build_services(enable_plan_mutations: bool) -> (ServiceContainer, TestDir) {
 	let workspace = TestDir::new("plan-tools-tests");
-	let mut config = AppConfig::load_default().expect("default config should load");
-	config.workspace_root = workspace.path.clone();
+	let mut config = AppConfig::load_from_paths(
+		workspace.path.clone(),
+		workspace.path.join("missing-user-config.json"),
+		workspace.path.join(".alfred").join("config.json"),
+	)
+	.expect("config should load from explicit paths");
 	if enable_plan_mutations {
 		enable_plan_mutation_tools(&mut config);
 	}
@@ -45,10 +49,7 @@ fn build_services(enable_plan_mutations: bool) -> (ServiceContainer, TestDir) {
 
 fn enable_plan_mutation_tools(config: &mut AppConfig) {
 	config.disabled_tools.retain(|tool| {
-		tool != "plan_update"
-			&& tool != "plan_edit"
-			&& tool != "plan_add"
-			&& tool != "plan_delete"
+		tool != "plan_update" && tool != "plan_edit" && tool != "plan_add" && tool != "plan_delete"
 	});
 }
 
@@ -95,8 +96,8 @@ fn plan_get_returns_items_from_valid_plan_file() {
 	let (services, workspace) = build_services(false);
 	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
 
-	let data = dispatch_tool_call("plan_get", json!({}), &services)
-		.expect("plan_get should succeed");
+	let data =
+		dispatch_tool_call("plan_get", json!({}), &services).expect("plan_get should succeed");
 
 	let items = data["items"].as_array().expect("items should be an array");
 	assert_eq!(items.len(), 2);
@@ -139,35 +140,6 @@ fn plan_update_returns_not_found_for_missing_id() {
 	match result {
 		Err(AlfredError::NotFound(message)) => {
 			assert_eq!(message, "plan item id not found: 999");
-		}
-		other => panic!("unexpected result: {other:?}"),
-	}
-}
-
-#[test]
-fn plan_update_returns_conflict_when_lock_file_exists() {
-	let (services, workspace) = build_services(true);
-	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
-
-	let lock_path = services.plan_store.lock_path();
-	fs::create_dir_all(
-		lock_path
-			.parent()
-			.expect("lock path should have parent directory"),
-	)
-	.expect("lock directory should be created");
-	fs::write(lock_path, "held").expect("lock file should be created");
-
-	let result = dispatch_tool_call(
-		"plan_update",
-		json!({"id": 1, "status": "completed"}),
-		&services,
-	);
-
-	match result {
-		Err(AlfredError::ConflictWithDetails { message, details }) => {
-			assert_eq!(message, "plan is locked by another operation");
-			assert_eq!(details, Some(json!({"reason": "locked"})));
 		}
 		other => panic!("unexpected result: {other:?}"),
 	}
@@ -259,42 +231,6 @@ fn plan_add_appends_item_with_next_sequential_id() {
 	assert_eq!(items.len(), 3);
 	assert_eq!(items[2]["id"], json!(3));
 	assert_eq!(items[2]["title"], json!("Third task"));
-}
-
-#[test]
-fn plan_add_returns_conflict_when_lock_file_exists() {
-	let (services, workspace) = build_services(true);
-	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
-
-	let lock_path = services.plan_store.lock_path();
-	fs::create_dir_all(
-		lock_path
-			.parent()
-			.expect("lock path should have parent directory"),
-	)
-	.expect("lock directory should be created");
-	fs::write(lock_path, "held").expect("lock file should be created");
-
-	let result = dispatch_tool_call(
-		"plan_add",
-		json!({
-			"title": "Third task",
-			"priority": 3,
-			"cards": ["ART-003"],
-			"description": "Third description",
-			"deliverables": ["Third deliverable"],
-			"status": "planned"
-		}),
-		&services,
-	);
-
-	match result {
-		Err(AlfredError::ConflictWithDetails { message, details }) => {
-			assert_eq!(message, "plan is locked by another operation");
-			assert_eq!(details, Some(json!({"reason": "locked"})));
-		}
-		other => panic!("unexpected result: {other:?}"),
-	}
 }
 
 #[test]

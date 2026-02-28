@@ -6,12 +6,8 @@ use std::path::{Path, PathBuf};
 
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use serde_json::json;
-use sha2::{Digest, Sha256};
 
 use crate::errors::AlfredError;
-
-const LOCK_REASON: &str = "locked";
 
 /// Canonical plan item status values.
 #[derive(Debug, Clone, Eq, PartialEq, Serialize, Deserialize)]
@@ -61,21 +57,20 @@ impl PlanStore {
 		}
 	}
 
+	fn ensure_plan_is_within_workspace(&self) -> Result<(), AlfredError> {
+		if self.plan_path.starts_with(&self.workspace_root) {
+			return Ok(());
+		}
+
+		Err(AlfredError::WorkspaceBoundaryViolation(format!(
+			"plan path is outside workspace boundary: {}",
+			self.plan_path.display()
+		)))
+	}
+
 	/// Returns the configured plan path.
 	pub fn plan_path(&self) -> &Path {
 		&self.plan_path
-	}
-
-	/// Returns the deterministic lock-file path for this plan.
-	pub fn lock_path(&self) -> PathBuf {
-		let normalized_plan_path = self.plan_path.to_string_lossy().replace('\\', "/");
-		let digest = Sha256::digest(normalized_plan_path.as_bytes());
-		let lock_name = format!("plan-{}.lock", hex::encode(digest));
-		self.workspace_root
-			.join(".agents")
-			.join("alfred")
-			.join("locks")
-			.join(lock_name)
 	}
 
 	/// Reads and returns canonical plan items.
@@ -86,80 +81,72 @@ impl PlanStore {
 
 	/// Updates the status of a single plan item.
 	pub fn update_status(&self, id: u64, status: PlanStatus) -> Result<(), AlfredError> {
-		self.with_write_lock(|store| {
-			let mut document = store.read_document()?;
-			let Some(item) = document
-				.items
-				.iter_mut()
-				.find(|candidate| candidate.id == id)
-			else {
-				return Err(AlfredError::NotFound(format!(
-					"plan item id not found: {id}"
-				)));
-			};
-			item.status = status;
-			store.write_document(&document)
-		})
+		let mut document = self.read_document()?;
+		let Some(item) = document
+			.items
+			.iter_mut()
+			.find(|candidate| candidate.id == id)
+		else {
+			return Err(AlfredError::NotFound(format!(
+				"plan item id not found: {id}"
+			)));
+		};
+		item.status = status;
+		self.write_document(&document)
 	}
 
 	/// Replaces a full plan item while preserving stable IDs.
 	pub fn edit_item(&self, item: PlanItem) -> Result<(), AlfredError> {
 		validate_item(&item)?;
-
-		self.with_write_lock(|store| {
-			let mut document = store.read_document()?;
-			let Some(index) = document
-				.items
-				.iter()
-				.position(|candidate| candidate.id == item.id)
-			else {
-				return Err(AlfredError::NotFound(format!(
-					"plan item id not found: {}",
-					item.id
-				)));
-			};
-			document.items[index] = item;
-			store.write_document(&document)
-		})
+		let mut document = self.read_document()?;
+		let Some(index) = document
+			.items
+			.iter()
+			.position(|candidate| candidate.id == item.id)
+		else {
+			return Err(AlfredError::NotFound(format!(
+				"plan item id not found: {}",
+				item.id
+			)));
+		};
+		document.items[index] = item;
+		self.write_document(&document)
 	}
 
 	/// Appends a new plan item with server-assigned id.
 	pub fn add_item(&self, mut item: PlanItem) -> Result<u64, AlfredError> {
 		validate_item_for_add(&item)?;
-
-		self.with_write_lock(|store| {
-			let mut document = store.read_document()?;
-			let next_id = document
-				.items
-				.iter()
-				.map(|existing| existing.id)
-				.max()
-				.unwrap_or(0)
-				+ 1;
-			item.id = next_id;
-			document.items.push(item.clone());
-			store.write_document(&document)?;
-			Ok(next_id)
-		})
+		let mut document = self.read_document()?;
+		let next_id = document
+			.items
+			.iter()
+			.map(|existing| existing.id)
+			.max()
+			.unwrap_or(0)
+			+ 1;
+		item.id = next_id;
+		document.items.push(item.clone());
+		self.write_document(&document)?;
+		Ok(next_id)
 	}
 
 	/// Deletes a plan item by id.
 	pub fn delete_item(&self, id: u64) -> Result<(), AlfredError> {
-		self.with_write_lock(|store| {
-			let mut document = store.read_document()?;
-			let starting_len = document.items.len();
-			document.items.retain(|item| item.id != id);
-			if document.items.len() == starting_len {
-				return Err(AlfredError::NotFound(format!(
-					"plan item id not found: {id}"
-				)));
-			}
+		let mut document = self.read_document()?;
+		let starting_len = document.items.len();
+		document.items.retain(|item| item.id != id);
+		if document.items.len() == starting_len {
+			return Err(AlfredError::NotFound(format!(
+				"plan item id not found: {id}"
+			)));
+		}
 
-			store.write_document(&document)
-		})
+		self.write_document(&document)
 	}
 
 	fn read_document(&self) -> Result<PlanDocument, AlfredError> {
+		self.ensure_plan_is_within_workspace()?;
+
 		let raw = fs::read_to_string(&self.plan_path).map_err(|error| match error.kind() {
 			std::io::ErrorKind::NotFound => {
 				AlfredError::NotFound(format!("plan file not found: {}", self.plan_path.display()))
@@ -179,6 +166,8 @@ impl PlanStore {
 	}
 
 	fn write_document(&self, document: &PlanDocument) -> Result<(), AlfredError> {
+		self.ensure_plan_is_within_workspace()?;
+
 		let parent = self.plan_path.parent().ok_or_else(|| {
 			AlfredError::Internal(format!(
 				"plan path has no parent directory: {}",
@@ -228,61 +217,6 @@ impl PlanStore {
 				self.plan_path.display()
 			))
 		})
-	}
-
-	fn with_write_lock<F, T>(&self, operation: F) -> Result<T, AlfredError>
-	where
-		F: FnOnce(&Self) -> Result<T, AlfredError>,
-	{
-		let _guard = PlanLockGuard::acquire(self.lock_path())?;
-		operation(self)
-	}
-}
-
-#[derive(Debug)]
-struct PlanLockGuard {
-	path: PathBuf,
-}
-
-impl PlanLockGuard {
-	fn acquire(path: PathBuf) -> Result<Self, AlfredError> {
-		let parent = path.parent().ok_or_else(|| {
-			AlfredError::Internal(format!(
-				"lock path has no parent directory: {}",
-				path.display()
-			))
-		})?;
-		fs::create_dir_all(parent).map_err(|error| {
-			AlfredError::IoError(format!(
-				"failed to create lock directory {}: {error}",
-				parent.display()
-			))
-		})?;
-
-		let mut lock_file = match OpenOptions::new().write(true).create_new(true).open(&path) {
-			Ok(file) => file,
-			Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
-				return Err(AlfredError::ConflictWithDetails {
-					message: "plan is locked by another operation".to_string(),
-					details: Some(json!({"reason": LOCK_REASON})),
-				});
-			}
-			Err(error) => {
-				return Err(AlfredError::IoError(format!(
-					"failed to acquire lock {}: {error}",
-					path.display()
-				)));
-			}
-		};
-
-		let _ = writeln!(lock_file, "pid={}", std::process::id());
-		Ok(Self { path })
-	}
-}
-
-impl Drop for PlanLockGuard {
-	fn drop(&mut self) {
-		let _ = fs::remove_file(&self.path);
 	}
 }
 
@@ -418,12 +352,10 @@ fn parse_plan_item(lines: Vec<&str>, item_regex: &Regex) -> Result<PlanItem, Str
 		}
 	}
 
-	let status = status.unwrap_or_else(|| {
-		if checked {
-			PlanStatus::Completed
-		} else {
-			PlanStatus::Planned
-		}
+	let status = status.unwrap_or(if checked {
+		PlanStatus::Completed
+	} else {
+		PlanStatus::Planned
 	});
 
 	let item = PlanItem {

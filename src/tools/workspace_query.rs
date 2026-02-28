@@ -1,9 +1,7 @@
 //! Workspace query tool group.
 
-use std::fs::{self, File};
-use std::io::{Read, Seek, SeekFrom};
+use std::fs;
 
-use base64::Engine;
 use chrono::{DateTime, Utc};
 use regex::Regex;
 use serde::Deserialize;
@@ -15,22 +13,14 @@ use crate::services::ServiceContainer;
 use crate::services::indexer::SearchMatch;
 
 const DEFAULT_LIMIT: usize = 100;
-pub const MAX_FILE_CHUNK_BYTES: usize = 64 * 1024;
 
 /// Index-backed workspace query tools.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct WorkspaceQueryTools;
 
 impl WorkspaceQueryTools {
-	pub const NAMES: &'static [&'static str] = &[
-		"ls",
-		"read_range",
-		"file_stat",
-		"file_read_bytes",
-		"grep",
-		"search",
-		"diff",
-	];
+	pub const NAMES: &'static [&'static str] =
+		&["ls", "read_range", "file_stat", "grep", "search", "diff"];
 }
 
 /// Handles workspace-query tool calls.
@@ -43,7 +33,6 @@ pub fn dispatch_tool_call(
 		"ls" => handle_ls(args, services).map(Some),
 		"read_range" => handle_read_range(args, services).map(Some),
 		"file_stat" => handle_file_stat(args, services).map(Some),
-		"file_read_bytes" => handle_file_read_bytes(args, services).map(Some),
 		"grep" => handle_grep(args, services).map(Some),
 		"search" => handle_search(args, services).map(Some),
 		"diff" => handle_diff(args, services).map(Some),
@@ -75,13 +64,6 @@ struct FilePathArgs {
 }
 
 #[derive(Debug, Deserialize)]
-struct FileReadBytesArgs {
-	path: String,
-	offset: u64,
-	length: usize,
-}
-
-#[derive(Debug, Deserialize)]
 struct GrepArgs {
 	query: String,
 	case_sensitive: Option<bool>,
@@ -92,7 +74,8 @@ struct GrepArgs {
 
 #[derive(Debug, Deserialize)]
 struct SearchArgs {
-	search: SearchSelector,
+	query: String,
+	mode: Option<SearchMode>,
 	case_sensitive: Option<bool>,
 	full_text: Option<bool>,
 	include_pattern: Option<String>,
@@ -102,10 +85,10 @@ struct SearchArgs {
 }
 
 #[derive(Debug, Deserialize)]
-#[serde(untagged)]
-enum SearchSelector {
-	Pattern { pattern: String },
-	Query { query: String },
+#[serde(rename_all = "snake_case")]
+enum SearchMode {
+	Literal,
+	Regex,
 }
 
 #[derive(Debug, Deserialize)]
@@ -126,6 +109,19 @@ enum DiffInput {
 }
 
 fn handle_ls(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	if !services.config.index_enabled {
+		return Err(AlfredError::ToolUnavailable {
+			message: "workspace index is disabled".to_string(),
+			details: Some(json!({"reason": "index_disabled"})),
+		});
+	}
+	if !services.indexer.is_ready() {
+		return Err(AlfredError::ToolUnavailable {
+			message: "workspace index is not ready".to_string(),
+			details: Some(json!({"reason": "index_not_ready"})),
+		});
+	}
+
 	let args = parse_args::<LsArgs>(args)?;
 	let base = normalize_ls_base(args.path.as_deref().unwrap_or("."))?;
 	let recursive = args.recursive.unwrap_or(false);
@@ -216,47 +212,13 @@ fn handle_file_stat(args: Value, services: &ServiceContainer) -> Result<Value, A
 	}))
 }
 
-fn handle_file_read_bytes(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<FileReadBytesArgs>(args)?;
-	if args.length == 0 {
-		return Err(AlfredError::InvalidArgument(
-			"length must be greater than 0".to_string(),
-		));
-	}
-	if args.length > MAX_FILE_CHUNK_BYTES {
-		return Err(AlfredError::ResourceExhausted(format!(
-			"length exceeds max_file_chunk_bytes: {MAX_FILE_CHUNK_BYTES}"
-		)));
-	}
-
-	let path = normalize_required_path(args.path.as_str())?;
-	let absolute_path = services.indexer.workspace_root().join(path.as_str());
-	let mut file = File::open(&absolute_path)
-		.map_err(|_| AlfredError::NotFound(format!("path not found: {path}")))?;
-	file.seek(SeekFrom::Start(args.offset))
-		.map_err(|error| AlfredError::IoError(format!("failed to seek file: {error}")))?;
-
-	let mut buffer = vec![0_u8; args.length];
-	let bytes_read = file
-		.read(buffer.as_mut_slice())
-		.map_err(|error| AlfredError::IoError(format!("failed to read file: {error}")))?;
-	buffer.truncate(bytes_read);
-
-	let eof = bytes_read < args.length;
-	let next_offset = args.offset + (bytes_read as u64);
-	let bytes_b64 = base64::engine::general_purpose::STANDARD.encode(buffer);
-
-	Ok(json!({
-		"path": path,
-		"offset": args.offset,
-		"bytes_b64": bytes_b64,
-		"bytes_read": bytes_read,
-		"eof": eof,
-		"next_offset": next_offset,
-	}))
-}
-
 fn handle_grep(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	if !services.config.index_enabled {
+		return Err(AlfredError::ToolUnavailable {
+			message: "workspace index is disabled".to_string(),
+			details: Some(json!({"reason": "index_disabled"})),
+		});
+	}
 	if !services.indexer.is_ready() {
 		return Err(AlfredError::ToolUnavailable {
 			message: "workspace index is not ready".to_string(),
@@ -280,6 +242,12 @@ fn handle_grep(args: Value, services: &ServiceContainer) -> Result<Value, Alfred
 }
 
 fn handle_search(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	if !services.config.index_enabled {
+		return Err(AlfredError::ToolUnavailable {
+			message: "workspace index is disabled".to_string(),
+			details: Some(json!({"reason": "index_disabled"})),
+		});
+	}
 	if !services.indexer.is_ready() {
 		return Err(AlfredError::ToolUnavailable {
 			message: "workspace index is not ready".to_string(),
@@ -291,15 +259,16 @@ fn handle_search(args: Value, services: &ServiceContainer) -> Result<Value, Alfr
 	let _ = args.full_text.unwrap_or(false);
 	let case_sensitive = args.case_sensitive.unwrap_or(false);
 	let (offset, limit) = parse_pagination(args.cursor.as_deref(), args.limit)?;
+	let mode = args.mode.unwrap_or(SearchMode::Literal);
 
-	let matches = match args.search {
-		SearchSelector::Pattern { pattern } => services
+	let matches = match mode {
+		SearchMode::Literal => services
 			.indexer
-			.search_regex(pattern.as_str(), case_sensitive)
+			.grep_literal(args.query.as_str(), case_sensitive),
+		SearchMode::Regex => services
+			.indexer
+			.search_regex(args.query.as_str(), case_sensitive)
 			.map_err(map_indexer_error)?,
-		SearchSelector::Query { query } => services
-			.indexer
-			.grep_literal(query.as_str(), case_sensitive),
 	};
 
 	let matches = filter_matches(

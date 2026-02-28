@@ -32,10 +32,12 @@ impl Drop for TestDir {
 
 fn build_services(enable_mutations: bool) -> (ServiceContainer, TestDir) {
 	let workspace = TestDir::new("memory-tools-tests");
-	let mut config = AppConfig::load_default().expect("default config should load");
-	config.workspace_root = workspace.path.clone();
-	config.user_config_path = workspace.path.join(".agents").join("user-config.json");
-	config.workspace_config_path = workspace.path.join(".agents").join("workspace-config.json");
+	let mut config = AppConfig::load_from_paths(
+		workspace.path.clone(),
+		workspace.path.join("missing-user-config.json"),
+		workspace.path.join(".alfred").join("config.json"),
+	)
+	.expect("config should load from explicit paths");
 	if enable_mutations {
 		config
 			.disabled_tools
@@ -178,7 +180,14 @@ fn memory_delete_supports_dry_run() {
 #[test]
 fn memory_list_supports_order_filter_and_pagination() {
 	let (services, _workspace) = build_services(true);
-	put_fact(&services, "a", "Zebra", "text", "general", vec!["ops", "rust"]);
+	put_fact(
+		&services,
+		"a",
+		"Zebra",
+		"text",
+		"general",
+		vec!["ops", "rust"],
+	);
 	put_fact(&services, "b", "Alpha", "text", "general", vec!["ops"]);
 	put_fact(&services, "c", "Middle", "text", "general", vec!["rust"]);
 
@@ -229,7 +238,9 @@ fn memory_list_supports_order_filter_and_pagination() {
 		&services,
 	)
 	.expect("memory_list tags_and should succeed");
-	let and_facts = tag_and["facts"].as_array().expect("facts should be an array");
+	let and_facts = tag_and["facts"]
+		.as_array()
+		.expect("facts should be an array");
 	assert_eq!(and_facts.len(), 1);
 	assert_eq!(and_facts[0]["id"], json!("a"));
 }

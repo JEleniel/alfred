@@ -4,14 +4,13 @@ This document summarizes Alfred's architecture as modeled in Aurora and points t
 
 ## Key artifacts
 
-| Artifact                                                        | Purpose                                                                                               |
-| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [AlfredOverview](./AlfredOverview.md)                           | Requirements and constraints that drive the architecture.                                             |
-| [Aurora model home](./aurora/)                                  | Source-of-truth architecture model (cards + audit log).                                               |
-| [Rendered model markdown](./MIS-001-Alfred_Local_MCP_Server.md) | Human-readable rendering of all cards in the model.                                                   |
-| [Model README](./README-MIS-001-Alfred_Local_MCP_Server.md)     | Entry point for the generated model bundle.                                                           |
-| [Views (SVG)](./MIS-001/Views/)                                 | Diagrams rendered from the model (context, components, deployment, traceability, and security).       |
-| [ADR-0001: Rust](./adr/0001-rust.md)                            | Decision record: Rust selected for performance, safety, flexibility, and cross-platform distribution. |
+| Artifact                                                        | Purpose                                                                                         |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [AlfredOverview](./AlfredOverview.md)                           | Requirements and constraints that drive the architecture.                                       |
+| [Aurora model home](./aurora/)                                  | Source-of-truth architecture model (cards + audit log).                                         |
+| [Rendered model markdown](./MIS-001-Alfred_Local_MCP_Server.md) | Human-readable rendering of all cards in the model.                                             |
+| [Model README](./README-MIS-001-Alfred_Local_MCP_Server.md)     | Entry point for the generated model bundle.                                                     |
+| [Views (SVG)](./MIS-001/Views/)                                 | Diagrams rendered from the model (context, components, deployment, traceability, and security). |
 
 ## System context
 
@@ -19,7 +18,7 @@ Alfred is a local-only stdio server designed to run on the workspace host machin
 
 The server:
 
-- Communicates over stdin/stdout using deterministic JSON/NDJSON contracts.
+- Communicates over stdin/stdout using deterministic JSON contracts.
 - Operates within a configured workspace boundary (no escape hatches to arbitrary filesystem access).
 - Prioritizes predictability and safety (dry-run support, atomic mutations where practical, normalized diagnostics, bounded background work).
 
@@ -35,24 +34,27 @@ At a high level, the application is a stdio transport, a tool router, and a cons
 - Routing and orchestration
     - Tool router dispatches requests to handlers.
     - Capability discovery advertises supported tools and versions.
+- Indexing and Memory
+    - The tool indexes all files in the workspace except those in one of the ignore lists (permanent, default, user, workspace)
+    - The tool provides memory functions using the same indexing technology, supporting search, including full text, for memories.
+    - All indices are periodically persisted to disk to enable restarts to skip full indexing.
 - Consolidated tool handlers
     - `search`: workspace text search over the index.
-    - `fs_operations`: non-bulk text-file and directory operations.
-    - `bulk_fs_operations`: bulk move/copy/delete with optional background execution and in-command status retrieval.
-    - `patch`: one-or-more patch application with conflict reporting and duplicate-content-risk warnings.
-    - `log_operations`: deterministic search/tail over structured logs.
-    - `plan_operations`: project-plan read/write workflows.
+    - `fs`: non-bulk text-file and directory operations.
+    - `patch`: one-or-more patch application with conflict reporting and a duplicate-content safeguard (hard refusal).
+    - `logs`: deterministic search/tail over structured logs.
+    - `plan`: project-plan read/write workflows.
     - `memory`: local/offline memory CRUD and retrieval.
 
 For the model component view, see [Component.svg](./MIS-001/Views/Component.svg).
 
 ## Data and state
 
-Alfred is intentionally local-first and uses small, explicit state stores:
+Alfred is intentionally local-only and uses small, explicit state stores:
 
 - Workspace index: derived, rebuildable index of workspace structure/content used for fast search and navigation.
-- Plan store: records plan state and completion status to support incremental progress reporting.
-- Bulk operation state: tracks background bulk operation lifecycle and progress (`queued`, `running`, `succeeded`, `failed`, `canceled`, `partial`).
+- Plan file: records plan state and completion status to support incremental progress reporting.
+- Bulk operation state: tracks background bulk operation lifecycle and progress (`queued`, `running`, `succeeded`, `failed`, `canceled`, `partial`) in memory.
 - Memory store: persists agent memory facts and an associated local search index for offline recall.
 
 These stores are modeled as local data stores backed by the host filesystem with no external services.
@@ -87,16 +89,20 @@ For the rendered security view, see [Security.svg](./MIS-001/Views/Security.svg)
 
 ## Deployment
 
-Alfred is deployed as a single local stdio process on the workspace host machine and communicates over stdio. This remains true even when the user is in VS Code Remote Development modes (where the host is remote). It is intended to run on Linux, macOS, and Windows; mobile platforms (iOS/Android) are out of scope.
+Alfred is deployed as a single local stdio process on the workspace host machine and communicates over stdio. This remains true even when the user is in VS Code Remote Development modes (where the host is remote). It is intended to run on Linux, macOS, and Windows; mobile platforms (iOS/Android) are out of scope (but may still work for most operations).
 
 For the model deployment view, see [Deployment.svg](./MIS-001/Views/Deployment.svg).
 
-## Regenerating model outputs (optional)
+## Design Goals
 
-The diagrams and markdown in `docs/design/` are generated from Aurora cards in `docs/design/aurora/`.
-
-```text
-aurora_cli validate -i docs/design/aurora
-aurora_cli render-all -i docs/design/aurora
-aurora_cli compact -i docs/design/aurora
-```
+- The primary drive behind Alfred is to streamline agentic operations, reduce context load, and operate faster that the current built in and OS provided tools.
+    - Provides the most commonly used tools, based on tracking sessions, that _also_ consume the most time and context, in a faster form with a more compact response.
+    - Improve the performance of searching, the single most used function, through indexing without introducing significant load on the host.
+    - Add a local-only memory capability for security, speed, and independence from connectivity issues and corporate whims.
+- The entire server is a single, self-contained executable with no outside dependencies.
+- Alfred is configurable, allowing the user to customize as many aspects of operation as feasible.
+- The server is designed to be secure by default:
+    - Write operations for commands are limited to the workspace. This is a much harder limit than the default for most IDEs, as it will not even ask permission.
+    - Read operations for commands are limited to the workspace and alfred logs. The log exception exists to support develoment, troubleshooting, and support.
+    - All operations that modify the workspace have a "dry-run" capability, on by default.
+- Several elements have been implemented to prevent blocking. Indexing is on a separate thread, allowing it to run independantly. Indices are persisted periodically to disk and loaded at startup, making the initial indexavailability even faster.

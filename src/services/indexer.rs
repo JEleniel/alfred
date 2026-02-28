@@ -8,7 +8,7 @@ use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering as AtomicOrdering};
 use std::sync::{Arc, Mutex, RwLock};
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, SystemTime};
 
 use anyhow::{Context, Result, anyhow, bail};
 use log::{trace, warn};
@@ -21,10 +21,32 @@ use tantivy::schema::{Field, STORED, STRING, Schema, TEXT, Value};
 use tantivy::{Index, IndexReader, IndexWriter, ReloadPolicy, TantivyDocument, Term, doc};
 
 use crate::configuration::default_workspace_index_root;
+use crate::services::workspace_files::{
+	IndexIgnoreMatcher, read_indexable_utf8_text, read_text_file_range,
+	visit_utf8_lines_best_effort,
+};
 
 const DOC_KIND_FILE: &str = "file";
 const DOC_KIND_DIRECTORY: &str = "directory";
 const INDEX_SUBDIRECTORY: &str = "tantivy";
+
+/// Maximum on-disk file size (bytes) we will fully load into memory for indexing.
+///
+/// Larger files are still tracked (path + mtime) but their content is not cached in the
+/// in-memory snapshot. Query operations may fall back to streaming reads from disk.
+const MAX_INDEXED_TEXT_BYTES: u64 = 4 * 1024 * 1024;
+
+fn default_user_ignore_path(workspace_root: &Path) -> PathBuf {
+	if let Some(config_dir) = dirs::config_dir() {
+		return config_dir.join("alfred").join(".alfredignore");
+	}
+
+	workspace_root.join(".alfred").join(".alfredignore.user")
+}
+
+fn is_alfredignore_path(relative_path: &str) -> bool {
+	relative_path == ".alfredignore" || relative_path.ends_with("/.alfredignore")
+}
 
 /// A single text match found by index-backed query operations.
 #[derive(Debug, Clone, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
@@ -52,6 +74,7 @@ struct WorkspaceSnapshot {
 struct IndexedFile {
 	path: String,
 	text: Option<String>,
+	modified_at: Option<SystemTime>,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -81,6 +104,7 @@ impl fmt::Debug for TantivyEngine {
 pub struct WorkspaceIndexer {
 	workspace_root: PathBuf,
 	index_storage_root: PathBuf,
+	ignore: Arc<IndexIgnoreMatcher>,
 	snapshot: Arc<RwLock<WorkspaceSnapshot>>,
 	engine: Arc<TantivyEngine>,
 	index_ready: Arc<AtomicBool>,
@@ -95,11 +119,13 @@ impl WorkspaceIndexer {
 	/// Creates a new indexer for the given workspace root.
 	pub fn new(workspace_root: PathBuf) -> Result<Self> {
 		let index_storage_root = default_workspace_index_root(&workspace_root);
+		let user_ignore_path = default_user_ignore_path(&workspace_root);
 		Self::new_with_options(
 			workspace_root,
 			index_storage_root,
 			Duration::from_secs(5),
 			Duration::from_millis(250),
+			user_ignore_path,
 		)
 	}
 
@@ -109,7 +135,11 @@ impl WorkspaceIndexer {
 		index_storage_root: PathBuf,
 		persist_interval: Duration,
 		watch_debounce: Duration,
+		user_ignore_path: PathBuf,
 	) -> Result<Self> {
+		let ignore = IndexIgnoreMatcher::new(workspace_root.clone(), user_ignore_path)
+			.context("failed to build workspace index ignore rules")?;
+
 		let tantivy_path = index_storage_root.join(INDEX_SUBDIRECTORY);
 		fs::create_dir_all(&tantivy_path).with_context(|| {
 			format!(
@@ -140,6 +170,7 @@ impl WorkspaceIndexer {
 		Ok(Self {
 			workspace_root,
 			index_storage_root,
+			ignore: Arc::new(ignore),
 			snapshot: Arc::new(RwLock::new(WorkspaceSnapshot::default())),
 			engine: Arc::new(TantivyEngine {
 				fields,
@@ -188,7 +219,7 @@ impl WorkspaceIndexer {
 
 	/// Rebuilds the in-memory workspace index from disk.
 	pub fn rebuild(&self) -> Result<IndexBuildStats> {
-		let snapshot = build_snapshot(&self.workspace_root)?;
+		let snapshot = build_snapshot(&self.workspace_root, self.ignore.as_ref())?;
 		let stats = stats_from_snapshot(&snapshot);
 		self.write_full_snapshot(snapshot.clone())?;
 
@@ -223,6 +254,27 @@ impl WorkspaceIndexer {
 			.unwrap_or_default()
 	}
 
+	/// Returns lightweight snapshot statistics without cloning file/directory lists.
+	pub fn snapshot_stats(&self) -> IndexBuildStats {
+		let Ok(snapshot) = self.snapshot.read() else {
+			return IndexBuildStats {
+				indexed_files: 0,
+				indexed_directories: 0,
+				indexed_text_files: 0,
+			};
+		};
+
+		IndexBuildStats {
+			indexed_files: snapshot.files.len(),
+			indexed_directories: snapshot.directories.len(),
+			indexed_text_files: snapshot
+				.files
+				.iter()
+				.filter(|file| file.text.is_some())
+				.count(),
+		}
+	}
+
 	/// Performs literal search over indexed text files.
 	pub fn grep_literal(&self, query: &str, case_sensitive: bool) -> Vec<SearchMatch> {
 		if query.is_empty() {
@@ -241,12 +293,21 @@ impl WorkspaceIndexer {
 
 		let mut matches = Vec::new();
 		for file in &snapshot.files {
-			let Some(text) = &file.text else {
+			if let Some(text) = &file.text {
+				collect_literal_matches(
+					file.path.as_str(),
+					text,
+					query,
+					needle.as_deref(),
+					&mut matches,
+				);
 				continue;
-			};
-			collect_literal_matches(
+			}
+
+			let absolute_path = self.workspace_root.join(file.path.as_str());
+			let _ = collect_literal_matches_from_disk(
 				file.path.as_str(),
-				text,
+				absolute_path.as_path(),
 				query,
 				needle.as_deref(),
 				&mut matches,
@@ -275,10 +336,18 @@ impl WorkspaceIndexer {
 
 		let mut matches = Vec::new();
 		for file in &snapshot.files {
-			let Some(text) = &file.text else {
+			if let Some(text) = &file.text {
+				collect_regex_matches(file.path.as_str(), text, &regex, &mut matches);
 				continue;
-			};
-			collect_regex_matches(file.path.as_str(), text, &regex, &mut matches);
+			}
+
+			let absolute_path = self.workspace_root.join(file.path.as_str());
+			let _ = collect_regex_matches_from_disk(
+				file.path.as_str(),
+				absolute_path.as_path(),
+				&regex,
+				&mut matches,
+			);
 		}
 
 		sort_matches(&mut matches);
@@ -295,28 +364,38 @@ impl WorkspaceIndexer {
 		}
 
 		let normalized_path = normalize_relative(path);
-		let snapshot = self
-			.snapshot
-			.read()
-			.map_err(|_| anyhow!("workspace index lock poisoned"))?;
-		let Some(file) = snapshot
-			.files
-			.iter()
-			.find(|file| file.path == normalized_path)
-		else {
-			bail!("indexed file not found: {normalized_path}");
-		};
-		let Some(text) = &file.text else {
-			bail!("file is not available as UTF-8 text: {normalized_path}");
-		};
-
-		let lines = text.lines().collect::<Vec<_>>();
-		if start_line > lines.len() || end_line > lines.len() {
-			bail!("requested line range is out of bounds for file: {normalized_path}");
+		let absolute_path = self.workspace_root.join(normalized_path.as_str());
+		{
+			let snapshot = self
+				.snapshot
+				.read()
+				.map_err(|_| anyhow!("workspace index lock poisoned"))?;
+			if let Some(file) = snapshot
+				.files
+				.iter()
+				.find(|file| file.path == normalized_path)
+				&& let (Some(text), Some(index_modified_at)) = (&file.text, file.modified_at)
+			{
+				let disk_modified_at = fs::metadata(&absolute_path)
+					.ok()
+					.and_then(|metadata| metadata.modified().ok());
+				if disk_modified_at.is_some_and(|disk| disk <= index_modified_at) {
+					return slice_text_lines(
+						text.as_str(),
+						normalized_path.as_str(),
+						start_line,
+						end_line,
+					);
+				}
+			}
 		}
 
-		let slice = &lines[(start_line - 1)..end_line];
-		Ok(slice.join("\n"))
+		read_text_file_range(
+			absolute_path.as_path(),
+			normalized_path.as_str(),
+			start_line,
+			end_line,
+		)
 	}
 
 	/// Starts the background watch thread that reindexes on file saves.
@@ -406,7 +485,16 @@ impl WorkspaceIndexer {
 	fn to_relative_watch_path(&self, path: &Path) -> Option<String> {
 		let relative = path.strip_prefix(&self.workspace_root).ok()?;
 		let normalized = normalize_relative(relative);
-		if normalized.is_empty() || should_skip_directory(normalized.as_str()) {
+		if normalized.is_empty() {
+			return None;
+		}
+		if is_alfredignore_path(normalized.as_str()) {
+			return Some(normalized);
+		}
+		if self
+			.ignore
+			.should_ignore_relative(normalized.as_str(), false)
+		{
 			return None;
 		}
 
@@ -444,11 +532,21 @@ impl WorkspaceIndexer {
 	}
 
 	fn refresh_relative_path(&self, relative_path: &str) -> Result<bool> {
-		if relative_path.is_empty() || should_skip_directory(relative_path) {
+		if relative_path.is_empty() {
 			return Ok(false);
+		}
+		if is_alfredignore_path(relative_path) {
+			self.rebuild()?;
+			return Ok(true);
 		}
 
 		let absolute_path = self.workspace_root.join(relative_path);
+		if self
+			.ignore
+			.should_ignore_relative(relative_path, absolute_path.is_dir())
+		{
+			return Ok(false);
+		}
 		if absolute_path.is_file() {
 			return self.upsert_file(relative_path, absolute_path.as_path());
 		}
@@ -460,7 +558,10 @@ impl WorkspaceIndexer {
 	}
 
 	fn upsert_file(&self, relative_path: &str, absolute_path: &Path) -> Result<bool> {
-		let text = fs::read_to_string(absolute_path).ok();
+		let text = read_indexable_utf8_text(absolute_path, MAX_INDEXED_TEXT_BYTES);
+		let modified_at = fs::metadata(absolute_path)
+			.ok()
+			.and_then(|metadata| metadata.modified().ok());
 		let mut changed = false;
 		let added_directories = {
 			let mut snapshot = self
@@ -472,8 +573,9 @@ impl WorkspaceIndexer {
 			for file in &mut snapshot.files {
 				if file.path == relative_path {
 					updated = true;
-					if file.text != text {
+					if file.text != text || file.modified_at != modified_at {
 						file.text = text.clone();
+						file.modified_at = modified_at;
 						changed = true;
 					}
 					break;
@@ -484,6 +586,7 @@ impl WorkspaceIndexer {
 				snapshot.files.push(IndexedFile {
 					path: relative_path.to_string(),
 					text: text.clone(),
+					modified_at,
 				});
 				snapshot
 					.files
@@ -491,8 +594,11 @@ impl WorkspaceIndexer {
 				changed = true;
 			}
 
-			let added_directories =
-				ensure_parent_directories(relative_path, snapshot.directories.as_mut_slice());
+			let added_directories = ensure_parent_directories(
+				relative_path,
+				self.ignore.as_ref(),
+				snapshot.directories.as_mut_slice(),
+			);
 			if !added_directories.is_empty() {
 				snapshot.directories.extend(added_directories.clone());
 				snapshot
@@ -531,6 +637,7 @@ impl WorkspaceIndexer {
 		scan_directory(
 			&self.workspace_root,
 			absolute_path,
+			self.ignore.as_ref(),
 			&mut scanned_files,
 			&mut scanned_directories,
 		)?;
@@ -783,6 +890,7 @@ impl WorkspaceIndexer {
 				files.push(IndexedFile {
 					path: path.to_string(),
 					text,
+					modified_at: None,
 				});
 			} else if kind == DOC_KIND_DIRECTORY {
 				directories.push(path.to_string());
@@ -809,10 +917,16 @@ impl WorkspaceIndexer {
 	}
 }
 
-fn build_snapshot(workspace_root: &Path) -> Result<WorkspaceSnapshot> {
+fn build_snapshot(workspace_root: &Path, ignore: &IndexIgnoreMatcher) -> Result<WorkspaceSnapshot> {
 	let mut files = Vec::new();
 	let mut directories = Vec::new();
-	scan_directory(workspace_root, workspace_root, &mut files, &mut directories)?;
+	scan_directory(
+		workspace_root,
+		workspace_root,
+		ignore,
+		&mut files,
+		&mut directories,
+	)?;
 
 	files.sort_by(|left, right| compare_paths(left.path.as_str(), right.path.as_str()));
 	directories.sort_by(|left, right| compare_paths(left, right));
@@ -835,6 +949,7 @@ fn stats_from_snapshot(snapshot: &WorkspaceSnapshot) -> IndexBuildStats {
 fn scan_directory(
 	workspace_root: &Path,
 	current_dir: &Path,
+	ignore: &IndexIgnoreMatcher,
 	files: &mut Vec<IndexedFile>,
 	directories: &mut Vec<String>,
 ) -> Result<()> {
@@ -857,20 +972,29 @@ fn scan_directory(
 			.with_context(|| format!("failed to inspect file type for {}", path.display()))?;
 
 		if file_type.is_dir() {
-			if should_skip_directory(relative.as_str()) {
+			if ignore.should_ignore_relative(relative.as_str(), true) {
 				continue;
 			}
 
 			directories.push(relative);
-			scan_directory(workspace_root, &path, files, directories)?;
+			scan_directory(workspace_root, &path, ignore, files, directories)?;
 			continue;
 		}
 
 		if file_type.is_file() {
-			let text = fs::read_to_string(&path).ok();
+			if ignore.should_ignore_relative(relative.as_str(), false) {
+				continue;
+			}
+
+			let modified_at = entry
+				.metadata()
+				.ok()
+				.and_then(|metadata| metadata.modified().ok());
+			let text = read_indexable_utf8_text(path.as_path(), MAX_INDEXED_TEXT_BYTES);
 			files.push(IndexedFile {
 				path: relative,
 				text,
+				modified_at,
 			});
 		}
 	}
@@ -894,14 +1018,11 @@ fn sorted_entries(path: &Path) -> Result<Vec<fs::DirEntry>> {
 	Ok(entries)
 }
 
-fn should_skip_directory(relative_path: &str) -> bool {
-	relative_path == ".git"
-		|| relative_path.starts_with(".git/")
-		|| relative_path == ".agents"
-		|| relative_path.starts_with(".agents/")
-}
-
-fn ensure_parent_directories(relative_file: &str, directories: &mut [String]) -> Vec<String> {
+fn ensure_parent_directories(
+	relative_file: &str,
+	ignore: &IndexIgnoreMatcher,
+	directories: &mut [String],
+) -> Vec<String> {
 	let mut existing = directories
 		.iter()
 		.map(|value| value.as_str())
@@ -910,7 +1031,7 @@ fn ensure_parent_directories(relative_file: &str, directories: &mut [String]) ->
 
 	let mut cursor = relative_file;
 	while let Some((parent, _name)) = cursor.rsplit_once('/') {
-		if parent.is_empty() || should_skip_directory(parent) {
+		if parent.is_empty() || ignore.should_ignore_relative(parent, true) {
 			break;
 		}
 		if !existing.contains(parent) {
@@ -1058,4 +1179,72 @@ fn normalize_relative(path: impl AsRef<Path>) -> String {
 		.replace('\\', "/")
 		.trim_start_matches("./")
 		.to_string()
+}
+
+fn slice_text_lines(text: &str, path: &str, start_line: usize, end_line: usize) -> Result<String> {
+	let mut output = String::new();
+	let mut seen_lines = 0usize;
+	for (index, line) in text.lines().enumerate() {
+		let line_number = index + 1;
+		seen_lines = line_number;
+		if line_number < start_line {
+			continue;
+		}
+		if line_number > end_line {
+			break;
+		}
+		if !output.is_empty() {
+			output.push('\n');
+		}
+		output.push_str(line);
+		if line_number == end_line {
+			break;
+		}
+	}
+
+	if end_line > seen_lines {
+		bail!("requested line range is out of bounds for file: {path}");
+	}
+
+	Ok(output)
+}
+
+fn collect_literal_matches_from_disk(
+	path: &str,
+	absolute_path: &Path,
+	query: &str,
+	query_lower: Option<&str>,
+	results: &mut Vec<SearchMatch>,
+) -> Result<()> {
+	visit_utf8_lines_best_effort(absolute_path, |line_number, line| {
+		let matched = if let Some(needle) = query_lower {
+			line.to_lowercase().contains(needle)
+		} else {
+			line.contains(query)
+		};
+		if matched {
+			results.push(SearchMatch {
+				path: path.to_string(),
+				line: line_number,
+				text: line.to_string(),
+			});
+		}
+	})
+}
+
+fn collect_regex_matches_from_disk(
+	path: &str,
+	absolute_path: &Path,
+	regex: &regex::Regex,
+	results: &mut Vec<SearchMatch>,
+) -> Result<()> {
+	visit_utf8_lines_best_effort(absolute_path, |line_number, line| {
+		if regex.is_match(line) {
+			results.push(SearchMatch {
+				path: path.to_string(),
+				line: line_number,
+				text: line.to_string(),
+			});
+		}
+	})
 }

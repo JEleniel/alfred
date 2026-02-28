@@ -37,11 +37,13 @@ fn fixture_root() -> PathBuf {
 }
 
 fn new_test_indexer(workspace_root: PathBuf, index_root: PathBuf) -> WorkspaceIndexer {
+	let user_ignore_path = index_root.join("missing-user-alfredignore");
 	WorkspaceIndexer::new_with_options(
 		workspace_root,
 		index_root,
 		Duration::from_millis(120),
 		Duration::from_millis(80),
+		user_ignore_path,
 	)
 	.expect("indexer should construct")
 }
@@ -186,4 +188,29 @@ fn initialize_loads_persisted_index_for_workspace() {
 		.expect("index should load from persisted storage");
 
 	assert_eq!(second.list_files(), vec!["persisted.txt".to_string()]);
+}
+
+#[test]
+fn initialize_rebuilds_when_persistence_root_changes() {
+	let workspace = TestDir::new();
+	let storage_a = TestDir::new();
+	let storage_b = TestDir::new();
+	let file_path = workspace.path.join("persisted.txt");
+	fs::write(&file_path, "persist me\n").expect("workspace file should be written");
+
+	let first = new_test_indexer(workspace.path.clone(), storage_a.path.clone());
+	first.rebuild().expect("first index build should succeed");
+	drop(first);
+
+	fs::remove_file(&file_path).expect("workspace file should be removed");
+
+	let second = new_test_indexer(workspace.path.clone(), storage_b.path.clone());
+	second
+		.initialize()
+		.expect("index initialize should rebuild when storage is empty");
+
+	assert!(
+		second.list_files().is_empty(),
+		"index should not consult persisted storage from other location"
+	);
 }
