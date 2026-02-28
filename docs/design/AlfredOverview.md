@@ -4,7 +4,7 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 
 ## Functional Requirements
 
-- Alfred MUST maintain an index of all files in the workspace and their contents.
+- Alfred MUST maintain an index of all files in the workspace not in an ignore list and their contents.
 - Alfred MUST provide a consolidated tool surface that minimizes command-count overhead.
     - Alfred MUST expose `search` for workspace text search (literal and regex).
     - Alfred MUST expose `fs` for file and directory operations, including deterministic bulk move/copy/delete operations.
@@ -12,24 +12,23 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
     - Alfred MUST expose `logs` for deterministic log search/tail operations.
     - Alfred MUST expose `plan` for project-plan CRUD/update operations.
     - Alfred MUST expose `memory` for memory CRUD/search operations.
-- Alfred MUST provide location and context awareness.
+- Alfred MUST provide location awareness.
     - Alfred MUST return the workspace root folder (`workspace_dir`).
+- Alfred MUST provide a dry-run capability for all commands that modify anything, defaulted to true.
 - Alfred MUST provide safe file operations.
     - Alfred MUST support atomic CRUD operations where practical.
     - Alfred MUST support patching with conflict reporting and a duplicate-content safeguard (hard refusal).
-    - Alfred MUST support bulk operations with dry-run support.
-- Alfred MUST create and maintain a project plan in a common format.
-    - Alfred MUST capture tool and diagnostics errors in the plan to track fixes.
-    - Alfred MUST track progress in the plan.
+    - Alfred MUST support bulk filesystem operations
+- Alfred MUST provide commanst to create and maintain a project plan and track progress in a common format.
 - Alfred MUST support constrained background and streaming operations.
     - Bulk filesystem execution MAY run in the background and MUST be pollable via `fs` itself.
     - `logs` MAY support a streaming follow operation.
     - When streaming is supported, Alfred MUST allow at most one active stream at a time.
     - Alfred MUST NOT expose standalone job-control commands.
-- Alfred MUST provide tooling output as JSON or NDJSON where contractually applicable.
+- Alfred MUST provide tooling output as JSON where contractually applicable.
 - Alfred MUST provide local, indexed, searchable memory.
     - Alfred MUST support CRUD operations for individual memory facts.
-    - Alfred MUST support full-text search over stored memory.
+    - Alfred MUST support full-text and regular expression search over stored memory.
     - The memory system MUST be offline-only and MUST NOT depend on any external service.
     - The memory system MUST support explicit memory scopes (`user` and `workspace`) and return the storage scope for retrieved/search results.
     - Alfred MUST issue UUIDs for memory facts at creation time.
@@ -42,7 +41,7 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 
 ## Non-Functional Requirements
 
-- Alfred MUST produce concise and complete JSON or NDJSON output suitable for agents and conservative of tokens.
+- Alfred MUST produce concise and complete JSON output suitable for agents and conservative of tokens.
 - Alfred MUST provide a normalized diagnostics contract for tooling operations.
     - Diagnostics MUST use a consistent schema regardless of source tool.
     - Diagnostics SHOULD support delta reporting between runs (for example new, unchanged, resolved).
@@ -76,7 +75,8 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 
 ## Safety
 
-- Alfred MUST NOT read or write outside the current workspace.
+- Alfred MUST NOT read outside the current workspace with the exception of alfred logs.
+- Alfred MUST NOT write outside the current workspace.
 - Alfred MUST provide a permission model compliant with IDE requirements.
 - Alfred MUST provide configurable policy guardrails with reasonable defaults.
 

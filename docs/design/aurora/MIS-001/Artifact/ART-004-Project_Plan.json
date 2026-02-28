@@ -15,6 +15,6 @@
 			"lock_files": false,
 			"concurrent_writers": "unsupported_last_write_wins"
 		},
-		"note": "Plan writes are atomic (temp + rename). Concurrent writers are unsupported; last-write-wins behavior is acceptable."
+		"note": "Plan updates are all-or-nothing at the file-content level (no partial writes on failure) without temp-file replace/rename strategies. Concurrent writers are unsupported; last-write-wins behavior is acceptable."
 	}
 }

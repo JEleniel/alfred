@@ -86,13 +86,14 @@ The architecture intentionally consolidates the public command set to reduce too
 
 ### `search`
 
-- Purpose: deterministic workspace text search (literal and regex modes).
+- Purpose: deterministic workspace text search.
 - Execution: synchronous.
 - Input:
     - `query`: string.
     - `mode`: optional `"literal" | "regex"` (default `"literal"`).
     - `case_sensitive`: optional boolean (default `false`).
     - `full_text`: optional boolean (default `false`).
+    - `true_regex`: optional boolean (default `false`).
     - `include_pattern`: optional string (glob applied to workspace-relative paths).
     - `exclude_pattern`: optional string (glob applied to workspace-relative paths).
     - `cursor`: optional string.
@@ -110,6 +111,78 @@ Notes:
 - If the workspace index is not available, the tool MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
 - Result ordering:
     - `matches` MUST be stable-sorted lexicographically, case-insensitive by `path`, then by `line` ascending.
+
+Regex modes and performance:
+
+- `mode: "regex"` is term-/token-based by default and MUST use Tantivy regex queries.
+    - Single-term regex searches MUST use `RegexQuery`.
+    - Multi-term regex searches (whitespace-separated terms) MUST use `RegexPhraseQuery` with adjacent-term semantics.
+    - This is the default regex behavior.
+- `true_regex: true` enables full regular-expression matching over raw file text.
+    - When `true_regex` is `true`, the implementation MUST perform a two-phase search:
+        1. Prefilter candidate files using an n-gram index.
+        2. Verify candidates by running the full regex over raw UTF-8 text and returning line-level matches.
+    - Prefiltering MUST be sound: it MUST NOT exclude any file that could contain a true match.
+        - If no safe literals can be extracted from the regex for prefiltering, prefiltering MUST degrade to a no-op (all candidate files).
+
+Asynchronous n-gram indexing:
+
+- The workspace index MUST include an additional n-gram analyzed view of indexed text built using Tantivy's `NgramTokenizer`.
+- N-gram indexing MAY be performed asynchronously (eventual consistency is acceptable) so long as `true_regex: true` remains correct by verifying matches against raw text.
+- The n-gram field is an internal performance mechanism and MUST NOT change the observable match semantics beyond reducing the candidate set for verification.
+
+Parameter interactions:
+
+- `true_regex` is only meaningful when `mode: "regex"`.
+    - If `true_regex: true` is supplied with `mode: "literal"`, Alfred MUST fail deterministically with an invalid-arguments error.
+
+## Prompt surface (MCP)
+
+Alfred provides an MCP prompt intended to teach agents and humans how to use the tool surface efficiently.
+
+### `alfred_agent`
+
+- Purpose: usage guidance for Alfred MCP tools.
+- The prompt MUST include search construction guidance:
+    - Prefer `search` over external workspace scans.
+    - Start with `mode: "literal"` and add `include_pattern` / `exclude_pattern` to narrow the candidate set.
+    - Use `mode: "regex"` for term-/token-based regex.
+        - Keep regex terms selective; avoid patterns like `.*` when a literal anchor can be used.
+        - For multi-term intent (e.g., `foo` near `bar`), use whitespace-separated regex terms so Alfred can use `RegexPhraseQuery`.
+    - Use `true_regex: true` only when you specifically need full regex semantics over raw text.
+        - Always combine `true_regex: true` with at least one of:
+            - restrictive `include_pattern` / `exclude_pattern`,
+            - a required literal substring in the regex (to improve n-gram prefiltering).
+    - Use paging (`cursor`/`limit`) to keep calls bounded.
+
+Example calls:
+
+```json
+{
+    "query": "Hello from",
+    "mode": "literal",
+    "include_pattern": "**/*.{md,txt}",
+    "limit": 50
+}
+```
+
+```json
+{
+    "query": "Hello (from|to)",
+    "mode": "regex",
+    "limit": 50
+}
+```
+
+```json
+{
+    "query": "Hello from (alpha|beta)",
+    "mode": "regex",
+    "true_regex": true,
+    "include_pattern": "**/*.{md,txt}",
+    "limit": 50
+}
+```
 
 ## File and directory operations tool
 

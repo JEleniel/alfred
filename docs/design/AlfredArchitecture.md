@@ -69,7 +69,7 @@ The architecture encodes several non-negotiables:
 - Diagnostics normalization: consistent shape for errors/warnings and predictable error taxonomy.
 - Guardrails: workspace boundary enforcement, explicit out-of-scope behaviors, and local-only execution.
 - Versioning discipline: SemVer with schema/version lockstep and conformance testing.
-- Cross-platform semantics: filesystem/path normalization, atomic write semantics, cancellation behavior, and encoding-safe path reporting are modeled explicitly via constraints `CNS-015` through `CNS-021`.
+- Cross-platform semantics: filesystem/path normalization, safe mutation semantics (no partial writes; no temp-file replace/rename), cancellation behavior, and encoding-safe path reporting are modeled explicitly via constraints `CNS-015` through `CNS-021`.
 
 For concrete contracts (including memory CRUD/search), see:
 
@@ -83,7 +83,7 @@ For the traceability view (drivers to requirements to capabilities to features t
 
 The Aurora model includes an explicit threat model rooted at `THM-001`. It assumes (at minimum) one scenario where the agent/client is malicious or compromised and attempts forbidden actions such as workspace boundary escape or unauthorized destructive mutations.
 
-Cross-platform caveats that can impact safety and determinism (symlinks/junctions, atomic replace differences, shell portability, cancellation semantics, and encoding/path handling) are captured as model constraints/controls and reflected in the security view.
+Cross-platform caveats that can impact safety and determinism (symlinks/junctions, file locking and mutation differences, shell portability, cancellation semantics, and encoding/path handling) are captured as model constraints/controls and reflected in the security view.
 
 For the rendered security view, see [Security.svg](./MIS-001/Views/Security.svg).
 
@@ -106,3 +106,6 @@ For the model deployment view, see [Deployment.svg](./MIS-001/Views/Deployment.s
     - Read operations for commands are limited to the workspace and alfred logs. The log exception exists to support develoment, troubleshooting, and support.
     - All operations that modify the workspace have a "dry-run" capability, on by default.
 - Several elements have been implemented to prevent blocking. Indexing is on a separate thread, allowing it to run independantly. Indices are persisted periodically to disk and loaded at startup, making the initial indexavailability even faster.
+- Alfred is designed to prevent several comnmon failure modes of agents:
+    - Patches that would create duplicate content are blocked.
+    - Complicate write and replace processes are replaced with deterministic, in place, reversible patching.

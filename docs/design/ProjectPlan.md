@@ -70,10 +70,10 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
 7. [x] Implement `plan_update`
     - Priority: 2
     - Cards: "ART-004", "STR-004", "CNS-015"
-    - Description: Update the status of a specific plan item with deterministic, atomic writes.
+    - Description: Update the status of a specific plan item with deterministic, all-or-nothing updates (no partial writes).
     - Deliverables:
         - Implement `plan_update` per `docs/design/ToolContracts.md`.
-        - Ensure writes are atomic (write temp + rename).
+        - Ensure plan updates are all-or-nothing at the file-content level (no partial writes on failure) without using temp-file replace/rename strategies.
         - Avoid lock files; concurrent writers are unsupported.
         - Add tests for missing ids and successful updates.
     - Status: Completed
@@ -221,7 +221,7 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
     - Description: Merge plan read/add/edit/update/delete behaviors into one deterministic command.
     - Deliverables:
         - Implement operation routing and deterministic validation.
-        - Ensure writes are atomic (write temp + rename).
+        - Ensure plan updates are all-or-nothing at the file-content level (no partial writes on failure) without using temp-file replace/rename strategies.
         - Avoid lock files; concurrent writers are unsupported.
         - Add tests for successful writes.
     - Status: Planned

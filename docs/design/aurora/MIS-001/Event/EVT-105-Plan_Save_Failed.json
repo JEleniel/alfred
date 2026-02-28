@@ -3,7 +3,7 @@
 	"id": "EVT-105",
 	"card_type": "Event",
 	"name": "Plan Save Failed",
-	"description": "Plan save failed (IO error, permission issue, or atomic write failure).",
+	"description": "Plan save failed (IO error, permission issue, or mutation safety refusal).",
 	"links": [
 		{
 			"relationship": "transitions to",
