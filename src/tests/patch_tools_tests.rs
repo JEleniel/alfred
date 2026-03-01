@@ -5,8 +5,9 @@ use serde_json::json;
 use uuid::Uuid;
 
 use crate::configuration::AppConfig;
+use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
-use crate::tools::dispatch_tool_call;
+use crate::tools::{ToolCallResult, dispatch_tool_call as dispatch_tool_call_outcome};
 
 struct TestDir {
 	path: PathBuf,
@@ -37,6 +38,19 @@ fn build_services(workspace_root: PathBuf) -> ServiceContainer {
 	)
 	.expect("config should load from explicit paths");
 	ServiceContainer::new(config).expect("service container should build")
+}
+
+fn dispatch_tool_call(
+	name: &str,
+	args: serde_json::Value,
+	services: &ServiceContainer,
+) -> Result<serde_json::Value, AlfredError> {
+	match dispatch_tool_call_outcome(name, args, services)? {
+		ToolCallResult::Ok(data) => Ok(data),
+		ToolCallResult::Pending { .. } => Err(AlfredError::Internal(
+			"unexpected pending response in sync test".to_string(),
+		)),
+	}
 }
 
 #[test]
@@ -168,5 +182,49 @@ fn patch_tool_emits_duplicate_content_warning() {
 		warnings
 			.iter()
 			.any(|warning| warning["kind"] == "duplicate_content_risk")
+	);
+}
+
+#[cfg(unix)]
+#[test]
+fn patch_tool_rejects_symlink_escape_targets() {
+	use std::os::unix::fs::symlink;
+
+	let workspace = TestDir::new("patch-tool-symlink-escape-tests");
+	let services = build_services(workspace.path.clone());
+
+	let outside = TestDir::new("patch-tool-symlink-escape-outside");
+	let outside_file = outside.path.join("outside.txt");
+	fs::write(&outside_file, "alpha\nbeta\n").expect("outside fixture file should write");
+
+	let link_path = workspace.path.join("escape.txt");
+	symlink(&outside_file, &link_path).expect("symlink should be created");
+
+	let patch_text = "--- a/escape.txt\n+++ b/escape.txt\n@@ -1,2 +1,2 @@\n alpha\n-beta\n+gamma\n";
+	let apply_args = json!({
+		"operation": "apply",
+		"dry_run": false,
+		"patches": [
+			{
+				"path": "escape.txt",
+				"patch": patch_text,
+			}
+		]
+	});
+
+	let apply_result =
+		dispatch_tool_call("patch", apply_args, &services).expect("apply call should succeed");
+	assert_eq!(apply_result["files"][0]["patched"], false);
+
+	let conflicts = apply_result["files"][0]["conflicts"]
+		.as_array()
+		.expect("apply result should include conflicts array");
+	let message = conflicts
+		.first()
+		.and_then(|value| value["message"].as_str())
+		.expect("conflict message should be present");
+	assert!(
+		message.contains(crate::workspace_boundary::SYMLINK_JUNCTION_ESCAPE_MESSAGE),
+		"unexpected conflict message: {message}"
 	);
 }

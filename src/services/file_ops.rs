@@ -129,7 +129,15 @@ impl FileOperationsEngine {
 	) -> Result<(PatchFileResult, Option<RevertPatchEntry>), AlfredError> {
 		let path = normalize_workspace_path(&request.path)?;
 		let absolute_path = self.workspace_root.join(path.as_str());
-		let original = read_optional_utf8(path.as_str(), &absolute_path)?;
+		let read_path =
+			match crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
+				self.workspace_root.as_path(),
+				absolute_path.as_path(),
+			)? {
+				Some(resolved) => resolved,
+				None => absolute_path.clone(),
+			};
+		let original = read_optional_utf8(path.as_str(), read_path.as_path())?;
 
 		let patch_text = ensure_patch_includes_header(path.as_str(), request.patch.as_str());
 		let mut parsed = mpatch::parse_single_patch(patch_text.as_str()).map_err(|error| {
@@ -172,7 +180,11 @@ impl FileOperationsEngine {
 			));
 		}
 
-		let bytes_written = write_text_atomic(&absolute_path, &applied.new_content)?;
+		let write_path = crate::workspace_boundary::resolve_write_target_within_workspace_root(
+			self.workspace_root.as_path(),
+			absolute_path.as_path(),
+		)?;
+		let bytes_written = write_text_atomic(write_path.as_path(), &applied.new_content)?;
 		let undo_entry = RevertPatchEntry {
 			path: path.clone(),
 			reverse_patch: parsed.invert(),
@@ -196,7 +208,15 @@ impl FileOperationsEngine {
 		dry_run: bool,
 	) -> Result<RevertFileResult, AlfredError> {
 		let absolute_path = self.workspace_root.join(entry.path.as_str());
-		let current = read_optional_utf8(entry.path.as_str(), &absolute_path)?;
+		let read_path =
+			match crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
+				self.workspace_root.as_path(),
+				absolute_path.as_path(),
+			)? {
+				Some(resolved) => resolved,
+				None => absolute_path.clone(),
+			};
+		let current = read_optional_utf8(entry.path.as_str(), read_path.as_path())?;
 		let Some(current) = current else {
 			return Ok(RevertFileResult {
 				path: entry.path.clone(),
@@ -246,7 +266,11 @@ impl FileOperationsEngine {
 			});
 		}
 
-		let bytes_written = write_text_atomic(&absolute_path, reverted.new_content.as_str())?;
+		let write_path = crate::workspace_boundary::resolve_write_target_within_workspace_root(
+			self.workspace_root.as_path(),
+			absolute_path.as_path(),
+		)?;
+		let bytes_written = write_text_atomic(write_path.as_path(), reverted.new_content.as_str())?;
 		Ok(RevertFileResult {
 			path: entry.path.clone(),
 			reverted: true,
@@ -292,7 +316,7 @@ struct RevertPatchEntry {
 }
 
 fn normalize_workspace_path(raw_path: &str) -> Result<String, AlfredError> {
-	let trimmed = raw_path.trim().replace('\\', "/");
+	let trimmed = crate::path_encoding::normalize_inbound_separators(raw_path.trim());
 	if trimmed.is_empty() {
 		return Err(AlfredError::InvalidArgument(
 			"path must not be empty".to_string(),

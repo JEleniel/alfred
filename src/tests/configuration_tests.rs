@@ -3,8 +3,8 @@ use std::path::Path;
 use std::path::PathBuf;
 
 use crate::configuration::{
-	AppConfig, IndexPersistenceLocation, default_runtime_log_path, default_workspace_index_root,
-	default_workspace_local_index_root,
+	AppConfig, HostPaths, IndexPersistenceLocation, StorageUserLocation, StorageWorkspaceLocation,
+	default_runtime_log_path, default_workspace_index_root, default_workspace_local_index_root,
 };
 use uuid::Uuid;
 
@@ -125,7 +125,7 @@ fn config_load_honors_workspace_storage_root_for_artifacts() {
 	.expect("workspace config parent directory should be created");
 	fs::write(
 		&workspace_config_path,
-		r#"{"workspace":{"storage":{"root":".state"}},"index":{"enabled":false,"persistence":{"location":"workspace"}}}"#,
+		r#"{"workspace":{"storage":{"root":".state"}},"logging":{"runtime":{"location":"workspace"}},"index":{"enabled":false,"persistence":{"location":"workspace"}}}"#,
 	)
 	.expect("workspace config should be written");
 
@@ -260,4 +260,125 @@ fn config_derives_user_ignore_path_from_user_config_parent() {
 			.expect("user config parent should resolve")
 			.join(".alfredignore")
 	);
+}
+
+#[test]
+fn config_load_with_host_paths_supports_workspace_relocated_layout() {
+	let workspace = TestDir::new("configuration-storage-relocated");
+	let host_config = workspace.path.join("host_config");
+	let host_data = workspace.path.join("host_data");
+	fs::create_dir_all(host_config.join("alfred")).expect("host config dir should be created");
+	fs::create_dir_all(host_data.join("alfred")).expect("host data dir should be created");
+
+	// User config opts into workspace relocation.
+	fs::write(
+		host_config.join("alfred").join("config.json"),
+		r#"{
+			"storage": {"workspace": {"location": "user"}},
+			"workspace": {"storage": {"root": ".state"}},
+			"index": {"enabled": false}
+		}"#,
+	)
+	.expect("user config should be written");
+
+	// Workspace config is now expected under the host config directory keyed by workspace id.
+	let host = HostPaths {
+		user_config_dir: Some(host_config.clone()),
+		user_data_dir: Some(host_data.clone()),
+		user_logs_dir: Some(workspace.path.join("host_logs")),
+		system_logs_dir: None,
+	};
+	let config = AppConfig::load_with_host_paths(workspace.path.clone(), host)
+		.expect("config should load with host paths");
+
+	assert_eq!(
+		config.storage_workspace_location,
+		StorageWorkspaceLocation::User
+	);
+	assert_eq!(config.storage_user_location, StorageUserLocation::Os);
+	assert_eq!(
+		config.workspace_config_path,
+		host_config
+			.join("alfred")
+			.join(config.workspace_id.as_str())
+			.join("config.json")
+	);
+	assert_eq!(
+		config.workspace_ignore_path,
+		Some(
+			host_config
+				.join("alfred")
+				.join(config.workspace_id.as_str())
+				.join(".alfredignore")
+		)
+	);
+	assert_eq!(
+		config.effective_workspace_storage_root(),
+		host_data
+			.join("alfred")
+			.join(config.workspace_id.as_str())
+			.join("data")
+	);
+
+	// Relocated layout should not scaffold a workspace-local storage root by default.
+	assert!(!workspace.path.join(".alfred").exists());
+	assert!(!workspace.path.join(".state").exists());
+}
+
+#[test]
+fn config_load_with_host_paths_supports_workspace_local_user_profile_layout() {
+	let workspace = TestDir::new("configuration-storage-user-workspace");
+	let host_config = workspace.path.join("host_config");
+	let host_data = workspace.path.join("host_data");
+	fs::create_dir_all(host_config.join("alfred")).expect("host config dir should be created");
+	fs::create_dir_all(host_data.join("alfred")).expect("host data dir should be created");
+
+	// User config opts into workspace-local user profile, and also sets a non-default workspace
+	// storage root so discovery can locate the workspace-local config.
+	fs::write(
+		host_config.join("alfred").join("config.json"),
+		r#"{
+			"storage": {"user": {"location": "workspace"}},
+			"workspace": {"storage": {"root": ".state"}}
+		}"#,
+	)
+	.expect("user config should be written");
+
+	let host = HostPaths {
+		user_config_dir: Some(host_config.clone()),
+		user_data_dir: Some(host_data.clone()),
+		user_logs_dir: Some(workspace.path.join("host_logs")),
+		system_logs_dir: None,
+	};
+	let config = AppConfig::load_with_host_paths(workspace.path.clone(), host)
+		.expect("config should load with host paths");
+
+	assert_eq!(config.storage_user_location, StorageUserLocation::Workspace);
+	assert_eq!(
+		config.storage_workspace_location,
+		StorageWorkspaceLocation::Workspace
+	);
+	assert_eq!(
+		config.user_config_path,
+		workspace
+			.path
+			.join(".state")
+			.join("user")
+			.join("config.json")
+	);
+	assert_eq!(
+		config.user_ignore_path,
+		workspace
+			.path
+			.join(".state")
+			.join("user")
+			.join(".alfredignore")
+	);
+	assert_eq!(
+		config.effective_user_memory_root(),
+		workspace.path.join(".state").join("user").join("memory")
+	);
+
+	// Workspace-local user profile should scaffold the workspace storage root.
+	assert!(workspace.path.join(".state").join(".gitignore").exists());
 }

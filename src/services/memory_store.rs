@@ -12,6 +12,9 @@ use tantivy::schema::{Field, STORED, STRING, Schema, TEXT, Value};
 use tantivy::{Index, IndexReader, IndexWriter, ReloadPolicy, TantivyDocument, Term, doc};
 
 use crate::errors::AlfredError;
+use crate::redaction::Redactor;
+
+use std::sync::{Arc, Mutex, OnceLock};
 
 const INDEX_WRITER_HEAP_BYTES: usize = 20_000_000;
 
@@ -59,11 +62,47 @@ struct MemoryFields {
 struct MemoryDocumentStore {
 	fields: MemoryFields,
 	reader: IndexReader,
-	writer: IndexWriter,
+	writer: Option<IndexWriter>,
 }
 
 impl MemoryDocumentStore {
-	fn open(root: &Path) -> Result<Self, AlfredError> {
+	fn open_for_read(root: &Path) -> Result<Self, AlfredError> {
+		fs::create_dir_all(root).map_err(|error| {
+			AlfredError::IoError(format!(
+				"failed to create memory store directory {}: {error}",
+				root.display()
+			))
+		})?;
+
+		let schema = memory_schema();
+		let fields = resolve_schema_fields(&schema)?;
+		let directory = MmapDirectory::open(root).map_err(|error| {
+			AlfredError::IoError(format!(
+				"failed to open memory store directory {}: {error}",
+				root.display()
+			))
+		})?;
+		let index = Index::open_or_create(directory, schema).map_err(|error| {
+			AlfredError::Internal(format!(
+				"failed to open or create memory store index: {error}"
+			))
+		})?;
+		let reader = index
+			.reader_builder()
+			.reload_policy(ReloadPolicy::Manual)
+			.try_into()
+			.map_err(|error| {
+				AlfredError::Internal(format!("failed to initialize memory store reader: {error}"))
+			})?;
+
+		Ok(Self {
+			fields,
+			reader,
+			writer: None,
+		})
+	}
+
+	fn open_for_write(root: &Path) -> Result<Self, AlfredError> {
 		fs::create_dir_all(root).map_err(|error| {
 			AlfredError::IoError(format!(
 				"failed to create memory store directory {}: {error}",
@@ -98,7 +137,7 @@ impl MemoryDocumentStore {
 		Ok(Self {
 			fields,
 			reader,
-			writer,
+			writer: Some(writer),
 		})
 	}
 
@@ -138,8 +177,10 @@ impl MemoryDocumentStore {
 	}
 
 	fn upsert(&mut self, fact: &MemoryFact) -> Result<(), AlfredError> {
-		self.writer
-			.delete_term(Term::from_field_text(self.fields.id, fact.id.as_str()));
+		let writer = self.writer.as_mut().ok_or_else(|| {
+			AlfredError::Internal("memory store writer is not available".to_string())
+		})?;
+		writer.delete_term(Term::from_field_text(self.fields.id, fact.id.as_str()));
 
 		let mut document = TantivyDocument::default();
 		document.add_text(self.fields.id, fact.id.as_str());
@@ -154,20 +195,25 @@ impl MemoryDocumentStore {
 			document.add_text(self.fields.tags, tag.as_str());
 		}
 
-		self.writer.add_document(document).map_err(|error| {
+		writer.add_document(document).map_err(|error| {
 			AlfredError::Internal(format!("failed to add memory document: {error}"))
 		})?;
 		self.commit()
 	}
 
 	fn delete(&mut self, id: &str) -> Result<(), AlfredError> {
-		self.writer
-			.delete_term(Term::from_field_text(self.fields.id, id));
+		let writer = self.writer.as_mut().ok_or_else(|| {
+			AlfredError::Internal("memory store writer is not available".to_string())
+		})?;
+		writer.delete_term(Term::from_field_text(self.fields.id, id));
 		self.commit()
 	}
 
 	fn commit(&mut self) -> Result<(), AlfredError> {
-		self.writer.commit().map_err(|error| {
+		let writer = self.writer.as_mut().ok_or_else(|| {
+			AlfredError::Internal("memory store writer is not available".to_string())
+		})?;
+		writer.commit().map_err(|error| {
 			AlfredError::Internal(format!("failed to commit memory store changes: {error}"))
 		})?;
 		self.reader.reload().map_err(|error| {
@@ -179,32 +225,50 @@ impl MemoryDocumentStore {
 /// Represents configured memory store locations.
 #[derive(Debug, Clone)]
 pub struct MemoryStore {
-	user_store_path: PathBuf,
-	workspace_store_path: PathBuf,
+	redactor: Arc<Redactor>,
+	user_store_path: Option<PathBuf>,
+	workspace_store_path: Option<PathBuf>,
 }
 
 impl MemoryStore {
 	/// Creates memory store paths for user and workspace scopes.
-	pub fn new(user_store_path: PathBuf, workspace_store_path: PathBuf) -> Self {
+	pub fn new(
+		redactor: Arc<Redactor>,
+		user_store_path: Option<PathBuf>,
+		workspace_store_path: Option<PathBuf>,
+	) -> Self {
 		Self {
+			redactor,
 			user_store_path,
 			workspace_store_path,
 		}
 	}
 
 	/// Returns the configured user store path.
-	pub fn user_store_path(&self) -> &Path {
-		&self.user_store_path
+	pub fn user_store_path(&self) -> Option<&Path> {
+		self.user_store_path.as_deref()
 	}
 
 	/// Returns the configured workspace store path.
-	pub fn workspace_store_path(&self) -> &Path {
-		&self.workspace_store_path
+	pub fn workspace_store_path(&self) -> Option<&Path> {
+		self.workspace_store_path.as_deref()
 	}
 
 	/// Upserts a memory fact and returns the stable id.
 	pub fn put(&self, input: MemoryFactInput) -> Result<String, AlfredError> {
 		validate_input(&input)?;
+		let mut input = input;
+		input.subject = self.redactor.redact_text(input.subject.as_str());
+		input.fact = self.redactor.redact_text(input.fact.as_str());
+		input.citations = self.redactor.redact_text(input.citations.as_str());
+		input.reason = self.redactor.redact_text(input.reason.as_str());
+		input.category = self.redactor.redact_text(input.category.as_str());
+		input.tags = input
+			.tags
+			.into_iter()
+			.map(|tag| self.redactor.redact_text(tag.as_str()))
+			.collect();
+
 		let tags = normalize_tags(input.tags);
 		let existing = self.find_effective_by_id(input.id.as_str())?;
 		let now = now_timestamp();
@@ -224,13 +288,21 @@ impl MemoryStore {
 			updated_at: now,
 		};
 
-		let mut target = if self.has_id(self.workspace_store_path.as_path(), fact.id.as_str())? {
-			open_store(self.workspace_store_path.as_path())?
+		let target_path = if let Some(workspace_path) = self.workspace_store_path.as_deref()
+			&& self.has_id(workspace_path, fact.id.as_str())?
+		{
+			workspace_path
+		} else if let Some(user_path) = self.user_store_path.as_deref() {
+			user_path
+		} else if let Some(workspace_path) = self.workspace_store_path.as_deref() {
+			workspace_path
 		} else {
-			open_store(self.user_store_path.as_path())?
+			return Err(AlfredError::InvalidArgument(
+				"memory storage is disabled by configuration".to_string(),
+			));
 		};
 
-		target.upsert(&fact)?;
+		with_store_for_write(target_path, |store| store.upsert(&fact))?;
 		Ok(fact.id)
 	}
 
@@ -244,18 +316,24 @@ impl MemoryStore {
 	/// Deletes a memory fact by id.
 	pub fn delete(&self, id: &str, dry_run: bool) -> Result<bool, AlfredError> {
 		validate_id(id)?;
-		let user_exists = self.has_id(self.user_store_path.as_path(), id)?;
-		let workspace_exists = self.has_id(self.workspace_store_path.as_path(), id)?;
+		let user_exists = match self.user_store_path.as_deref() {
+			Some(path) => self.has_id(path, id)?,
+			None => false,
+		};
+		let workspace_exists = match self.workspace_store_path.as_deref() {
+			Some(path) => self.has_id(path, id)?,
+			None => false,
+		};
 		let deleted = user_exists || workspace_exists;
 		if !deleted || dry_run {
 			return Ok(deleted);
 		}
 
-		if user_exists {
-			open_store(self.user_store_path.as_path())?.delete(id)?;
+		if user_exists && let Some(user_path) = self.user_store_path.as_deref() {
+			with_store_for_write(user_path, |store| store.delete(id))?;
 		}
-		if workspace_exists {
-			open_store(self.workspace_store_path.as_path())?.delete(id)?;
+		if workspace_exists && let Some(workspace_path) = self.workspace_store_path.as_deref() {
+			with_store_for_write(workspace_path, |store| store.delete(id))?;
 		}
 
 		Ok(true)
@@ -264,11 +342,15 @@ impl MemoryStore {
 	/// Returns the effective merged set of memory facts.
 	pub fn list_effective(&self) -> Result<Vec<MemoryFact>, AlfredError> {
 		let mut merged = HashMap::<String, MemoryFact>::new();
-		for fact in open_store(self.user_store_path.as_path())?.read_all()? {
-			merged.insert(fact.id.clone(), fact);
+		if let Some(user_path) = self.user_store_path.as_deref() {
+			for fact in open_store(user_path)?.read_all()? {
+				merged.insert(fact.id.clone(), fact);
+			}
 		}
-		for fact in open_store(self.workspace_store_path.as_path())?.read_all()? {
-			merged.insert(fact.id.clone(), fact);
+		if let Some(workspace_path) = self.workspace_store_path.as_deref() {
+			for fact in open_store(workspace_path)?.read_all()? {
+				merged.insert(fact.id.clone(), fact);
+			}
 		}
 
 		let mut facts = merged.into_values().collect::<Vec<_>>();
@@ -282,23 +364,54 @@ impl MemoryStore {
 	}
 
 	fn find_effective_by_id(&self, id: &str) -> Result<Option<MemoryFact>, AlfredError> {
-		if let Some(found) = open_store(self.workspace_store_path.as_path())?
-			.read_all()?
-			.into_iter()
-			.find(|fact| fact.id == id)
+		if let Some(workspace_path) = self.workspace_store_path.as_deref()
+			&& let Some(found) = open_store(workspace_path)?
+				.read_all()?
+				.into_iter()
+				.find(|fact| fact.id == id)
 		{
 			return Ok(Some(found));
 		}
 
-		Ok(open_store(self.user_store_path.as_path())?
-			.read_all()?
-			.into_iter()
-			.find(|fact| fact.id == id))
+		if let Some(user_path) = self.user_store_path.as_deref() {
+			return Ok(open_store(user_path)?
+				.read_all()?
+				.into_iter()
+				.find(|fact| fact.id == id));
+		}
+
+		Ok(None)
 	}
 }
 
 fn open_store(configured_path: &Path) -> Result<MemoryDocumentStore, AlfredError> {
-	MemoryDocumentStore::open(store_index_root(configured_path).as_path())
+	MemoryDocumentStore::open_for_read(store_index_root(configured_path).as_path())
+}
+
+fn with_store_for_write<T>(
+	configured_path: &Path,
+	f: impl FnOnce(&mut MemoryDocumentStore) -> Result<T, AlfredError>,
+) -> Result<T, AlfredError> {
+	let root = store_index_root(configured_path);
+	let lock = writer_lock_for_store(root.as_path())?;
+	let _guard = lock
+		.lock()
+		.map_err(|_| AlfredError::Internal("memory store writer lock is poisoned".to_string()))?;
+
+	let mut store = MemoryDocumentStore::open_for_write(root.as_path())?;
+	f(&mut store)
+}
+
+fn writer_lock_for_store(root: &Path) -> Result<Arc<Mutex<()>>, AlfredError> {
+	static LOCKS: OnceLock<Mutex<HashMap<PathBuf, Arc<Mutex<()>>>>> = OnceLock::new();
+	let locks = LOCKS.get_or_init(|| Mutex::new(HashMap::new()));
+	let mut guard = locks
+		.lock()
+		.map_err(|_| AlfredError::Internal("memory store lock registry is poisoned".to_string()))?;
+	Ok(guard
+		.entry(root.to_path_buf())
+		.or_insert_with(|| Arc::new(Mutex::new(())))
+		.clone())
 }
 
 fn store_index_root(configured_path: &Path) -> PathBuf {

@@ -5,10 +5,12 @@ pub mod configuration;
 pub mod diagnostics;
 pub mod errors;
 pub mod logging;
+pub mod path_encoding;
 pub mod protocol;
 pub mod redaction;
 pub mod services;
 pub mod tools;
+pub mod workspace_boundary;
 
 /// Bootstraps and runs the Alfred server process.
 pub async fn run() -> anyhow::Result<()> {
@@ -45,6 +47,10 @@ mod indexer_tests;
 mod workspace_query_tests;
 
 #[cfg(test)]
+#[path = "tests/fs_tools_tests.rs"]
+mod fs_tools_tests;
+
+#[cfg(test)]
 #[path = "tests/log_tools_tests.rs"]
 mod log_tools_tests;
 
@@ -63,3 +69,7 @@ mod patch_tools_tests;
 #[cfg(test)]
 #[path = "tests/status_tools_tests.rs"]
 mod status_tools_tests;
+
+#[cfg(test)]
+#[path = "tests/path_encoding_tests.rs"]
+mod path_encoding_tests;

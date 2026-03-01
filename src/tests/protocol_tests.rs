@@ -11,6 +11,12 @@ use crate::protocol::{
 };
 use crate::services::ServiceContainer;
 
+#[cfg(all(unix, not(target_os = "macos")))]
+use std::ffi::OsString;
+
+#[cfg(all(unix, not(target_os = "macos")))]
+use std::os::unix::ffi::OsStringExt;
+
 struct TestDir {
 	path: PathBuf,
 }
@@ -72,6 +78,17 @@ fn build_services_for_fixture(with_index: bool) -> (ServiceContainer, TestDir) {
 			.expect("fixture index should build");
 	}
 	(services, workspace)
+}
+
+#[cfg(all(unix, not(target_os = "macos")))]
+fn write_non_utf8_fixture_file(workspace_root: &Path) -> String {
+	let mut bytes = b"bad-".to_vec();
+	bytes.push(0xFF);
+	bytes.extend_from_slice(b".txt");
+	let filename = OsString::from_vec(bytes);
+	let path = workspace_root.join(filename);
+	fs::write(&path, "hello\n").expect("non-utf8 fixture file should write");
+	"bad-\\xFF.txt".to_string()
 }
 
 fn build_services_for_fixture_with_disabled_tools(
@@ -364,17 +381,18 @@ fn runtime_tools_call_workspace_dir_returns_ok_envelope() {
 }
 
 #[test]
-fn runtime_tools_call_grep_returns_index_matches() {
+fn runtime_tools_call_search_returns_index_matches() {
 	let (services, _workspace) = build_services_for_fixture(true);
 	let frame = json!({
 		"jsonrpc": "2.0",
 		"id": 101,
 		"method": "tools/call",
 		"params": {
-			"name": "grep",
+			"name": "search",
 			"arguments": {
 				"query": "hello",
-				"case_sensitive": false
+				"case_sensitive": false,
+				"mode": "literal"
 			}
 		}
 	});
@@ -391,7 +409,7 @@ fn runtime_tools_call_grep_returns_index_matches() {
 	);
 	let matches = payload["result"]["structuredContent"]["data"]["matches"]
 		.as_array()
-		.expect("grep response should include matches");
+		.expect("search response should include matches");
 	assert_eq!(matches.len(), 2);
 }
 
@@ -433,14 +451,14 @@ fn runtime_tools_call_unknown_tool_returns_error_envelope_with_taxonomy_kind() {
 }
 
 #[test]
-fn runtime_tools_call_grep_when_index_not_ready_has_reason_details() {
+fn runtime_tools_call_search_when_index_not_ready_has_reason_details() {
 	let (services, _workspace) = build_services_for_fixture(false);
 	let frame = json!({
 		"jsonrpc": "2.0",
 		"id": 103,
 		"method": "tools/call",
 		"params": {
-			"name": "grep",
+			"name": "search",
 			"arguments": {
 				"query": "hello"
 			}
@@ -493,9 +511,86 @@ fn pending_envelope_includes_transport_equivalent_metadata() {
 }
 
 #[test]
+fn runtime_tools_call_fs_bulk_background_returns_pending_envelope() {
+	let (services, _workspace) = build_services_for_fixture(false);
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 999,
+		"method": "tools/call",
+		"params": {
+			"name": "fs",
+			"arguments": {
+				"operation": "bulk",
+				"dry_run": false,
+				"args": {
+					"mode": "execute",
+					"run_in_background": true,
+					"operations": [
+						{
+							"kind": "copy",
+							"from": "alpha.txt",
+							"to": "alpha-bg-copy.txt",
+							"overwrite": false,
+							"create_parents": false
+						}
+					]
+				}
+			}
+		}
+	});
+
+	let response = handle_runtime_frame(frame.to_string().as_str(), &services)
+		.expect("runtime frame should parse")
+		.expect("tools/call should return response");
+	let payload: Value = serde_json::from_str(&response).expect("response should be valid JSON");
+
+	assert_eq!(payload["result"]["isError"], json!(false));
+	assert_eq!(
+		payload["result"]["structuredContent"]["status"],
+		json!("pending")
+	);
+	assert_eq!(
+		payload["result"]["structuredContent"]["meta"]["transport_equivalent"]["http_status"],
+		json!(202)
+	);
+	assert_eq!(
+		payload["result"]["structuredContent"]["data"]["poll_with"],
+		json!("fs")
+	);
+
+	let operation_id = payload["result"]["structuredContent"]["data"]["operation_id"]
+		.as_str()
+		.expect("pending data.operation_id should be a string")
+		.to_string();
+	assert_eq!(
+		payload["result"]["structuredContent"]["job_id"],
+		json!(operation_id)
+	);
+	assert!(matches!(
+		payload["result"]["structuredContent"]["data"]["state"].as_str(),
+		Some("queued") | Some("running")
+	));
+
+	for _ in 0..100 {
+		let status = services
+			.jobs
+			.fs_bulk_status(operation_id.as_str())
+			.expect("bulk status should be available");
+		if !matches!(
+			status.state,
+			crate::services::job_manager::FsBulkState::Queued
+				| crate::services::job_manager::FsBulkState::Running
+		) {
+			break;
+		}
+		std::thread::sleep(std::time::Duration::from_millis(10));
+	}
+}
+
+#[test]
 fn runtime_tools_list_omits_policy_disabled_tools() {
 	let (services, _workspace) =
-		build_services_for_fixture_with_disabled_tools(true, vec!["grep".to_string()]);
+		build_services_for_fixture_with_disabled_tools(true, vec!["search".to_string()]);
 	let frame = json!({
 		"jsonrpc": "2.0",
 		"id": 104,
@@ -516,10 +611,77 @@ fn runtime_tools_list_omits_policy_disabled_tools() {
 	let mut sorted_names = names.clone();
 	sorted_names.sort_unstable();
 
-	assert!(!names.contains(&"grep"));
+	assert!(!names.contains(&"search"));
 	assert!(names.contains(&"workspace_dir"));
 	assert!(!names.contains(&"memory_put"));
 	assert_eq!(names, sorted_names);
+}
+
+#[test]
+#[cfg(all(unix, not(target_os = "macos")))]
+fn runtime_tools_call_emits_path_encoded_warning_and_round_trips_encoded_paths() {
+	let (services, workspace) = build_services_for_fixture(false);
+	let encoded_name = write_non_utf8_fixture_file(workspace.path.as_path());
+	services
+		.indexer
+		.rebuild()
+		.expect("fixture index should build");
+
+	let ls_frame = json!({
+		"jsonrpc": "2.0",
+		"id": 200,
+		"method": "tools/call",
+		"params": {"name": "ls", "arguments": {}}
+	});
+	let ls_response = handle_runtime_frame(ls_frame.to_string().as_str(), &services)
+		.expect("runtime frame should parse")
+		.expect("tools/call should return response");
+	let ls_payload: Value =
+		serde_json::from_str(&ls_response).expect("response should be valid JSON");
+
+	let files = ls_payload["result"]["structuredContent"]["data"]["files"]
+		.as_array()
+		.expect("ls should return files array")
+		.iter()
+		.filter_map(|entry| entry.as_str())
+		.collect::<Vec<_>>();
+	assert!(
+		files.contains(&encoded_name.as_str()),
+		"ls should include encoded file name"
+	);
+
+	let warnings = ls_payload["result"]["structuredContent"]["meta"]["warnings"]
+		.as_array()
+		.expect("ls should include warnings when encoded paths are present");
+	assert!(
+		warnings
+			.iter()
+			.any(|warning| warning["kind"] == json!("path_encoded"))
+	);
+
+	let read_frame = json!({
+		"jsonrpc": "2.0",
+		"id": 201,
+		"method": "tools/call",
+		"params": {
+			"name": "read_range",
+			"arguments": {"path": encoded_name, "start_line": 1, "end_line": 1}
+		}
+	});
+	let read_response = handle_runtime_frame(read_frame.to_string().as_str(), &services)
+		.expect("runtime frame should parse")
+		.expect("tools/call should return response");
+	let read_payload: Value =
+		serde_json::from_str(&read_response).expect("response should be valid JSON");
+
+	assert_eq!(
+		read_payload["result"]["structuredContent"]["status"],
+		json!("ok")
+	);
+	assert_eq!(
+		read_payload["result"]["structuredContent"]["data"]["text"],
+		json!("hello")
+	);
 }
 
 #[test]
@@ -563,22 +725,33 @@ fn runtime_tools_call_capabilities_returns_stable_tool_metadata() {
 	assert!(!names.contains(&"memory_put"));
 
 	for tool in tools {
+		let name = tool
+			.get("name")
+			.and_then(Value::as_str)
+			.expect("tool should have name");
+
 		assert_eq!(tool["version"], json!(env!("CARGO_PKG_VERSION")));
 		assert_eq!(tool["schema_version"], json!(env!("CARGO_PKG_VERSION")));
-		assert_eq!(tool["execution_modes"], json!(["sync"]));
+		if name == "logs" {
+			assert_eq!(tool["execution_modes"], json!(["sync", "stream"]));
+		} else if name == "fs" {
+			assert_eq!(tool["execution_modes"], json!(["sync", "background"]));
+		} else {
+			assert_eq!(tool["execution_modes"], json!(["sync"]));
+		}
 	}
 }
 
 #[test]
 fn runtime_tools_call_returns_invalid_argument_for_policy_disabled_tool() {
 	let (services, _workspace) =
-		build_services_for_fixture_with_disabled_tools(true, vec!["grep".to_string()]);
+		build_services_for_fixture_with_disabled_tools(true, vec!["search".to_string()]);
 	let frame = json!({
 		"jsonrpc": "2.0",
 		"id": 105,
 		"method": "tools/call",
 		"params": {
-			"name": "grep",
+			"name": "search",
 			"arguments": {
 				"query": "hello"
 			}

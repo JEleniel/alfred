@@ -10,7 +10,7 @@ use crate::configuration::AppConfig;
 use crate::errors::ToolError;
 use crate::services::ServiceContainer;
 use crate::tools::ToolRegistry;
-use crate::tools::dispatch_tool_call;
+use crate::tools::{ToolCallResult, dispatch_tool_call};
 
 const JSONRPC_VERSION: &str = "2.0";
 const MCP_PROTOCOL_VERSION: &str = "2025-11-05";
@@ -19,6 +19,8 @@ const MCP_PROTOCOL_VERSION: &str = "2025-11-05";
 #[derive(Debug, Clone, Serialize, Deserialize, Eq, PartialEq)]
 pub struct ToolWarning {
 	pub kind: String,
+	#[serde(skip_serializing_if = "Option::is_none")]
+	pub redacted_spans: Option<usize>,
 }
 
 /// Shared metadata attached to all tool results.
@@ -323,7 +325,7 @@ fn build_prompts_get_response(
 		Err(message) => return build_invalid_params_response(jsonrpc, id, message.as_str()),
 	};
 
-	let workspace_root = workspace_root.to_string_lossy().to_string();
+	let workspace_root = crate::path_encoding::render_path(workspace_root.as_path()).text;
 	let (description, text) = match prompt_name.as_str() {
 		"alfred_agent" => (
 			"Alfred MCP usage prompt".to_string(),
@@ -385,8 +387,12 @@ fn build_tools_call_response(
 	let started = Instant::now();
 	let (response_body, is_error) =
 		match dispatch_tool_call(tool_name.as_str(), arguments, services) {
-			Ok(data) => (
+			Ok(ToolCallResult::Ok(data)) => (
 				ToolResponse::ok(data, tool_meta(tool_name.as_str(), started)),
+				false,
+			),
+			Ok(ToolCallResult::Pending { job_id, data }) => (
+				ToolResponse::pending(job_id, data, tool_meta(tool_name.as_str(), started)),
 				false,
 			),
 			Err(error) => (
@@ -395,8 +401,20 @@ fn build_tools_call_response(
 			),
 		};
 
-	let structured_content = serde_json::to_value(response_body)
+	let mut structured_content = serde_json::to_value(response_body)
 		.context("failed to serialize tool-call response envelope")?;
+
+	let redaction_stats = services.redactor.redact_json_value(&mut structured_content);
+	if redaction_stats.redacted_spans > 0 {
+		inject_warning(
+			&mut structured_content,
+			json!({"kind": "redaction", "redacted_spans": redaction_stats.redacted_spans}),
+		);
+	}
+	if contains_encoded_paths(&structured_content) {
+		inject_warning(&mut structured_content, json!({"kind": "path_encoded"}));
+	}
+
 	let text_content = serde_json::to_string(&structured_content)
 		.context("failed to serialize tool-call response text content")?;
 	let response = json!({
@@ -415,6 +433,72 @@ fn build_tools_call_response(
 	});
 
 	serde_json::to_string(&response).context("failed to serialize tools/call response")
+}
+
+fn inject_warning(structured: &mut Value, warning: Value) {
+	let Some(root) = structured.as_object_mut() else {
+		return;
+	};
+	let Some(meta) = root.get_mut("meta").and_then(Value::as_object_mut) else {
+		return;
+	};
+
+	let warnings_value = meta
+		.entry("warnings")
+		.or_insert_with(|| Value::Array(Vec::new()));
+	let Some(warnings) = warnings_value.as_array_mut() else {
+		return;
+	};
+
+	let Some(kind) = warning.get("kind").and_then(Value::as_str) else {
+		return;
+	};
+	if warnings
+		.iter()
+		.any(|existing| existing.get("kind").and_then(Value::as_str) == Some(kind))
+	{
+		return;
+	}
+
+	warnings.push(warning);
+}
+
+fn contains_encoded_paths(value: &Value) -> bool {
+	match value {
+		Value::Object(object) => {
+			for (key, child) in object {
+				match key.as_str() {
+					"path" => {
+						if child.as_str().is_some_and(looks_like_encoded_path) {
+							return true;
+						}
+					}
+					"files" | "directories" | "paths" => {
+						if child.as_array().is_some_and(|items| {
+							items
+								.iter()
+								.filter_map(|item| item.as_str())
+								.any(looks_like_encoded_path)
+						}) {
+							return true;
+						}
+					}
+					_ => {}
+				}
+
+				if contains_encoded_paths(child) {
+					return true;
+				}
+			}
+			false
+		}
+		Value::Array(items) => items.iter().any(contains_encoded_paths),
+		_ => false,
+	}
+}
+
+fn looks_like_encoded_path(text: &str) -> bool {
+	text.contains("\\x") || text.contains("\\u{") || text.contains("\\\\")
 }
 
 fn parse_tool_call_params(params: Option<&Value>) -> std::result::Result<(String, Value), String> {

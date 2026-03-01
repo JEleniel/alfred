@@ -5,6 +5,7 @@ pub mod chain;
 pub mod context;
 pub mod environment;
 pub mod file_mutation;
+pub mod fs;
 pub mod jobs;
 pub mod logs;
 pub mod memory;
@@ -21,11 +22,32 @@ use crate::configuration::AppConfig;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
 
+/// Outcome of a tool dispatch.
+///
+/// Most tools complete synchronously and return [`ToolCallResult::Ok`].
+/// Only `fs` bulk execution may return [`ToolCallResult::Pending`].
+#[derive(Debug, Clone)]
+pub enum ToolCallResult {
+	Ok(Value),
+	Pending { job_id: String, data: Value },
+}
+
+impl ToolCallResult {
+	pub fn ok(data: Value) -> Self {
+		Self::Ok(data)
+	}
+
+	pub fn pending(job_id: String, data: Value) -> Self {
+		Self::Pending { job_id, data }
+	}
+}
+
 use self::capabilities::CapabilityTools;
 use self::chain::ChainTools;
 use self::context::ContextTools;
 use self::environment::EnvironmentTools;
 use self::file_mutation::FileMutationTools;
+use self::fs::FsTools;
 use self::jobs::JobTools;
 use self::logs::LogTools;
 use self::memory::MemoryTools;
@@ -41,6 +63,7 @@ use self::workspace_query::WorkspaceQueryTools;
 pub struct ToolRegistry {
 	pub context: ContextTools,
 	pub workspace_query: WorkspaceQueryTools,
+	pub fs: FsTools,
 	pub file_mutation: FileMutationTools,
 	pub patch: PatchTools,
 	pub status: StatusTools,
@@ -66,6 +89,7 @@ impl ToolRegistry {
 		let mut names = Vec::new();
 		names.extend_from_slice(ContextTools::NAMES);
 		names.extend_from_slice(WorkspaceQueryTools::NAMES);
+		names.extend_from_slice(FsTools::NAMES);
 		names.extend_from_slice(LogTools::NAMES);
 		names.extend_from_slice(PatchTools::NAMES);
 		names.extend_from_slice(StatusTools::NAMES);
@@ -95,7 +119,7 @@ pub fn dispatch_tool_call(
 	name: &str,
 	args: Value,
 	services: &ServiceContainer,
-) -> Result<Value, AlfredError> {
+) -> Result<ToolCallResult, AlfredError> {
 	if !services.config.is_tool_enabled(name) {
 		return Err(AlfredError::InvalidArgument(format!(
 			"tool disabled by policy: {name}"
@@ -103,35 +127,39 @@ pub fn dispatch_tool_call(
 	}
 
 	if let Some(data) = context::dispatch_tool_call(name, services) {
-		return Ok(data);
+		return Ok(ToolCallResult::ok(data));
 	}
 
 	if let Some(data) = capabilities::dispatch_tool_call(name, services) {
-		return Ok(data);
+		return Ok(ToolCallResult::ok(data));
 	}
 
 	if let Some(data) = logs::dispatch_tool_call(name, args.clone(), services)? {
-		return Ok(data);
+		return Ok(ToolCallResult::ok(data));
 	}
 
 	if let Some(data) = plan::dispatch_tool_call(name, args.clone(), services)? {
-		return Ok(data);
+		return Ok(ToolCallResult::ok(data));
 	}
 
 	if let Some(data) = memory::dispatch_tool_call(name, args.clone(), services)? {
-		return Ok(data);
+		return Ok(ToolCallResult::ok(data));
 	}
 
 	if let Some(data) = patch::dispatch_tool_call(name, args.clone(), services)? {
-		return Ok(data);
+		return Ok(ToolCallResult::ok(data));
 	}
 
 	if let Some(data) = status::dispatch_tool_call(name, args.clone(), services)? {
+		return Ok(ToolCallResult::ok(data));
+	}
+
+	if let Some(data) = fs::dispatch_tool_call(name, args.clone(), services)? {
 		return Ok(data);
 	}
 
 	if let Some(data) = workspace_query::dispatch_tool_call(name, args, services)? {
-		return Ok(data);
+		return Ok(ToolCallResult::ok(data));
 	}
 
 	Err(AlfredError::InvalidArgument(format!(

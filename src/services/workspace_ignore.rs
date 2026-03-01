@@ -198,20 +198,30 @@ pub struct IndexIgnoreMatcher {
 	workspace_root: PathBuf,
 	always: Arc<Gitignore>,
 	defaults_and_user: Arc<Gitignore>,
+	workspace_override: Option<Arc<Gitignore>>,
 	ignore_file_cache: RwLock<HashMap<PathBuf, IgnoreFileCacheEntry>>,
 }
 
 impl IndexIgnoreMatcher {
-	pub fn new(workspace_root: PathBuf, user_ignore_path: PathBuf) -> Result<Self> {
+	pub fn new(
+		workspace_root: PathBuf,
+		user_ignore_path: PathBuf,
+		workspace_ignore_path: Option<PathBuf>,
+	) -> Result<Self> {
 		let always = build_matcher_from_patterns(&workspace_root, ALWAYS_EXCLUDED_PATTERNS)
 			.context("failed to compile always-excluded index patterns")?;
 		let defaults_and_user = build_defaults_and_user_matcher(&workspace_root, user_ignore_path)
 			.context("failed to compile default index ignore patterns")?;
+		let workspace_override = build_workspace_override_matcher(
+			workspace_root.as_path(),
+			workspace_ignore_path.as_deref(),
+		);
 
 		Ok(Self {
 			workspace_root,
 			always: Arc::new(always),
 			defaults_and_user: Arc::new(defaults_and_user),
+			workspace_override,
 			ignore_file_cache: RwLock::new(HashMap::new()),
 		})
 	}
@@ -255,6 +265,9 @@ impl IndexIgnoreMatcher {
 
 	fn seed_chain(&self, chain: &mut Vec<Arc<Gitignore>>) {
 		chain.push(self.defaults_and_user.clone());
+		if let Some(override_matcher) = &self.workspace_override {
+			chain.push(override_matcher.clone());
+		}
 		if let Some(matcher) = self.ignore_matcher_for_dir(self.workspace_root.as_path()) {
 			chain.push(matcher);
 		}
@@ -348,6 +361,46 @@ impl IndexIgnoreMatcher {
 				matcher,
 			},
 		);
+	}
+}
+
+fn build_workspace_override_matcher(
+	root: &Path,
+	ignore_path: Option<&Path>,
+) -> Option<Arc<Gitignore>> {
+	let ignore_path = ignore_path?;
+	let content = match fs::read_to_string(ignore_path) {
+		Ok(content) => content,
+		Err(error) if error.kind() == std::io::ErrorKind::NotFound => return None,
+		Err(error) => {
+			warn!(
+				"failed to read relocated workspace .alfredignore path={} error={error}",
+				ignore_path.display()
+			);
+			return None;
+		}
+	};
+
+	let mut builder = GitignoreBuilder::new(root);
+	let from = Some(ignore_path.to_path_buf());
+	for line in content.lines() {
+		if let Err(error) = builder.add_line(from.clone(), line) {
+			warn!(
+				"failed to parse relocated workspace .alfredignore path={} error={error}",
+				ignore_path.display()
+			);
+		}
+	}
+
+	match builder.build() {
+		Ok(matcher) => Some(Arc::new(matcher)),
+		Err(error) => {
+			warn!(
+				"failed to compile relocated workspace .alfredignore path={} error={error}",
+				ignore_path.display()
+			);
+			None
+		}
 	}
 }
 

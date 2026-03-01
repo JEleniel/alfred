@@ -6,7 +6,8 @@ use chrono::{Days, Utc};
 use uuid::Uuid;
 use zip::ZipArchive;
 
-use crate::logging::rotate_runtime_log;
+use crate::configuration::AppConfig;
+use crate::logging::{prepare_runtime_log_directory, select_runtime_log_path};
 
 struct TestDir {
 	path: PathBuf,
@@ -36,7 +37,8 @@ fn rotates_existing_runtime_log_into_zip_archive() {
 	fs::write(&runtime_path, "first line\nsecond line\n")
 		.expect("runtime log fixture should be written");
 
-	rotate_runtime_log(&runtime_path, 7).expect("runtime log should rotate");
+	prepare_runtime_log_directory(test_dir.path.as_path(), 7)
+		.expect("runtime log directory should rotate");
 	assert!(!runtime_path.exists());
 
 	let archive_paths = fs::read_dir(&test_dir.path)
@@ -45,7 +47,7 @@ fn rotates_existing_runtime_log_into_zip_archive() {
 		.filter(|path| {
 			path.file_name()
 				.and_then(|name| name.to_str())
-				.map(|name| name.starts_with("runtime-") && name.ends_with(".ndjson.zip"))
+				.map(|name| name == "runtime.ndjson.zip")
 				.unwrap_or(false)
 		})
 		.collect::<Vec<_>>();
@@ -66,7 +68,6 @@ fn rotates_existing_runtime_log_into_zip_archive() {
 #[test]
 fn prunes_archives_older_than_retention_window() {
 	let test_dir = TestDir::new();
-	let runtime_path = test_dir.path.join("runtime.ndjson");
 	let today = Utc::now().date_naive();
 	let old_date = today
 		.checked_sub_days(Days::new(10))
@@ -76,20 +77,58 @@ fn prunes_archives_older_than_retention_window() {
 		.expect("recent date should be calculable");
 
 	let old_archive = test_dir.path.join(format!(
-		"runtime-{}T000000Z-{}.ndjson.zip",
+		"alfred-{}T000000Z.ndjson.zip",
 		old_date.format("%Y%m%d"),
-		Uuid::new_v4().simple()
 	));
 	let recent_archive = test_dir.path.join(format!(
-		"runtime-{}T000000Z-{}.ndjson.zip",
+		"alfred-{}T000000Z.ndjson.zip",
 		recent_date.format("%Y%m%d"),
-		Uuid::new_v4().simple()
 	));
 
 	fs::write(&old_archive, b"old").expect("old archive fixture should be written");
 	fs::write(&recent_archive, b"recent").expect("recent archive fixture should be written");
 
-	rotate_runtime_log(&runtime_path, 7).expect("retention pruning should succeed");
+	prepare_runtime_log_directory(test_dir.path.as_path(), 7)
+		.expect("retention pruning should succeed");
 	assert!(!old_archive.exists());
 	assert!(recent_archive.exists());
+}
+
+#[test]
+fn startup_creates_new_timestamped_runtime_log_file() {
+	let test_dir = TestDir::new();
+	let workspace_root = test_dir.path.join("workspace");
+	fs::create_dir_all(workspace_root.join(".alfred")).expect("workspace should be created");
+
+	let override_dir = test_dir.path.join("runtime-logs");
+	fs::write(
+		workspace_root.join(".alfred").join("config.json"),
+		format!(
+			r#"{{"logging":{{"runtime":{{"path":"{}"}}}}}}"#,
+			override_dir.to_string_lossy()
+		),
+	)
+	.expect("workspace config should be written");
+
+	let config = AppConfig::load_from_paths(
+		workspace_root.clone(),
+		workspace_root.join("missing-user-config.json"),
+		workspace_root.join(".alfred").join("config.json"),
+	)
+	.expect("config should load from explicit paths");
+
+	let runtime_log_path =
+		select_runtime_log_path(&config).expect("runtime log path selection should succeed");
+	assert!(runtime_log_path.starts_with(override_dir.as_path()));
+	assert!(runtime_log_path.exists());
+
+	let name = runtime_log_path
+		.file_name()
+		.and_then(|value| value.to_str())
+		.expect("runtime log filename should be utf-8");
+	assert!(name.starts_with("alfred-"));
+	assert!(name.ends_with(".ndjson"));
+	assert!(name.contains('T'));
+	assert!(name.contains('Z'));
+	assert!(!name.contains(':'));
 }

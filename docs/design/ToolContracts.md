@@ -509,7 +509,7 @@ Behavioral notes:
 - Purpose: read and track the workspace project plan.
 - Execution: synchronous.
 - Input:
-    - `operation`: one of `"get" | "add" | "update_status" | "delete"`.
+    - `operation`: one of `"retrieve" | "add" | "update_status" | "remove"`.
     - `args`: object depending on operation.
 - Output:
     - `operation`: echoed operation name.

@@ -28,7 +28,9 @@ fn registry_contains_only_implemented_tools() {
 	assert_eq!(names, sorted_names);
 	assert!(names.contains(&"capabilities"));
 	assert!(names.contains(&"workspace_dir"));
-	assert!(names.contains(&"grep"));
+	assert!(names.contains(&"fs"));
+	assert!(names.contains(&"search"));
+	assert!(!names.contains(&"grep"));
 	assert!(names.contains(&"memory_put"));
 	assert!(names.contains(&"memory_search"));
 	assert_eq!(registry.tool_count(), names.len());

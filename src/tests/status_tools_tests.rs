@@ -5,8 +5,9 @@ use serde_json::json;
 use uuid::Uuid;
 
 use crate::configuration::AppConfig;
+use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
-use crate::tools::dispatch_tool_call;
+use crate::tools::{ToolCallResult, dispatch_tool_call as dispatch_tool_call_outcome};
 
 struct TestDir {
 	path: PathBuf,
@@ -37,6 +38,19 @@ fn build_services(workspace_root: PathBuf) -> ServiceContainer {
 	)
 	.expect("config should load from explicit paths");
 	ServiceContainer::new(config).expect("service container should build")
+}
+
+fn dispatch_tool_call(
+	name: &str,
+	args: serde_json::Value,
+	services: &ServiceContainer,
+) -> Result<serde_json::Value, AlfredError> {
+	match dispatch_tool_call_outcome(name, args, services)? {
+		ToolCallResult::Ok(data) => Ok(data),
+		ToolCallResult::Pending { .. } => Err(AlfredError::Internal(
+			"unexpected pending response in sync test".to_string(),
+		)),
+	}
 }
 
 #[test]

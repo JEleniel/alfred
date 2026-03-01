@@ -1,10 +1,12 @@
 use std::fs;
 use std::path::PathBuf;
+use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 
 use uuid::Uuid;
 
+use crate::redaction::Redactor;
 use crate::services::indexer::{SearchMatch, WorkspaceIndexer};
 
 struct TestDir {
@@ -38,12 +40,15 @@ fn fixture_root() -> PathBuf {
 
 fn new_test_indexer(workspace_root: PathBuf, index_root: PathBuf) -> WorkspaceIndexer {
 	let user_ignore_path = index_root.join("missing-user-alfredignore");
+	let redactor = Arc::new(Redactor::try_default().expect("redactor should initialize"));
 	WorkspaceIndexer::new_with_options(
 		workspace_root,
 		index_root,
 		Duration::from_millis(120),
 		Duration::from_millis(80),
 		user_ignore_path,
+		None,
+		redactor,
 	)
 	.expect("indexer should construct")
 }
@@ -167,6 +172,51 @@ fn watch_thread_reindexes_on_save() {
 
 	indexer.stop_watch_thread();
 	assert!(updated, "watch thread should reindex saved file changes");
+}
+
+#[cfg(unix)]
+#[test]
+fn watch_thread_does_not_index_symlink_escape_paths() {
+	use std::os::unix::fs::symlink;
+
+	let workspace = TestDir::new();
+	let storage = TestDir::new();
+	let outside = TestDir::new();
+	let outside_file = outside.path.join("outside.txt");
+	fs::write(&outside_file, "outside\n").expect("outside fixture file should write");
+
+	let indexer = new_test_indexer(workspace.path.clone(), storage.path.clone());
+	indexer.rebuild().expect("index rebuild should succeed");
+	indexer
+		.start_watch_thread()
+		.expect("watch thread should start");
+
+	thread::sleep(Duration::from_millis(200));
+	let link_path = workspace.path.join("escape.txt");
+	symlink(&outside_file, &link_path).expect("symlink should be created");
+
+	for _ in 0..25 {
+		thread::sleep(Duration::from_millis(120));
+		if indexer.list_files().contains(&"escape.txt".to_string()) {
+			break;
+		}
+	}
+
+	indexer.stop_watch_thread();
+	assert!(
+		!indexer.list_files().contains(&"escape.txt".to_string()),
+		"symlink escape path must not be indexed"
+	);
+
+	let error = indexer
+		.read_range("escape.txt", 1, 1)
+		.expect_err("read_range through escape symlink must be denied");
+	assert!(
+		error
+			.to_string()
+			.contains(crate::workspace_boundary::SYMLINK_JUNCTION_ESCAPE_MESSAGE),
+		"unexpected error: {error:#}"
+	);
 }
 
 #[test]

@@ -7,7 +7,7 @@ use uuid::Uuid;
 use crate::configuration::AppConfig;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
-use crate::tools::dispatch_tool_call;
+use crate::tools::{ToolCallResult, dispatch_tool_call as dispatch_tool_call_outcome};
 
 const SAMPLE_PLAN: &str = "# Plan: Test Plan\n\n1. [ ] First task\n    - Priority: 1\n    - Cards: \"ART-001\", \"STR-001\"\n    - Description: First description\n    - Deliverables:\n        - First deliverable\n    - Status: planned\n\n2. [x] Second task\n    - Priority: 0\n    - Cards: \"ART-002\"\n    - Description: Second description\n    - Deliverables:\n        - Second deliverable\n    - Notes: Existing note\n    - Status: completed\n";
 
@@ -51,6 +51,19 @@ fn enable_plan_mutation_tools(config: &mut AppConfig) {
 	config.disabled_tools.retain(|tool| {
 		tool != "plan_update" && tool != "plan_edit" && tool != "plan_add" && tool != "plan_delete"
 	});
+}
+
+fn dispatch_tool_call(
+	name: &str,
+	args: serde_json::Value,
+	services: &ServiceContainer,
+) -> Result<serde_json::Value, AlfredError> {
+	match dispatch_tool_call_outcome(name, args, services)? {
+		ToolCallResult::Ok(data) => Ok(data),
+		ToolCallResult::Pending { .. } => Err(AlfredError::Internal(
+			"unexpected pending response in sync test".to_string(),
+		)),
+	}
 }
 
 fn write_plan(workspace_root: &std::path::Path, content: &str) {

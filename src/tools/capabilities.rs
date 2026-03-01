@@ -34,11 +34,17 @@ fn capabilities(services: &ServiceContainer) -> Value {
 }
 
 fn tool_descriptor(name: &str) -> Value {
+	let execution_modes = match name {
+		"logs" => json!(["sync", "stream"]),
+		"fs" => json!(["sync", "background"]),
+		_ => json!(["sync"]),
+	};
+
 	let descriptor = json!({
 		"name": name,
 		"version": env!("CARGO_PKG_VERSION"),
 		"schema_version": env!("CARGO_PKG_VERSION"),
-		"execution_modes": ["sync"],
+		"execution_modes": execution_modes,
 	});
 
 	descriptor

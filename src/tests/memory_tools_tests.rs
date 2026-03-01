@@ -5,9 +5,10 @@ use serde_json::{Value, json};
 use uuid::Uuid;
 
 use crate::configuration::AppConfig;
+use crate::configuration::HostPaths;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
-use crate::tools::dispatch_tool_call;
+use crate::tools::{ToolCallResult, dispatch_tool_call as dispatch_tool_call_outcome};
 
 struct TestDir {
 	path: PathBuf,
@@ -32,12 +33,14 @@ impl Drop for TestDir {
 
 fn build_services(enable_mutations: bool) -> (ServiceContainer, TestDir) {
 	let workspace = TestDir::new("memory-tools-tests");
-	let mut config = AppConfig::load_from_paths(
-		workspace.path.clone(),
-		workspace.path.join("missing-user-config.json"),
-		workspace.path.join(".alfred").join("config.json"),
-	)
-	.expect("config should load from explicit paths");
+	let host = HostPaths {
+		user_config_dir: Some(workspace.path.join("host-config")),
+		user_data_dir: Some(workspace.path.join("host-data")),
+		user_logs_dir: Some(workspace.path.join("host-logs")),
+		system_logs_dir: None,
+	};
+	let mut config = AppConfig::load_with_host_paths(workspace.path.clone(), host)
+		.expect("config should load with deterministic host paths");
 	if enable_mutations {
 		config
 			.disabled_tools
@@ -46,6 +49,19 @@ fn build_services(enable_mutations: bool) -> (ServiceContainer, TestDir) {
 
 	let services = ServiceContainer::new(config).expect("service container should build");
 	(services, workspace)
+}
+
+fn dispatch_tool_call(
+	name: &str,
+	args: serde_json::Value,
+	services: &ServiceContainer,
+) -> Result<serde_json::Value, AlfredError> {
+	match dispatch_tool_call_outcome(name, args, services)? {
+		ToolCallResult::Ok(data) => Ok(data),
+		ToolCallResult::Pending { .. } => Err(AlfredError::Internal(
+			"unexpected pending response in sync test".to_string(),
+		)),
+	}
 }
 
 fn put_fact(

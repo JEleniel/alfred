@@ -146,8 +146,16 @@ impl PlanStore {
 
 	fn read_document(&self) -> Result<PlanDocument, AlfredError> {
 		self.ensure_plan_is_within_workspace()?;
+		let read_path =
+			match crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
+				self.workspace_root.as_path(),
+				self.plan_path.as_path(),
+			)? {
+				Some(resolved) => resolved,
+				None => self.plan_path.clone(),
+			};
 
-		let raw = fs::read_to_string(&self.plan_path).map_err(|error| match error.kind() {
+		let raw = fs::read_to_string(read_path.as_path()).map_err(|error| match error.kind() {
 			std::io::ErrorKind::NotFound => {
 				AlfredError::NotFound(format!("plan file not found: {}", self.plan_path.display()))
 			}
@@ -167,11 +175,15 @@ impl PlanStore {
 
 	fn write_document(&self, document: &PlanDocument) -> Result<(), AlfredError> {
 		self.ensure_plan_is_within_workspace()?;
+		let plan_path = crate::workspace_boundary::resolve_write_target_within_workspace_root(
+			self.workspace_root.as_path(),
+			self.plan_path.as_path(),
+		)?;
 
-		let parent = self.plan_path.parent().ok_or_else(|| {
+		let parent = plan_path.parent().ok_or_else(|| {
 			AlfredError::Internal(format!(
 				"plan path has no parent directory: {}",
-				self.plan_path.display()
+				plan_path.display()
 			))
 		})?;
 		fs::create_dir_all(parent).map_err(|error| {
@@ -182,9 +194,7 @@ impl PlanStore {
 		})?;
 
 		let rendered = render_plan_document(document);
-		let temp_path = self
-			.plan_path
-			.with_extension(format!("tmp-{}", std::process::id()));
+		let temp_path = plan_path.with_extension(format!("tmp-{}", std::process::id()));
 
 		let mut temp_file = OpenOptions::new()
 			.write(true)
@@ -211,7 +221,7 @@ impl PlanStore {
 			))
 		})?;
 
-		fs::rename(&temp_path, &self.plan_path).map_err(|error| {
+		fs::rename(&temp_path, plan_path.as_path()).map_err(|error| {
 			AlfredError::IoError(format!(
 				"failed to replace plan file {}: {error}",
 				self.plan_path.display()

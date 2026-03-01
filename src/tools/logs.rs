@@ -3,7 +3,7 @@
 use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::path::{Component, Path, PathBuf};
+use std::path::{Path, PathBuf};
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
@@ -20,7 +20,14 @@ const ALLOWED_LEVELS: &[&str] = &["TRACE", "DEBUG", "INFO", "WARN", "ERROR"];
 pub struct LogTools;
 
 impl LogTools {
-	pub const NAMES: &'static [&'static str] = &["log_search"];
+	pub const NAMES: &'static [&'static str] = &["logs"];
+}
+
+#[derive(Debug, Deserialize)]
+struct LogsArgs {
+	operation: String,
+	#[serde(default)]
+	args: Value,
 }
 
 #[derive(Debug, Deserialize)]
@@ -31,6 +38,26 @@ struct LogSearchArgs {
 	source_prefix: Option<String>,
 	cursor: Option<String>,
 	limit: Option<usize>,
+}
+
+#[derive(Debug, Deserialize)]
+struct LogTailArgs {
+	path: Option<String>,
+	level_min: Option<String>,
+	source_prefix: Option<String>,
+	cursor: Option<String>,
+	limit: Option<usize>,
+}
+
+#[derive(Debug, Deserialize)]
+struct LogFollowArgs {
+	#[serde(default)]
+	stop: bool,
+	path: Option<String>,
+	level_min: Option<String>,
+	source_prefix: Option<String>,
+	#[serde(default)]
+	tail: usize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -50,19 +77,46 @@ pub fn dispatch_tool_call(
 	services: &ServiceContainer,
 ) -> Result<Option<Value>, AlfredError> {
 	match name {
+		"logs" => handle_logs(args, services).map(Some),
 		"log_search" => handle_log_search(args, services).map(Some),
 		_ => Ok(None),
 	}
 }
 
+fn handle_logs(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<LogsArgs>(args)?;
+	let operation = args.operation.trim().to_string();
+	if operation.is_empty() {
+		return Err(AlfredError::InvalidArgument(
+			"operation must not be empty".to_string(),
+		));
+	}
+
+	let result = match operation.as_str() {
+		"search" => handle_log_search(args.args, services)?,
+		"tail" => handle_log_tail(args.args, services)?,
+		"follow" => handle_log_follow(args.args, services)?,
+		other => {
+			return Err(AlfredError::InvalidArgument(format!(
+				"operation must be one of search, tail, follow: {other}"
+			)));
+		}
+	};
+
+	Ok(json!({
+		"operation": operation,
+		"result": result,
+	}))
+}
+
 fn handle_log_search(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
 	let args = parse_args::<LogSearchArgs>(args)?;
-	let level_filter = normalize_level(args.level.as_deref())?;
+	let level_filter = normalize_level_exact(args.level.as_deref())?;
 	let (offset, limit) = parse_pagination(args.cursor.as_deref(), args.limit)?;
 	let path = resolve_log_path(args.path.as_deref(), services)?;
 	let query = args.query.to_lowercase();
 
-	let matches = read_filtered_records(
+	let matches = read_search_matches(
 		path.as_path(),
 		query.as_str(),
 		level_filter.as_deref(),
@@ -74,6 +128,48 @@ fn handle_log_search(args: Value, services: &ServiceContainer) -> Result<Value, 
 		"matches": matches,
 		"next_cursor": next_cursor,
 	}))
+}
+
+fn handle_log_tail(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<LogTailArgs>(args)?;
+	let level_min = normalize_level_min(args.level_min.as_deref())?;
+	let (offset_from_end, limit) = parse_pagination(args.cursor.as_deref(), args.limit)?;
+	let path = resolve_log_path(args.path.as_deref(), services)?;
+
+	let records = read_tail_records(
+		path.as_path(),
+		level_min.as_deref(),
+		args.source_prefix.as_deref(),
+	)?;
+	let (records, next_cursor) = paginate_from_end(records, offset_from_end, limit);
+
+	Ok(json!({
+		"records": records,
+		"next_cursor": next_cursor,
+	}))
+}
+
+fn handle_log_follow(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<LogFollowArgs>(args)?;
+	if args.stop {
+		services.logs.stop_follow()?;
+		return Ok(json!({"records": [], "stopped": true}));
+	}
+
+	services.logs.try_start_follow()?;
+	let level_min = normalize_level_min(args.level_min.as_deref())?;
+	let path = resolve_log_path(args.path.as_deref(), services)?;
+
+	let mut records = read_tail_records(
+		path.as_path(),
+		level_min.as_deref(),
+		args.source_prefix.as_deref(),
+	)?;
+	if args.tail > 0 && records.len() > args.tail {
+		records = records.split_off(records.len() - args.tail);
+	}
+
+	Ok(json!({"records": records}))
 }
 
 fn resolve_log_path(
@@ -92,72 +188,27 @@ fn resolve_log_path(
 		));
 	}
 
-	let normalized = raw.replace('\\', "/");
+	let normalized = crate::path_encoding::normalize_inbound_separators(raw);
 	if is_absolute_path(normalized.as_str()) {
-		let absolute = PathBuf::from(&normalized);
-		if absolute
-			.components()
-			.any(|component| matches!(component, Component::ParentDir))
-		{
-			return Err(AlfredError::PermissionDenied(format!(
-				"absolute log path cannot contain parent traversal: {raw}"
-			)));
-		}
-
-		let allowed_root = default_path.parent().unwrap_or_else(|| Path::new(""));
-		if !absolute.starts_with(allowed_root) {
-			return Err(AlfredError::PermissionDenied(format!(
-				"absolute log path is outside Alfred log directory: {raw}"
-			)));
-		}
-
-		return Ok(absolute);
+		return Err(AlfredError::InvalidArgument(format!(
+			"absolute paths are not allowed for logs.path: {raw}"
+		)));
 	}
-
-	let relative = normalize_workspace_relative_path(normalized.as_str())?;
-	Ok(services.config.workspace_root.join(relative))
-}
-
-fn normalize_workspace_relative_path(raw_path: &str) -> Result<String, AlfredError> {
-	let raw = raw_path.trim().replace('\\', "/");
-	if raw.is_empty() {
-		return Err(AlfredError::InvalidArgument(
-			"path must not be empty".to_string(),
-		));
-	}
-
-	let mut segments = Vec::new();
-	for segment in raw.split('/') {
-		if segment.is_empty() || segment == "." {
-			continue;
-		}
-		if segment == ".." {
-			if segments.pop().is_none() {
-				return Err(AlfredError::WorkspaceBoundaryViolation(format!(
-					"path escapes workspace boundary: {raw_path}"
-				)));
-			}
-			continue;
-		}
-		segments.push(segment);
-	}
-
-	let normalized = segments.join("/");
-	if normalized.is_empty() || !is_workspace_relative_path(normalized.as_str()) {
+	if !is_workspace_relative_path(normalized.as_str()) {
 		return Err(AlfredError::WorkspaceBoundaryViolation(format!(
-			"path escapes workspace boundary: {raw_path}"
+			"path must be workspace-relative and must not contain '..': {raw}"
 		)));
 	}
 
-	Ok(normalized)
+	let candidate = services.config.workspace_root.join(normalized);
+	let resolved = crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
+		services.config.workspace_root.as_path(),
+		candidate.as_path(),
+	)?;
+	Ok(resolved.unwrap_or(candidate))
 }
 
-fn read_filtered_records(
-	path: &Path,
-	query: &str,
-	level: Option<&str>,
-	source_prefix: Option<&str>,
-) -> Result<Vec<Value>, AlfredError> {
+fn read_records(path: &Path) -> Result<Vec<LogRecord>, AlfredError> {
 	let file = File::open(path).map_err(|error| {
 		if error.kind() == std::io::ErrorKind::NotFound {
 			return AlfredError::NotFound(format!("log file not found: {}", path.display()));
@@ -170,7 +221,7 @@ fn read_filtered_records(
 	})?;
 	let reader = BufReader::new(file);
 
-	let mut matches = Vec::new();
+	let mut records = Vec::new();
 	for (line_number, line) in reader.lines().enumerate() {
 		let line = line.map_err(|error| {
 			AlfredError::IoError(format!(
@@ -188,8 +239,22 @@ fn read_filtered_records(
 				line_number + 1
 			))
 		})?;
+		records.push(record);
+	}
 
-		if !record_matches(&record, query, level, source_prefix) {
+	Ok(records)
+}
+
+fn read_search_matches(
+	path: &Path,
+	query: &str,
+	level: Option<&str>,
+	source_prefix: Option<&str>,
+) -> Result<Vec<Value>, AlfredError> {
+	let records = read_records(path)?;
+	let mut matches = Vec::new();
+	for record in records {
+		if !record_matches_query(&record, query, level, source_prefix) {
 			continue;
 		}
 
@@ -198,11 +263,31 @@ fn read_filtered_records(
 		})?;
 		matches.push(value);
 	}
-
 	Ok(matches)
 }
 
-fn record_matches(
+fn read_tail_records(
+	path: &Path,
+	level_min: Option<&str>,
+	source_prefix: Option<&str>,
+) -> Result<Vec<Value>, AlfredError> {
+	let level_min = level_min.and_then(level_rank);
+	let records = read_records(path)?;
+	let mut matches = Vec::new();
+	for record in records {
+		if !record_matches_tail(&record, level_min, source_prefix) {
+			continue;
+		}
+
+		let value = serde_json::to_value(record).map_err(|error| {
+			AlfredError::Internal(format!("failed to serialize log record: {error}"))
+		})?;
+		matches.push(value);
+	}
+	Ok(matches)
+}
+
+fn record_matches_query(
 	record: &LogRecord,
 	query: &str,
 	level: Option<&str>,
@@ -239,6 +324,29 @@ fn record_matches(
 	record.extra.iter().any(|(key, value)| {
 		key.to_lowercase().contains(query) || value.to_lowercase().contains(query)
 	})
+}
+
+fn record_matches_tail(
+	record: &LogRecord,
+	level_min: Option<usize>,
+	source_prefix: Option<&str>,
+) -> bool {
+	if let Some(prefix) = source_prefix
+		&& !record.source.starts_with(prefix)
+	{
+		return false;
+	}
+
+	if let Some(level_min) = level_min {
+		let Some(rank) = level_rank(record.level.as_str()) else {
+			return false;
+		};
+		if rank < level_min {
+			return false;
+		}
+	}
+
+	true
 }
 
 fn parse_args<T: for<'de> Deserialize<'de>>(value: Value) -> Result<T, AlfredError> {
@@ -285,7 +393,29 @@ fn paginate<T>(items: Vec<T>, offset: usize, limit: usize) -> (Vec<T>, Option<St
 	)
 }
 
-fn normalize_level(level: Option<&str>) -> Result<Option<String>, AlfredError> {
+fn paginate_from_end(
+	items: Vec<Value>,
+	offset_from_end: usize,
+	limit: usize,
+) -> (Vec<Value>, Option<String>) {
+	if items.is_empty() {
+		return (Vec::new(), None);
+	}
+	if offset_from_end >= items.len() {
+		return (Vec::new(), None);
+	}
+
+	let end = items.len() - offset_from_end;
+	let start = end.saturating_sub(limit);
+	let next_cursor = if start > 0 {
+		Some((offset_from_end + (end - start)).to_string())
+	} else {
+		None
+	};
+	(items[start..end].to_vec(), next_cursor)
+}
+
+fn normalize_level_exact(level: Option<&str>) -> Result<Option<String>, AlfredError> {
 	let Some(level) = level else {
 		return Ok(None);
 	};
@@ -303,6 +433,17 @@ fn normalize_level(level: Option<&str>) -> Result<Option<String>, AlfredError> {
 	}
 
 	Ok(Some(normalized))
+}
+
+fn normalize_level_min(level: Option<&str>) -> Result<Option<String>, AlfredError> {
+	normalize_level_exact(level)
+}
+
+fn level_rank(level: &str) -> Option<usize> {
+	let normalized = level.trim().to_ascii_uppercase();
+	ALLOWED_LEVELS
+		.iter()
+		.position(|candidate| candidate.eq(&normalized.as_str()))
 }
 
 fn is_absolute_path(path: &str) -> bool {

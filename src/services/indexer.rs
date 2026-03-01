@@ -21,10 +21,16 @@ use tantivy::schema::{Field, STORED, STRING, Schema, TEXT, Value};
 use tantivy::{Index, IndexReader, IndexWriter, ReloadPolicy, TantivyDocument, Term, doc};
 
 use crate::configuration::default_workspace_index_root;
+use crate::errors::AlfredError;
+use crate::path_encoding::{
+	render_component, render_relative_path, resolve_workspace_relative_path,
+};
+use crate::redaction::Redactor;
 use crate::services::workspace_files::{
 	IndexIgnoreMatcher, read_indexable_utf8_text, read_text_file_range,
 	visit_utf8_lines_best_effort,
 };
+use crate::workspace_boundary::SYMLINK_JUNCTION_ESCAPE_MESSAGE;
 
 const DOC_KIND_FILE: &str = "file";
 const DOC_KIND_DIRECTORY: &str = "directory";
@@ -105,6 +111,7 @@ pub struct WorkspaceIndexer {
 	workspace_root: PathBuf,
 	index_storage_root: PathBuf,
 	ignore: Arc<IndexIgnoreMatcher>,
+	redactor: Arc<Redactor>,
 	snapshot: Arc<RwLock<WorkspaceSnapshot>>,
 	engine: Arc<TantivyEngine>,
 	index_ready: Arc<AtomicBool>,
@@ -120,12 +127,15 @@ impl WorkspaceIndexer {
 	pub fn new(workspace_root: PathBuf) -> Result<Self> {
 		let index_storage_root = default_workspace_index_root(&workspace_root);
 		let user_ignore_path = default_user_ignore_path(&workspace_root);
+		let redactor = Arc::new(Redactor::try_default()?);
 		Self::new_with_options(
 			workspace_root,
 			index_storage_root,
 			Duration::from_secs(5),
 			Duration::from_millis(250),
 			user_ignore_path,
+			None,
+			redactor,
 		)
 	}
 
@@ -136,9 +146,15 @@ impl WorkspaceIndexer {
 		persist_interval: Duration,
 		watch_debounce: Duration,
 		user_ignore_path: PathBuf,
+		workspace_ignore_path: Option<PathBuf>,
+		redactor: Arc<Redactor>,
 	) -> Result<Self> {
-		let ignore = IndexIgnoreMatcher::new(workspace_root.clone(), user_ignore_path)
-			.context("failed to build workspace index ignore rules")?;
+		let ignore = IndexIgnoreMatcher::new(
+			workspace_root.clone(),
+			user_ignore_path,
+			workspace_ignore_path,
+		)
+		.context("failed to build workspace index ignore rules")?;
 
 		let tantivy_path = index_storage_root.join(INDEX_SUBDIRECTORY);
 		fs::create_dir_all(&tantivy_path).with_context(|| {
@@ -171,6 +187,7 @@ impl WorkspaceIndexer {
 			workspace_root,
 			index_storage_root,
 			ignore: Arc::new(ignore),
+			redactor,
 			snapshot: Arc::new(RwLock::new(WorkspaceSnapshot::default())),
 			engine: Arc::new(TantivyEngine {
 				fields,
@@ -219,7 +236,11 @@ impl WorkspaceIndexer {
 
 	/// Rebuilds the in-memory workspace index from disk.
 	pub fn rebuild(&self) -> Result<IndexBuildStats> {
-		let snapshot = build_snapshot(&self.workspace_root, self.ignore.as_ref())?;
+		let snapshot = build_snapshot(
+			&self.workspace_root,
+			self.ignore.as_ref(),
+			self.redactor.as_ref(),
+		)?;
 		let stats = stats_from_snapshot(&snapshot);
 		self.write_full_snapshot(snapshot.clone())?;
 
@@ -304,7 +325,17 @@ impl WorkspaceIndexer {
 				continue;
 			}
 
-			let absolute_path = self.workspace_root.join(file.path.as_str());
+			let absolute_path =
+				resolve_workspace_relative_path(self.workspace_root.as_path(), file.path.as_str());
+			let absolute_path =
+				match crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
+					self.workspace_root.as_path(),
+					absolute_path.as_path(),
+				) {
+					Ok(Some(resolved)) => resolved,
+					Ok(None) => continue,
+					Err(_) => continue,
+				};
 			let _ = collect_literal_matches_from_disk(
 				file.path.as_str(),
 				absolute_path.as_path(),
@@ -341,7 +372,17 @@ impl WorkspaceIndexer {
 				continue;
 			}
 
-			let absolute_path = self.workspace_root.join(file.path.as_str());
+			let absolute_path =
+				resolve_workspace_relative_path(self.workspace_root.as_path(), file.path.as_str());
+			let absolute_path =
+				match crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
+					self.workspace_root.as_path(),
+					absolute_path.as_path(),
+				) {
+					Ok(Some(resolved)) => resolved,
+					Ok(None) => continue,
+					Err(_) => continue,
+				};
 			let _ = collect_regex_matches_from_disk(
 				file.path.as_str(),
 				absolute_path.as_path(),
@@ -364,7 +405,20 @@ impl WorkspaceIndexer {
 		}
 
 		let normalized_path = normalize_relative(path);
-		let absolute_path = self.workspace_root.join(normalized_path.as_str());
+		let absolute_path = resolve_workspace_relative_path(
+			self.workspace_root.as_path(),
+			normalized_path.as_str(),
+		);
+		let absolute_path =
+			match crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
+				self.workspace_root.as_path(),
+				absolute_path.as_path(),
+			) {
+				Ok(Some(resolved)) => resolved,
+				Ok(None) => absolute_path,
+				Err(AlfredError::PermissionDenied(_)) => bail!(SYMLINK_JUNCTION_ESCAPE_MESSAGE),
+				Err(error) => bail!(error.to_string()),
+			};
 		{
 			let snapshot = self
 				.snapshot
@@ -540,25 +594,43 @@ impl WorkspaceIndexer {
 			return Ok(true);
 		}
 
-		let absolute_path = self.workspace_root.join(relative_path);
+		let absolute_path =
+			resolve_workspace_relative_path(self.workspace_root.as_path(), relative_path);
+		let resolved_path =
+			match crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
+				self.workspace_root.as_path(),
+				absolute_path.as_path(),
+			) {
+				Ok(Some(resolved)) => resolved,
+				Ok(None) => return self.remove_path_entries(relative_path),
+				Err(AlfredError::PermissionDenied(_)) => {
+					let _ = self.remove_path_entries(relative_path);
+					return Ok(true);
+				}
+				Err(error) => bail!(error.to_string()),
+			};
+
+		let metadata = fs::metadata(resolved_path.as_path())
+			.with_context(|| format!("failed to stat {}", resolved_path.display()))?;
 		if self
 			.ignore
-			.should_ignore_relative(relative_path, absolute_path.is_dir())
+			.should_ignore_relative(relative_path, metadata.is_dir())
 		{
 			return Ok(false);
 		}
-		if absolute_path.is_file() {
-			return self.upsert_file(relative_path, absolute_path.as_path());
+		if metadata.is_file() {
+			return self.upsert_file(relative_path, resolved_path.as_path());
 		}
-		if absolute_path.is_dir() {
-			return self.refresh_directory_subtree(relative_path, absolute_path.as_path());
+		if metadata.is_dir() {
+			return self.refresh_directory_subtree(relative_path, resolved_path.as_path());
 		}
 
 		self.remove_path_entries(relative_path)
 	}
 
 	fn upsert_file(&self, relative_path: &str, absolute_path: &Path) -> Result<bool> {
-		let text = read_indexable_utf8_text(absolute_path, MAX_INDEXED_TEXT_BYTES);
+		let text = read_indexable_utf8_text(absolute_path, MAX_INDEXED_TEXT_BYTES)
+			.map(|text| redact_string_if_needed(self.redactor.as_ref(), text));
 		let modified_at = fs::metadata(absolute_path)
 			.ok()
 			.and_then(|metadata| metadata.modified().ok());
@@ -638,6 +710,7 @@ impl WorkspaceIndexer {
 			&self.workspace_root,
 			absolute_path,
 			self.ignore.as_ref(),
+			self.redactor.as_ref(),
 			&mut scanned_files,
 			&mut scanned_directories,
 		)?;
@@ -917,13 +990,18 @@ impl WorkspaceIndexer {
 	}
 }
 
-fn build_snapshot(workspace_root: &Path, ignore: &IndexIgnoreMatcher) -> Result<WorkspaceSnapshot> {
+fn build_snapshot(
+	workspace_root: &Path,
+	ignore: &IndexIgnoreMatcher,
+	redactor: &Redactor,
+) -> Result<WorkspaceSnapshot> {
 	let mut files = Vec::new();
 	let mut directories = Vec::new();
 	scan_directory(
 		workspace_root,
 		workspace_root,
 		ignore,
+		redactor,
 		&mut files,
 		&mut directories,
 	)?;
@@ -950,6 +1028,7 @@ fn scan_directory(
 	workspace_root: &Path,
 	current_dir: &Path,
 	ignore: &IndexIgnoreMatcher,
+	redactor: &Redactor,
 	files: &mut Vec<IndexedFile>,
 	directories: &mut Vec<String>,
 ) -> Result<()> {
@@ -977,7 +1056,7 @@ fn scan_directory(
 			}
 
 			directories.push(relative);
-			scan_directory(workspace_root, &path, ignore, files, directories)?;
+			scan_directory(workspace_root, &path, ignore, redactor, files, directories)?;
 			continue;
 		}
 
@@ -990,7 +1069,8 @@ fn scan_directory(
 				.metadata()
 				.ok()
 				.and_then(|metadata| metadata.modified().ok());
-			let text = read_indexable_utf8_text(path.as_path(), MAX_INDEXED_TEXT_BYTES);
+			let text = read_indexable_utf8_text(path.as_path(), MAX_INDEXED_TEXT_BYTES)
+				.map(|text| redact_string_if_needed(redactor, text));
 			files.push(IndexedFile {
 				path: relative,
 				text,
@@ -1002,6 +1082,14 @@ fn scan_directory(
 	Ok(())
 }
 
+fn redact_string_if_needed(redactor: &Redactor, input: String) -> String {
+	let result = redactor.redact_text_with_stats(input.as_str());
+	if result.stats.redacted_spans == 0 {
+		return input;
+	}
+	result.output
+}
+
 fn sorted_entries(path: &Path) -> Result<Vec<fs::DirEntry>> {
 	let mut entries = fs::read_dir(path)
 		.with_context(|| format!("failed to read directory {}", path.display()))?
@@ -1009,10 +1097,9 @@ fn sorted_entries(path: &Path) -> Result<Vec<fs::DirEntry>> {
 		.with_context(|| format!("failed to enumerate directory {}", path.display()))?;
 
 	entries.sort_by(|left, right| {
-		compare_paths(
-			left.file_name().to_string_lossy().as_ref(),
-			right.file_name().to_string_lossy().as_ref(),
-		)
+		let left_name = render_component(left.file_name().as_os_str());
+		let right_name = render_component(right.file_name().as_os_str());
+		compare_paths(left_name.text.as_str(), right_name.text.as_str())
 	});
 
 	Ok(entries)
@@ -1174,11 +1261,7 @@ fn add_file_document(
 }
 
 fn normalize_relative(path: impl AsRef<Path>) -> String {
-	path.as_ref()
-		.to_string_lossy()
-		.replace('\\', "/")
-		.trim_start_matches("./")
-		.to_string()
+	render_relative_path(path.as_ref()).text
 }
 
 fn slice_text_lines(text: &str, path: &str, start_line: usize, end_line: usize) -> Result<String> {
