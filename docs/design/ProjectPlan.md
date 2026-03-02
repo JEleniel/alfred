@@ -257,7 +257,7 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
     - Status: Completed
     - Dependencies: 26, 27, 35, 39
 
-22. [ ] Implement consolidated `plan` command
+22. [x] Implement consolidated `plan` command
     - Priority: 2
     - Cards: "ART-004", "STR-004", "CNS-015"
     - Description: Merge plan read/add/edit/update/delete behaviors into one deterministic command.
@@ -268,10 +268,10 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
         - Avoid lock files; concurrent writers are unsupported.
         - Retire legacy plan tools (`plan_get`, `plan_update`, `plan_edit`, `plan_add`, `plan_delete`) from the public surface.
         - Add tests for successful writes.
-    - Status: Planned
+    - Status: Completed
     - Dependencies: 18, 26, 27
 
-23. [ ] Implement consolidated `memory` command
+23. [x] Implement consolidated `memory` command
     - Priority: 2
     - Cards: "ART-008", "STR-017", "CNS-006", "CNS-015"
     - Description: Merge memory CRUD/search operations into one deterministic command surface.
@@ -287,7 +287,7 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
         - Ensure redaction is applied before persistence for any memory-indexed content.
         - Retire legacy memory tools (`memory_put`, `memory_get`, `memory_delete`, `memory_list`, `memory_search`) from the public surface.
         - Add tests for storage options, merge policy behavior, and deterministic ordering/pagination.
-    - Status: Planned
+    - Status: Completed
     - Dependencies: 26, 27, 34
 
 24. [x] Implement workspace storage-root and index-location controls
@@ -345,7 +345,7 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
     - Status: Completed
     - Dependencies: 18
 
-29. [ ] Add a conformance suite for consolidated tool contracts
+29. [x] Add a conformance suite for consolidated tool contracts
     - Priority: 1
     - Cards: "CAP-013", "CNS-005", "CNS-015"
     - Description: Provide an automated conformance suite that validates contract shapes, deterministic ordering, dry-run guarantees, workspace-boundary enforcement, and redaction behavior for the consolidated tool surface.
@@ -354,10 +354,10 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
         - Tests cover policy gating for disabled tools (omitted from `capabilities`; calls fail with `invalid_argument`).
         - Tests cover the index-not-ready and index-disabled failure modes for index-backed tools.
         - Redaction and path-encoding behaviors are validated as part of conformance.
-    - Status: Planned
+    - Status: Completed
     - Dependencies: 17, 18, 19, 20, 21, 22, 23, 26, 27, 35, 38, 39, 41
 
-30. [ ] Reconcile generated Aurora model outputs with the consolidated tool surface
+30. [x] Reconcile generated Aurora model outputs with the consolidated tool surface
     - Priority: 3
     - Cards: "MIS-001"
     - Description: Ensure the rendered MIS-001 model bundle under `docs/design/` remains consistent with the consolidated public tool surface described in `docs/design/ToolContracts.md`.
@@ -388,15 +388,16 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
         - Add tests for prompt classification and prompt retrieval.
     - Status: Completed
 
-33. [ ] Prefer patch-first internal mutations
+33. [x] Prefer patch-first internal mutations
     - Priority: 3
     - Cards: "STR-003", "CNS-015"
     - Description: Replace internal rewrite/rename mutation paths with patch and append-based workflows where they better align with deterministic, minimal-edit semantics.
     - Deliverables:
         - Identify remaining write paths that rewrite whole files for small edits.
         - Migrate the highest-impact ones to patch/apply flows (preserving atomicity and determinism).
-        - Add targeted tests for any migrated mutation path.
-    - Status: Planned
+        - Eliminate any creation of temporary files simply to replace other files. (Not temp->copy semantics).
+            - Add targeted tests for any migrated mutation path.
+    - Status: Completed
 
 34. [x] Implement storage location controls for workspace and user artifacts
     - Priority: 1
@@ -433,17 +434,17 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
     - Status: Completed
     - Dependencies: 34
 
-37. [ ] Enforce single-location persistence for all active indexes
+37. [x] Enforce single-location persistence for all active indexes
     - Priority: 1
     - Cards: "CNS-015"
     - Description: Extend the single-location persistence rule to all active indexes (workspace index and memory indexes), ensuring no duplicate persisted copies exist for a given workspace/scope.
     - Deliverables:
         - Ensure for any indexable store (workspace index, user memory, workspace memory) there is exactly one persisted active copy.
         - Add tests that validate no duplicates are created across supported storage layouts.
-    - Status: Planned
+    - Status: Completed
     - Dependencies: 23, 24, 34
 
-38. [ ] Retire deprecated tool families from the public surface
+38. [x] Retire deprecated tool families from the public surface
     - Priority: 1
     - Cards: "CNS-010", "CNS-015"
     - Description: Ensure the effective top-level tool surface matches `docs/design/ToolContracts.md` and that deprecated tool families are not callable as public tools.
@@ -452,7 +453,7 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
             - `workspace_dir`, `search`, `fs`, `patch`, `logs`, `plan`, `memory`, `capabilities`, `status`.
         - Calls to deprecated/legacy tools (for example: `ls`, `read_range`, `file_stat`, `grep`, `diff`, `log_search`, `log_tail`, `plan_get`, `memory_put`, `env_*`, `job_*`, `task_run`) fail deterministically with `invalid_argument` and `details.reason: tool_disabled`.
         - Add tests that attempt to call a representative sample of deprecated tools and assert deterministic refusal.
-    - Status: Planned
+    - Status: Completed
     - Dependencies: 18, 19, 20, 21, 22, 23
 
 39. [x] Enforce symlink/junction-safe workspace boundary checks
@@ -466,17 +467,17 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
     - Status: Completed
     - Dependencies: 27
 
-40. [ ] Implement network-filesystem safe write strategy
+40. [x] Implement network-filesystem safe write strategy
     - Priority: 2
     - Cards: "CNS-022", "CNS-017", "CNS-015"
     - Description: Make writes robust on networked filesystems while preserving deterministic, all-or-nothing semantics.
     - Deliverables:
         - Audit mutating paths (plan updates, memory persistence, bulk operations, patch apply/revert) for network-FS behavior and avoid non-deterministic rename/replace strategies where forbidden by design.
         - Add tests that simulate common failure modes (permission errors, partial writes, replace failures) and assert deterministic error mapping.
-    - Status: Planned
+    - Status: Completed
     - Dependencies: 19, 20, 22, 23
 
-41. [ ] Enforce and test capability limits
+41. [x] Enforce and test capability limits
     - Priority: 1
     - Cards: "STR-010", "CNS-012", "CNS-015"
     - Description: Ensure published `capabilities.limits` are actually enforced with deterministic failures.
@@ -484,5 +485,5 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
         - Implement limit enforcement for contractually published limits (for example: max patch files per call, max bulk operations per call, max log records per call, max inline UTF-8 bytes).
         - Ensure limit overflows fail deterministically with `resource_exhausted`.
         - Add tests that exercise each enforced limit.
-    - Status: Planned
+    - Status: Completed
     - Dependencies: 18, 19, 20, 21
