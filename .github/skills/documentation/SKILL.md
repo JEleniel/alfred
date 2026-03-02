@@ -21,6 +21,7 @@ This skill must **never** generate, modify, or suggest changes to source code.
 - If a `docs/design/aurora/` folder exists, read and follow [Aurora Compact Model](../../aurora/Aurora.compact.instructions.md) to understand the design.
     - The Aurora Compact Model exists to save time and tokens by keeping key information in a single compact (thus the name) file.
     - Use the full Aurora instructions only when applying the Architecture skill.
+- Documentation review guidance is canonical. Follow [Documentation Review Checklists and Principles](../DocumentationChecklistsAndPrinciples.md). If there is a conflict, the checklist wins.
 
 ## Outputs
 
@@ -53,6 +54,7 @@ This skill must **never** generate, modify, or suggest changes to source code.
 - Examples and procedures are complete (no missing prerequisites or steps).
 - Links resolve and point to the intended artifacts.
 - Markdown linting rules are satisfied (for example via `.markdownlint-cli2.jsonc`).
+- Documentation remains compatible with [Documentation Review Checklists and Principles](../DocumentationChecklistsAndPrinciples.md).
 
 ## Glossary
 

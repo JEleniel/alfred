@@ -11,37 +11,23 @@ description: The skill of performing thorough reviews of code, documentation, an
     - The Aurora Compact Model exists to save time and tokens by keeping key information in a single compact (thus the name) file.
     - Use the full Aurora instructions only when applying the Architecture skill.
 - In order to ensure enough context for the review, break it down into manageable chunks and/or delegate it to subagents as needed. You may also ask for additional information or clarification from the user if necessary.
-- If the user asks for "feedback", treat it as informal feedback (not a formal review) and provide your feedback in your response.
-- Only if the user asks for a "formal review", treat it as a formal review and write the results to the appropriate files.
+- If the user asks for a "formal review", treat it as a formal review and write the results to the appropriate files. Otherwise, provide recommendations in the conversation without writing to the review files.
 - If unsure whether it is formal or not, ask.
 - You MUST NOT alter code, documentation, or other files except the review output files.
 - Reviews recommend improvements and fixes. Reviews do not make decisions and do not record decisions.
 
 ## Review principles
 
-- Correctness: code matches intent and wiring is complete.
-- Reliability: failures are handled intentionally; unhandled errors are logged and/or returned cleanly to the caller.
-- Security: apply OWASP guidance (input validation, authz/authn boundaries, secrets handling, least privilege, safe logging).
-- Accessibility: WCAG AA (AAA preferred).
-- Maintainability: clear names; proper, cohesive modules; minimal complexity.
-- Tests: require tests that prove behavior; no null tests.
-- Code conciseness: prefer small functions (~50 lines) and cohesive modules (~500 lines) when practical.
-    - For newly written or substantially rewritten code, avoid new functions > 50 lines and new files > 500 lines.
-- Documentation conciseness: clear, to the point, easily readable documentation.
-- Compliance: if an Aurora model is present, code aligns to the model. If there is a divergence, the code or model should be updated to align with the other.
-- Gaps and 'foot-guns': identify missing edge cases, potential for misuse, and areas where future maintainers may struggle.
-
-## Specific points of review
-
-- Be very strict about security issues. Approach code reviews with an adversarial mindset, looking for ways the code could be misused or abused.
-- Verify test coverage is sufficient to prove the behavior of the code. Look for null tests, test gaps, and missing tests for edge cases.
-- For documentation, verify it is clear, concise, and accurate. Look for missing information, inaccuracies, and areas that could be clarified or simplified.
-- For prerelease reviews, verify all release criteria are met, including documentation, testing, and any necessary approvals.
+- If reviewing code, refer to the [Code Review Checklists and Principles](../CodeChecklistsAndPrinciples.md) for comprehensive guidance on what to look for. This includes security review guidance.
+- If reviewing documentation, refer to the [Documentation Review Checklists and Principles](../DocumentationChecklistsAndPrinciples.md) for comprehensive guidance on what to look for.
+- If reviewing architecture and designs, refer to the [Architecture Review Checklists and Principles](../ArchitectureChecklistsAndPrinciples.md) for comprehensive guidance on what to look for.
+- For a pre-release review, refer to the [Pre-release Review Checklists](../PreReleaseChecklists.md) for comprehensive guidance on what to look for.
+- The checklist documents are canonical. If a checklist and a skill instruction conflict, the checklist wins.
 
 ## Files and folders to ignore
 
-- Read only the `Compact.json` files under `docs/design/aurora/` for context on the Aurora model. Do not read any other files in that directory.
-- Do not read any files or folders under `docs/design/aurora/` named `MIS-*`. Those are just the human-readable version of the model and contain no relevant information not already in the Compact Model.
+- Read only the `Compact.json` files under `docs/design/aurora/` for context on the Aurora model. Do not read any other files in that directory for reviews.
+- Do not read any files or folders under `docs/design/` named `MIS-*`. Those are just the human-readable version of the model and contain no relevant information not already in the Compact Model.
 - Do not read files under `.github/` unless specifically instructed to review them.
 - The following files are irrelevant for reviews:
     - `.gitignore`
@@ -55,17 +41,17 @@ description: The skill of performing thorough reviews of code, documentation, an
 ## Deliverables
 
 - Record findings in the appropriate review file under `docs/design/`:
+    - `docs/design/Review-Architecture.md`
     - `docs/design/Review-Code.md`
-    - `docs/design/Review-Security.md`
     - `docs/design/Review-Documentation.md`
     - `docs/design/Review-Prerelease.md`
-- Group findings by severity and include verification guidance.
-- Provide actionable feedback: what, why it matters, and the smallest safe fix.
+    - `docs/design/Review-Security.md`
+- Apply the canonical checklist for the review type and record findings according to checklist requirements.
 
 ## Cross-skill tasks
 
 - If asked to implement fixes, do not proceed under this skill. Either:
-    - Switch to the Coding skill (if implementation is desired and allowed), or
+    - Switch to the appropriate skill, or
     - Provide recommendations only and leave implementation to a separate task.
 - If asked to update a project plan, use the Planning skill.
 - If asked to produce or update an Aurora architecture model, use the Architecture skill.

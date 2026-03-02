@@ -20,6 +20,12 @@ This skill must **never** generate, modify, or suggest changes to source code or
 - If a `docs/design/aurora/` folder exists, read and follow [Aurora Compact Model](../../aurora/Aurora.compact.instructions.md) to understand the design.
     - The Aurora Compact Model exists to save time and tokens by keeping key information in a single compact (thus the name) file.
     - Use the full Aurora instructions only when applying the Architecture skill.
+- Review guidance is canonical. Plans that include implementation/release work should include tasks that satisfy the applicable review checklist(s):
+    - [Code Review Checklists and Principles](../CodeChecklistsAndPrinciples.md)
+    - [Documentation Review Checklists and Principles](../DocumentationChecklistsAndPrinciples.md)
+    - [Architecture Review Checklists and Principles](../ArchitectureChecklistsAndPrinciples.md)
+    - [Pre-Release Review Checklists](../PreReleaseChecklists.md)
+- If plan guidance and a checklist conflict, the checklist wins.
 - **Specific**: Tasks should be clearly defined with specific deliverables.
 - **Measurable**: Progress should be trackable through the status and deliverables.
 - **Achievable**: Tasks should be realistic and achievable within the context of the project.
@@ -56,6 +62,7 @@ This skill must **never** generate, modify, or suggest changes to source code or
 - Dependencies are consistent (no circular dependencies; prerequisites are listed before dependents).
 - Priorities are present and within the defined range.
 - The plan format matches the documented structure.
+- If a plan includes release/design/implementation deliverables, it includes explicit tasks for the applicable canonical review checklist gates.
 
 ## Glossary
 

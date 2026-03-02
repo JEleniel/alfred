@@ -15,6 +15,7 @@ Details on the Aurora modeling system are in the [Aurora instructions](../../aur
 
 - Use the full Aurora instructions when applying this skill.
 - The Aurora Compact Model exists to save time and tokens by keeping key information in a single compact (thus the name) file. It is a fast reference, but it is not a substitute for the full Aurora instructions when producing or updating architecture.
+- Architecture review guidance is canonical. Follow [Architecture Review Checklists and Principles](../ArchitectureChecklistsAndPrinciples.md). If there is a conflict, the checklist wins.
 
 ## Goal
 
@@ -81,6 +82,7 @@ In modeling the project, consider the following aspects:
 - Components have clear responsibilities, interfaces/contracts, and state ownership.
 - Data sources, transformation points, and consistency expectations are explicit.
 - Threat and failure modes include detection and recovery paths.
+- Architecture outputs remain compatible with [Architecture Review Checklists and Principles](../ArchitectureChecklistsAndPrinciples.md).
 - The model and supporting documentation are internally consistent.
 
 ## Glossary

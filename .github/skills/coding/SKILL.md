@@ -14,10 +14,9 @@ Use this skill when the task involves writing or modifying source code.
 - If a `docs/design/aurora/` folder exists, read and follow [Aurora Compact Model](../../aurora/Aurora.compact.instructions.md) to understand the design.
     - The Aurora Compact Model exists to save time and tokens by keeping key information in a single compact (thus the name) file.
     - Use the full Aurora instructions only when applying the Architecture skill.
+- Code review guidance is canonical. Follow [Code Review Checklists and Principles](../CodeChecklistsAndPrinciples.md). If there is a conflict, the checklist wins.
 - The file-specific rules in `../../instructions/*.instructions.md` take precedence over these instructions.
 - Follow best practices for the language being edited. Language-specific configs (for example `rustfmt.toml`, `.markdownlint-cli2.jsonc`, `.prettierrc.json`) are authoritative.
-- Keep code modular and cohesive (single responsibility). Prefer small functions (~50 lines) and small modules (~500 lines) when practical.
-- Prefer small, cohesive changes. Fix root causes, not symptoms.
 - Use the shortest acceptable path for local files.
 - Prefer mature, well-supported dependencies with GPL, MIT, or Apache-2.0 licenses.
     - Well-maintained heuristic (use judgment; not a checklist):
@@ -34,12 +33,7 @@ Use this skill when the task involves writing or modifying source code.
 
 ## Invariants
 
-- For newly written or substantially rewritten code:
-    - You MUST NOT allow any new source file to exceed 500 lines or 50MiB in size, whichever is smaller.
-    - You MUST NOT write any new function that exceeds 50 lines in length.
-- For pre-existing code that violates these size limits:
-    - You SHOULD recommend refactoring when you encounter it.
-    - You MUST NOT perform large refactors solely to satisfy the limits unless the task requires it.
+- Apply file/function size constraints exactly as defined in [Code Review Checklists and Principles](../CodeChecklistsAndPrinciples.md).
 
 - Unimplemented paths MUST fail fast and clearly communicate intent (`todo!`, `unimplemented!`, etc.).
 
@@ -75,6 +69,7 @@ Use this skill when the task involves writing or modifying source code.
 - Formatting and linting tools for the language/ecosystem pass (for Rust: `cargo fmt`, `cargo clippy`).
 - The change does not introduce new panics/unchecked failures unless justified by explicit invariants.
 - Logging is useful for troubleshooting and does not leak secrets.
+- Security, reliability, and quality expectations remain compatible with [Code Review Checklists and Principles](../CodeChecklistsAndPrinciples.md).
 
 ## Glossary
 
