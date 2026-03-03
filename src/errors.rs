@@ -35,6 +35,11 @@ pub struct ToolError {
 pub enum AlfredError {
 	#[error("invalid argument: {0}")]
 	InvalidArgument(String),
+	#[error("invalid argument: {message}")]
+	InvalidArgumentWithDetails {
+		message: String,
+		details: Option<Value>,
+	},
 	#[error("permission denied: {0}")]
 	PermissionDenied(String),
 	#[error("workspace boundary violation: {0}")]
@@ -73,6 +78,12 @@ impl From<AlfredError> for ToolError {
 				message,
 				retryable: false,
 				details: None,
+			},
+			AlfredError::InvalidArgumentWithDetails { message, details } => Self {
+				kind: ErrorKind::InvalidArgument,
+				message,
+				retryable: false,
+				details,
 			},
 			AlfredError::PermissionDenied(message) => Self {
 				kind: ErrorKind::PermissionDenied,

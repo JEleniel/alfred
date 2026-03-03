@@ -46,6 +46,22 @@ pub struct MemoryFact {
 	pub updated_at: String,
 }
 
+/// Logical storage scopes for persisted memories.
+#[derive(Debug, Clone, Copy, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum MemoryScope {
+	User,
+	Workspace,
+}
+
+/// Memory fact annotated with its storage scope.
+#[derive(Debug, Clone, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct ScopedMemoryFact {
+	pub scope: MemoryScope,
+	#[serde(flatten)]
+	pub fact: MemoryFact,
+}
+
 #[derive(Debug, Clone, Copy)]
 struct MemoryFields {
 	id: Field,
@@ -254,6 +270,139 @@ impl MemoryStore {
 		self.workspace_store_path.as_deref()
 	}
 
+	fn store_path_for_scope(&self, scope: MemoryScope) -> Result<&Path, AlfredError> {
+		match scope {
+			MemoryScope::User => self.user_store_path.as_deref().ok_or_else(|| {
+				AlfredError::InvalidArgument(
+					"user memory storage is disabled by configuration".to_string(),
+				)
+			}),
+			MemoryScope::Workspace => self.workspace_store_path.as_deref().ok_or_else(|| {
+				AlfredError::InvalidArgument(
+					"workspace memory storage is disabled by configuration".to_string(),
+				)
+			}),
+		}
+	}
+
+	fn facts_for_scope(&self, scope: MemoryScope) -> Result<Vec<MemoryFact>, AlfredError> {
+		let path = match scope {
+			MemoryScope::User => self.user_store_path.as_deref(),
+			MemoryScope::Workspace => self.workspace_store_path.as_deref(),
+		};
+
+		match path {
+			Some(path) => open_store(path)?.read_all(),
+			None => Ok(Vec::new()),
+		}
+	}
+
+	/// Upserts a memory fact in the explicitly requested storage scope.
+	pub fn upsert_in_scope(
+		&self,
+		scope: MemoryScope,
+		input: MemoryFactInput,
+	) -> Result<String, AlfredError> {
+		validate_input(&input)?;
+		let mut input = input;
+		input.subject = self.redactor.redact_text(input.subject.as_str());
+		input.fact = self.redactor.redact_text(input.fact.as_str());
+		input.citations = self.redactor.redact_text(input.citations.as_str());
+		input.reason = self.redactor.redact_text(input.reason.as_str());
+		input.category = self.redactor.redact_text(input.category.as_str());
+		input.tags = input
+			.tags
+			.into_iter()
+			.map(|tag| self.redactor.redact_text(tag.as_str()))
+			.collect();
+
+		let tags = normalize_tags(input.tags);
+		let existing = self.get_in_scope(scope, input.id.as_str())?;
+		let now = now_timestamp();
+		let created_at = existing
+			.as_ref()
+			.map(|fact| fact.created_at.clone())
+			.unwrap_or_else(|| now.clone());
+		let fact = MemoryFact {
+			id: input.id,
+			subject: input.subject.trim().to_string(),
+			fact: input.fact.trim().to_string(),
+			citations: input.citations.trim().to_string(),
+			reason: input.reason.trim().to_string(),
+			category: input.category.trim().to_string(),
+			tags,
+			created_at,
+			updated_at: now,
+		};
+
+		let target_path = self.store_path_for_scope(scope)?;
+		with_store_for_write(target_path, |store| store.upsert(&fact))?;
+		Ok(fact.id)
+	}
+
+	/// Returns a fact by id from a specific scope.
+	pub fn get_in_scope(
+		&self,
+		scope: MemoryScope,
+		id: &str,
+	) -> Result<Option<MemoryFact>, AlfredError> {
+		validate_id(id)?;
+		let facts = self.facts_for_scope(scope)?;
+		Ok(facts.into_iter().find(|fact| fact.id == id))
+	}
+
+	/// Returns whether a fact id exists in a specific scope.
+	pub fn exists_in_scope(&self, scope: MemoryScope, id: &str) -> Result<bool, AlfredError> {
+		let _ = self.store_path_for_scope(scope)?;
+		Ok(self.get_in_scope(scope, id)?.is_some())
+	}
+
+	/// Returns effective merged facts and preserves the winning scope per id.
+	pub fn list_effective_scoped(&self) -> Result<Vec<ScopedMemoryFact>, AlfredError> {
+		let mut merged = HashMap::<String, ScopedMemoryFact>::new();
+		for fact in self.facts_for_scope(MemoryScope::User)? {
+			merged.insert(
+				fact.id.clone(),
+				ScopedMemoryFact {
+					scope: MemoryScope::User,
+					fact,
+				},
+			);
+		}
+		for fact in self.facts_for_scope(MemoryScope::Workspace)? {
+			merged.insert(
+				fact.id.clone(),
+				ScopedMemoryFact {
+					scope: MemoryScope::Workspace,
+					fact,
+				},
+			);
+		}
+
+		let mut facts = merged.into_values().collect::<Vec<_>>();
+		facts.sort_by(|left, right| left.fact.id.cmp(&right.fact.id));
+		Ok(facts)
+	}
+
+	/// Retrieves an effective memory fact by id and returns the winning scope.
+	pub fn get_effective_scoped(&self, id: &str) -> Result<Option<ScopedMemoryFact>, AlfredError> {
+		validate_id(id)?;
+		if let Some(found) = self.get_in_scope(MemoryScope::Workspace, id)? {
+			return Ok(Some(ScopedMemoryFact {
+				scope: MemoryScope::Workspace,
+				fact: found,
+			}));
+		}
+		if let Some(found) = self.get_in_scope(MemoryScope::User, id)? {
+			return Ok(Some(ScopedMemoryFact {
+				scope: MemoryScope::User,
+				fact: found,
+			}));
+		}
+
+		Ok(None)
+	}
+
 	/// Upserts a memory fact and returns the stable id.
 	pub fn put(&self, input: MemoryFactInput) -> Result<String, AlfredError> {
 		validate_input(&input)?;
@@ -308,8 +457,8 @@ impl MemoryStore {
 
 	/// Retrieves a single memory fact by id.
 	pub fn get(&self, id: &str) -> Result<MemoryFact, AlfredError> {
-		validate_id(id)?;
-		self.find_effective_by_id(id)?
+		self.get_effective_scoped(id)?
+			.map(|fact| fact.fact)
 			.ok_or_else(|| AlfredError::NotFound(format!("memory fact not found: {id}")))
 	}
 
@@ -341,21 +490,11 @@ impl MemoryStore {
 
 	/// Returns the effective merged set of memory facts.
 	pub fn list_effective(&self) -> Result<Vec<MemoryFact>, AlfredError> {
-		let mut merged = HashMap::<String, MemoryFact>::new();
-		if let Some(user_path) = self.user_store_path.as_deref() {
-			for fact in open_store(user_path)?.read_all()? {
-				merged.insert(fact.id.clone(), fact);
-			}
-		}
-		if let Some(workspace_path) = self.workspace_store_path.as_deref() {
-			for fact in open_store(workspace_path)?.read_all()? {
-				merged.insert(fact.id.clone(), fact);
-			}
-		}
-
-		let mut facts = merged.into_values().collect::<Vec<_>>();
-		facts.sort_by(|left, right| left.id.cmp(&right.id));
-		Ok(facts)
+		Ok(self
+			.list_effective_scoped()?
+			.into_iter()
+			.map(|fact| fact.fact)
+			.collect())
 	}
 
 	fn has_id(&self, store_path: &Path, id: &str) -> Result<bool, AlfredError> {
@@ -364,23 +503,7 @@ impl MemoryStore {
 	}
 
 	fn find_effective_by_id(&self, id: &str) -> Result<Option<MemoryFact>, AlfredError> {
-		if let Some(workspace_path) = self.workspace_store_path.as_deref()
-			&& let Some(found) = open_store(workspace_path)?
-				.read_all()?
-				.into_iter()
-				.find(|fact| fact.id == id)
-		{
-			return Ok(Some(found));
-		}
-
-		if let Some(user_path) = self.user_store_path.as_deref() {
-			return Ok(open_store(user_path)?
-				.read_all()?
-				.into_iter()
-				.find(|fact| fact.id == id));
-		}
-
-		Ok(None)
+		Ok(self.get_effective_scoped(id)?.map(|fact| fact.fact))
 	}
 }
 

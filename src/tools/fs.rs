@@ -12,6 +12,7 @@ use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
 use crate::services::job_manager::{FsBulkOperation, FsBulkState};
 use crate::tools::ToolCallResult;
+use crate::tools::capabilities::MAX_BULK_OPERATIONS_PER_CALL;
 use crate::tools::workspace_query;
 
 /// Consolidated filesystem operations tool.
@@ -218,6 +219,12 @@ fn handle_bulk_execute(
 		return Err(AlfredError::InvalidArgument(
 			"fs.bulk.operations must not be empty".to_string(),
 		));
+	}
+	if raw_operations.len() > MAX_BULK_OPERATIONS_PER_CALL {
+		return Err(AlfredError::ResourceExhausted(format!(
+			"fs.bulk.operations exceeds max_bulk_operations_per_call ({MAX_BULK_OPERATIONS_PER_CALL}): {}",
+			raw_operations.len()
+		)));
 	}
 
 	let operations = raw_operations

@@ -7,6 +7,7 @@ use uuid::Uuid;
 use crate::configuration::AppConfig;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
+use crate::tools::capabilities::MAX_PATCH_FILES_PER_CALL;
 use crate::tools::{ToolCallResult, dispatch_tool_call as dispatch_tool_call_outcome};
 
 struct TestDir {
@@ -183,6 +184,79 @@ fn patch_tool_emits_duplicate_content_warning() {
 			.iter()
 			.any(|warning| warning["kind"] == "duplicate_content_risk")
 	);
+}
+
+#[test]
+fn patch_tool_preserves_original_content_when_write_fails_mid_stream() {
+	let workspace = TestDir::new("patch-tool-partial-write-tests");
+	let services = build_services(workspace.path.clone());
+
+	let file_path = workspace.path.join("hello.txt");
+	fs::write(&file_path, "alpha\nbeta\n").expect("fixture file should write");
+
+	let patch_text = "--- a/hello.txt\n+++ b/hello.txt\n@@ -1,2 +1,2 @@\n alpha\n-beta\n+gamma\n";
+	let _fail_guard = crate::services::workspace_files::fail_writes_after_bytes(4);
+
+	let apply_result = dispatch_tool_call(
+		"patch",
+		json!({
+			"operation": "apply",
+			"dry_run": false,
+			"patches": [
+				{
+					"path": "hello.txt",
+					"patch": patch_text,
+				}
+			]
+		}),
+		&services,
+	)
+	.expect("apply call should succeed with conflict payload");
+
+	assert_eq!(apply_result["files"][0]["patched"], false);
+	let conflicts = apply_result["files"][0]["conflicts"]
+		.as_array()
+		.expect("conflicts should be present");
+	let message = conflicts
+		.first()
+		.and_then(|value| value["message"].as_str())
+		.expect("conflict message should be present");
+	assert!(message.contains("simulated partial write failure"));
+
+	let content = fs::read_to_string(&file_path).expect("original file should remain readable");
+	assert_eq!(content, "alpha\nbeta\n");
+}
+
+#[test]
+fn patch_tool_rejects_too_many_files() {
+	let workspace = TestDir::new("patch-tool-limit-tests");
+	let services = build_services(workspace.path.clone());
+
+	let patches = (0..=MAX_PATCH_FILES_PER_CALL)
+		.map(|index| {
+			json!({
+				"path": format!("file-{index}.txt"),
+				"patch": "--- a/file.txt\n+++ b/file.txt\n"
+			})
+		})
+		.collect::<Vec<_>>();
+
+	let result = dispatch_tool_call(
+		"patch",
+		json!({
+			"operation": "apply",
+			"dry_run": true,
+			"patches": patches,
+		}),
+		&services,
+	);
+
+	match result {
+		Err(AlfredError::ResourceExhausted(message)) => {
+			assert!(message.contains("max_patch_files_per_call"));
+		}
+		other => panic!("unexpected result: {other:?}"),
+	}
 }
 
 #[cfg(unix)]

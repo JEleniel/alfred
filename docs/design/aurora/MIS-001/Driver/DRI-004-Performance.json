@@ -3,7 +3,7 @@
 	"id": "DRI-004",
 	"card_type": "Driver",
 	"name": "Performance and Scalability",
-	"description": "Indexing/search/diff and patch operations must perform well on typical repositories and handle very large files safely.",
+	"description": "Indexing/search, `fs` inspection operations, and patch operations must perform well on typical repositories and handle very large files safely.",
 	"links": [
 		{
 			"relationship": "drives",

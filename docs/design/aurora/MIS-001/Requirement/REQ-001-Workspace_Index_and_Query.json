@@ -3,7 +3,7 @@
 	"id": "REQ-001",
 	"card_type": "Requirement",
 	"name": "Workspace Index and Query Tools",
-	"description": "Alfred MUST maintain an index of all files in the workspace and provide listing, regex search, file range extraction, and diff capabilities.",
+	"description": "Alfred MUST maintain an index of all files in the workspace and provide deterministic query and inspection capabilities via the consolidated `search` and `fs` tool surfaces.",
 	"links": [
 		{
 			"relationship": "requires",

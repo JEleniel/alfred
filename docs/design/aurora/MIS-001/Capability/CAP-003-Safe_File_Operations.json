@@ -9,6 +9,7 @@
 		"contracts": {
 			"tool_contracts": "docs/design/ToolContracts.md"
 		},
-		"tools": ["fs", "bulk_fs", "patch"]
+		"tools": ["fs", "patch"],
+		"bulk_operations_via": "fs.operation=bulk"
 	}
 }

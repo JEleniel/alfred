@@ -26,8 +26,7 @@ impl AlfredApp {
 		let config = AppConfig::load_default().context("failed to load configuration")?;
 		logging::init_logging(&config).context("failed to initialize logging")?;
 		trace!(
-			"bootstrap config user={} workspace={}",
-			config.user_config_path.display(),
+			"bootstrap config workspace={}",
 			config.workspace_config_path.display(),
 		);
 		let services = ServiceContainer::new(config.clone())

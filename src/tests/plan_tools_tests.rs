@@ -10,6 +10,7 @@ use crate::services::ServiceContainer;
 use crate::tools::{ToolCallResult, dispatch_tool_call as dispatch_tool_call_outcome};
 
 const SAMPLE_PLAN: &str = "# Plan: Test Plan\n\n1. [ ] First task\n    - Priority: 1\n    - Cards: \"ART-001\", \"STR-001\"\n    - Description: First description\n    - Deliverables:\n        - First deliverable\n    - Status: planned\n\n2. [x] Second task\n    - Priority: 0\n    - Cards: \"ART-002\"\n    - Description: Second description\n    - Deliverables:\n        - Second deliverable\n    - Notes: Existing note\n    - Status: completed\n";
+const SPARSE_PLAN: &str = "# Plan: Sparse\n\n1. [ ] Keep formatting\n    - Priority: 1\n    - Cards: \"ART-100\"\n    - Description: Preserve blank lines\n\n    - Deliverables:\n        - Keep this line\n    - Status: planned\n";
 
 struct TestDir {
 	path: PathBuf,
@@ -49,7 +50,11 @@ fn build_services(enable_plan_mutations: bool) -> (ServiceContainer, TestDir) {
 
 fn enable_plan_mutation_tools(config: &mut AppConfig) {
 	config.disabled_tools.retain(|tool| {
-		tool != "plan_update" && tool != "plan_edit" && tool != "plan_add" && tool != "plan_delete"
+		tool != "plan"
+			&& tool != "plan_update"
+			&& tool != "plan_edit"
+			&& tool != "plan_add"
+			&& tool != "plan_delete"
 	});
 }
 
@@ -66,6 +71,21 @@ fn dispatch_tool_call(
 	}
 }
 
+fn dispatch_plan_call(
+	operation: &str,
+	args: serde_json::Value,
+	services: &ServiceContainer,
+) -> Result<serde_json::Value, AlfredError> {
+	dispatch_tool_call(
+		"plan",
+		json!({
+			"operation": operation,
+			"args": args,
+		}),
+		services,
+	)
+}
+
 fn write_plan(workspace_root: &std::path::Path, content: &str) {
 	let plan_path = workspace_root.join("ProjectPlan.md");
 	fs::write(plan_path, content).expect("plan fixture should be written");
@@ -75,7 +95,7 @@ fn write_plan(workspace_root: &std::path::Path, content: &str) {
 fn plan_get_returns_not_found_when_plan_file_is_missing() {
 	let (services, _workspace) = build_services(false);
 
-	let result = dispatch_tool_call("plan_get", json!({}), &services);
+	let result = dispatch_plan_call("get", json!({}), &services);
 
 	match result {
 		Err(AlfredError::NotFound(message)) => {
@@ -93,7 +113,7 @@ fn plan_get_returns_parse_error_for_invalid_plan_format() {
 		"# Plan: Broken\n\n1. [ ] Missing fields\n    - Status: planned\n",
 	);
 
-	let result = dispatch_tool_call("plan_get", json!({}), &services);
+	let result = dispatch_plan_call("get", json!({}), &services);
 
 	match result {
 		Err(AlfredError::InvalidArgument(message)) => {
@@ -109,10 +129,12 @@ fn plan_get_returns_items_from_valid_plan_file() {
 	let (services, workspace) = build_services(false);
 	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
 
-	let data =
-		dispatch_tool_call("plan_get", json!({}), &services).expect("plan_get should succeed");
+	let data = dispatch_plan_call("get", json!({}), &services).expect("plan get should succeed");
 
-	let items = data["items"].as_array().expect("items should be an array");
+	assert_eq!(data["operation"], json!("get"));
+	let items = data["result"]["items"]
+		.as_array()
+		.expect("items should be an array");
 	assert_eq!(items.len(), 2);
 	assert_eq!(items[0]["id"], json!(1));
 	assert_eq!(items[0]["title"], json!("First task"));
@@ -126,17 +148,38 @@ fn plan_update_changes_status_for_existing_item() {
 	let (services, workspace) = build_services(true);
 	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
 
-	dispatch_tool_call(
-		"plan_update",
+	dispatch_plan_call(
+		"update_status",
 		json!({"id": 1, "status": "in-progress"}),
 		&services,
 	)
-	.expect("plan_update should succeed");
+	.expect("plan update_status should succeed");
 
-	let data = dispatch_tool_call("plan_get", json!({}), &services)
-		.expect("plan_get should succeed after update");
-	let items = data["items"].as_array().expect("items should be an array");
+	let data = dispatch_plan_call("get", json!({}), &services)
+		.expect("plan get should succeed after update");
+	let items = data["result"]["items"]
+		.as_array()
+		.expect("items should be an array");
 	assert_eq!(items[0]["status"], json!("in-progress"));
+}
+
+#[test]
+fn plan_update_status_preserves_surrounding_formatting() {
+	let (services, workspace) = build_services(true);
+	write_plan(workspace.path.as_path(), SPARSE_PLAN);
+
+	dispatch_plan_call(
+		"update_status",
+		json!({"id": 1, "status": "completed"}),
+		&services,
+	)
+	.expect("plan update_status should succeed");
+
+	let raw = fs::read_to_string(workspace.path.join("ProjectPlan.md"))
+		.expect("plan file should be readable");
+	assert!(raw.contains("1. [x] Keep formatting"));
+	assert!(raw.contains("    - Status: completed"));
+	assert!(raw.contains("Description: Preserve blank lines\n\n    - Deliverables:"));
 }
 
 #[test]
@@ -144,8 +187,8 @@ fn plan_update_returns_not_found_for_missing_id() {
 	let (services, workspace) = build_services(true);
 	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
 
-	let result = dispatch_tool_call(
-		"plan_update",
+	let result = dispatch_plan_call(
+		"update_status",
 		json!({"id": 999, "status": "completed"}),
 		&services,
 	);
@@ -159,58 +202,46 @@ fn plan_update_returns_not_found_for_missing_id() {
 }
 
 #[test]
-fn plan_edit_replaces_existing_item() {
+fn plan_update_preserves_original_content_on_partial_write_failure() {
 	let (services, workspace) = build_services(true);
 	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
 
-	dispatch_tool_call(
-		"plan_edit",
-		json!({
-			"id": 2,
-			"title": "Second task edited",
-			"priority": 2,
-			"cards": ["ART-002", "STR-010"],
-			"description": "Edited description",
-			"deliverables": ["Edited deliverable"],
-			"acceptance_criteria": "Edited acceptance",
-			"notes": "Edited notes",
-			"status": "cancelled"
-		}),
-		&services,
-	)
-	.expect("plan_edit should succeed");
-
-	let data = dispatch_tool_call("plan_get", json!({}), &services)
-		.expect("plan_get should succeed after edit");
-	let items = data["items"].as_array().expect("items should be an array");
-	assert_eq!(items[1]["id"], json!(2));
-	assert_eq!(items[1]["title"], json!("Second task edited"));
-	assert_eq!(items[1]["priority"], json!(2));
-	assert_eq!(items[1]["status"], json!("cancelled"));
-}
-
-#[test]
-fn plan_edit_rejects_invalid_priority() {
-	let (services, workspace) = build_services(true);
-	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
-
-	let result = dispatch_tool_call(
-		"plan_edit",
-		json!({
-			"id": 2,
-			"title": "Second task edited",
-			"priority": 8,
-			"cards": ["ART-002"],
-			"description": "Edited description",
-			"deliverables": ["Edited deliverable"],
-			"status": "planned"
-		}),
+	let _fail_guard = crate::services::workspace_files::fail_writes_after_bytes(12);
+	let result = dispatch_plan_call(
+		"update_status",
+		json!({"id": 1, "status": "in-progress"}),
 		&services,
 	);
 
 	match result {
-		Err(AlfredError::InvalidArgument(message)) => {
-			assert_eq!(message, "priority must be between 0 and 3");
+		Err(AlfredError::IoError(message)) => {
+			assert!(message.contains("simulated partial write failure"));
+		}
+		other => panic!("unexpected result: {other:?}"),
+	}
+
+	let raw = fs::read_to_string(workspace.path.join("ProjectPlan.md"))
+		.expect("plan file should remain readable after rollback");
+	assert_eq!(raw, SAMPLE_PLAN);
+}
+
+#[test]
+fn plan_update_surfaces_write_and_rollback_failures() {
+	let (services, workspace) = build_services(true);
+	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
+
+	let _write_fail_guard = crate::services::workspace_files::fail_writes_after_bytes(12);
+	let _rollback_fail_guard = crate::services::workspace_files::fail_rollbacks();
+	let result = dispatch_plan_call(
+		"update_status",
+		json!({"id": 1, "status": "in-progress"}),
+		&services,
+	);
+
+	match result {
+		Err(AlfredError::IoError(message)) => {
+			assert!(message.contains("simulated partial write failure"));
+			assert!(message.contains("simulated rollback failure"));
 		}
 		other => panic!("unexpected result: {other:?}"),
 	}
@@ -221,8 +252,8 @@ fn plan_add_appends_item_with_next_sequential_id() {
 	let (services, workspace) = build_services(true);
 	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
 
-	let data = dispatch_tool_call(
-		"plan_add",
+	let data = dispatch_plan_call(
+		"add",
 		json!({
 			"id": 123,
 			"title": "Third task",
@@ -234,13 +265,16 @@ fn plan_add_appends_item_with_next_sequential_id() {
 		}),
 		&services,
 	)
-	.expect("plan_add should succeed");
+	.expect("plan add should succeed");
 
-	assert_eq!(data["id"], json!(3));
+	assert_eq!(data["operation"], json!("add"));
+	assert_eq!(data["result"]["id"], json!(3));
 
-	let after = dispatch_tool_call("plan_get", json!({}), &services)
-		.expect("plan_get should succeed after add");
-	let items = after["items"].as_array().expect("items should be an array");
+	let after =
+		dispatch_plan_call("get", json!({}), &services).expect("plan get should succeed after add");
+	let items = after["result"]["items"]
+		.as_array()
+		.expect("items should be an array");
 	assert_eq!(items.len(), 3);
 	assert_eq!(items[2]["id"], json!(3));
 	assert_eq!(items[2]["title"], json!("Third task"));
@@ -251,12 +285,13 @@ fn plan_delete_removes_existing_item() {
 	let (services, workspace) = build_services(true);
 	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
 
-	dispatch_tool_call("plan_delete", json!({"id": 1}), &services)
-		.expect("plan_delete should succeed");
+	dispatch_plan_call("delete", json!({"id": 1}), &services).expect("plan delete should succeed");
 
-	let data = dispatch_tool_call("plan_get", json!({}), &services)
-		.expect("plan_get should succeed after delete");
-	let items = data["items"].as_array().expect("items should be an array");
+	let data = dispatch_plan_call("get", json!({}), &services)
+		.expect("plan get should succeed after delete");
+	let items = data["result"]["items"]
+		.as_array()
+		.expect("items should be an array");
 	assert_eq!(items.len(), 1);
 	assert_eq!(items[0]["id"], json!(2));
 }
@@ -266,7 +301,7 @@ fn plan_delete_returns_not_found_for_missing_item_id() {
 	let (services, workspace) = build_services(true);
 	write_plan(workspace.path.as_path(), SAMPLE_PLAN);
 
-	let result = dispatch_tool_call("plan_delete", json!({"id": 999}), &services);
+	let result = dispatch_plan_call("delete", json!({"id": 999}), &services);
 
 	match result {
 		Err(AlfredError::NotFound(message)) => {

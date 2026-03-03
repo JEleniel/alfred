@@ -11,6 +11,7 @@ use serde_json::{Value, json};
 use crate::configuration::is_workspace_relative_path;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
+use crate::tools::capabilities::MAX_LOG_RECORDS_PER_CALL;
 
 const DEFAULT_LIMIT: usize = 100;
 const ALLOWED_LEVELS: &[&str] = &["TRACE", "DEBUG", "INFO", "WARN", "ERROR"];
@@ -370,6 +371,11 @@ fn parse_pagination(
 		return Err(AlfredError::InvalidArgument(
 			"limit must be greater than 0".to_string(),
 		));
+	}
+	if limit > MAX_LOG_RECORDS_PER_CALL {
+		return Err(AlfredError::ResourceExhausted(format!(
+			"limit exceeds max_log_records_per_call ({MAX_LOG_RECORDS_PER_CALL}): {limit}"
+		)));
 	}
 
 	Ok((offset, limit))

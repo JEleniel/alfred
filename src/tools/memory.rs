@@ -6,10 +6,13 @@ use std::collections::HashSet;
 use base64::Engine;
 use serde::Deserialize;
 use serde_json::{Value, json};
+use uuid::Uuid;
 
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
-use crate::services::memory_store::{MemoryFact, MemoryFactInput};
+use crate::services::memory_store::{
+	MemoryFact, MemoryFactInput, MemoryScope, ScopedMemoryFact,
+};
 
 const DEFAULT_LIMIT: usize = 100;
 const CURSOR_PREFIX: &str = "v1:";
@@ -19,18 +22,88 @@ const CURSOR_PREFIX: &str = "v1:";
 pub struct MemoryTools;
 
 impl MemoryTools {
-	pub const NAMES: &'static [&'static str] = &[
-		"memory_put",
-		"memory_get",
-		"memory_delete",
-		"memory_list",
-		"memory_search",
-	];
+	pub const NAMES: &'static [&'static str] = &["memory"];
+}
+
+#[derive(Debug, Clone, Copy)]
+enum MemoryOperation {
+	Create,
+	Retrieve,
+	Update,
+	Delete,
+	Search,
+}
+
+impl MemoryOperation {
+	fn parse(operation: &str) -> Result<Self, AlfredError> {
+		match operation {
+			"create" => Ok(Self::Create),
+			"retrieve" | "get" => Ok(Self::Retrieve),
+			"update" => Ok(Self::Update),
+			"delete" => Ok(Self::Delete),
+			"search" | "list" => Ok(Self::Search),
+			other => Err(AlfredError::InvalidArgument(format!(
+				"operation must be one of create, retrieve, update, delete, search: {other}"
+			))),
+		}
+	}
+
+	fn as_str(self) -> &'static str {
+		match self {
+			Self::Create => "create",
+			Self::Retrieve => "retrieve",
+			Self::Update => "update",
+			Self::Delete => "delete",
+			Self::Search => "search",
+		}
+	}
 }
 
 #[derive(Debug, Deserialize)]
-struct MemoryIdArgs {
+struct MemoryArgs {
+	operation: String,
+	#[serde(default)]
+	args: Value,
+}
+
+#[derive(Debug, Deserialize)]
+struct MemoryRetrieveArgs {
 	id: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct MemoryCreateArgs {
+	#[serde(default)]
+	id: Option<String>,
+	scope: MemoryScope,
+	subject: String,
+	category: String,
+	fact: String,
+	#[serde(default)]
+	reasoning: Option<String>,
+	#[serde(default)]
+	reason: Option<String>,
+	#[serde(default)]
+	citations: Option<String>,
+	#[serde(default)]
+	tags: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct MemoryUpdateArgs {
+	id: String,
+	scope: MemoryScope,
+	subject: String,
+	category: String,
+	fact: String,
+	#[serde(default)]
+	reasoning: Option<String>,
+	#[serde(default)]
+	reason: Option<String>,
+	#[serde(default)]
+	citations: Option<String>,
+	#[serde(default)]
+	tags: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -40,25 +113,21 @@ struct MemoryDeleteArgs {
 }
 
 #[derive(Debug, Deserialize)]
-struct MemoryListArgs {
-	cursor: Option<String>,
+struct MemorySearchArgs {
+	query: Option<String>,
 	limit: Option<usize>,
-	order: Option<String>,
+	cursor: Option<String>,
 	subject: Option<String>,
 	category: Option<String>,
+	tags: Option<Vec<String>>,
 	tags_any: Option<Vec<String>>,
 	tags_and: Option<bool>,
 }
 
-#[derive(Debug, Deserialize)]
-struct MemorySearchArgs {
-	query: String,
-	limit: Option<usize>,
-	cursor: Option<String>,
-	subject: Option<String>,
-	category: Option<String>,
-	tags_any: Option<Vec<String>>,
-	tags_and: Option<bool>,
+#[derive(Debug, Clone)]
+struct SearchMatch {
+	fact: ScopedMemoryFact,
+	score: u64,
 }
 
 /// Handles memory tool calls.
@@ -68,80 +137,154 @@ pub fn dispatch_tool_call(
 	services: &ServiceContainer,
 ) -> Result<Option<Value>, AlfredError> {
 	match name {
-		"memory_put" => handle_memory_put(args, services).map(Some),
-		"memory_get" => handle_memory_get(args, services).map(Some),
-		"memory_delete" => handle_memory_delete(args, services).map(Some),
-		"memory_list" => handle_memory_list(args, services).map(Some),
-		"memory_search" => handle_memory_search(args, services).map(Some),
+		"memory" => handle_memory(args, services).map(Some),
 		_ => Ok(None),
 	}
 }
 
-fn handle_memory_put(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let input = parse_args::<MemoryFactInput>(args)?;
-	let id = services.memory_store.put(input)?;
-	Ok(json!({"id": id}))
-}
+fn handle_memory(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<MemoryArgs>(args)?;
+	let operation = MemoryOperation::parse(args.operation.as_str())?;
 
-fn handle_memory_get(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<MemoryIdArgs>(args)?;
-	let fact = services.memory_store.get(args.id.as_str())?;
-	Ok(json!({"fact": fact}))
-}
+	let result = match operation {
+		MemoryOperation::Create => handle_create(args.args, services)?,
+		MemoryOperation::Retrieve => handle_retrieve(args.args, services)?,
+		MemoryOperation::Update => handle_update(args.args, services)?,
+		MemoryOperation::Delete => handle_delete(args.args, services)?,
+		MemoryOperation::Search => handle_search(args.args, services)?,
+	};
 
-fn handle_memory_delete(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<MemoryDeleteArgs>(args)?;
-	let deleted = services
-		.memory_store
-		.delete(args.id.as_str(), args.dry_run.unwrap_or(false))?;
-	Ok(json!({"deleted": deleted}))
-}
-
-fn handle_memory_list(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<MemoryListArgs>(args)?;
-	let (offset, limit) = parse_pagination(args.cursor.as_deref(), args.limit)?;
-	let tags = normalize_tags_filter(args.tags_any.unwrap_or_default());
-	let mut facts = services.memory_store.list_effective()?;
-
-	facts = filter_facts(
-		facts,
-		args.subject.as_deref(),
-		args.category.as_deref(),
-		tags.as_slice(),
-		args.tags_and.unwrap_or(false),
-	);
-	sort_facts(facts.as_mut_slice(), args.order.as_deref())?;
-
-	let (facts, next_cursor) = paginate_items(facts, offset, limit);
 	Ok(json!({
-		"facts": facts,
-		"next_cursor": next_cursor,
+		"operation": operation.as_str(),
+		"result": result,
 	}))
 }
 
-fn handle_memory_search(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<MemorySearchArgs>(args)?;
-	if args.query.trim().is_empty() {
+fn handle_create(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<MemoryCreateArgs>(args)?;
+	if args.id.is_some() {
 		return Err(AlfredError::InvalidArgument(
-			"query must not be empty".to_string(),
+			"id must be omitted for create operation".to_string(),
 		));
 	}
 
+	let id = Uuid::new_v4().to_string();
+	let input = to_store_input(
+		id.clone(),
+		args.subject,
+		args.category,
+		args.fact,
+		args.reasoning,
+		args.reason,
+		args.citations,
+		args.tags,
+	);
+	services.memory_store.upsert_in_scope(args.scope, input)?;
+
+	let fact = services
+		.memory_store
+		.get_in_scope(args.scope, id.as_str())?
+		.ok_or_else(|| {
+			AlfredError::Internal("created memory fact could not be retrieved".to_string())
+		})?;
+
+	Ok(json!({ "memory": memory_output(args.scope, &fact) }))
+}
+
+fn handle_retrieve(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<MemoryRetrieveArgs>(args)?;
+	let memory = services
+		.memory_store
+		.get_effective_scoped(args.id.as_str())?
+		.ok_or_else(|| AlfredError::NotFound(format!("memory fact not found: {}", args.id)))?;
+
+	Ok(json!({ "memory": memory_output(memory.scope, &memory.fact) }))
+}
+
+fn handle_update(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<MemoryUpdateArgs>(args)?;
+	if !services
+		.memory_store
+		.exists_in_scope(args.scope, args.id.as_str())?
+	{
+		return Err(AlfredError::NotFound(format!(
+			"memory fact not found in scope {}: {}",
+			scope_name(args.scope),
+			args.id
+		)));
+	}
+
+	let input = to_store_input(
+		args.id.clone(),
+		args.subject,
+		args.category,
+		args.fact,
+		args.reasoning,
+		args.reason,
+		args.citations,
+		args.tags,
+	);
+	services.memory_store.upsert_in_scope(args.scope, input)?;
+
+	let fact = services
+		.memory_store
+		.get_in_scope(args.scope, args.id.as_str())?
+		.ok_or_else(|| {
+			AlfredError::Internal("updated memory fact could not be retrieved".to_string())
+		})?;
+
+	Ok(json!({ "memory": memory_output(args.scope, &fact) }))
+}
+
+fn handle_delete(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<MemoryDeleteArgs>(args)?;
+	let deleted = services
+		.memory_store
+		.delete(args.id.as_str(), args.dry_run.unwrap_or(true))?;
+
+	Ok(json!({ "deleted": deleted }))
+}
+
+fn handle_search(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<MemorySearchArgs>(args)?;
+	let query_tokens = parse_search_query(args.query)?;
+	let has_query = query_tokens.is_some();
 	let (offset, limit) = parse_pagination(args.cursor.as_deref(), args.limit)?;
-	let tags = normalize_tags_filter(args.tags_any.unwrap_or_default());
+	let tags = normalize_tags_filter(resolve_tags_filter(args.tags, args.tags_any));
 	let facts = filter_facts(
-		services.memory_store.list_effective()?,
+		services.memory_store.list_effective_scoped()?,
 		args.subject.as_deref(),
 		args.category.as_deref(),
 		tags.as_slice(),
 		args.tags_and.unwrap_or(false),
 	);
 
-	let tokens = normalize_query_tokens(args.query.as_str());
-	let mut matches = score_matches(facts, tokens.as_slice());
-	matches.sort_by(compare_search_matches);
+	let mut matches = if let Some(tokens) = query_tokens {
+		score_matches(facts, tokens.as_slice())
+	} else {
+		facts
+			.into_iter()
+			.map(|fact| SearchMatch { fact, score: 0 })
+			.collect::<Vec<_>>()
+	};
+
+	if has_query {
+		matches.sort_by(compare_search_matches);
+	} else {
+		matches.sort_by(compare_match_facts);
+	}
 
 	let (matches, next_cursor) = paginate_items(matches, offset, limit);
+	let matches = matches
+		.into_iter()
+		.map(|matched| {
+			json!({
+				"fact": memory_output(matched.fact.scope, &matched.fact.fact),
+				"score": matched.score,
+			})
+		})
+		.collect::<Vec<_>>();
+
 	Ok(json!({
 		"matches": matches,
 		"next_cursor": next_cursor,
@@ -149,12 +292,12 @@ fn handle_memory_search(args: Value, services: &ServiceContainer) -> Result<Valu
 }
 
 fn filter_facts(
-	facts: Vec<MemoryFact>,
+	facts: Vec<ScopedMemoryFact>,
 	subject: Option<&str>,
 	category: Option<&str>,
 	tags_any: &[String],
 	tags_and: bool,
-) -> Vec<MemoryFact> {
+) -> Vec<ScopedMemoryFact> {
 	facts
 		.into_iter()
 		.filter(|fact| subject_filter_matches(fact, subject))
@@ -163,26 +306,27 @@ fn filter_facts(
 		.collect()
 }
 
-fn subject_filter_matches(fact: &MemoryFact, subject: Option<&str>) -> bool {
+fn subject_filter_matches(fact: &ScopedMemoryFact, subject: Option<&str>) -> bool {
 	match subject {
-		Some(expected) => fact.subject == expected,
+		Some(expected) => fact.fact.subject == expected,
 		None => true,
 	}
 }
 
-fn category_filter_matches(fact: &MemoryFact, category: Option<&str>) -> bool {
+fn category_filter_matches(fact: &ScopedMemoryFact, category: Option<&str>) -> bool {
 	match category {
-		Some(expected) => fact.category == expected,
+		Some(expected) => fact.fact.category == expected,
 		None => true,
 	}
 }
 
-fn tags_filter_matches(fact: &MemoryFact, tags_any: &[String], tags_and: bool) -> bool {
+fn tags_filter_matches(fact: &ScopedMemoryFact, tags_any: &[String], tags_and: bool) -> bool {
 	if tags_any.is_empty() {
 		return true;
 	}
 
 	let available = fact
+		.fact
 		.tags
 		.iter()
 		.map(|tag| tag.as_str())
@@ -194,75 +338,41 @@ fn tags_filter_matches(fact: &MemoryFact, tags_any: &[String], tags_and: bool) -
 	tags_any.iter().any(|tag| available.contains(tag.as_str()))
 }
 
-fn sort_facts(facts: &mut [MemoryFact], order: Option<&str>) -> Result<(), AlfredError> {
-	let order = order.unwrap_or("updated_at");
-	match order {
-		"created_at" => facts.sort_by(compare_created_at_desc),
-		"updated_at" => facts.sort_by(compare_updated_at_desc),
-		"subject" => facts.sort_by(compare_subject_asc),
-		other => {
-			return Err(AlfredError::InvalidArgument(format!(
-				"order must be one of created_at, updated_at, subject: {other}"
-			)));
-		}
-	}
-
-	Ok(())
-}
-
-fn compare_created_at_desc(left: &MemoryFact, right: &MemoryFact) -> Ordering {
-	right
-		.created_at
-		.cmp(&left.created_at)
-		.then_with(|| left.id.cmp(&right.id))
-}
-
-fn compare_updated_at_desc(left: &MemoryFact, right: &MemoryFact) -> Ordering {
-	right
-		.updated_at
-		.cmp(&left.updated_at)
-		.then_with(|| left.id.cmp(&right.id))
-}
-
-fn compare_subject_asc(left: &MemoryFact, right: &MemoryFact) -> Ordering {
-	left.subject
-		.to_lowercase()
-		.cmp(&right.subject.to_lowercase())
-		.then_with(|| left.subject.cmp(&right.subject))
-		.then_with(|| left.id.cmp(&right.id))
-}
-
-fn score_matches(facts: Vec<MemoryFact>, tokens: &[String]) -> Vec<Value> {
+fn score_matches(facts: Vec<ScopedMemoryFact>, tokens: &[String]) -> Vec<SearchMatch> {
 	facts
 		.into_iter()
 		.filter_map(|fact| {
 			let score = memory_score(&fact, tokens);
-			(score > 0).then(|| json!({"fact": fact, "score": score}))
+			(score > 0).then_some(SearchMatch { fact, score })
 		})
 		.collect()
 }
 
-fn compare_search_matches(left: &Value, right: &Value) -> Ordering {
-	let left_score = left.get("score").and_then(Value::as_u64).unwrap_or(0);
-	let right_score = right.get("score").and_then(Value::as_u64).unwrap_or(0);
-	let left_updated = left["fact"]["updated_at"].as_str().unwrap_or_default();
-	let right_updated = right["fact"]["updated_at"].as_str().unwrap_or_default();
-	let left_id = left["fact"]["id"].as_str().unwrap_or_default();
-	let right_id = right["fact"]["id"].as_str().unwrap_or_default();
-
-	right_score
-		.cmp(&left_score)
-		.then_with(|| right_updated.cmp(left_updated))
-		.then_with(|| left_id.cmp(right_id))
+fn compare_search_matches(left: &SearchMatch, right: &SearchMatch) -> Ordering {
+	right
+		.score
+		.cmp(&left.score)
+		.then_with(|| right.fact.fact.updated_at.cmp(&left.fact.fact.updated_at))
+		.then_with(|| left.fact.fact.id.cmp(&right.fact.fact.id))
 }
 
-fn memory_score(fact: &MemoryFact, tokens: &[String]) -> u64 {
-	let subject = fact.subject.to_lowercase();
-	let body = fact.fact.to_lowercase();
-	let citations = fact.citations.to_lowercase();
-	let reason = fact.reason.to_lowercase();
-	let category = fact.category.to_lowercase();
+fn compare_match_facts(left: &SearchMatch, right: &SearchMatch) -> Ordering {
+	right
+		.fact
+		.fact
+		.updated_at
+		.cmp(&left.fact.fact.updated_at)
+		.then_with(|| left.fact.fact.id.cmp(&right.fact.fact.id))
+}
+
+fn memory_score(fact: &ScopedMemoryFact, tokens: &[String]) -> u64 {
+	let subject = fact.fact.subject.to_lowercase();
+	let body = fact.fact.fact.to_lowercase();
+	let reason = fact.fact.reason.to_lowercase();
+	let category = fact.fact.category.to_lowercase();
+	let scope = scope_name(fact.scope).to_lowercase();
 	let tags = fact
+		.fact
 		.tags
 		.iter()
 		.map(|tag| tag.to_lowercase())
@@ -270,11 +380,7 @@ fn memory_score(fact: &MemoryFact, tokens: &[String]) -> u64 {
 
 	tokens
 		.iter()
-		.map(|token| {
-			token_score(
-				token, &subject, &body, &citations, &reason, &category, &tags,
-			)
-		})
+		.map(|token| token_score(token, &subject, &body, &reason, &category, &scope, &tags))
 		.sum()
 }
 
@@ -282,22 +388,22 @@ fn token_score(
 	token: &str,
 	subject: &str,
 	body: &str,
-	citations: &str,
 	reason: &str,
 	category: &str,
+	scope: &str,
 	tags: &[String],
 ) -> u64 {
 	let subject_score = weighted_contains(subject, token, 4);
 	let fact_score = weighted_contains(body, token, 3);
-	let citations_score = weighted_contains(citations, token, 2);
 	let reason_score = weighted_contains(reason, token, 2);
 	let category_score = weighted_contains(category, token, 1);
+	let scope_score = weighted_contains(scope, token, 1);
 	let tags_score = tags
 		.iter()
 		.map(|tag| weighted_contains(tag, token, 2))
 		.sum::<u64>();
 
-	subject_score + fact_score + citations_score + reason_score + category_score + tags_score
+	subject_score + fact_score + reason_score + category_score + scope_score + tags_score
 }
 
 fn weighted_contains(haystack: &str, needle: &str, weight: u64) -> u64 {
@@ -325,6 +431,65 @@ fn normalize_tags_filter(tags: Vec<String>) -> Vec<String> {
 	normalized.sort_unstable();
 	normalized.dedup();
 	normalized
+}
+
+fn resolve_tags_filter(tags: Option<Vec<String>>, tags_any: Option<Vec<String>>) -> Vec<String> {
+	match (tags, tags_any) {
+		(Some(tags), Some(mut tags_any)) => {
+			tags_any.extend(tags);
+			tags_any
+		}
+		(Some(tags), None) => tags,
+		(None, Some(tags_any)) => tags_any,
+		(None, None) => Vec::new(),
+	}
+}
+
+fn memory_output(scope: MemoryScope, fact: &MemoryFact) -> Value {
+	json!({
+		"id": fact.id,
+		"scope": scope_name(scope),
+		"subject": fact.subject,
+		"category": fact.category,
+		"fact": fact.fact,
+		"reasoning": fact.reason,
+		"tags": fact.tags,
+		"created_at": fact.created_at,
+		"updated_at": fact.updated_at,
+	})
+}
+
+fn scope_name(scope: MemoryScope) -> &'static str {
+	match scope {
+		MemoryScope::User => "user",
+		MemoryScope::Workspace => "workspace",
+	}
+}
+
+fn to_store_input(
+	id: String,
+	subject: String,
+	category: String,
+	fact: String,
+	reasoning: Option<String>,
+	reason: Option<String>,
+	citations: Option<String>,
+	tags: Vec<String>,
+) -> MemoryFactInput {
+	let reasoning = reasoning
+		.or(reason)
+		.unwrap_or_else(|| "unspecified".to_string());
+	let citations = citations.unwrap_or_else(|| "unspecified".to_string());
+
+	MemoryFactInput {
+		id,
+		subject,
+		fact,
+		citations,
+		reason: reasoning,
+		category,
+		tags,
+	}
 }
 
 fn paginate_items<T>(items: Vec<T>, offset: usize, limit: usize) -> (Vec<T>, Option<String>) {
@@ -362,6 +527,21 @@ fn parse_pagination(
 	}
 
 	Ok((offset, limit))
+}
+
+fn parse_search_query(query: Option<String>) -> Result<Option<Vec<String>>, AlfredError> {
+	match query {
+		Some(query) => {
+			if query.trim().is_empty() {
+				return Err(AlfredError::InvalidArgument(
+					"query must not be empty when provided".to_string(),
+				));
+			}
+
+			Ok(Some(normalize_query_tokens(query.as_str())))
+		}
+		None => Ok(None),
+	}
 }
 
 fn encode_cursor(offset: usize) -> String {

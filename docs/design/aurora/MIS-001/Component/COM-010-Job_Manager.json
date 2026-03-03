@@ -4,7 +4,7 @@
 	"card_type": "Component",
 	"card_subtype": "Subsystem",
 	"name": "Job Manager",
-	"description": "Manages asynchronous jobs, streaming outputs, cancellation, timeouts, and introspection.",
+	"description": "Manages internal asynchronous execution for `fs` bulk background mode, including cancellation, progress, and deterministic status transitions.",
 	"links": [
 		{
 			"relationship": "implements",
@@ -26,5 +26,9 @@
 			"relationship": "runs on",
 			"target": "NOD-001"
 		}
-	]
+	],
+	"attributes": {
+		"exposure": "internal_only",
+		"public_tool_family_exposed": false
+	}
 }

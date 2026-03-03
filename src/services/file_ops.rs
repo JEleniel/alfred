@@ -360,34 +360,9 @@ fn write_text_atomic(path: &Path, content: &str) -> Result<u64, AlfredError> {
 		))
 	})?;
 
-	let tmp_path = path.with_extension(format!("tmp-{}", std::process::id()));
-	fs::write(&tmp_path, content).map_err(|error| {
-		AlfredError::IoError(format!(
-			"failed to write temporary file {}: {error}",
-			tmp_path.display()
-		))
-	})?;
-
-	match fs::rename(&tmp_path, path) {
-		Ok(()) => Ok(content.len() as u64),
-		Err(error) => {
-			if error.kind() == std::io::ErrorKind::AlreadyExists {
-				let _ = fs::remove_file(path);
-				fs::rename(&tmp_path, path).map_err(|rename_error| {
-					AlfredError::IoError(format!(
-						"failed to replace file {}: {rename_error}",
-						path.display()
-					))
-				})?;
-				return Ok(content.len() as u64);
-			}
-
-			Err(AlfredError::IoError(format!(
-				"failed to replace file {}: {error}",
-				path.display()
-			)))
-		}
-	}
+	let label = path.display().to_string();
+	crate::services::workspace_files::write_utf8_text_all_or_nothing(path, label.as_str(), content)
+		.map_err(|error| AlfredError::IoError(error.to_string()))
 }
 
 fn sha256_hex(content: &str) -> String {

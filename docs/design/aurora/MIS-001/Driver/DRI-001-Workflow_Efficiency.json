@@ -3,7 +3,7 @@
 	"id": "DRI-001",
 	"card_type": "Driver",
 	"name": "Workflow Efficiency",
-	"description": "Agents need fast, composable primitives (index/search/read/diff/patch) to complete work with minimal friction.",
+	"description": "Agents need fast, composable primitives (`search`, `fs`, `patch`) to complete work with minimal friction.",
 	"links": [
 		{
 			"relationship": "drives",

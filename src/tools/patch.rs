@@ -6,6 +6,7 @@ use serde_json::{Value, json};
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
 use crate::services::file_ops::PatchRequest;
+use crate::tools::capabilities::MAX_PATCH_FILES_PER_CALL;
 
 /// Text patch tools.
 #[derive(Debug, Clone, Copy, Default)]
@@ -68,6 +69,12 @@ fn handle_patch_apply(
 		return Err(AlfredError::InvalidArgument(
 			"patches must contain at least one item".to_string(),
 		));
+	}
+	if patches.len() > MAX_PATCH_FILES_PER_CALL {
+		return Err(AlfredError::ResourceExhausted(format!(
+			"patches exceeds max_patch_files_per_call ({MAX_PATCH_FILES_PER_CALL}): {}",
+			patches.len()
+		)));
 	}
 
 	let requests = patches

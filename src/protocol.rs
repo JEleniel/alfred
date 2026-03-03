@@ -7,9 +7,10 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 use crate::configuration::AppConfig;
-use crate::errors::ToolError;
+use crate::errors::{AlfredError, ToolError};
 use crate::services::ServiceContainer;
 use crate::tools::ToolRegistry;
+use crate::tools::capabilities::MAX_INLINE_UTF8_BYTES;
 use crate::tools::{ToolCallResult, dispatch_tool_call};
 
 const JSONRPC_VERSION: &str = "2.0";
@@ -385,21 +386,31 @@ fn build_tools_call_response(
 	};
 
 	let started = Instant::now();
-	let (response_body, is_error) =
-		match dispatch_tool_call(tool_name.as_str(), arguments, services) {
-			Ok(ToolCallResult::Ok(data)) => (
-				ToolResponse::ok(data, tool_meta(tool_name.as_str(), started)),
-				false,
-			),
-			Ok(ToolCallResult::Pending { job_id, data }) => (
-				ToolResponse::pending(job_id, data, tool_meta(tool_name.as_str(), started)),
-				false,
-			),
-			Err(error) => (
-				ToolResponse::<Value>::error(error.into(), tool_meta(tool_name.as_str(), started)),
-				true,
-			),
-		};
+	let inline_utf8_bytes = serde_json::to_vec(&arguments)
+		.context("failed to serialize tools/call arguments for size validation")?
+		.len();
+	let dispatch_result = if inline_utf8_bytes > MAX_INLINE_UTF8_BYTES {
+		Err(AlfredError::ResourceExhausted(format!(
+			"tool arguments exceed max_inline_utf8_bytes ({MAX_INLINE_UTF8_BYTES}): {inline_utf8_bytes}"
+		)))
+	} else {
+		dispatch_tool_call(tool_name.as_str(), arguments, services)
+	};
+
+	let (response_body, is_error) = match dispatch_result {
+		Ok(ToolCallResult::Ok(data)) => (
+			ToolResponse::ok(data, tool_meta(tool_name.as_str(), started)),
+			false,
+		),
+		Ok(ToolCallResult::Pending { job_id, data }) => (
+			ToolResponse::pending(job_id, data, tool_meta(tool_name.as_str(), started)),
+			false,
+		),
+		Err(error) => (
+			ToolResponse::<Value>::error(error.into(), tool_meta(tool_name.as_str(), started)),
+			true,
+		),
+	};
 
 	let mut structured_content = serde_json::to_value(response_body)
 		.context("failed to serialize tool-call response envelope")?;

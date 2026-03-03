@@ -44,6 +44,18 @@
 	],
 	"attributes": {
 		"transport": "stdio",
-		"io_format": ["json", "ndjson"]
+		"io_format": ["json", "ndjson"],
+		"public_tool_surface": [
+			"workspace_dir",
+			"search",
+			"fs",
+			"patch",
+			"logs",
+			"plan",
+			"memory",
+			"capabilities",
+			"status"
+		],
+		"deprecated_tool_families_non_exposed": ["env_*", "job_*"]
 	}
 }

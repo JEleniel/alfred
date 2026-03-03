@@ -3,7 +3,7 @@
 	"id": "STR-006",
 	"card_type": "Story",
 	"name": "Run background jobs safely",
-	"description": "As an agent user, I need background operations with streaming output, cancellation, timeouts, and introspection so that expensive work does not block interactive steps or run away.",
+	"description": "As an agent user, I need background `fs` bulk operations with deterministic status polling and cancellation so that expensive work does not block interactive steps or run away.",
 	"links": [
 		{
 			"relationship": "explains",

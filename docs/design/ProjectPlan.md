@@ -365,7 +365,7 @@ This plan is aligned to the current design artifacts in `docs/design/` (notably 
         - Model render outputs (markdown + views) reflect the effective top-level tool surface and do not contradict `ToolContracts.md`.
         - Any deprecated tool families are either removed from the model or clearly marked as non-exposed/not implemented.
         - The model bundle remains valid and can be regenerated deterministically.
-    - Status: Planned
+    - Status: Completed
     - Dependencies: 38
 
 31. [x] Add `status` tool

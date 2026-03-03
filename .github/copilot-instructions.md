@@ -51,7 +51,7 @@ When instructed, maintain the `CHANGELOG.md` based on the git commit history and
 - You MUST NOT modify `.github/**/*` unless the user asks.
 - You MUST NOT revert changes you did not make. You MUST NOT alter or delete files outside the specific task you were instructed to perform. You are working in collaboration with others.
 - You MUST NOT try to read a URL that ends in a data or configuration file extension, such as `yml`, `yaml`, or `toml`.
-- Files marked with the git attribute `generated` are tracked in SCM but are always generated outputs. Do not hand-edit them.
+- Files marked with the git attribute `generated` are tracked in SCM but are always generated outputs. You may read them, but do not hand-edit them.
     - In Git commands that accept pathspecs, you can select or exclude generated files with `:(attr:generated)` and `:(exclude,attr:generated)`.
     - When reviewing changes, ignore `generated` files by default unless you are explicitly reviewing rendered outputs.
 - You MUST NOT attempt to run Python, Node, or any other scripting language _unless_ the project is in that platform. You MUST NOT attempt to run ad-hoc scripts.

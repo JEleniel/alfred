@@ -7,6 +7,7 @@ use uuid::Uuid;
 use crate::configuration::AppConfig;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
+use crate::tools::capabilities::MAX_LOG_RECORDS_PER_CALL;
 use crate::tools::{ToolCallResult, dispatch_tool_call as dispatch_tool_call_outcome};
 
 struct TestDir {
@@ -266,6 +267,42 @@ fn logs_search_rejects_invalid_cursor() {
 	match result {
 		Err(AlfredError::InvalidArgument(message)) => {
 			assert_eq!(message, "cursor is not a valid index: oops");
+		}
+		other => panic!("unexpected result: {other:?}"),
+	}
+}
+
+#[test]
+fn logs_search_rejects_limit_over_capability() {
+	let (services, workspace) = build_services();
+	let log_path = workspace.path.join(".alfred/logs/runtime.ndjson");
+	write_log_file(
+		log_path.as_path(),
+		&[json!({
+			"timestamp": "2026-02-23T10:00:00Z",
+			"level": "INFO",
+			"message": "build one",
+			"source": "alfred::task::runner",
+			"extra": {}
+		})],
+	);
+
+	let result = dispatch_tool_call(
+		"logs",
+		json!({
+			"operation": "search",
+			"args": {
+				"path": ".alfred/logs/runtime.ndjson",
+				"query": "build",
+				"limit": MAX_LOG_RECORDS_PER_CALL + 1
+			}
+		}),
+		&services,
+	);
+
+	match result {
+		Err(AlfredError::ResourceExhausted(message)) => {
+			assert!(message.contains("max_log_records_per_call"));
 		}
 		other => panic!("unexpected result: {other:?}"),
 	}

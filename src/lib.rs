@@ -73,3 +73,11 @@ mod status_tools_tests;
 #[cfg(test)]
 #[path = "tests/path_encoding_tests.rs"]
 mod path_encoding_tests;
+
+#[cfg(test)]
+#[path = "tests/conformance_tests.rs"]
+mod conformance_tests;
+
+#[cfg(test)]
+#[path = "tests/persistence_tests.rs"]
+mod persistence_tests;

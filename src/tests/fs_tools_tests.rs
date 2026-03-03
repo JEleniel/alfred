@@ -9,6 +9,7 @@ use uuid::Uuid;
 use crate::configuration::AppConfig;
 use crate::errors::AlfredError;
 use crate::services::ServiceContainer;
+use crate::tools::capabilities::MAX_BULK_OPERATIONS_PER_CALL;
 use crate::tools::{ToolCallResult, dispatch_tool_call as dispatch_tool_call_outcome};
 
 struct TestDir {
@@ -202,6 +203,99 @@ fn fs_bulk_execute_background_returns_pending_and_status_can_be_polled() {
 	let copied = fs::read_to_string(workspace.path.join("alpha-bg-copy.txt"))
 		.expect("background copied file should exist");
 	assert_eq!(copied, "Hello from alpha\nSecond line\n");
+}
+
+#[test]
+fn fs_bulk_execute_rejects_operation_count_over_limit() {
+	let (services, _workspace) = build_services(false);
+	let operations = (0..=MAX_BULK_OPERATIONS_PER_CALL)
+		.map(|index| {
+			json!({
+				"kind": "delete",
+				"path": format!("tmp-{index}.txt"),
+				"recursive": false
+			})
+		})
+		.collect::<Vec<_>>();
+
+	let result = dispatch_tool_call(
+		"fs",
+		json!({
+			"operation": "bulk",
+			"dry_run": false,
+			"args": {
+				"mode": "execute",
+				"operations": operations
+			}
+		}),
+		&services,
+	);
+
+	match result {
+		Err(AlfredError::ResourceExhausted(message)) => {
+			assert!(message.contains("max_bulk_operations_per_call"));
+		}
+		other => panic!("unexpected result: {other:?}"),
+	}
+}
+
+#[cfg(unix)]
+#[test]
+fn fs_bulk_move_overwrite_permission_failure_keeps_source_and_destination() {
+	use std::os::unix::fs::PermissionsExt;
+
+	let (services, workspace) = build_services(false);
+	let source_path = workspace.path.join("alpha.txt");
+	let source_before = fs::read_to_string(&source_path).expect("source file should exist");
+
+	let locked_dir = workspace.path.join("locked");
+	fs::create_dir_all(&locked_dir).expect("locked directory should be created");
+	let destination_path = locked_dir.join("target.txt");
+	fs::write(&destination_path, "destination-before\n").expect("destination file should write");
+
+	let mut permissions = fs::metadata(&locked_dir)
+		.expect("locked directory metadata should exist")
+		.permissions();
+	permissions.set_mode(0o555);
+	fs::set_permissions(&locked_dir, permissions).expect("locked directory should be read-only");
+
+	let result = dispatch_tool_call(
+		"fs",
+		json!({
+			"operation": "bulk",
+			"dry_run": false,
+			"args": {
+				"mode": "execute",
+				"operations": [
+					{
+						"kind": "move",
+						"from": "alpha.txt",
+						"to": "locked/target.txt",
+						"overwrite": true,
+						"create_parents": false
+					}
+				]
+			}
+		}),
+		&services,
+	)
+	.expect("fs.bulk execute should return a status payload");
+
+	let mut restore = fs::metadata(&locked_dir)
+		.expect("locked directory metadata should exist")
+		.permissions();
+	restore.set_mode(0o755);
+	fs::set_permissions(&locked_dir, restore).expect("locked directory permissions should reset");
+
+	assert_eq!(result["result"]["state"], json!("failed"));
+	assert_eq!(result["result"]["summary"]["failed"], json!(1));
+	assert_eq!(result["result"]["summary"]["completed"], json!(0));
+
+	let source_after = fs::read_to_string(&source_path).expect("source file should still exist");
+	assert_eq!(source_after, source_before);
+	let destination_after = fs::read_to_string(&destination_path)
+		.expect("destination file should remain unchanged");
+	assert_eq!(destination_after, "destination-before\n");
 }
 
 #[test]

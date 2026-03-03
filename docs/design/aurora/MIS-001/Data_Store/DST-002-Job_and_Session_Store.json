@@ -4,7 +4,7 @@
 	"card_type": "Data Store",
 	"card_subtype": "Event Log",
 	"name": "Job and Session Store",
-	"description": "Local persistent or durable storage for background job state, output streams, and session introspection metadata.",
+	"description": "Local persistent or durable storage for internal `fs` bulk background operation state, output streams, and status metadata.",
 	"links": [
 		{
 			"relationship": "retrieves",

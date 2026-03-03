@@ -505,15 +505,22 @@ fn execute_move(
 			Ok(()) => {}
 			Err(error) => {
 				if metadata.is_dir() {
-					copy_dir_no_follow(from_path.as_path(), to_path.as_path())?;
-					delete_dir_no_follow(from_path.as_path())?;
+					if let Err(copy_error) = copy_dir_no_follow(from_path.as_path(), to_path.as_path()) {
+						let _ = delete_dir_no_follow(to_path.as_path());
+						return Err(copy_error);
+					}
+					if let Err(delete_error) = delete_dir_no_follow(from_path.as_path()) {
+						let _ = delete_dir_no_follow(to_path.as_path());
+						return Err(delete_error);
+					}
 				} else {
 					copy_file(from_path.as_path(), to_path.as_path())?;
-					std::fs::remove_file(from_path.as_path()).map_err(|io_error| {
-						AlfredError::IoError(format!(
+					if let Err(io_error) = std::fs::remove_file(from_path.as_path()) {
+						let _ = std::fs::remove_file(to_path.as_path());
+						return Err(AlfredError::IoError(format!(
 							"failed to delete source file after copy {from}: {io_error}"
-						))
-					})?;
+						)));
+					}
 				}
 				let _ = error; // keep deterministic fallback semantics regardless of platform error kinds.
 			}
@@ -551,7 +558,10 @@ fn execute_copy(
 			std::fs::create_dir_all(to_path.as_path()).map_err(|error| {
 				AlfredError::IoError(format!("failed to create directory {to}: {error}"))
 			})?;
-			copy_dir_no_follow(from_path.as_path(), to_path.as_path())?;
+			if let Err(error) = copy_dir_no_follow(from_path.as_path(), to_path.as_path()) {
+				let _ = delete_dir_no_follow(to_path.as_path());
+				return Err(error);
+			}
 		} else {
 			copy_file(from_path.as_path(), to_path.as_path())?;
 		}
@@ -663,9 +673,13 @@ fn reconcile_destination(
 }
 
 fn copy_file(from: &Path, to: &Path) -> Result<(), AlfredError> {
-	std::fs::copy(from, to)
-		.map(|_| ())
-		.map_err(|error| AlfredError::IoError(format!("failed to copy file: {error}")))
+	match std::fs::copy(from, to) {
+		Ok(_) => Ok(()),
+		Err(error) => {
+			let _ = std::fs::remove_file(to);
+			Err(AlfredError::IoError(format!("failed to copy file: {error}")))
+		}
+	}
 }
 
 fn copy_dir_no_follow(from: &Path, to: &Path) -> Result<(), AlfredError> {

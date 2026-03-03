@@ -30,8 +30,10 @@ fn registry_contains_only_implemented_tools() {
 	assert!(names.contains(&"workspace_dir"));
 	assert!(names.contains(&"fs"));
 	assert!(names.contains(&"search"));
+	assert!(names.contains(&"plan"));
 	assert!(!names.contains(&"grep"));
-	assert!(names.contains(&"memory_put"));
-	assert!(names.contains(&"memory_search"));
+	assert!(!names.contains(&"plan_get"));
+	assert!(names.contains(&"memory"));
+	assert!(!names.contains(&"memory_put"));
 	assert_eq!(registry.tool_count(), names.len());
 }

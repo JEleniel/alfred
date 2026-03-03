@@ -1,7 +1,6 @@
 //! Plan storage service implementation.
 
-use std::fs::{self, OpenOptions};
-use std::io::Write;
+use std::fs;
 use std::path::{Path, PathBuf};
 
 use regex::Regex;
@@ -81,18 +80,9 @@ impl PlanStore {
 
 	/// Updates the status of a single plan item.
 	pub fn update_status(&self, id: u64, status: PlanStatus) -> Result<(), AlfredError> {
-		let mut document = self.read_document()?;
-		let Some(item) = document
-			.items
-			.iter_mut()
-			.find(|candidate| candidate.id == id)
-		else {
-			return Err(AlfredError::NotFound(format!(
-				"plan item id not found: {id}"
-			)));
-		};
-		item.status = status;
-		self.write_document(&document)
+		let raw = self.read_raw_document()?;
+		let updated = update_status_in_raw_document(raw.as_str(), id, status)?;
+		self.write_raw_document(updated.as_str())
 	}
 
 	/// Replaces a full plan item while preserving stable IDs.
@@ -145,6 +135,16 @@ impl PlanStore {
 	}
 
 	fn read_document(&self) -> Result<PlanDocument, AlfredError> {
+		let raw = self.read_raw_document()?;
+		parse_plan_document(raw.as_str()).map_err(|message| {
+			AlfredError::InvalidArgument(format!(
+				"failed to parse plan file {}: {message}",
+				self.plan_path.display()
+			))
+		})
+	}
+
+	fn read_raw_document(&self) -> Result<String, AlfredError> {
 		self.ensure_plan_is_within_workspace()?;
 		let read_path =
 			match crate::workspace_boundary::try_resolve_existing_path_within_workspace_root(
@@ -155,7 +155,7 @@ impl PlanStore {
 				None => self.plan_path.clone(),
 			};
 
-		let raw = fs::read_to_string(read_path.as_path()).map_err(|error| match error.kind() {
+		fs::read_to_string(read_path.as_path()).map_err(|error| match error.kind() {
 			std::io::ErrorKind::NotFound => {
 				AlfredError::NotFound(format!("plan file not found: {}", self.plan_path.display()))
 			}
@@ -163,17 +163,15 @@ impl PlanStore {
 				"failed to read plan file {}: {error}",
 				self.plan_path.display()
 			)),
-		})?;
-
-		parse_plan_document(raw.as_str()).map_err(|message| {
-			AlfredError::InvalidArgument(format!(
-				"failed to parse plan file {}: {message}",
-				self.plan_path.display()
-			))
 		})
 	}
 
 	fn write_document(&self, document: &PlanDocument) -> Result<(), AlfredError> {
+		let rendered = render_plan_document(document);
+		self.write_raw_document(rendered.as_str())
+	}
+
+	fn write_raw_document(&self, raw: &str) -> Result<(), AlfredError> {
 		self.ensure_plan_is_within_workspace()?;
 		let plan_path = crate::workspace_boundary::resolve_write_target_within_workspace_root(
 			self.workspace_root.as_path(),
@@ -192,41 +190,14 @@ impl PlanStore {
 				parent.display()
 			))
 		})?;
-
-		let rendered = render_plan_document(document);
-		let temp_path = plan_path.with_extension(format!("tmp-{}", std::process::id()));
-
-		let mut temp_file = OpenOptions::new()
-			.write(true)
-			.create(true)
-			.truncate(true)
-			.open(&temp_path)
-			.map_err(|error| {
-				AlfredError::IoError(format!(
-					"failed to open temporary plan file {}: {error}",
-					temp_path.display()
-				))
-			})?;
-
-		temp_file.write_all(rendered.as_bytes()).map_err(|error| {
-			AlfredError::IoError(format!(
-				"failed to write temporary plan file {}: {error}",
-				temp_path.display()
-			))
-		})?;
-		temp_file.sync_all().map_err(|error| {
-			AlfredError::IoError(format!(
-				"failed to sync temporary plan file {}: {error}",
-				temp_path.display()
-			))
-		})?;
-
-		fs::rename(&temp_path, plan_path.as_path()).map_err(|error| {
-			AlfredError::IoError(format!(
-				"failed to replace plan file {}: {error}",
-				self.plan_path.display()
-			))
-		})
+		let label = self.plan_path.display().to_string();
+		crate::services::workspace_files::write_utf8_text_all_or_nothing(
+			plan_path.as_path(),
+			label.as_str(),
+			raw,
+		)
+		.map(|_| ())
+		.map_err(|error| AlfredError::IoError(error.to_string()))
 	}
 }
 
@@ -265,6 +236,76 @@ fn parse_plan_document(raw: &str) -> Result<PlanDocument, String> {
 	validate_unique_ids(items.as_slice())?;
 
 	Ok(PlanDocument { preamble, items })
+}
+
+fn update_status_in_raw_document(
+	raw: &str,
+	id: u64,
+	status: PlanStatus,
+) -> Result<String, AlfredError> {
+	let line_regex = Regex::new(r"^(\d+)\.\s+\[( |x|X)\]\s+(.+)$")
+		.map_err(|error| AlfredError::Internal(format!("failed to compile plan regex: {error}")))?;
+	let mut lines = raw.lines().map(|line| line.to_string()).collect::<Vec<_>>();
+
+	let item_starts = lines
+		.iter()
+		.enumerate()
+		.filter_map(|(index, line)| line_regex.is_match(line).then_some(index))
+		.collect::<Vec<_>>();
+
+	let Some(position) = item_starts.iter().position(|start| {
+		line_regex
+			.captures(lines[*start].as_str())
+			.and_then(|captures| captures.get(1))
+			.and_then(|capture| capture.as_str().parse::<u64>().ok())
+			.is_some_and(|candidate| candidate == id)
+	}) else {
+		return Err(AlfredError::NotFound(format!("plan item id not found: {id}")));
+	};
+
+	let start = item_starts[position];
+	let end = item_starts.get(position + 1).copied().unwrap_or(lines.len());
+	let captures = line_regex
+		.captures(lines[start].as_str())
+		.ok_or_else(|| AlfredError::InvalidArgument(format!("invalid plan heading: {}", lines[start])))?;
+	let title = captures
+		.get(3)
+		.map(|capture| capture.as_str())
+		.unwrap_or_default()
+		.trim();
+	let checkbox = if matches!(status, PlanStatus::Completed) {
+		"x"
+	} else {
+		" "
+	};
+	lines[start] = format!("{id}. [{checkbox}] {title}");
+
+	let status_value = render_status(&status);
+	let mut replaced_status = false;
+	for line in lines.iter_mut().take(end).skip(start + 1) {
+		if line.trim_start().starts_with("- Status:") {
+			*line = format!("    - Status: {status_value}");
+			replaced_status = true;
+			break;
+		}
+	}
+	if !replaced_status {
+		lines.insert(end, format!("    - Status: {status_value}"));
+	}
+
+	let mut updated = lines.join("\n");
+	if raw.ends_with('\n') {
+		updated.push('\n');
+	}
+
+	parse_plan_document(updated.as_str()).map_err(|message| {
+		AlfredError::InvalidArgument(format!(
+			"failed to parse plan file {}: {message}",
+			"after status update"
+		))
+	})?;
+
+	Ok(updated)
 }
 
 fn parse_plan_item(lines: Vec<&str>, item_regex: &Regex) -> Result<PlanItem, String> {

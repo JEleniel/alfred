@@ -10,6 +10,10 @@ use crate::protocol::{
 	handle_runtime_frame, handle_startup_frame,
 };
 use crate::services::ServiceContainer;
+use crate::tools::capabilities::{
+	MAX_BULK_OPERATIONS_PER_CALL, MAX_INLINE_UTF8_BYTES, MAX_LOG_RECORDS_PER_CALL,
+	MAX_PATCH_FILES_PER_CALL,
+};
 
 #[cfg(all(unix, not(target_os = "macos")))]
 use std::ffi::OsString;
@@ -627,32 +631,41 @@ fn runtime_tools_call_emits_path_encoded_warning_and_round_trips_encoded_paths()
 		.rebuild()
 		.expect("fixture index should build");
 
-	let ls_frame = json!({
+	let fs_search_frame = json!({
 		"jsonrpc": "2.0",
 		"id": 200,
 		"method": "tools/call",
-		"params": {"name": "ls", "arguments": {}}
+		"params": {
+			"name": "fs",
+			"arguments": {
+				"operation": "search",
+				"args": {
+					"path": ".",
+					"recursive": false
+				}
+			}
+		}
 	});
-	let ls_response = handle_runtime_frame(ls_frame.to_string().as_str(), &services)
+	let fs_search_response = handle_runtime_frame(fs_search_frame.to_string().as_str(), &services)
 		.expect("runtime frame should parse")
 		.expect("tools/call should return response");
-	let ls_payload: Value =
-		serde_json::from_str(&ls_response).expect("response should be valid JSON");
+	let fs_search_payload: Value =
+		serde_json::from_str(&fs_search_response).expect("response should be valid JSON");
 
-	let files = ls_payload["result"]["structuredContent"]["data"]["files"]
+	let files = fs_search_payload["result"]["structuredContent"]["data"]["result"]["files"]
 		.as_array()
-		.expect("ls should return files array")
+		.expect("fs.search should return files array")
 		.iter()
 		.filter_map(|entry| entry.as_str())
 		.collect::<Vec<_>>();
 	assert!(
 		files.contains(&encoded_name.as_str()),
-		"ls should include encoded file name"
+		"fs.search should include encoded file name"
 	);
 
-	let warnings = ls_payload["result"]["structuredContent"]["meta"]["warnings"]
+	let warnings = fs_search_payload["result"]["structuredContent"]["meta"]["warnings"]
 		.as_array()
-		.expect("ls should include warnings when encoded paths are present");
+		.expect("fs.search should include warnings when encoded paths are present");
 	assert!(
 		warnings
 			.iter()
@@ -664,8 +677,11 @@ fn runtime_tools_call_emits_path_encoded_warning_and_round_trips_encoded_paths()
 		"id": 201,
 		"method": "tools/call",
 		"params": {
-			"name": "read_range",
-			"arguments": {"path": encoded_name, "start_line": 1, "end_line": 1}
+			"name": "fs",
+			"arguments": {
+				"operation": "read_range",
+				"args": {"path": encoded_name, "start_line": 1, "end_line": 1}
+			}
 		}
 	});
 	let read_response = handle_runtime_frame(read_frame.to_string().as_str(), &services)
@@ -679,9 +695,60 @@ fn runtime_tools_call_emits_path_encoded_warning_and_round_trips_encoded_paths()
 		json!("ok")
 	);
 	assert_eq!(
-		read_payload["result"]["structuredContent"]["data"]["text"],
+		read_payload["result"]["structuredContent"]["data"]["result"]["text"],
 		json!("hello")
 	);
+}
+
+#[test]
+fn runtime_tools_call_deprecated_tools_return_tool_disabled_reason() {
+	let (services, _workspace) = build_services_for_fixture(true);
+	let deprecated = [
+		"ls",
+		"read_range",
+		"file_stat",
+		"grep",
+		"diff",
+		"log_search",
+		"log_tail",
+		"plan_get",
+		"memory_put",
+		"env_set",
+		"job_read",
+		"task_run",
+	];
+
+	for (index, name) in deprecated.iter().enumerate() {
+		let frame = json!({
+			"jsonrpc": "2.0",
+			"id": 810 + index,
+			"method": "tools/call",
+			"params": {
+				"name": name,
+				"arguments": {}
+			}
+		});
+
+		let response = handle_runtime_frame(frame.to_string().as_str(), &services)
+			.expect("runtime frame should parse")
+			.expect("tools/call should return response");
+		let payload: Value =
+			serde_json::from_str(&response).expect("response should be valid JSON");
+
+		assert_eq!(payload["result"]["isError"], json!(true));
+		assert_eq!(
+			payload["result"]["structuredContent"]["status"],
+			json!("error")
+		);
+		assert_eq!(
+			payload["result"]["structuredContent"]["error"]["kind"],
+			json!("invalid_argument")
+		);
+		assert_eq!(
+			payload["result"]["structuredContent"]["error"]["details"]["reason"],
+			json!("tool_disabled")
+		);
+	}
 }
 
 #[test]
@@ -732,14 +799,64 @@ fn runtime_tools_call_capabilities_returns_stable_tool_metadata() {
 
 		assert_eq!(tool["version"], json!(env!("CARGO_PKG_VERSION")));
 		assert_eq!(tool["schema_version"], json!(env!("CARGO_PKG_VERSION")));
+		assert_eq!(
+			tool["limits"]["max_inline_utf8_bytes"],
+			json!(MAX_INLINE_UTF8_BYTES)
+		);
 		if name == "logs" {
 			assert_eq!(tool["execution_modes"], json!(["sync", "stream"]));
+			assert_eq!(
+				tool["limits"]["max_log_records_per_call"],
+				json!(MAX_LOG_RECORDS_PER_CALL)
+			);
 		} else if name == "fs" {
 			assert_eq!(tool["execution_modes"], json!(["sync", "background"]));
+			assert_eq!(
+				tool["limits"]["max_bulk_operations_per_call"],
+				json!(MAX_BULK_OPERATIONS_PER_CALL)
+			);
+		} else if name == "patch" {
+			assert_eq!(tool["execution_modes"], json!(["sync"]));
+			assert_eq!(
+				tool["limits"]["max_patch_files_per_call"],
+				json!(MAX_PATCH_FILES_PER_CALL)
+			);
 		} else {
 			assert_eq!(tool["execution_modes"], json!(["sync"]));
 		}
 	}
+}
+
+#[test]
+fn runtime_tools_call_rejects_oversized_inline_arguments() {
+	let (services, _workspace) = build_services_for_fixture(true);
+	let oversized = "x".repeat(MAX_INLINE_UTF8_BYTES + 1);
+	let frame = json!({
+		"jsonrpc": "2.0",
+		"id": 107,
+		"method": "tools/call",
+		"params": {
+			"name": "workspace_dir",
+			"arguments": {
+				"blob": oversized
+			}
+		}
+	});
+
+	let response = handle_runtime_frame(frame.to_string().as_str(), &services)
+		.expect("runtime frame should parse")
+		.expect("tools/call should return response");
+	let payload: Value = serde_json::from_str(&response).expect("response should be valid JSON");
+
+	assert_eq!(payload["result"]["isError"], json!(true));
+	assert_eq!(
+		payload["result"]["structuredContent"]["status"],
+		json!("error")
+	);
+	assert_eq!(
+		payload["result"]["structuredContent"]["error"]["kind"],
+		json!("resource_exhausted")
+	);
 }
 
 #[test]
@@ -775,5 +892,9 @@ fn runtime_tools_call_returns_invalid_argument_for_policy_disabled_tool() {
 	assert_eq!(
 		payload["result"]["structuredContent"]["error"]["retryable"],
 		json!(false)
+	);
+	assert_eq!(
+		payload["result"]["structuredContent"]["error"]["details"]["reason"],
+		json!("tool_disabled")
 	);
 }

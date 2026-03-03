@@ -16,7 +16,7 @@ pub mod status;
 pub mod task_execution;
 pub mod workspace_query;
 
-use serde_json::Value;
+use serde_json::{Value, json};
 
 use crate::configuration::AppConfig;
 use crate::errors::AlfredError;
@@ -114,16 +114,67 @@ impl ToolRegistry {
 	}
 }
 
+const DEPRECATED_TOOL_NAMES: &[&str] = &[
+	"ls",
+	"read_range",
+	"file_stat",
+	"grep",
+	"diff",
+	"log_search",
+	"log_tail",
+	"log_follow",
+	"plan_get",
+	"plan_add",
+	"plan_edit",
+	"plan_update",
+	"plan_delete",
+	"memory_put",
+	"memory_get",
+	"memory_delete",
+	"memory_list",
+	"memory_search",
+	"dir_create",
+	"dir_delete",
+	"file_create",
+	"file_create_bytes",
+	"file_append",
+	"file_append_bytes",
+	"file_delete",
+	"file_patch",
+	"multi_file_patch",
+	"path_copy",
+	"path_move",
+	"path_delete",
+	"task_run",
+];
+
+fn is_deprecated_tool_name(name: &str) -> bool {
+	if DEPRECATED_TOOL_NAMES.contains(&name) {
+		return true;
+	}
+
+	name.starts_with("env_") || name.starts_with("job_")
+}
+
+fn tool_disabled_error(name: &str) -> AlfredError {
+	AlfredError::InvalidArgumentWithDetails {
+		message: format!("tool disabled by policy: {name}"),
+		details: Some(json!({"reason": "tool_disabled"})),
+	}
+}
+
 /// Dispatches a single tool call to the appropriate tool group implementation.
 pub fn dispatch_tool_call(
 	name: &str,
 	args: Value,
 	services: &ServiceContainer,
 ) -> Result<ToolCallResult, AlfredError> {
+	if is_deprecated_tool_name(name) {
+		return Err(tool_disabled_error(name));
+	}
+
 	if !services.config.is_tool_enabled(name) {
-		return Err(AlfredError::InvalidArgument(format!(
-			"tool disabled by policy: {name}"
-		)));
+		return Err(tool_disabled_error(name));
 	}
 
 	if let Some(data) = context::dispatch_tool_call(name, services) {

@@ -4,7 +4,7 @@
 	"card_type": "Component",
 	"card_subtype": "Subsystem",
 	"name": "Workspace Indexer",
-	"description": "Maintains the workspace file index and supports listing/search/range/diff primitives.",
+	"description": "Maintains the workspace file index and supports deterministic `search` plus `fs` inspection operations (including read-range and diff).",
 	"links": [
 		{
 			"relationship": "implements",
@@ -32,6 +32,6 @@
 		}
 	],
 	"attributes": {
-		"supports": ["ls", "grep", "search", "read_range", "diff"]
+		"supports": ["search", "fs.search", "fs.read_range", "fs.stat", "fs.diff"]
 	}
 }

@@ -7,7 +7,7 @@
 
 use std::fs;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::path::Path;
 
 use anyhow::{Context, Result, anyhow, bail};
@@ -19,6 +19,48 @@ pub const INLINE_READ_BYTES: u64 = 4096;
 
 /// Disk read block size used for streaming reads.
 pub const IO_BLOCK_BYTES: usize = 4096;
+
+#[cfg(test)]
+thread_local! {
+	static TEST_FAIL_WRITE_AFTER_BYTES: std::cell::Cell<Option<usize>> = const {
+		std::cell::Cell::new(None)
+	};
+	static TEST_FORCE_ROLLBACK_FAILURE: std::cell::Cell<bool> = const {
+		std::cell::Cell::new(false)
+	};
+}
+
+#[cfg(test)]
+pub(crate) struct TestWriteFailureGuard;
+
+#[cfg(test)]
+impl Drop for TestWriteFailureGuard {
+	fn drop(&mut self) {
+		TEST_FAIL_WRITE_AFTER_BYTES.with(|cell| cell.set(None));
+	}
+}
+
+#[cfg(test)]
+pub(crate) fn fail_writes_after_bytes(bytes: usize) -> TestWriteFailureGuard {
+	TEST_FAIL_WRITE_AFTER_BYTES.with(|cell| cell.set(Some(bytes)));
+	TestWriteFailureGuard
+}
+
+#[cfg(test)]
+pub(crate) struct TestRollbackFailureGuard;
+
+#[cfg(test)]
+impl Drop for TestRollbackFailureGuard {
+	fn drop(&mut self) {
+		TEST_FORCE_ROLLBACK_FAILURE.with(|cell| cell.set(false));
+	}
+}
+
+#[cfg(test)]
+pub(crate) fn fail_rollbacks() -> TestRollbackFailureGuard {
+	TEST_FORCE_ROLLBACK_FAILURE.with(|cell| cell.set(true));
+	TestRollbackFailureGuard
+}
 
 /// Reads a UTF-8 file into a string, failing if it exceeds `max_bytes`.
 pub fn read_utf8_text_capped(path: &Path, max_bytes: u64) -> Result<String> {
@@ -127,6 +169,39 @@ pub fn visit_utf8_lines_best_effort(
 	}
 
 	Ok(())
+}
+
+/// Writes UTF-8 text and restores prior content on write/sync failure.
+///
+/// This intentionally avoids temp-file replace/rename semantics and instead
+/// degrades safely by rolling back in place when possible.
+pub fn write_utf8_text_all_or_nothing(path: &Path, label: &str, content: &str) -> Result<u64> {
+	let previous_content = read_previous_content(path, label)?;
+	let mut file = File::options()
+		.create(true)
+		.write(true)
+		.truncate(true)
+		.open(path)
+		.with_context(|| format!("failed to open file for write {label}"))?;
+
+	let write_result = write_all_with_possible_failure(&mut file, content.as_bytes(), label)
+		.and_then(|_| {
+			file.sync_all()
+				.with_context(|| format!("failed to sync file {label}"))
+		});
+
+	if let Err(write_error) = write_result {
+		if let Err(rollback_error) = rollback_written_file(path, label, previous_content.as_deref())
+		{
+			return Err(anyhow!(
+				"failed to write file {label}: {write_error}; failed to rollback prior content for {label}: {rollback_error}"
+			));
+		}
+
+		return Err(write_error);
+	}
+
+	Ok(content.len() as u64)
 }
 
 fn read_bytes_capped(path: &Path, label: &str, max_bytes: u64) -> Result<Vec<u8>> {
@@ -247,4 +322,68 @@ fn read_file_in_blocks(
 	}
 
 	Ok(output)
+}
+
+fn read_previous_content(path: &Path, label: &str) -> Result<Option<Vec<u8>>> {
+	match fs::read(path) {
+		Ok(bytes) => Ok(Some(bytes)),
+		Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
+		Err(error) => Err(error).with_context(|| format!("failed to read existing file {label}")),
+	}
+}
+
+fn rollback_written_file(path: &Path, label: &str, previous_content: Option<&[u8]>) -> Result<()> {
+	#[cfg(test)]
+	{
+		if TEST_FORCE_ROLLBACK_FAILURE.with(|cell| cell.get()) {
+			bail!("simulated rollback failure: {label}");
+		}
+	}
+
+	match previous_content {
+		Some(previous_content) => {
+			let mut rollback_file = File::options()
+				.create(true)
+				.write(true)
+				.truncate(true)
+				.open(path)
+				.with_context(|| format!("failed to open file for rollback {label}"))?;
+			rollback_file
+				.write_all(previous_content)
+				.with_context(|| format!("failed to rollback file bytes {label}"))?;
+			rollback_file
+				.sync_all()
+				.with_context(|| format!("failed to sync rollback file {label}"))?;
+			Ok(())
+		}
+		None => match fs::remove_file(path) {
+			Ok(()) => Ok(()),
+			Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
+			Err(error) => Err(error)
+				.with_context(|| format!("failed to remove partially written file {label}")),
+		},
+	}
+}
+
+fn write_all_with_possible_failure(file: &mut File, bytes: &[u8], label: &str) -> Result<()> {
+	#[cfg(test)]
+	{
+		let fail_after = TEST_FAIL_WRITE_AFTER_BYTES.with(|cell| cell.get());
+		if let Some(fail_after) = fail_after
+			&& fail_after < bytes.len()
+		{
+			if fail_after > 0 {
+				file.write_all(&bytes[..fail_after]).with_context(|| {
+					format!("failed to write file bytes before simulated failure {label}")
+				})?;
+				file.sync_all().with_context(|| {
+					format!("failed to sync file bytes before simulated failure {label}")
+				})?;
+			}
+			bail!("simulated partial write failure: {label}");
+		}
+	}
+
+	file.write_all(bytes)
+		.with_context(|| format!("failed to write file bytes {label}"))
 }

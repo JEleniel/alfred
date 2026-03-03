@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use serde_json::{Value, json};
+use serde_json::json;
 use uuid::Uuid;
 
 use crate::configuration::AppConfig;
@@ -32,7 +32,31 @@ impl Drop for TestDir {
 }
 
 fn build_services(enable_mutations: bool) -> (ServiceContainer, TestDir) {
+	build_services_with_workspace_memory(enable_mutations, true)
+}
+
+fn build_services_with_workspace_memory(
+	enable_mutations: bool,
+	workspace_memory_enabled: bool,
+) -> (ServiceContainer, TestDir) {
 	let workspace = TestDir::new("memory-tools-tests");
+	fs::create_dir_all(workspace.path.join(".alfred"))
+		.expect("workspace config directory should be created");
+	let config_json = json!({
+		"memory": {
+			"storage": {
+				"workspace": {
+					"enabled": workspace_memory_enabled,
+				}
+			}
+		}
+	});
+	fs::write(
+		workspace.path.join(".alfred").join("config.json"),
+		config_json.to_string(),
+	)
+	.expect("workspace config should be written");
+
 	let host = HostPaths {
 		user_config_dir: Some(workspace.path.join("host-config")),
 		user_data_dir: Some(workspace.path.join("host-data")),
@@ -42,9 +66,14 @@ fn build_services(enable_mutations: bool) -> (ServiceContainer, TestDir) {
 	let mut config = AppConfig::load_with_host_paths(workspace.path.clone(), host)
 		.expect("config should load with deterministic host paths");
 	if enable_mutations {
-		config
-			.disabled_tools
-			.retain(|name| name != "memory_put" && name != "memory_delete");
+		config.disabled_tools.retain(|name| {
+			name != "memory"
+				&& name != "memory_put"
+				&& name != "memory_delete"
+				&& name != "memory_get"
+				&& name != "memory_list"
+				&& name != "memory_search"
+		});
 	}
 
 	let services = ServiceContainer::new(config).expect("service container should build");
@@ -64,43 +93,61 @@ fn dispatch_tool_call(
 	}
 }
 
-fn put_fact(
+fn dispatch_memory_call(
+	operation: &str,
+	args: serde_json::Value,
 	services: &ServiceContainer,
-	id: &str,
+) -> Result<serde_json::Value, AlfredError> {
+	dispatch_tool_call(
+		"memory",
+		json!({
+			"operation": operation,
+			"args": args,
+		}),
+		services,
+	)
+}
+
+fn create_fact(
+	services: &ServiceContainer,
+	scope: &str,
 	subject: &str,
 	fact: &str,
 	category: &str,
 	tags: Vec<&str>,
-) -> Value {
-	dispatch_tool_call(
-		"memory_put",
+) -> String {
+	let data = dispatch_memory_call(
+		"create",
 		json!({
-			"id": id,
+			"scope": scope,
 			"subject": subject,
 			"fact": fact,
-			"citations": "source",
-			"reason": "reason",
 			"category": category,
+			"reasoning": "because",
 			"tags": tags,
 		}),
 		services,
 	)
-	.expect("memory_put should succeed")
+	.expect("memory create should succeed");
+
+	data["result"]["memory"]["id"]
+		.as_str()
+		.expect("memory id should be present")
+		.to_string()
 }
 
 #[test]
-fn memory_put_validates_required_fields() {
+fn memory_create_validates_required_fields() {
 	let (services, _workspace) = build_services(true);
 
-	let result = dispatch_tool_call(
-		"memory_put",
+	let result = dispatch_memory_call(
+		"create",
 		json!({
-			"id": "fact-1",
+			"scope": "user",
 			"subject": "subject",
 			"fact": "   ",
-			"citations": "source",
-			"reason": "because",
 			"category": "general",
+			"reasoning": "because"
 		}),
 		&services,
 	);
@@ -114,48 +161,96 @@ fn memory_put_validates_required_fields() {
 }
 
 #[test]
-fn memory_put_preserves_id_and_updates_fields() {
+fn memory_create_issues_uuid_and_update_preserves_id() {
 	let (services, _workspace) = build_services(true);
 
-	let first = put_fact(
+	let created = dispatch_memory_call(
+		"create",
+		json!({
+			"scope": "user",
+			"subject": "Rust",
+			"fact": "Rust facts",
+			"category": "coding_practices",
+			"reasoning": "initial",
+			"tags": ["rust", "alpha"]
+		}),
 		&services,
-		"fact-1",
-		"Rust",
-		"Rust facts",
-		"coding_practices",
-		vec!["rust", "alpha"],
-	);
-	assert_eq!(first["id"], json!("fact-1"));
+	)
+	.expect("memory create should succeed");
+	let id = created["result"]["memory"]["id"]
+		.as_str()
+		.expect("memory id should be present")
+		.to_string();
+	assert!(Uuid::parse_str(id.as_str()).is_ok());
 
-	let second = put_fact(
+	dispatch_memory_call(
+		"update",
+		json!({
+			"id": id,
+			"scope": "user",
+			"subject": "Rust Updated",
+			"fact": "Rust updated facts",
+			"category": "coding_practices",
+			"reasoning": "updated",
+			"tags": ["alpha", "rust", "alpha"]
+		}),
 		&services,
-		"fact-1",
-		"Rust Updated",
-		"Rust updated facts",
-		"coding_practices",
-		vec!["alpha", "rust", "alpha"],
-	);
-	assert_eq!(second["id"], json!("fact-1"));
+	)
+	.expect("memory update should succeed");
 
-	let data = dispatch_tool_call("memory_get", json!({"id": "fact-1"}), &services)
-		.expect("memory_get should succeed");
-	let fact = &data["fact"];
-	assert_eq!(fact["id"], json!("fact-1"));
-	assert_eq!(fact["subject"], json!("Rust Updated"));
-	assert_eq!(fact["fact"], json!("Rust updated facts"));
-	assert_eq!(fact["tags"], json!(["alpha", "rust"]));
-	assert!(fact["created_at"].as_str().is_some());
-	assert!(fact["updated_at"].as_str().is_some());
+	let retrieved = dispatch_memory_call("retrieve", json!({"id": id}), &services)
+		.expect("memory retrieve should succeed");
+	let memory = &retrieved["result"]["memory"];
+	assert_eq!(memory["id"], created["result"]["memory"]["id"]);
+	assert_eq!(memory["scope"], json!("user"));
+	assert_eq!(memory["subject"], json!("Rust Updated"));
+	assert_eq!(memory["fact"], json!("Rust updated facts"));
+	assert_eq!(memory["tags"], json!(["alpha", "rust"]));
+	assert!(memory["created_at"].as_str().is_some());
+	assert!(memory["updated_at"].as_str().is_some());
 }
 
 #[test]
-fn memory_get_returns_not_found_for_missing_id() {
-	let (services, _workspace) = build_services(false);
+fn memory_retrieve_returns_scope_for_workspace_fact() {
+	let (services, _workspace) = build_services(true);
+	let id = create_fact(
+		&services,
+		"workspace",
+		"Workspace Subject",
+		"Workspace Body",
+		"general",
+		vec!["workspace"],
+	);
 
-	let result = dispatch_tool_call("memory_get", json!({"id": "missing"}), &services);
+	let data = dispatch_memory_call("retrieve", json!({"id": id}), &services)
+		.expect("memory retrieve should succeed");
+	assert_eq!(data["result"]["memory"]["scope"], json!("workspace"));
+}
+
+#[test]
+fn memory_update_returns_invalid_argument_when_scope_is_disabled() {
+	let (services, _workspace) = build_services_with_workspace_memory(true, false);
+
+	let result = dispatch_memory_call(
+		"update",
+		json!({
+			"id": Uuid::new_v4().to_string(),
+			"scope": "workspace",
+			"subject": "subject",
+			"fact": "fact",
+			"category": "general",
+			"reasoning": "because",
+			"tags": ["tag"]
+		}),
+		&services,
+	);
+
 	match result {
-		Err(AlfredError::NotFound(message)) => {
-			assert_eq!(message, "memory fact not found: missing");
+		Err(AlfredError::InvalidArgument(message)) => {
+			assert_eq!(
+				message,
+				"workspace memory storage is disabled by configuration"
+			);
 		}
 		other => panic!("unexpected result: {other:?}"),
 	}
@@ -164,148 +259,164 @@ fn memory_get_returns_not_found_for_missing_id() {
 #[test]
 fn memory_delete_supports_dry_run() {
 	let (services, _workspace) = build_services(true);
-	put_fact(
-		&services,
-		"fact-1",
-		"Subject",
-		"Body",
-		"general",
-		vec!["ops"],
-	);
+	let id = create_fact(&services, "user", "Subject", "Body", "general", vec!["ops"]);
 
-	let dry_run = dispatch_tool_call(
-		"memory_delete",
-		json!({"id": "fact-1", "dry_run": true}),
-		&services,
-	)
-	.expect("memory_delete dry-run should succeed");
-	assert_eq!(dry_run["deleted"], json!(true));
+	let dry_run = dispatch_memory_call("delete", json!({"id": id, "dry_run": true}), &services)
+		.expect("memory delete dry-run should succeed");
+	assert_eq!(dry_run["result"]["deleted"], json!(true));
 
-	dispatch_tool_call("memory_get", json!({"id": "fact-1"}), &services)
+	dispatch_memory_call("retrieve", json!({"id": id}), &services)
 		.expect("fact should still exist after dry-run");
 
-	let committed = dispatch_tool_call("memory_delete", json!({"id": "fact-1"}), &services)
-		.expect("memory_delete should succeed");
-	assert_eq!(committed["deleted"], json!(true));
+	let committed = dispatch_memory_call("delete", json!({"id": id, "dry_run": false}), &services)
+		.expect("memory delete should succeed");
+	assert_eq!(committed["result"]["deleted"], json!(true));
 
-	let after = dispatch_tool_call("memory_delete", json!({"id": "fact-1"}), &services)
-		.expect("memory_delete should return false when missing");
-	assert_eq!(after["deleted"], json!(false));
+	let after = dispatch_memory_call("delete", json!({"id": id, "dry_run": false}), &services)
+		.expect("memory delete should return false when missing");
+	assert_eq!(after["result"]["deleted"], json!(false));
 }
 
 #[test]
-fn memory_list_supports_order_filter_and_pagination() {
+fn memory_search_returns_ranked_filtered_matches_and_paginates() {
 	let (services, _workspace) = build_services(true);
-	put_fact(
+	create_fact(
 		&services,
-		"a",
-		"Zebra",
-		"text",
-		"general",
-		vec!["ops", "rust"],
-	);
-	put_fact(&services, "b", "Alpha", "text", "general", vec!["ops"]);
-	put_fact(&services, "c", "Middle", "text", "general", vec!["rust"]);
-
-	let first_page = dispatch_tool_call(
-		"memory_list",
-		json!({
-			"order": "subject",
-			"limit": 2
-		}),
-		&services,
-	)
-	.expect("memory_list first page should succeed");
-	let facts = first_page["facts"]
-		.as_array()
-		.expect("facts should be an array");
-	assert_eq!(facts.len(), 2);
-	assert_eq!(facts[0]["subject"], json!("Alpha"));
-	assert_eq!(facts[1]["subject"], json!("Middle"));
-	let cursor = first_page["next_cursor"]
-		.as_str()
-		.expect("next_cursor should exist")
-		.to_string();
-
-	let second_page = dispatch_tool_call(
-		"memory_list",
-		json!({
-			"order": "subject",
-			"limit": 2,
-			"cursor": cursor
-		}),
-		&services,
-	)
-	.expect("memory_list second page should succeed");
-	let second_facts = second_page["facts"]
-		.as_array()
-		.expect("facts should be an array");
-	assert_eq!(second_facts.len(), 1);
-	assert_eq!(second_facts[0]["subject"], json!("Zebra"));
-	assert!(second_page["next_cursor"].is_null());
-
-	let tag_and = dispatch_tool_call(
-		"memory_list",
-		json!({
-			"order": "subject",
-			"tags_any": ["ops", "rust"],
-			"tags_and": true
-		}),
-		&services,
-	)
-	.expect("memory_list tags_and should succeed");
-	let and_facts = tag_and["facts"]
-		.as_array()
-		.expect("facts should be an array");
-	assert_eq!(and_facts.len(), 1);
-	assert_eq!(and_facts[0]["id"], json!("a"));
-}
-
-#[test]
-fn memory_search_returns_ranked_filtered_matches() {
-	let (services, _workspace) = build_services(true);
-	put_fact(
-		&services,
-		"one",
+		"user",
 		"Rust rust",
 		"Rust book",
 		"coding_practices",
 		vec!["rust", "backend"],
 	);
-	put_fact(
+	create_fact(
 		&services,
-		"two",
+		"workspace",
 		"Rust",
 		"memory patterns",
 		"coding_practices",
-		vec!["backend"],
+		vec!["backend", "rust"],
 	);
-	put_fact(
+	create_fact(
 		&services,
-		"three",
+		"user",
 		"Python",
 		"memory patterns",
 		"coding_practices",
 		vec!["python"],
 	);
 
-	let data = dispatch_tool_call(
-		"memory_search",
+	let data = dispatch_memory_call(
+		"search",
 		json!({
 			"query": "rust",
-			"tags_any": ["backend"],
+			"tags": ["backend"],
 			"limit": 10
 		}),
 		&services,
 	)
-	.expect("memory_search should succeed");
+	.expect("memory search should succeed");
 
-	let matches = data["matches"]
+	let matches = data["result"]["matches"]
 		.as_array()
 		.expect("matches should be an array");
 	assert_eq!(matches.len(), 2);
-	assert_eq!(matches[0]["fact"]["id"], json!("one"));
-	assert_eq!(matches[1]["fact"]["id"], json!("two"));
 	assert!(matches[0]["score"].as_u64().unwrap_or(0) >= matches[1]["score"].as_u64().unwrap_or(0));
-	assert!(data["next_cursor"].is_null());
+	assert!(
+		matches
+			.iter()
+			.any(|entry| entry["fact"]["scope"] == json!("user"))
+	);
+	assert!(
+		matches
+			.iter()
+			.any(|entry| entry["fact"]["scope"] == json!("workspace"))
+	);
+	assert!(data["result"]["next_cursor"].is_null());
+
+	let first_page = dispatch_memory_call(
+		"search",
+		json!({
+			"query": "memory",
+			"limit": 1
+		}),
+		&services,
+	)
+	.expect("first page should succeed");
+	let first_matches = first_page["result"]["matches"]
+		.as_array()
+		.expect("matches should be an array");
+	assert_eq!(first_matches.len(), 1);
+	let cursor = first_page["result"]["next_cursor"]
+		.as_str()
+		.expect("next cursor should exist")
+		.to_string();
+
+	let second_page = dispatch_memory_call(
+		"search",
+		json!({
+			"query": "memory",
+			"limit": 1,
+			"cursor": cursor
+		}),
+		&services,
+	)
+	.expect("second page should succeed");
+	let second_matches = second_page["result"]["matches"]
+		.as_array()
+		.expect("matches should be an array");
+	assert_eq!(second_matches.len(), 1);
+
+	let tags_and = dispatch_memory_call(
+		"search",
+		json!({
+			"tags": ["backend", "rust"],
+			"tags_and": true
+		}),
+		&services,
+	)
+	.expect("tags_and search should succeed");
+	let and_matches = tags_and["result"]["matches"]
+		.as_array()
+		.expect("matches should be an array");
+	assert_eq!(and_matches.len(), 2);
+}
+
+#[test]
+fn memory_create_returns_io_error_when_store_root_is_not_directory() {
+	let (services, _workspace) = build_services(true);
+	let user_store = services
+		.memory_store
+		.user_store_path()
+		.expect("user memory store should be enabled")
+		.to_path_buf();
+	let index_root = user_store.with_extension("tantivy");
+
+	if index_root.is_dir() {
+		fs::remove_dir_all(&index_root).expect("existing index root should be removed");
+	} else if index_root.exists() {
+		fs::remove_file(&index_root).expect("existing blocking file should be removed");
+	}
+	if let Some(parent) = index_root.parent() {
+		fs::create_dir_all(parent).expect("index root parent should exist");
+	}
+	fs::write(&index_root, "blocking-file").expect("blocking file should be created");
+
+	let result = dispatch_memory_call(
+		"create",
+		json!({
+			"scope": "user",
+			"subject": "Subject",
+			"fact": "Fact",
+			"category": "general",
+			"reasoning": "because"
+		}),
+		&services,
+	);
+
+	match result {
+		Err(AlfredError::IoError(message)) => {
+			assert!(message.contains("failed to create memory store directory"));
+		}
+		other => panic!("unexpected result: {other:?}"),
+	}
 }

@@ -12,17 +12,49 @@ use crate::services::plan_store::{PlanItem, PlanStatus};
 pub struct PlanTools;
 
 impl PlanTools {
-	pub const NAMES: &'static [&'static str] = &[
-		"plan_get",
-		"plan_update",
-		"plan_edit",
-		"plan_add",
-		"plan_delete",
-	];
+	pub const NAMES: &'static [&'static str] = &["plan"];
+}
+
+#[derive(Debug, Clone, Copy)]
+enum PlanOperation {
+	Get,
+	Add,
+	UpdateStatus,
+	Delete,
+}
+
+impl PlanOperation {
+	fn parse(operation: &str) -> Result<Self, AlfredError> {
+		match operation {
+			"get" | "retrieve" => Ok(Self::Get),
+			"add" => Ok(Self::Add),
+			"update_status" => Ok(Self::UpdateStatus),
+			"delete" | "remove" => Ok(Self::Delete),
+			other => Err(AlfredError::InvalidArgument(format!(
+				"operation must be one of get, add, update_status, delete: {other}"
+			))),
+		}
+	}
+
+	fn as_str(self) -> &'static str {
+		match self {
+			Self::Get => "get",
+			Self::Add => "add",
+			Self::UpdateStatus => "update_status",
+			Self::Delete => "delete",
+		}
+	}
 }
 
 #[derive(Debug, Deserialize)]
-struct PlanUpdateArgs {
+struct PlanArgs {
+	operation: String,
+	#[serde(default)]
+	args: Value,
+}
+
+#[derive(Debug, Deserialize)]
+struct PlanUpdateStatusArgs {
 	id: u64,
 	status: PlanStatus,
 }
@@ -30,19 +62,6 @@ struct PlanUpdateArgs {
 #[derive(Debug, Deserialize)]
 struct PlanDeleteArgs {
 	id: u64,
-}
-
-#[derive(Debug, Deserialize)]
-struct PlanEditArgs {
-	id: u64,
-	title: String,
-	priority: u8,
-	cards: Vec<String>,
-	description: String,
-	deliverables: Vec<String>,
-	acceptance_criteria: Option<String>,
-	notes: Option<String>,
-	status: PlanStatus,
 }
 
 #[derive(Debug, Deserialize)]
@@ -66,64 +85,52 @@ pub fn dispatch_tool_call(
 	services: &ServiceContainer,
 ) -> Result<Option<Value>, AlfredError> {
 	match name {
-		"plan_get" => handle_plan_get(services).map(Some),
-		"plan_update" => handle_plan_update(args, services).map(Some),
-		"plan_edit" => handle_plan_edit(args, services).map(Some),
-		"plan_add" => handle_plan_add(args, services).map(Some),
-		"plan_delete" => handle_plan_delete(args, services).map(Some),
+		"plan" => handle_plan(args, services).map(Some),
 		_ => Ok(None),
 	}
 }
 
-fn handle_plan_get(services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let items = services.plan_store.read_items()?;
-	Ok(json!({ "items": items }))
-}
+fn handle_plan(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
+	let args = parse_args::<PlanArgs>(args)?;
+	let operation = PlanOperation::parse(args.operation.as_str())?;
 
-fn handle_plan_update(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<PlanUpdateArgs>(args)?;
-	services.plan_store.update_status(args.id, args.status)?;
-	Ok(json!({}))
-}
+	let result = match operation {
+		PlanOperation::Get => {
+			let items = services.plan_store.read_items()?;
+			json!({ "items": items })
+		}
+		PlanOperation::Add => {
+			let args = parse_args::<PlanAddArgs>(args.args)?;
+			let _ = args.id;
+			let id = services.plan_store.add_item(PlanItem {
+				id: 0,
+				title: args.title,
+				priority: args.priority,
+				cards: args.cards,
+				description: args.description,
+				deliverables: args.deliverables,
+				acceptance_criteria: args.acceptance_criteria,
+				notes: args.notes,
+				status: args.status,
+			})?;
+			json!({ "id": id })
+		}
+		PlanOperation::UpdateStatus => {
+			let args = parse_args::<PlanUpdateStatusArgs>(args.args)?;
+			services.plan_store.update_status(args.id, args.status)?;
+			json!({})
+		}
+		PlanOperation::Delete => {
+			let args = parse_args::<PlanDeleteArgs>(args.args)?;
+			services.plan_store.delete_item(args.id)?;
+			json!({})
+		}
+	};
 
-fn handle_plan_edit(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<PlanEditArgs>(args)?;
-	services.plan_store.edit_item(PlanItem {
-		id: args.id,
-		title: args.title,
-		priority: args.priority,
-		cards: args.cards,
-		description: args.description,
-		deliverables: args.deliverables,
-		acceptance_criteria: args.acceptance_criteria,
-		notes: args.notes,
-		status: args.status,
-	})?;
-	Ok(json!({}))
-}
-
-fn handle_plan_add(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<PlanAddArgs>(args)?;
-	let _ = args.id;
-	let id = services.plan_store.add_item(PlanItem {
-		id: 0,
-		title: args.title,
-		priority: args.priority,
-		cards: args.cards,
-		description: args.description,
-		deliverables: args.deliverables,
-		acceptance_criteria: args.acceptance_criteria,
-		notes: args.notes,
-		status: args.status,
-	})?;
-
-	Ok(json!({ "id": id }))
-}
-
-fn handle_plan_delete(args: Value, services: &ServiceContainer) -> Result<Value, AlfredError> {
-	let args = parse_args::<PlanDeleteArgs>(args)?;
-	services.plan_store.delete_item(args.id)?;
-	Ok(json!({}))
+	Ok(json!({
+		"operation": operation.as_str(),
+		"result": result,
+	}))
 }
 
 fn parse_args<T: for<'de> Deserialize<'de>>(value: Value) -> Result<T, AlfredError> {
