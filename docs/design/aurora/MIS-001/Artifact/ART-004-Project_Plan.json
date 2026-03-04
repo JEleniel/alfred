@@ -15,6 +15,18 @@
 			"lock_files": false,
 			"concurrent_writers": "unsupported_last_write_wins"
 		},
-		"note": "Plan updates are all-or-nothing at the file-content level (no partial writes on failure) without temp-file replace/rename strategies. Concurrent writers are unsupported; last-write-wins behavior is acceptable."
+		"note": "Plan updates are all-or-nothing at the file-content level (no partial writes on failure) without temp-file replace/rename strategies. Concurrent writers are unsupported; last-write-wins behavior is acceptable.",
+		"item_format": {
+			"description": "Each open plan item follows a structured Markdown list format. Completed items retain only the header line.",
+			"header": "N. [ ] P{priority}: {title}",
+			"fields": {
+				"priority": "Integer; lower value ships first (P0 before P1, etc.).",
+				"description": "Single 4-space-indented bullet. One sentence stating the gap or goal; may cite a design doc. Does not list deliverables.",
+				"deliverables": "8-space-indented bullets under the description. Each is a specific, independently verifiable action or outcome.",
+				"aurora_cards": "4-space-indented bullet listing linked Aurora card IDs as Markdown links relative to the plan file location.",
+				"dependencies": "4-space-indented bullet listing item numbers that must be complete first. Omitted when there are no dependencies."
+			},
+			"completed_items": "Retain only the header line (N. [x] {title}); description and deliverables are dropped when an item is marked done."
+		}
 	}
 }

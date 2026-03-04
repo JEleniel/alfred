@@ -4,13 +4,13 @@ This document summarizes Alfred's architecture as modeled in Aurora and points t
 
 ## Key artifacts
 
-| Artifact                                                        | Purpose                                                                                         |
-| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [AlfredOverview](./AlfredOverview.md)                           | Requirements and constraints that drive the architecture.                                       |
-| [Aurora model home](./aurora/)                                  | Source-of-truth architecture model (cards + audit log).                                         |
-| [Rendered model markdown](./MIS-001-Alfred_Local_MCP_Server.md) | Human-readable rendering of all cards in the model.                                             |
-| [Model README](./README-MIS-001-Alfred_Local_MCP_Server.md)     | Entry point for the generated model bundle.                                                     |
-| [Views (SVG)](./MIS-001/Views/)                                 | Diagrams rendered from the model (context, components, deployment, traceability, and security). |
+| Artifact                                                        | Purpose                                                                                                                      |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| [AlfredOverview](./AlfredOverview.md)                           | Requirements and constraints that drive the architecture.                                                                    |
+| [Aurora model home](./aurora/)                                  | Source-of-truth architecture model (cards + audit log).                                                                      |
+| [Rendered model markdown](./MIS-001-Alfred_Local_MCP_Server.md) | Human-readable rendering of all cards in the model.                                                                          |
+| [Model README](./README-MIS-001-Alfred_Local_MCP_Server.md)     | Entry point for the generated model bundle.                                                                                  |
+| Views (SVG)                                                     | Diagrams rendered from the model into `docs/design/MIS-001/Views/`. **These are generated outputs** and are not hand-edited. |
 
 ## System context
 
@@ -22,7 +22,7 @@ The server:
 - Operates within a configured workspace boundary (no escape hatches to arbitrary filesystem access).
 - Prioritizes predictability and safety (dry-run support, atomic mutations where practical, normalized diagnostics, bounded background work).
 
-For the model context view, see [Context.svg](./MIS-001/Views/Context.svg).
+Context, component, deployment, traceability, and security views are available as generated SVGs under `docs/design/MIS-001/Views/`.
 
 ## Core decomposition
 
@@ -46,7 +46,7 @@ At a high level, the application is a stdio transport, a tool router, and a cons
     - `plan`: project-plan read/write workflows.
     - `memory`: local/offline memory CRUD and retrieval.
 
-For the model component view, see [Component.svg](./MIS-001/Views/Component.svg).
+The component view is available as a generated SVG under `docs/design/MIS-001/Views/`.
 
 ## Data and state
 
@@ -76,8 +76,9 @@ For concrete contracts (including memory CRUD/search), see:
 - [Protocol](./Protocol.md)
 - [Error taxonomy](./ErrorTaxonomy.md)
 - [Tool contracts](./ToolContracts.md)
+- [Default values reference](./Defaults.md)
 
-For the traceability view (drivers to requirements to capabilities to features to components), see [Traceability.svg](./MIS-001/Views/Traceability.svg).
+The traceability view (drivers → requirements → capabilities → features → components) is available as a generated SVG under `docs/design/MIS-001/Views/`.
 
 ## Security and threat modeling
 
@@ -85,19 +86,22 @@ The Aurora model includes an explicit threat model rooted at `THM-001`. It assum
 
 Cross-platform caveats that can impact safety and determinism (symlinks/junctions, file locking and mutation differences, shell portability, cancellation semantics, and encoding/path handling) are captured as model constraints/controls and reflected in the security view.
 
-For the rendered security view, see [Security.svg](./MIS-001/Views/Security.svg).
+The security view is available as a generated SVG under `docs/design/MIS-001/Views/`.
 
 ## Deployment
 
 Alfred is deployed as a single local stdio process on the workspace host machine and communicates over stdio. This remains true even when the user is in VS Code Remote Development modes (where the host is remote). It is intended to run on Linux, macOS, and Windows; mobile platforms (iOS/Android) are out of scope (but may still work for most operations).
 
-For the model deployment view, see [Deployment.svg](./MIS-001/Views/Deployment.svg).
+The deployment view is available as a generated SVG under `docs/design/MIS-001/Views/`.
 
 ## Design Goals
 
-- The primary drive behind Alfred is to streamline agentic operations, reduce context load, and operate faster that the current built in and OS provided tools.
-    - Provides the most commonly used tools, based on tracking sessions, that _also_ consume the most time and context, in a faster form with a more compact response.
-    - Improve the performance of searching, the single most used function, through indexing without introducing significant load on the host.
+- **Minimize per-call token cost**: consolidate the most context-expensive agentic operations into a small, composable surface with compact, deterministic responses.
+- **Deterministic by design**: stable ordering, stable error taxonomy, explicit pagination, and consistent output across restarts and platforms. Results must be diffable and testable.
+- **Safe and conservative by default**: dry-run defaults on all mutating operations, atomic writes where practical, workspace boundary enforcement, and no implicit destructive behavior.
+- **Search performance through local indexing**: the single most-used operation (workspace text search) is backed by a persistent local index delivering sub-500 ms p95 latency without spawning external processes.
+- **Offline and self-contained**: no external service dependencies; all state (index, memory, logs) is local, explicit, and fully rebuildable from the workspace.
+- **Cross-platform reliability**: full support for Linux, macOS, and Windows semantics, including path encoding edge cases, symlink/junction safety, and filesystem mutation strategies.
     - Add a local-only memory capability for security, speed, and independence from connectivity issues and corporate whims.
 - The entire server is a single, self-contained executable with no outside dependencies.
 - Alfred is configurable, allowing the user to customize as many aspects of operation as feasible.

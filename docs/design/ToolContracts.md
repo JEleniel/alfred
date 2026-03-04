@@ -42,9 +42,9 @@ Alfred MUST filter non-public information (NPI) from:
 - Tool/runtime logs.
 - Search indexes and memory indexes at ingestion time.
 
-NPI includes (at minimum) secret-looking values (tokens/keys/passwords) and MAY include user-configured PII/PHI-like patterns.
+NPI includes (at minimum) NPI-looking values (tokens/keys/passwords) and MAY include user-configured PII/PHI-like patterns.
 
-Redaction is deterministic and uses a stable replacement token (default `<-REDACTED->`).
+Redaction is deterministic and uses a stable replacement token (default `<-REDACTED->`, see [Defaults](./Defaults.md)).
 
 The deterministic redaction algorithm (detection + replacement-length fitting) is specified in [`docs/design/Redaction.md`](./Redaction.md).
 
@@ -90,10 +90,8 @@ The architecture intentionally consolidates the public command set to reduce too
 - Execution: synchronous.
 - Input:
     - `query`: string.
-    - `mode`: optional `"literal" | "regex"` (default `"literal"`).
-    - `case_sensitive`: optional boolean (default `false`).
-    - `full_text`: optional boolean (default `false`).
-    - `true_regex`: optional boolean (default `false`).
+    - `mode`: optional `"general" | "full_text" | "regex"` (default `"general"`, see [Defaults](./Defaults.md)).
+    - `case_sensitive`: optional boolean (default `false`, see [Defaults](./Defaults.md)).
     - `include_pattern`: optional string (glob applied to workspace-relative paths).
     - `exclude_pattern`: optional string (glob applied to workspace-relative paths).
     - `cursor`: optional string.
@@ -107,82 +105,33 @@ The architecture intentionally consolidates the public command set to reduce too
 
 Notes:
 
-- This tool is index-backed.
-- If the workspace index is not available, the tool MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
-- Result ordering:
-    - `matches` MUST be stable-sorted lexicographically, case-insensitive by `path`, then by `line` ascending.
+- This tool is index-backed. If the workspace index is not available, the tool MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
+- Result ordering: `matches` MUST be stable-sorted lexicographically, case-insensitive by `path`, then by `line` ascending.
 
-Regex modes and performance:
+Search modes:
 
-- `mode: "regex"` is term-/token-based by default and MUST use Tantivy regex queries.
-    - Single-term regex searches MUST use `RegexQuery`.
-    - Multi-term regex searches (whitespace-separated terms) MUST use `RegexPhraseQuery` with adjacent-term semantics.
-    - This is the default regex behavior.
-- `true_regex: true` enables full regular-expression matching over raw file text.
-    - When `true_regex` is `true`, the implementation MUST perform a two-phase search:
-        1. Prefilter candidate files using an n-gram index.
-        2. Verify candidates by running the full regex over raw UTF-8 text and returning line-level matches.
+- `"general"` (default): term-based literal search using Tantivy queries. Whitespace-separated terms are treated as a phrase query. This is the lowest-cost mode and suitable for most searches.
+- `"full_text"`: full-text search over indexed document content. Matches are scored by relevance.
+- `"regex"`: true regular-expression matching over raw file text using a two-phase approach:
+    1. Prefilter candidate files using an n-gram index.
+    2. Verify candidates by running the full regex over raw UTF-8 text and returning line-level matches.
     - Prefiltering MUST be sound: it MUST NOT exclude any file that could contain a true match.
-        - If no safe literals can be extracted from the regex for prefiltering, prefiltering MUST degrade to a no-op (all candidate files).
+    - If no safe literals can be extracted from the regex for prefiltering, prefiltering MUST degrade to a no-op (all candidate files).
+    - Always combine `mode: "regex"` with at least one of `include_pattern`/`exclude_pattern` or a required literal substring to ensure n-gram prefiltering is effective.
 
 Asynchronous n-gram indexing:
 
-- The workspace index MUST include an additional n-gram analyzed view of indexed text built using Tantivy's `NgramTokenizer`.
-- N-gram indexing MAY be performed asynchronously (eventual consistency is acceptable) so long as `true_regex: true` remains correct by verifying matches against raw text.
-- The n-gram field is an internal performance mechanism and MUST NOT change the observable match semantics beyond reducing the candidate set for verification.
+- The workspace index MUST include an n-gram analyzed view of indexed text built using Tantivy's `NgramTokenizer`.
+- N-gram indexing MAY be performed asynchronously (eventual consistency is acceptable) so long as `mode: "regex"` remains correct by verifying matches against raw text.
+- The n-gram field is an internal performance mechanism and MUST NOT change observable match semantics beyond reducing the candidate set for verification.
 
-Parameter interactions:
+Mode-parameter conflicts:
 
-- `true_regex` is only meaningful when `mode: "regex"`.
-    - If `true_regex: true` is supplied with `mode: "literal"`, Alfred MUST fail deterministically with an invalid-arguments error.
+- Parameters specific to one mode MUST NOT be supplied with an incompatible mode. Violations MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `mode_parameter_conflict`).
 
-## Prompt surface (MCP)
+## Agent guidance
 
-Alfred provides an MCP prompt intended to teach agents and humans how to use the tool surface efficiently.
-
-### `alfred_agent`
-
-- Purpose: usage guidance for Alfred MCP tools.
-- The prompt MUST include search construction guidance:
-    - Prefer `search` over external workspace scans.
-    - Start with `mode: "literal"` and add `include_pattern` / `exclude_pattern` to narrow the candidate set.
-    - Use `mode: "regex"` for term-/token-based regex.
-        - Keep regex terms selective; avoid patterns like `.*` when a literal anchor can be used.
-        - For multi-term intent (e.g., `foo` near `bar`), use whitespace-separated regex terms so Alfred can use `RegexPhraseQuery`.
-    - Use `true_regex: true` only when you specifically need full regex semantics over raw text.
-        - Always combine `true_regex: true` with at least one of:
-            - restrictive `include_pattern` / `exclude_pattern`,
-            - a required literal substring in the regex (to improve n-gram prefiltering).
-    - Use paging (`cursor`/`limit`) to keep calls bounded.
-
-Example calls:
-
-```json
-{
-    "query": "Hello from",
-    "mode": "literal",
-    "include_pattern": "**/*.{md,txt}",
-    "limit": 50
-}
-```
-
-```json
-{
-    "query": "Hello (from|to)",
-    "mode": "regex",
-    "limit": 50
-}
-```
-
-```json
-{
-    "query": "Hello from (alpha|beta)",
-    "mode": "regex",
-    "true_regex": true,
-    "include_pattern": "**/*.{md,txt}",
-    "limit": 50
-}
-```
+Pre-written prompts and agent guidance instructions will be added in a future version.
 
 ## File and directory operations tool
 
@@ -246,19 +195,20 @@ Example calls:
         - `modified_at`: optional string (RFC3339 UTC).
 
 - `diff`
+    - Purpose: compare two text sources and return a unified diff. Either source may be an on-disk file range or inline string content, enabling comparison of in-memory content against on-disk content (for example, checking whether a file has changed from a known state).
     - Input args:
         - `a`: one of:
-            - object:
+            - object (on-disk range):
                 - `path`: string.
                 - `from`: integer.
                 - `to`: integer.
-            - string.
+            - string (inline text content).
         - `b`: one of:
-            - object:
+            - object (on-disk range):
                 - `path`: string.
                 - `from`: integer.
                 - `to`: integer.
-            - string.
+            - string (inline text content).
     - Result:
         - `diff`: string (unified diff format).
 
@@ -328,7 +278,9 @@ Example calls:
             - `failed`: integer.
         - `items`: optional array of per-item results for completed operations.
 
-Rules:
+Notes:
+
+- `cancel` returns the same shape as `status`, reflecting the operation state at the time the cancel was processed.
 
 - Byte-oriented file operations are out of scope for Alfred and MUST NOT be exposed.
 - All paths MUST be workspace-relative, normalized, and use `/` separators.
@@ -394,15 +346,18 @@ Rules:
 Revert semantics:
 
 - Every time `patch` applies patches (single or multi), each applied patch is issued a `patch_id` (uuid) and the reverse patch is stored under that `patch_id`.
-    - Only the most recent patch batch is stored. Reversion-only calls do not update this.
+
+> **Retention rule**: Alfred retains revert state only for the patches applied in the most recent `patch` or `multi-patch` call. Each new apply call replaces all prior revert state. Revert-only calls do not update the retained set.
+
 - A reversion MUST apply the reverse patch using the same semantics as other patches.
-- If the target file has changed since the patch was applied, Alfred MUST refuse to revert for that file and return a deterministic conflict error (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
+- If the `patch_id` is no longer retained (superseded by a later call), Alfred MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `patch_id_not_retained`).
+- If the target file has changed since the patch was applied, Alfred MUST refuse to revert for that file and fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `file_changed_since_patch`).
 - After a successful non-dry-run revert for a given `patch_id`, Alfred MUST discard the stored revert state for that `patch_id`.
 
 Duplicate-content safeguard:
 
 - Alfred MUST evaluate each patch for duplicate-content before write.
-- If applying a patch would duplicate existing content (for example, append a full-file copy to the end of the same file), Alfred MUST refuse to apply that patch as a hard failure and return a deterministic error with `details.reason: "duplicate_content"` (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
+- If applying a patch would duplicate existing content (for example, append a full-file copy to the end of the same file), Alfred MUST refuse to apply that patch as a hard failure (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `duplicate_content`).
 
 ## Status tool
 
@@ -490,38 +445,55 @@ Path rules:
 
 Streaming notes:
 
-- `follow` is a streaming operation when invoked in `stream` execution mode.
+- `follow` is a streaming operation governed by the contract in [`docs/design/Protocol.md`](./Protocol.md) (Streaming semantics).
 - Streamed output MUST use the normal tool result envelope and the normal `logs` output shape.
+- The terminal emission MUST include `result.stopped: true` (see [`docs/design/Protocol.md`](./Protocol.md)).
 - Only one `follow` stream may be active at a time.
-    - If a `follow` stream is already active, a new `follow` start request MUST fail deterministically with `details.reason: "stream_active"` (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
-    - A `follow` stop request (`stop: true`) MUST stop the active stream.
-    - If a `follow` stop request is issued when no stream is active, Alfred MUST fail deterministically with `details.reason: "stream_not_active"` (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
+    - If a `follow` stream is already active, a new `follow` start request MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `stream_active`).
+    - A `follow` stop request (`stop: true`) MUST stop the active stream and emit a terminal envelope.
+    - If a `follow` stop request is issued when no stream is active, Alfred MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `stream_not_active`).
 
 Behavioral notes:
 
 - A `follow` start request returns the last `tail` lines first, then continues emitting `logs` results as new records are appended.
-- A `follow` stop request SHOULD return `stopped: true` when it stops an active stream.
+- A `follow` stop request emits a terminal envelope with `result.stopped: true`.
 
 ## Plan operations tool
 
 ### `plan`
 
-- Purpose: read and track the workspace project plan.
+- Purpose: read and track progress on the workspace project plan.
 - Execution: synchronous.
 - Input:
-    - `operation`: one of `"retrieve" | "add" | "update_status" | "remove"`.
+    - `operation`: one of `"retrieve" | "update_status"`.
     - `args`: object depending on operation.
 - Output:
     - `operation`: echoed operation name.
     - `result`: operation-specific payload.
+
+Operations:
+
+- `retrieve`
+    - Input args: none.
+    - Result:
+        - `content`: string (full plan content).
+        - `path`: string (resolved workspace-relative path).
+
+- `update_status`
+    - Input args:
+        - `item_id`: string or integer (identifies the plan item).
+        - `status`: `"not_started" | "in_progress" | "done"`.
+    - Result:
+        - `updated`: boolean.
+        - `path`: string (resolved workspace-relative path).
 
 Plan location and locking:
 
 - Default plan selection:
     1. `docs/design/ProjectPlan.md` if present.
     2. `ProjectPlan.md` otherwise.
+- Content mutations (add, edit, delete plan items) MUST use the `fs` tool directly.
 - Concurrent writers (multiple Alfred instances targeting the same workspace plan) are unsupported; last-write-wins behavior is acceptable.
-- Editing of the plan should use the normal `fs` operations.
 
 ## Memory tool
 
@@ -530,7 +502,7 @@ Plan location and locking:
 - Purpose: local/offline memory CRUD and full-text retrieval through one command surface.
 - Execution: synchronous (MAY support bounded async in future versions).
 - Input:
-    - `operation`: one of `"create" | "retrieve" | "update" | "delete" | "search"`.
+    - `operation`: one of `"create" | "retrieve" | "update" | "delete"`.
     - `args`: object depending on operation.
 - Output:
     - `operation`: echoed operation name.
@@ -545,19 +517,14 @@ Memory scopes:
 Identity rules:
 
 - A memory fact `id` MUST be a UUID issued by Alfred at creation time.
-- For create, callers MUST omit `id` and Alfred MUST return the issued `id`.
-- For update, callers MUST provide an existing `id`.
+- For `create`, callers MUST omit `id` and Alfred MUST return the issued `id`.
+- For `update` and `delete`, callers MUST provide an existing `id`.
 
 Effective read model:
 
-- `retrieve` and `search` MUST treat memory as one contiguous logical corpus composed from all enabled scopes.
+- `retrieve` MUST treat memory as one contiguous logical corpus composed from all enabled scopes.
 - Results MUST include the `scope` for each returned fact.
-
-Merge policy:
-
-- The effective corpus is derived from user + workspace stores using `memory.storage.merge_mode` (see [`docs/design/Configuration.md`](./Configuration.md)).
-- If the same `id` is present in more than one enabled scope, Alfred MUST resolve the conflict deterministically.
-    - Default: Return both facts with a different `scope`.
+- If the same `id` exists in more than one enabled scope (which SHOULD NOT occur given UUID assignment, but is possible in misconfigured or migrated stores), Alfred MUST return all instances, each with its `scope` field set.
 
 Memory fact shape:
 
@@ -582,47 +549,52 @@ Operation contracts:
         - `reasoning`: optional string.
         - `tags`: optional array of strings.
     - Result:
-        - `memory`: the newly created memory object
+        - `memory`: the newly created memory fact.
 
 - `retrieve`
-    - Input args:
-        - `id`: string.
-    - Result:
-        - `memory`: memory fact.
+    - Supports two modes depending on the args supplied:
 
-- `update`
+    **By id** (when `id` is provided):
     - Input args:
-        - `id`: string.
-        - `scope`: `"user" | "workspace"`.
-        - `subject`: string.
-        - `category`: string.
-        - `fact`: string.
-        - `reasoning`: optional string.
-        - `tags`: optional array of strings.
+        - `id`: string (UUID).
     - Result:
-        - `memory`: updated memory object
+        - `memories`: array of memory facts matching the id (normally one; may be more than one if the same UUID exists in multiple scopes).
 
-- `delete`
+    **Search/list** (when `id` is omitted):
     - Input args:
-        - `id`: string.
-        - `dry_run`: optional boolean (default `true`).
-    - Result:
-        - `deleted`: boolean.
-
-- `search`
-    - Input args:
-        - `query`: optional string. When omitted, returns all facts matching the filters.
+        - `query`: optional string. When omitted (and `id` also omitted), returns all facts matching the filters.
         - `cursor`: optional string.
         - `limit`: optional integer.
-        - `subject`: optional string.
-        - `category`: optional string.
+        - `subject`: optional filter string.
+        - `category`: optional filter string.
         - `tags`: optional array of strings.
         - `tags_and`: optional boolean (default `false`).
     - Result:
-        - `matches`: array of objects:
-            - `fact`: memory fact.
-            - `score`: integer.
+        - `memories`: array of objects:
+            - `memory`: memory fact.
+            - `score`: optional float (0.0–1.0). Present only when a `query` was evaluated. 1.0 represents the strongest/most relevant match for the query; lower values indicate weaker relevance. Omitted for filter-only or empty-query retrievals.
         - `next_cursor`: optional string.
+
+- `update`
+    - Uses **patch semantics**: only fields present in the request are updated; omitted fields retain their current values.
+    - Input args:
+        - `id`: string (UUID).
+        - `scope`: optional `"user" | "workspace"`. When omitted, retains the current scope.
+        - `subject`: optional string.
+        - `category`: optional string.
+        - `fact`: optional string.
+        - `reasoning`: optional string (set to `null` to clear).
+        - `tags`: optional array of strings (set to `[]` to clear).
+    - Result:
+        - `memory`: updated memory fact.
+
+- `delete`
+    - Input args:
+        - `id`: string (UUID).
+        - `scope`: `"user" | "workspace"`. Required to disambiguate when the same `id` may exist in more than one scope.
+        - `dry_run`: optional boolean (default `true`, see [Defaults](./Defaults.md)).
+    - Result:
+        - `deleted`: boolean.
 
 Storage model:
 
@@ -653,7 +625,7 @@ Execution modes:
 - `background`: may return `status: "pending"` and MUST be polled via a follow-up tool call.
 - `stream`: may emit a stream of results over time by emitting repeated, standard tool result envelopes (MCP-compliant).
 
-Limits SHOULD include:
+Limits SHOULD include (canonical values in [`docs/design/Defaults.md`](./Defaults.md)):
 
 - `max_inline_utf8_bytes`: maximum inline payload size per call.
 - `max_patch_files_per_call`: maximum number of files accepted by `patch`.

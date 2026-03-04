@@ -1,6 +1,7 @@
 # Alfred Deterministic Error Taxonomy
 
 This document defines Alfred’s _tool-level_ deterministic error taxonomy. It is used inside Alfred tool results (not as a replacement for MCP/JSON-RPC transport errors).
+All tool implementations MUST map failures into the kinds defined here. Other design documents (for example `ToolContracts.md` and `Configuration.md`) MUST NOT specify concrete error kinds or `details` fields inline; they MUST reference this taxonomy instead.
 
 ## Error object shape
 
@@ -15,10 +16,10 @@ A tool error MUST have the following fields:
 
 | kind                           | Meaning                                                                               | Typical retryable? |
 | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------ |
-| `invalid_argument`             | Input failed validation (type/range/format).                                          | No                 |
-| `permission_denied`            | Request blocked by policy/permission model.                                           | No                 |
-| `workspace_boundary_violation` | Path or operation escapes or ambiguously interacts with workspace boundary.           | No                 |
-| `not_found`                    | Resource does not exist (file, fact, job id, etc.).                                   | No                 |
+| `invalid_argument`             | Input failed validation (type/range/format/policy).                                   | No                 |
+| `permission_denied`            | Request blocked by policy or permission model.                                        | No                 |
+| `workspace_boundary_violation` | Path or operation escapes or ambiguously interacts with the workspace boundary.       | No                 |
+| `not_found`                    | Resource does not exist (file, fact, job id, patch id, etc.).                         | No                 |
 | `conflict`                     | Conflict detected (patch conflict, write conflict, version mismatch).                 | Usually No         |
 | `timeout`                      | Operation exceeded a deterministic time budget.                                       | Maybe              |
 | `canceled`                     | Operation was canceled and reached a terminal canceled state.                         | Maybe              |
@@ -29,15 +30,11 @@ A tool error MUST have the following fields:
 
 ## Notes
 
-- Tool implementations MUST map failures into one of the above kinds.
 - Free-form logs MUST NOT be the only place where error information exists.
 - `details` SHOULD include enough structure to support deterministic conformance tests.
-
-Non-public information (secrets) MUST be filtered from responses and logs deterministically. Redaction SHOULD be surfaced as a warning in the tool result envelope (see [`docs/design/Protocol.md`](./Protocol.md)) rather than introducing a new error kind.
+- Non-public information (NPI) MUST be filtered from responses and logs deterministically. Redaction SHOULD be surfaced as a warning in the tool result envelope (see [`docs/design/Protocol.md`](./Protocol.md)) rather than introducing a new error kind.
 
 ## Common `details` conventions
-
-This document is the single source of truth for tool-level error semantics. Other design documents (for example `ToolContracts.md` and `Configuration.md`) should avoid specifying concrete error kinds or `details` fields inline and MUST reference this taxonomy instead.
 
 When present, `details` MUST be a JSON object.
 
@@ -45,16 +42,7 @@ When present, `details` MUST be a JSON object.
 
 `details.reason` is a stable, machine-readable discriminator for common tool failure classes. It is intended to support deterministic client downgrade/retry logic and conformance tests.
 
-Known values:
-
-- `tool_disabled`: the tool exists but is disabled by configuration/policy.
-- `index_disabled`: an index-backed operation is unavailable because indexing is disabled.
-- `index_not_ready`: an index-backed operation is unavailable because the index is not yet ready.
-- `workspace_boundary_violation`: the request attempted to escape the workspace boundary (or used an ambiguous path).
-- `binary_input`: the operation requires text input but was provided non-text/binary content.
-- `duplicate_content`: the operation was refused because it would duplicate existing content (for example a patch that appends a full-file copy).
-- `stream_active`: a streaming operation was refused because another stream is already active.
-- `stream_not_active`: a stop/cancel request was issued for a stream, but no stream is active.
+`details.reason` is an **open set**: new values MAY be added in future versions. Callers MUST handle unknown reason values gracefully (for example, by treating them as opaque and using `kind` for control flow).
 
 ### Policy and configuration gating
 
@@ -65,7 +53,7 @@ Known values:
 
 ### Index-backed operations
 
-Index-backed operations (for example workspace search/query tools) SHOULD use `tool_unavailable` for index state gating.
+Index-backed operations (for example workspace search/query tools) use `tool_unavailable` for index state gating.
 
 - Index disabled:
     - `kind`: `tool_unavailable`
@@ -79,9 +67,54 @@ Index-backed operations (for example workspace search/query tools) SHOULD use `t
 
 ### Workspace boundary violations
 
-Workspace-boundary enforcement SHOULD use a dedicated kind so callers can distinguish boundary escapes from ordinary not-found errors.
+A dedicated kind is used so callers can distinguish boundary escapes from ordinary not-found errors.
 
-- Boundary escape / ambiguous boundary interaction:
+- Boundary escape or ambiguous boundary interaction:
     - `kind`: `workspace_boundary_violation`
     - `retryable`: `false`
     - `details`: `{ "reason": "workspace_boundary_violation" }`
+
+### Binary or non-text input
+
+- Operation requires text input but received binary or non-representable content:
+    - `kind`: `invalid_argument`
+    - `retryable`: `false`
+    - `details`: `{ "reason": "binary_input" }`
+
+### Duplicate content safeguard
+
+- `patch` would duplicate existing file content:
+    - `kind`: `conflict`
+    - `retryable`: `false`
+    - `details`: `{ "reason": "duplicate_content" }`
+
+### Patch revert errors
+
+- The revert state for the given `patch_id` is no longer retained (superseded by a newer patch call):
+    - `kind`: `not_found`
+    - `retryable`: `false`
+    - `details`: `{ "reason": "patch_id_not_retained", "patch_id": "<uuid>" }`
+
+- The target file has changed since the patch was applied; revert refused:
+    - `kind`: `conflict`
+    - `retryable`: `false`
+    - `details`: `{ "reason": "file_changed_since_patch", "path": "<path>" }`
+
+### Streaming operations
+
+- A streaming operation was refused because another stream is already active:
+    - `kind`: `resource_exhausted`
+    - `retryable`: `true`
+    - `details`: `{ "reason": "stream_active" }`
+
+- A stop or cancel request was issued for a stream, but no stream is active:
+    - `kind`: `invalid_argument`
+    - `retryable`: `false`
+    - `details`: `{ "reason": "stream_not_active" }`
+
+### Search mode parameter conflicts
+
+- A search parameter is incompatible with the supplied `mode`:
+    - `kind`: `invalid_argument`
+    - `retryable`: `false`
+    - `details`: `{ "reason": "mode_parameter_conflict", "parameter": "<param_name>", "mode": "<supplied_mode>" }`

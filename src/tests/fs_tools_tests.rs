@@ -293,8 +293,8 @@ fn fs_bulk_move_overwrite_permission_failure_keeps_source_and_destination() {
 
 	let source_after = fs::read_to_string(&source_path).expect("source file should still exist");
 	assert_eq!(source_after, source_before);
-	let destination_after = fs::read_to_string(&destination_path)
-		.expect("destination file should remain unchanged");
+	let destination_after =
+		fs::read_to_string(&destination_path).expect("destination file should remain unchanged");
 	assert_eq!(destination_after, "destination-before\n");
 }
 

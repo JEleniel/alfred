@@ -38,16 +38,17 @@ This skill must **never** generate, modify, or suggest changes to source code or
 - The Project Plan is a list of structured tasks, dependencies, and progress status in the following format:
 
 ```markdown
-1. [x] Description of task
-    - Priority: 0 (Critical) to 3 (Low)
-    - Cards: List of related Aurora card IDs (if applicable)
-    - Description: Detailed description of the task, its purpose, and any relevant context.
-    - Deliverables:
-        - Clear, specific, concise deliverables that can be verified upon completion.
-    - Notes: Any assumptions, constraints, or additional information relevant to the task.
-    - Status: `Not Started`, `In Progress`, `Completed`, or `Blocked`
-    - Dependencies: (Optional) List of other tasks that must be completed before this task can be started.
+42. [ ] P0: Fix protocol envelope shape to match design
+    - Several deviations from `docs/design/Protocol.md`; correct all tools to return conforming shapes.
+        - Change `status: "error"` from singular `error` to `errors` array per `Protocol.md`.
+        - Move `warnings` to top-level envelope field (not nested in `meta`).
+        - Fix `status: "pending"`: add `data.operation_id`, `data.state`, `data.poll_with: "fs"`; remove non-spec `job_id`.
+        - Update `inject_warning` to write top-level `warnings`.
+        - Update conformance and protocol tests.
+    - Aurora cards: [INT-001](aurora/MIS-001/Interface/INT-001-MCP_Stdio_Interface.json) [ART-001](aurora/MIS-001/Artifact/ART-001-MCP_Request.json) [ART-002](aurora/MIS-001/Artifact/ART-002-MCP_Response.json) [CNS-005](aurora/MIS-001/Constraint/CNS-005-Deterministic_Error_Taxonomy.json)
 ```
+
+**Note**: The above example uses paths relative to where the plan file is located, and the ascutal plan MUST use correct relative paths based on the plan file's location.
 
 ## Cross-skill tasks
 

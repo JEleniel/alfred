@@ -2,488 +2,231 @@
 
 This plan is aligned to the current design artifacts in `docs/design/` (notably `AlfredOverview.md`, `ToolContracts.md`, `Protocol.md`, `Configuration.md`, and `Redaction.md`). The public tool surface is intentionally consolidated; items 1–16 are retained for historical traceability, while items 17+ track the consolidated tool surfaces and any newly specified cross-cutting requirements.
 
-## Recommended execution order for remaining work
+## Item format
 
-- Cross-cutting correctness foundations (do first):
-    - 26 (deterministic redaction end-to-end)
-    - 27 (encoding-safe path handling and deterministic warnings)
-    - 39 (symlink/junction-safe boundary checks)
-- Storage + logging foundations (unblocks consolidated `logs` / `memory` correctness):
-    - 34 (storage location controls)
-    - 35 (runtime log path selection, rotation, retention)
-- Consolidated public tool surface (then remove legacy tool families):
-    - 18 (consolidated `fs`)
-    - 20 (`fs` bulk background execution)
-    - 21 (consolidated `logs`, including `follow` streaming)
-    - 22 (consolidated `plan`)
-    - 23 (consolidated `memory`)
-    - 38 (retire legacy/deprecated tool families from the public surface)
-- Persistence cleanup + hygiene:
-    - 37 (single-location persistence for all active indexes)
-    - 36 (remove SQLite naming/dependency remnants)
-    - 33 (prefer patch-first internal mutations)
-- Contract confidence + design/model alignment:
-    - 41 (enforce capability limits)
-    - 29 (conformance suite for consolidated tool contracts)
-    - 30 (reconcile generated Aurora model outputs with consolidated surface)
+```markdown
+N. [ ] P{priority}: {title} - {One-sentence description of the gap or goal; context reference.} - Deliverable: specific, verifiable action or outcome. - Deliverable: ... - Aurora cards: [ID](aurora/MIS-001/{Category}/{ID}-{Name}.json) ... - Dependencies: N (omit if none)
+```
+
+- **Priority** is an integer; lower is higher priority (`P0` ships before `P1`, etc.).
+- The **description** line is a single sentence; it may cite a design doc but does not list deliverables.
+- **Deliverables** are indented one level deeper than the description and are each independently verifiable.
+- **Aurora cards** link to the relevant model cards relative to this file's location.
+- **Dependencies** lists item numbers that must be complete before this item can start.
+- Completed items (`[x]`) retain only their header line; detail is dropped when marked done.
 
 1. [x] Conform MCP stdio interface envelope and error taxonomy
-    - Priority: 0
-    - Cards: "INT-001", "ART-001", "ART-002", "CNS-005", "CNS-007", "CNS-015", "STR-007"
-    - Description: Align the runtime MCP stdio protocol envelope and deterministic error taxonomy with the design so tool contracts can be implemented consistently.
-    - Deliverables:
-        - Update the tool error payload to support structured `details` (see `docs/design/ErrorTaxonomy.md`).
-        - Align `ErrorKind` coverage to the design’s taxonomy and update error conversions.
-        - Align `pending` envelopes to the protocol requirements in `docs/design/Protocol.md` (including transport-equivalent metadata).
-        - Update/extend `tests/protocol_tests.rs` and `tests/workspace_query_tests.rs` to assert the updated envelope and error shapes.
-    - Notes: This plan is intentionally protocol-first and synchronous-first. Background work is restricted to `fs` bulk execution per the current design.
-    - Status: Completed
 
 2. [x] Implement configuration loading and deterministic policy guardrails
-    - Priority: 0
-    - Cards: "CNS-010", "CNS-015", "STR-014", "STR-009"
-    - Description: Load and merge user/workspace configuration and use it to deterministically govern tool exposure and safety posture.
-    - Deliverables:
-        - Load and merge JSON config from the default user and workspace config paths.
-        - Implement tool enable/disable policy (including default-disable for mutating tools).
-        - Ensure both `tools/list` and runtime dispatch reflect policy.
-        - Add/extend tests in `tests/configuration_tests.rs` for config precedence and gating behavior.
-    - Status: Completed
 
 3. [x] Implement `capabilities` tool and make `tools/list` truthful
-    - Priority: 1
-    - Cards: "CNS-008", "CNS-010", "STR-010", "ART-002"
-    - Description: Provide deterministic capability discovery and ensure the MCP `tools/list` surface matches what is actually implemented and enabled.
-    - Deliverables:
-        - Implement the `capabilities` tool contract from `docs/design/ToolContracts.md`.
-        - Ensure `tools/list` only advertises tools that are implemented and enabled by policy.
-        - Publish limits required by tool contracts (for example, file chunk limits).
-        - Add protocol-level tests asserting the `capabilities` payload shape and stable ordering.
-    - Status: Completed
 
-4. [x] Bring workspace query tools up to contract conformance
-    - Priority: 1
-    - Cards: "ART-007", "CNS-001", "CNS-015", "STR-001", "STR-015"
-    - Description: Tighten the existing workspace query tools (`workspace_dir`, `ls`, `read_range`, `file_stat`, `grep`, `search`, `diff`) to match their tool contracts.
-    - Deliverables:
-        - Ensure output path normalization and stable ordering matches the rules in `docs/design/ToolContracts.md`.
-        - Ensure `read_range` fails deterministically for binary/non-text input.
-        - Ensure index-not-ready errors for `grep`/`search` emit `tool_unavailable` with `details.reason: "index_not_ready"`.
-        - Add missing tool-level tests for `ls`, `file_stat`, and `diff`.
-    - Status: Completed
+4. [x] Consolidate workspace query tool surface into `fs`
 
 5. [x] Implement `log_search`
-    - Priority: 1
-    - Cards: "STR-008", "CNS-012", "CNS-015"
-    - Description: Implement deterministic log searching over Alfred’s structured runtime logs or logs at a path provided by the agent, within the workspace. This is one of the few exceptions where we let the agent see outside the sandbox, but _only_ Alfred's logs.
-    - Deliverables:
-        - Implement `log_search` per `docs/design/ToolContracts.md`.
-        - Add stable pagination with `cursor` and `next_cursor`.
-        - Add tests covering filtering, pagination, and deterministic ordering.
-    - Status: Completed
 
 6. [x] Implement `plan_get`
-    - Priority: 1
-    - Cards: "ART-004", "STR-004", "CNS-015"
-    - Description: Return the current plan items from the workspace-scoped project plan file.
-    - Deliverables:
-        - Implement `plan_get` per `docs/design/ToolContracts.md`.
-        - Enforce deterministic parsing and normalization.
-        - Add tests for “file missing”, parse errors, and successful reads.
-    - Status: Completed
 
 7. [x] Implement `plan_update`
-    - Priority: 2
-    - Cards: "ART-004", "STR-004", "CNS-015"
-    - Description: Update the status of a specific plan item with deterministic, all-or-nothing updates (no partial writes).
-    - Deliverables:
-        - Implement `plan_update` per `docs/design/ToolContracts.md`.
-        - Ensure plan updates are all-or-nothing at the file-content level (no partial writes on failure) without using temp-file replace/rename strategies.
-        - Avoid lock files; concurrent writers are unsupported.
-        - Add tests for missing ids and successful updates.
-    - Status: Completed
 
 8. [x] Implement `plan_edit`
-    - Priority: 2
-    - Cards: "ART-004", "STR-004", "CNS-015"
-    - Description: Edit a full plan item deterministically.
-    - Deliverables:
-        - Implement `plan_edit` per `docs/design/ToolContracts.md`.
-        - Preserve stable ids and deterministic formatting.
-        - Add tests for edit validation and stable round-tripping.
-    - Status: Completed
 
 9. [x] Implement `plan_add`
-    - Priority: 2
-    - Cards: "ART-004", "STR-004", "CNS-015"
-    - Description: Append a new plan item deterministically (server assigns id).
-    - Deliverables:
-        - Implement `plan_add` per `docs/design/ToolContracts.md`.
-        - Ensure sequential id assignment starting at 1.
-        - Add tests for id assignment.
-    - Status: Completed
 
 10. [x] Implement `plan_delete`
-    - Priority: 2
-    - Cards: "ART-004", "STR-004", "CNS-015"
-    - Description: Remove a plan item by id deterministically.
-    - Deliverables:
-        - Implement `plan_delete` per `docs/design/ToolContracts.md`.
-        - Add tests for missing ids and successful deletes.
-    - Status: Completed
 
 11. [x] Implement `memory_put`
-    - Priority: 2
-    - Cards: "ART-008", "STR-017", "CNS-006", "CNS-015"
-    - Description: Upsert a memory fact into the local persistent store.
-    - Deliverables:
-        - Implement `memory_put` per `docs/design/ToolContracts.md`.
-        - Ensure deterministic upsert semantics and timestamps.
-        - Add tests for required fields and id stability.
-    - Status: Completed
 
 12. [x] Implement `memory_get`
-    - Priority: 2
-    - Cards: "ART-008", "STR-017", "CNS-015"
-    - Description: Retrieve a single memory fact by id.
-    - Deliverables:
-        - Implement `memory_get` per `docs/design/ToolContracts.md`.
-        - Add tests for missing facts and successful retrieval.
-    - Status: Completed
 
 13. [x] Implement `memory_delete`
-    - Priority: 2
-    - Cards: "ART-008", "STR-017", "CNS-003", "CNS-015"
-    - Description: Delete a memory fact deterministically (with optional dry-run).
-    - Deliverables:
-        - Implement `memory_delete` per `docs/design/ToolContracts.md`.
-        - Add tests for dry-run behavior and delete semantics.
-    - Status: Completed
 
 14. [x] Implement `memory_list`
-    - Priority: 2
-    - Cards: "ART-008", "STR-017", "CNS-015"
-    - Description: Deterministically list memory facts with stable ordering and pagination.
-    - Deliverables:
-        - Implement `memory_list` per `docs/design/ToolContracts.md`.
-        - Add tests for stable ordering, pagination, and tag filtering.
-    - Status: Completed
 
 15. [x] Implement `memory_search`
-    - Priority: 2
-    - Cards: "ART-008", "STR-017", "CNS-015"
-    - Description: Full-text search over memory facts.
-    - Deliverables:
-        - Implement `memory_search` per `docs/design/ToolContracts.md`.
-        - Add tests for deterministic ranking/ordering and tag filtering.
-    - Status: Completed
 
 16. [x] Refine architecture for consolidated command surface
-    - Priority: 0
-    - Cards: "STR-001", "STR-003", "STR-004", "STR-008", "STR-017", "CNS-015"
-    - Description: Consolidate command families to reduce exposed tool count and align protocol/configuration contracts.
-    - Deliverables:
-        - Consolidate command taxonomy to `search`, `fs`, `patch`, `logs`, `plan`, and `memory`.
-        - Remove standalone `env_*` and `job_*` command families from the architecture contract.
-        - Add `.alfred/` workspace storage root defaults and index single-location persistence rule.
-        - Remove byte-oriented filesystem operations from the architecture contract.
-        - Add duplicate-content refusal requirements for patch application.
-    - Status: Completed
 
 17. [x] Implement consolidated `search` command
-    - Priority: 2
-    - Cards: "STR-001", "CNS-001", "CNS-015"
-    - Description: Merge workspace text search behaviors into one deterministic command.
-    - Deliverables:
-        - Implement `search` per the consolidated contract.
-        - Add tests for literal/regex mode, pagination, and index-not-ready/index-disabled errors.
-    - Status: Completed
 
 18. [x] Implement consolidated `fs` command
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-004", "CNS-015"
-    - Description: Merge non-bulk file and directory operations into one deterministic command.
-    - Deliverables:
-        - Implement operation-dispatch for `fs` operations per `docs/design/ToolContracts.md`:
-            - `search`, `read_range`, `stat`, `diff`, `create_file`, `append_file`, `delete_file`, `create_dir`, `delete_dir`.
-        - Ensure text-only behavior and deterministic binary-file rejection for line-range reads.
-        - Ensure deterministic pagination (`cursor`/`limit`) and stable ordering for `fs.search` results.
-        - Ensure workspace-relative, normalized `/`-separated paths and deterministic boundary enforcement for all `fs` operations.
-        - Ensure `dry_run` behavior is safe-by-default (and validated) for all mutating operations.
-        - Remove/retire legacy workspace filesystem query tools (`ls`, `read_range`, `file_stat`, `grep`, `diff`) from the public surface once `fs` covers the equivalent functionality.
-        - Add tests for operation-specific validation and dry-run semantics.
-    - Status: Completed
-    - Notes:
-        - Initial `fs` tool implementation is in `src/tools/fs.rs` and is registered in `src/tools.rs`.
-        - Added consolidated `fs` tool coverage in `src/tests/fs_tools_tests.rs` (including dry-run semantics and boundary enforcement).
-        - Legacy workspace filesystem query tool names have been removed from the public surface (registry/dispatch); `fs` now implements `search/read_range/stat/diff` directly (no index dependency).
-    - Dependencies: 26, 27, 39
 
 19. [x] Implement consolidated `patch` command
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-004", "CNS-017"
-    - Description: Replace single-file and multi-file patch tools with one multi-patch interface.
-    - Deliverables:
-        - Implement array-based patch application with per-file results.
-        - Implement `revert` support for the most recently applied patch batch (in-memory only).
-        - Add duplicate-content detection and refusal behavior.
-        - Add tests for dry-run behavior, revert safety checks, and duplicate-content refusal.
-    - Status: Completed
 
 20. [x] Implement `fs` bulk background execution
-    - Priority: 2
-    - Cards: "STR-003", "CNS-001", "CNS-003", "CNS-015", "CNS-019"
-    - Description: Implement deterministic bulk move/copy/delete and built-in status/cancel semantics under `fs`.
-    - Deliverables:
-        - Implement execute/status/cancel modes with deterministic operation IDs.
-        - Support optional background mode only for this operation.
-        - Ensure background acceptance uses the `pending` envelope and is polled via `fs` per `docs/design/Protocol.md`.
-        - Add tests for status polling, cancellation, overwrite behavior, and recursion semantics.
-    - Status: Completed
-    - Dependencies: 18, 26, 27, 39
 
 21. [x] Implement consolidated `logs` command
-    - Priority: 2
-    - Cards: "STR-008", "CNS-012", "CNS-015"
-    - Description: Merge log search/tail behaviors into one deterministic command.
-    - Deliverables:
-        - Implement `logs` per `docs/design/ToolContracts.md`:
-            - `search` and bounded `tail` operations.
-            - `follow` operation with at-most-one-active-stream enforcement (`details.reason: stream_active|stream_not_active`).
-        - Enforce path rules:
-            - If `args.path` is provided, it MUST be workspace-relative and remain within the workspace boundary.
-            - If `args.path` is omitted, `logs` MUST use the configured runtime log path (which MAY be outside the workspace).
-        - Add tests for filtering, ordering, cursor behavior, and bounds.
-    - Status: Completed
-    - Dependencies: 26, 27, 35, 39
 
 22. [x] Implement consolidated `plan` command
-    - Priority: 2
-    - Cards: "ART-004", "STR-004", "CNS-015"
-    - Description: Merge plan read/add/edit/update/delete behaviors into one deterministic command.
-    - Deliverables:
-        - Implement `plan` per `docs/design/ToolContracts.md` with operation routing and deterministic validation:
-            - `get`, `add`, `update_status`, `delete`.
-        - Ensure plan updates are all-or-nothing at the file-content level (no partial writes on failure) without using temp-file replace/rename strategies.
-        - Avoid lock files; concurrent writers are unsupported.
-        - Retire legacy plan tools (`plan_get`, `plan_update`, `plan_edit`, `plan_add`, `plan_delete`) from the public surface.
-        - Add tests for successful writes.
-    - Status: Completed
-    - Dependencies: 18, 26, 27
 
 23. [x] Implement consolidated `memory` command
-    - Priority: 2
-    - Cards: "ART-008", "STR-017", "CNS-006", "CNS-015"
-    - Description: Merge memory CRUD/search operations into one deterministic command surface.
-    - Deliverables:
-        - Implement `memory` per `docs/design/ToolContracts.md`:
-            - `create`, `retrieve`, `update`, `delete`, `search`.
-        - Enforce memory identity rules:
-            - `create`: caller MUST omit `id`; Alfred MUST issue a UUID and return it.
-            - `update`: caller MUST provide an existing `id`.
-        - Enforce memory scope rules:
-            - `scope: "user" | "workspace"` is required on writes and returned on all reads.
-            - Effective reads (`retrieve`/`search`) treat memory as one contiguous corpus across enabled scopes while indicating per-fact `scope`.
-        - Ensure redaction is applied before persistence for any memory-indexed content.
-        - Retire legacy memory tools (`memory_put`, `memory_get`, `memory_delete`, `memory_list`, `memory_search`) from the public surface.
-        - Add tests for storage options, merge policy behavior, and deterministic ordering/pagination.
-    - Status: Completed
-    - Dependencies: 26, 27, 34
 
 24. [x] Implement workspace storage-root and index-location controls
-    - Priority: 2
-    - Cards: "CNS-015", "DST-001", "DST-004"
-    - Description: Add configurable workspace storage root and enforce single-location index persistence.
-    - Deliverables:
-        - Implement `workspace.storage.root` and `.alfred/` defaults.
-        - Ensure `.alfred/.gitignore` exists and ignores everything except `config.json`.
-        - Implement `index.enabled` gating and ensure index-backed tools emit deterministic `tool_unavailable` reasons for index-disabled/index-not-ready.
-        - Implement `index.persistence.location` and non-duplication guarantees.
-        - Add tests for workspace/user location selection and migration behavior.
-    - Status: Completed
 
 25. [x] Retire deprecated orchestration scope
-    - Priority: 3
-    - Cards: "CNS-015"
-    - Description: Deprecated multi-step orchestration support was removed from the architecture design and should not be implemented.
-    - Deliverables:
-        - Remove deprecated orchestration references from design requirements/contracts.
-        - Keep this plan item as historical traceability only.
-    - Status: Completed
 
 26. [x] Implement deterministic redaction end-to-end
-    - Priority: 0
-    - Cards: "CNS-015", "CNS-021"
-    - Description: Apply deterministic NPI redaction per `docs/design/Redaction.md` across tool outputs, logs, and at ingestion time for any persisted indexes (workspace index and memory index).
-    - Deliverables:
-        - Redaction detection and replacement behavior matches `docs/design/Redaction.md` (including length-fitting replacement).
-        - Redaction is applied before persistence for any indexable content (workspace index and memory index).
-        - Tool responses and structured logs are redacted deterministically and do not leak inbound request payloads.
-        - When redaction occurs, results surface a stable warning in metadata (counts only; never the original value).
-        - Configuration keys under `redaction.*` are honored as defined in `docs/design/Configuration.md`.
-    - Status: Completed
 
 27. [x] Implement encoding-safe path handling and deterministic warnings
-    - Priority: 1
-    - Cards: "CNS-021", "CTL-009"
-    - Description: Ensure all protocol-visible strings are valid UTF-8 JSON/NDJSON, and handle non-text filesystem paths deterministically per `docs/design/Protocol.md`.
-    - Deliverables:
-        - Incoming `path` values accept `\\` as `/` prior to normalization.
-        - Any path that cannot be represented as Unicode text is emitted using the deterministic encoding rules in `docs/design/Protocol.md`.
-        - When encoded-path rendering occurs, results include a stable warning (for example `meta.warnings += {"kind":"path_encoded"}`).
-        - Ordering and cursor behavior remain consistent when encoded paths are present.
-    - Status: Completed
 
 28. [x] Retire byte-oriented filesystem operations from the exposed tool surface
-    - Priority: 1
-    - Cards: "STR-003", "CNS-015"
-    - Description: Align the exposed tool surface with the current design requirement that Alfred operates on text files only and does not expose byte-oriented filesystem operations.
-    - Deliverables:
-        - `capabilities` and `tools/list` do not advertise byte-oriented filesystem tools.
-        - Calls to retired byte-oriented filesystem tools fail deterministically with `invalid_argument` and a stable message.
-        - Equivalent workflows are supported via consolidated `fs` (for text) and `patch` where applicable.
-    - Status: Completed
-    - Dependencies: 18
 
 29. [x] Add a conformance suite for consolidated tool contracts
-    - Priority: 1
-    - Cards: "CAP-013", "CNS-005", "CNS-015"
-    - Description: Provide an automated conformance suite that validates contract shapes, deterministic ordering, dry-run guarantees, workspace-boundary enforcement, and redaction behavior for the consolidated tool surface.
-    - Deliverables:
-        - Conformance tests cover: success/error/pending envelopes, stable ordering, pagination cursors, and deterministic error kinds.
-        - Tests cover policy gating for disabled tools (omitted from `capabilities`; calls fail with `invalid_argument`).
-        - Tests cover the index-not-ready and index-disabled failure modes for index-backed tools.
-        - Redaction and path-encoding behaviors are validated as part of conformance.
-    - Status: Completed
-    - Dependencies: 17, 18, 19, 20, 21, 22, 23, 26, 27, 35, 38, 39, 41
 
 30. [x] Reconcile generated Aurora model outputs with the consolidated tool surface
-    - Priority: 3
-    - Cards: "MIS-001"
-    - Description: Ensure the rendered MIS-001 model bundle under `docs/design/` remains consistent with the consolidated public tool surface described in `docs/design/ToolContracts.md`.
-    - Deliverables:
-        - Model render outputs (markdown + views) reflect the effective top-level tool surface and do not contradict `ToolContracts.md`.
-        - Any deprecated tool families are either removed from the model or clearly marked as non-exposed/not implemented.
-        - The model bundle remains valid and can be regenerated deterministically.
-    - Status: Completed
-    - Dependencies: 38
 
 31. [x] Add `status` tool
-    - Priority: 2
-    - Cards: "STR-003", "CNS-015"
-    - Description: Expose a lightweight runtime status snapshot (memory usage, index readiness, key configured paths).
-    - Deliverables:
-        - Implement `status` tool with optional `verbose` flag.
-        - Include system + process memory usage and index snapshot stats.
-        - Add tests validating the response shape.
-    - Status: Completed
 
 32. [x] Add MCP prompt support
-    - Priority: 2
-    - Cards: "STR-003", "CNS-015"
-    - Description: Provide MCP prompt discovery and retrieval to supply agent guidance.
-    - Deliverables:
-        - Implement `prompts/list` and `prompts/get` protocol handlers.
-        - Advertise prompts capability in `initialize` response.
-        - Add tests for prompt classification and prompt retrieval.
-    - Status: Completed
 
 33. [x] Prefer patch-first internal mutations
-    - Priority: 3
-    - Cards: "STR-003", "CNS-015"
-    - Description: Replace internal rewrite/rename mutation paths with patch and append-based workflows where they better align with deterministic, minimal-edit semantics.
-    - Deliverables:
-        - Identify remaining write paths that rewrite whole files for small edits.
-        - Migrate the highest-impact ones to patch/apply flows (preserving atomicity and determinism).
-        - Eliminate any creation of temporary files simply to replace other files. (Not temp->copy semantics).
-            - Add targeted tests for any migrated mutation path.
-    - Status: Completed
 
 34. [x] Implement storage location controls for workspace and user artifacts
-    - Priority: 1
-    - Cards: "DST-001", "CNS-015"
-    - Description: Support relocating workspace-scoped artifacts into OS user directories (per-workspace) and relocating user-scoped artifacts into the workspace, without changing precedence semantics.
-    - Deliverables:
-        - Add configuration keys for storage location selection as defined in `docs/design/Configuration.md`.
-        - Resolve per-workspace user config/data roots using the stable workspace id.
-        - Ensure artifacts follow consistent subfolder conventions (`index/`, `memory/`, `logs/`) under the selected storage roots.
-        - Add tests covering all supported layouts and ensuring no workspace boundary regressions.
-    - Status: Completed
-    - Dependencies: 2
 
 35. [x] Implement runtime log path selection and stable log naming
-    - Priority: 1
-    - Cards: "STR-008", "CNS-012", "CNS-015"
-    - Description: Create a new runtime log file on server startup in the first writable preferred location (or an explicit override), rotate prior logs to ZIP, and enforce a bounded retention window.
-    - Deliverables:
-        - Implement the `logging.*` configuration keys defined in `docs/design/Configuration.md`.
-        - Create runtime logs using stable, time-sortable filenames (UTC timestamp with second precision) and archive rotated logs as ZIP files.
-        - Ensure `status` reports the effective runtime log path.
-        - Add tests for location selection, rotation/retention behavior, and deterministic log record formatting.
-    - Status: Completed
-    - Dependencies: 34
 
 36. [x] Remove SQLite naming and dependency remnants
-    - Priority: 2
-    - Cards: "DST-004"
-    - Description: Remove unused SQLite dependencies/references and eliminate `.sqlite3` filenames from persisted Alfred artifacts.
-    - Deliverables:
-        - Remove unused SQLite crates and any references in docs/config/contracts.
-        - Change persisted artifact naming to directory-based stores (no `.sqlite3` files).
-        - Add deterministic migration behavior for existing `.sqlite3`-named artifacts.
-    - Status: Completed
-    - Dependencies: 34
 
 37. [x] Enforce single-location persistence for all active indexes
-    - Priority: 1
-    - Cards: "CNS-015"
-    - Description: Extend the single-location persistence rule to all active indexes (workspace index and memory indexes), ensuring no duplicate persisted copies exist for a given workspace/scope.
-    - Deliverables:
-        - Ensure for any indexable store (workspace index, user memory, workspace memory) there is exactly one persisted active copy.
-        - Add tests that validate no duplicates are created across supported storage layouts.
-    - Status: Completed
-    - Dependencies: 23, 24, 34
 
 38. [x] Retire deprecated tool families from the public surface
-    - Priority: 1
-    - Cards: "CNS-010", "CNS-015"
-    - Description: Ensure the effective top-level tool surface matches `docs/design/ToolContracts.md` and that deprecated tool families are not callable as public tools.
-    - Deliverables:
-        - Ensure `capabilities` and `tools/list` only expose the effective top-level tools:
-            - `workspace_dir`, `search`, `fs`, `patch`, `logs`, `plan`, `memory`, `capabilities`, `status`.
-        - Calls to deprecated/legacy tools (for example: `ls`, `read_range`, `file_stat`, `grep`, `diff`, `log_search`, `log_tail`, `plan_get`, `memory_put`, `env_*`, `job_*`, `task_run`) fail deterministically with `invalid_argument` and `details.reason: tool_disabled`.
-        - Add tests that attempt to call a representative sample of deprecated tools and assert deterministic refusal.
-    - Status: Completed
-    - Dependencies: 18, 19, 20, 21, 22, 23
 
 39. [x] Enforce symlink/junction-safe workspace boundary checks
-    - Priority: 1
-    - Cards: "CNS-001", "CNS-016", "CNS-015"
-    - Description: Ensure boundary enforcement is performed after path resolution (symlinks/junctions) and remains deterministic across platforms.
-    - Deliverables:
-        - Enforce workspace boundary both on incoming path normalization and after resolving filesystem targets.
-        - Ensure junction handling on Windows is treated deterministically (junction-as-symlink policy) and tested.
-        - Add tests covering symlink/junction escape attempts across `fs`, `patch`, `logs` (workspace-relative path inputs), and index ingestion.
-    - Status: Completed
-    - Dependencies: 27
 
 40. [x] Implement network-filesystem safe write strategy
-    - Priority: 2
-    - Cards: "CNS-022", "CNS-017", "CNS-015"
-    - Description: Make writes robust on networked filesystems while preserving deterministic, all-or-nothing semantics.
-    - Deliverables:
-        - Audit mutating paths (plan updates, memory persistence, bulk operations, patch apply/revert) for network-FS behavior and avoid non-deterministic rename/replace strategies where forbidden by design.
-        - Add tests that simulate common failure modes (permission errors, partial writes, replace failures) and assert deterministic error mapping.
-    - Status: Completed
-    - Dependencies: 19, 20, 22, 23
 
 41. [x] Enforce and test capability limits
-    - Priority: 1
-    - Cards: "STR-010", "CNS-012", "CNS-015"
-    - Description: Ensure published `capabilities.limits` are actually enforced with deterministic failures.
-    - Deliverables:
-        - Implement limit enforcement for contractually published limits (for example: max patch files per call, max bulk operations per call, max log records per call, max inline UTF-8 bytes).
-        - Ensure limit overflows fail deterministically with `resource_exhausted`.
-        - Add tests that exercise each enforced limit.
-    - Status: Completed
-    - Dependencies: 18, 19, 20, 21
+
+42. [ ] P0: Fix protocol envelope shape to match design
+    - Several deviations from `docs/design/Protocol.md` were introduced during implementation; correct all tools to return conforming shapes.
+        - Change `status: "error"` from singular `error` to `errors` (non-empty array of error objects).
+        - Move `warnings` to a top-level envelope field (sibling of `status`, `data`, `meta`), not nested inside `meta`.
+        - Fix `status: "pending"`: add `data.operation_id`, `data.state`, `data.poll_with: "fs"`; remove non-spec `job_id`.
+        - Update `inject_warning` in `src/protocol.rs` to write to the top-level `warnings` array.
+        - Update all conformance and protocol tests to assert the corrected shapes.
+    - Aurora cards: [INT-001](aurora/MIS-001/Interface/INT-001-MCP_Stdio_Interface.json) [ART-001](aurora/MIS-001/Artifact/ART-001-MCP_Request.json) [ART-002](aurora/MIS-001/Artifact/ART-002-MCP_Response.json) [CNS-005](aurora/MIS-001/Constraint/CNS-005-Deterministic_Error_Taxonomy.json)
+
+43. [ ] P1: Fix `patch` per-file `patch_id` assignment and reversion contract
+    - `patch` assigns no per-file `patch_id`, stores no per-id revert state, and does not accept `patch_ids`-based reversion; correct to match `docs/design/ToolContracts.md`.
+        - Assign a UUID `patch_id` to every file result from `patch` (single and multi-patch).
+        - Store the reverse patch keyed per `patch_id`; any new apply call replaces all prior revert state.
+        - Change `revert` input to `args.patch_ids: array<uuid>`; apply reversal for each id, then discard that id's state.
+        - Return `patch_id` in revert per-file result objects.
+        - Echo `"patch"` or `"multi-patch"` for apply operations; echo `"revert"` for reversal.
+        - Update `src/tools/patch.rs`, `src/services/file_ops.rs`, and conformance tests.
+    - Aurora cards: [STR-003](aurora/MIS-001/Story/STR-003-Edit_Files_Safely.json) [CNS-017](aurora/MIS-001/Constraint/CNS-017-Cross_Platform_Atomic_Write_Semantics.json)
+
+44. [ ] P2: Fix `status` output shape
+    - As-built `status` response diverges from `docs/design/ToolContracts.md` in field names and structure.
+        - Add top-level `total_memory` scalar (integer bytes; process RSS) present for all calls regardless of `verbose`.
+        - Rename the memory subsystem block to `system_memory` (containing existing `system.*` and `process.*` breakdown).
+        - Add `memory.ready: bool` and `memory.indexed_memories: integer` (count of indexed facts across enabled scopes).
+        - Rename `paths.runtime_log` to `paths.alfred_logs`.
+        - Decide whether `pid` and `paths.workspace_index_root` are retained (and documented in `ToolContracts.md`) or removed; apply the chosen outcome consistently.
+        - Retain `verbose`-only fields (`system_load`, `cpu_count`) inside `system_memory`.
+        - Update `src/tools/status.rs` and conformance tests.
+    - Aurora cards: [STR-003](aurora/MIS-001/Story/STR-003-Edit_Files_Safely.json) [CNS-015](aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json)
+
+45. [ ] P1: Implement `logs.follow` as a true streaming operation
+    - The current `follow` handler returns a single synchronous snapshot; replace with ongoing incremental emission per `docs/design/Protocol.md` streaming semantics.
+        - After emitting the initial `tail` records, continue reading and emitting new records as the log file grows until a stop signal.
+        - Each emission MUST use the standard envelope (`status: "ok"`, `operation: "follow"`, `result.records`, `result.stopped`).
+        - Streaming MUST remain MCP-compliant (valid JSON-RPC/MCP frames only; no raw NDJSON on stdio).
+        - Retain the at-most-one-active-stream invariant.
+        - `stop: true` terminates the stream and MUST return `result.stopped: true`.
+        - Update `docs/design/ToolContracts.md` `follow` behavioral notes if needed.
+        - Add or extend tests covering stream start, incremental emission, and stop.
+    - Aurora cards: [STR-008](aurora/MIS-001/Story/STR-008-Handle_Logs_Predictably.json) [CNS-012](aurora/MIS-001/Constraint/CNS-012-Service_Level_Objectives.json) [CNS-015](aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json)
+    - Dependencies: 21
+
+46. [ ] P1: Standardize `plan` operation names to `create / retrieve / update_status / delete`
+    - `plan` tool echoes non-canonical names (`get`, `add`, `delete`); standardize accepted input and echoed `operation` field to match `docs/design/ToolContracts.md`.
+        - Update dispatch to accept and echo: `create` (was `add`), `retrieve` (was `get`), `update_status`, `delete` (was `remove`).
+        - Remove undocumented aliases, or retain as silent aliases that still echo the canonical name.
+        - Update `docs/design/ToolContracts.md` to use `create | retrieve | update_status | delete` throughout the `plan` section.
+        - Update conformance and plan tests to use and assert the canonical names.
+    - Aurora cards: [ART-004](aurora/MIS-001/Artifact/ART-004-Project_Plan.json) [STR-004](aurora/MIS-001/Story/STR-004-Track_a_Project_Plan.json) [CNS-015](aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json)
+
+47. [ ] P1: Rename `reasoning` internal field and remove `citations` from implementation
+    - Memory store uses `reason` (not `reasoning`) internally and includes a `citations` field removed from the public design; both leak into serialized data and search scoring.
+        - Rename `MemoryFact.reason` and `MemoryFactInput.reason` to `reasoning` in `src/services/memory_store.rs`.
+        - Remove `MemoryFact.citations`, `MemoryFactInput.citations`, and all references (schema fields, indexing, redaction, serialization).
+        - Update `src/tools/memory.rs`: remove `citations` from `MemoryCreateArgs` and `MemoryUpdateArgs`; map `reasoning` end-to-end.
+        - Ensure `memory_output` serializes as `"reasoning"` throughout.
+        - Update conformance, persistence, and memory tool tests for `citations` and `reason` references.
+        - Remove any remaining `citations` references from design or configuration docs.
+    - Aurora cards: [ART-008](aurora/MIS-001/Artifact/ART-008-Memory_Fact.json) [STR-017](aurora/MIS-001/Story/STR-017-Remember_Facts_Offline.json) [CNS-015](aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json)
+
+48. [ ] P2: Add `--reset` CLI option to delete saved indexes and memories
+    - Provide a `--reset` flag that deletes persisted workspace and user artifacts before starting normally, enabling a clean-state startup without hand-deletion.
+        - Add a `--reset` CLI flag to `src/main.rs` (or the argument parser).
+        - When supplied, delete the workspace index directory, workspace memory store directory, and (if configured) the user memory store directory before accepting requests.
+        - Log a structured record for each artifact deleted.
+        - Do not delete configuration files or log files.
+        - Add tests verifying reset deletes expected paths and the server starts cleanly afterward.
+    - Aurora cards: [CNS-015](aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json)
+
+49. [ ] P1: Fix workspace boundary escape error kind
+    - `workspace_boundary::ensure_within_root` returns `AlfredError::PermissionDenied` for symlink/junction escapes; the correct kind per `docs/design/ErrorTaxonomy.md` is `workspace_boundary_violation`.
+        - Change the return in `src/workspace_boundary.rs::ensure_within_root` to `AlfredError::WorkspaceBoundaryViolation` with `details: {"reason":"workspace_boundary_violation"}`.
+        - Audit all other callers of workspace boundary helpers to confirm they surface the correct kind.
+        - Update or add integration tests that assert `kind: "workspace_boundary_violation"` for symlink-escape and traversal attempts.
+    - Aurora cards: [CNS-016](aurora/MIS-001/Constraint/CNS-016-Symlink_and_JunctionSafe_Boundary_Checks.json) [CNS-005](aurora/MIS-001/Constraint/CNS-005-Deterministic_Error_Taxonomy.json)
+
+50. [ ] P1: Apply redaction at memory store ingestion
+    - Memory facts are stored verbatim in the Tantivy index shards and NDJSON backing files; `Redaction.md` requires redaction at ingestion, not only at output time.
+        - Apply the `Redactor` to all user-supplied string fields of `MemoryFactInput` (`fact`, `reasoning`, `subject`) inside `upsert_in_scope` before writing to the index and store.
+        - Ensure the `Redactor` instance is accessible to the `MemoryStore` (via constructor injection or a shared reference).
+        - Add tests confirming that a fact created with a bearer-token pattern stores and retrieves the redaction token, not the original secret.
+        - Verify the NDJSON backing file also does not contain the original secret.
+    - Aurora cards: [CNS-009](aurora/MIS-001/Constraint/CNS-009-Deterministic_Redaction.json) [STR-017](aurora/MIS-001/Story/STR-017-Remember_Facts_Offline.json)
+
+51. [ ] P1: Decompose oversized source modules
+    - Ten source files exceed the 500-line hard limit from the code checklist, reducing reviewability and testability.
+        - Decompose `src/configuration.rs` (1 732 lines) into sub-modules: `loading`, `storage`, `redaction`, `memory`, `paths`.
+        - Decompose `src/services/indexer.rs` (1 333 lines) into at least two cohesive sub-modules.
+        - Decompose `src/tools/fs.rs` (908 lines) into operation-specific sub-modules (read, write, bulk).
+        - Decompose `src/services/job_manager.rs` (775 lines) into at least two sub-modules.
+        - Decompose remaining oversized files (`memory_store.rs`, `plan_store.rs`, `memory.rs`, `protocol.rs`, `redaction.rs`, `workspace_ignore.rs`) to bring each under 500 lines.
+        - All existing tests MUST continue to pass unchanged.
+    - Aurora cards: [CNS-015](aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json)
+
+52. [ ] P2: Redact OS username from startup log messages
+    - The startup log messages in `src/app.rs` emit absolute workspace-root and config paths that contain the OS username; user names are non-public technical information and MUST NOT be logged.
+        - In `src/app.rs`, replace full-path log arguments with workspace-relative paths or path tail segments (e.g. last two components) that do not expose the OS username.
+        - Document the path-logging policy (no full absolute paths to workspace root) in a comment near the log call sites, referencing `docs/design/Redaction.md`.
+        - Add a test that mounts Alfred against a workspace whose absolute path contains a known token and confirms the token does not appear in the runtime log.
+    - Aurora cards: [CNS-009](aurora/MIS-001/Constraint/CNS-009-Deterministic_Redaction.json)
+
+53. [ ] P2: Fix `tool_disabled_error` missing `"tool"` field in details
+    - `tool_disabled_error` in `src/tools.rs` returns `details: {"reason":"tool_disabled"}`, omitting the `"tool"` field required by `docs/design/ErrorTaxonomy.md`.
+        - Add `"tool": name` to the details object in `tool_disabled_error`.
+        - Update conformance and protocol tests that assert the disabled-tool error shape.
+    - Aurora cards: [CNS-005](aurora/MIS-001/Constraint/CNS-005-Deterministic_Error_Taxonomy.json)
+
+54. [ ] P2: Remove unused `escargot` production dependency
+    - `escargot = "0.5.15"` is listed in `[dependencies]` with no usages anywhere in the codebase; it is a process-spawning Cargo helper inappropriate for a production runtime dependency.
+        - Remove the `escargot` entry from `[dependencies]` in `Cargo.toml`.
+        - Confirm `cargo build` and `cargo test` both succeed after removal.
+    - Aurora cards: [CNS-005](aurora/MIS-001/Constraint/CNS-005-Deterministic_Error_Taxonomy.json)
+
+55. [ ] P3: Remove dead `"log_search"` branch in `logs::dispatch_tool_call`
+    - The `"log_search"` match arm in `src/tools/logs.rs` is unreachable dead code because the top-level dispatcher refuses deprecated tool names before reaching any tool group.
+        - Remove the `"log_search" =>` match arm from `logs::dispatch_tool_call`.
+        - Confirm that callers of `"log_search"` still receive the expected `tool_disabled` error.
+    - Aurora cards: [CNS-015](aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json)
+
+56. [ ] P3: Add meaningful `tools/list` descriptions and input schemas
+    - `build_tools_list_response` returns `"Alfred tool: {name}"` for all tools and `additionalProperties: true` with no real input schema; both weaken MCP client discoverability.
+        - Define per-tool description strings in `src/protocol.rs` (or a companion module) sourced from `docs/design/ToolContracts.md`.
+        - Add minimal input schemas listing at minimum the `operation` required property for each multi-operation tool.
+        - Verify `tools/list` conformance tests pass with the updated descriptions and schemas.
+    - Aurora cards: [INT-001](aurora/MIS-001/Interface/INT-001-MCP_Stdio_Interface.json) [CNS-015](aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json)
+
+57. [ ] P3: Fix typo in `AlfredOverview.md`
+    - `docs/design/AlfredOverview.md` contains `"Alfred MUST provide commanst to create and maintain a project plan"`.
+        - Correct `commanst` to `commands`.
+
+58. [x] Correct defaults in `Defaults.md` for storage, memory, and logging
+
+59. [x] Add canonical `StorageLayout.md` and cross-reference from `Configuration.md` and `Defaults.md`

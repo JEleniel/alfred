@@ -104,32 +104,43 @@ Alfred uses NDJSON for structured log persistence and exchange, but not for a st
 - Compliance with the MCP specification is paramount.
 - Alfred MUST NOT emit any out-of-band or non-MCP framing on stdio.
 - Background execution is represented through standard tool envelopes (`status: "pending"`) and subsequent tool calls.
-- Streaming behavior (for example `logs.follow`) is represented by emitting repeated, normal tool result envelopes over time.
-    - Each streamed emission MUST use the standard tool result envelope shape.
-    - Streaming MUST remain MCP-compliant: Alfred MUST emit only valid JSON-RPC/MCP frames (never raw NDJSON or other non-MCP output).
-    - Streaming intent MUST be discoverable via `capabilities` as an `execution_modes` entry (for example `"stream"`).
-    - To simplify client handling and avoid multiplexing, Alfred MUST allow at most one active stream at a time.
+- Streaming behavior follows the contract in [Streaming semantics](#streaming-semantics) below.
 
-## Prompts
+## Streaming semantics
 
-Alfred supports MCP prompt discovery and retrieval for agent guidance:
+Alfred supports streaming operations (currently `logs.follow`). Streaming complies fully with the MCP specification: Alfred emits only valid MCP frames; no raw NDJSON or non-MCP framing is emitted on stdio.
 
-- `prompts/list`
-- `prompts/get`
+### Stream lifecycle
 
-Alfred MUST advertise prompt support in `initialize.result.capabilities.prompts`:
+1. **Start**: the client invokes the tool normally. Alfred begins emitting a series of standard tool result envelopes.
+2. **Intermediate emissions**: each intermediate emission MUST use `status: "ok"` and carry partial data as defined by the tool contract.
+3. **Terminal emission**: the final emission signals end-of-stream by including `"stopped": true` in the `data` payload. Each streaming tool contract MUST document which `data` field carries this indicator.
+4. **Error termination**: if the stream encounters a fatal error, Alfred MUST emit a terminal envelope with `status: "error"` and the standard error array. No further emissions follow.
 
-- `listChanged`: boolean.
+### Stop request
 
-## Redaction (secrets filtering)
+The client may request stop by calling the same tool with the appropriate stop arguments (for example `logs` with `args.stop: true`). Alfred MUST:
 
-Alfred MUST filter non-public information (secrets) from responses and logs, even if secrets are present in the incoming call.
+- Stop emitting after acknowledging the request.
+- Return a terminal envelope with `"stopped": true` as the final emission.
+
+If no stream is active and a stop request is received, Alfred MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `stream_not_active`).
+
+### Client requirements
+
+- Clients MUST NOT assume a stream is terminated until they receive a terminal envelope (`data.stopped: true`) or a `status: "error"` envelope, or the transport closes.
+- At most one stream may be active at a time. A new stream start request while a stream is active MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `stream_active`).
+- Streaming intent MUST be discoverable via `capabilities` as an `execution_modes` entry (`"stream"`).
+
+## Redaction (non-public information)
+
+Alfred MUST filter non-public information (NPI) from responses and logs, even if NPI is present in the incoming call.
 
 - Alfred MUST NOT emit raw inbound request payloads into logs.
-- Alfred MUST deterministically redact secret-looking values in both structured fields and free-form messages.
+- Alfred MUST deterministically redact NPI in both structured fields and free-form messages.
 - If redaction occurs, Alfred SHOULD return a warning via top-level `warnings` rather than failing the call.
 
-Redaction uses a stable replacement token and SHOULD record only aggregate redaction metadata (counts/booleans), never the secret itself.
+Redaction uses a stable replacement token and SHOULD record only aggregate redaction metadata (counts/booleans), never the NPI itself.
 
 The default replacement token is `<-REDACTED->`.
 
@@ -145,7 +156,7 @@ Alfred emits NDJSON append-only logs intended to be consumed by tooling (for exa
 - `source` (string): Rust-style source name (for example `alfred::configuration::load`)
 - `extra` (object): additional structured fields (string-to-string pairs)
 
-`extra` SHOULD carry any additional context (for example component ids, stable event identifiers, tool names, non-secret call parameters, and redaction metadata) without changing the top-level schema.
+`extra` SHOULD carry any additional context (for example component ids, stable event identifiers, tool names, non-NPI call parameters, and redaction metadata) without changing the top-level schema.
 
 All log records MUST be safe to idempotently round-trip through Alfred tooling (that is deterministic JSON and already redacted).
 

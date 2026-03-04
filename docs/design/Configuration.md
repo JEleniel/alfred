@@ -11,7 +11,11 @@ Alfred reads configuration from two sources:
 
 Workspace configuration MUST override user configuration.
 
+Canonical default values for all configuration keys are in [`docs/design/Defaults.md`](./Defaults.md).
+
 ## Default locations
+
+For a complete reference of every file and folder Alfred reads or writes, see [`StorageLayout.md`](./StorageLayout.md).
 
 Configuration file locations are implementation-defined. Default locations SHOULD follow a simple rule:
 
@@ -97,8 +101,8 @@ This section summarizes how Alfred resolves default paths when optional override
 Terminology:
 
 - `workspaceRoot`: the workspace boundary root.
+- `<workspace_id>`: a stable, unique identifier for this workspace, derived as the **SHA-256 hash of the complete absolute path** to `workspaceRoot` (encoded as a lowercase hex string). Because workspace roots are unique per machine, this provides collision-resistant keys for OS user directories without exposing path components.
 - `<workspace.storage.root>`: workspace storage root folder under `workspaceRoot` (default `.alfred/`).
-- `<workspace_id>`: a stable workspace identifier derived from `workspaceRoot`.
 - `<user config>` and `<user data>`: OS-provided user configuration and user data locations.
 
 Default layout (`storage.user.location = "os"`, `storage.workspace.location = "workspace"`):
@@ -174,11 +178,12 @@ Notes:
 
 Merge-mode semantics (effective reads):
 
+> **Same-id behavior**: When the same `id` (UUID) exists in more than one enabled scope, Alfred MUST return all instances, each with its `scope` field set, regardless of merge_mode. Because IDs are UUIDs issued by Alfred, this SHOULD NOT occur in normal operation but MAY occur in migrated or shared stores.
+
 - `union_workspace_wins`:
     - Alfred MUST treat the effective memory corpus as the union of enabled stores.
-    - If the same `id` exists in more than one enabled scope, Alfred MUST prefer the workspace-scoped fact deterministically.
+    - When ordering results with equal relevance scores, workspace-scoped facts SHOULD appear before user-scoped facts.
 - `prefer_workspace_with_user_preferences_fallback`:
-    - Alfred MUST treat workspace-scoped facts as authoritative when both scopes contain a fact for the same `id`.
     - When listing/searching, Alfred SHOULD order workspace facts ahead of user facts when other ordering keys tie.
 
 When `storage.user.location = "workspace"`, the default user-scoped memory root is:
@@ -187,12 +192,12 @@ When `storage.user.location = "workspace"`, the default user-scoped memory root 
 
 ### Logging
 
-- `logging.runtime.location`: optional string (default `"auto"`), one of:
-    - `"auto"`: pick the first writable location in this order:
-        1. OS default user logs location (for example `~/Library/Logs/alfred/` on macOS).
-        2. `<user data>/alfred/logs/`.
-        3. OS provided system log location (for example `/var/log/alfred/`) only if writable without elevation.
-        4. `<workspace.storage.root>/logs/`.
+- `logging.runtime.location`: optional string (default `"auto"`, see [Defaults](./Defaults.md)), one of:
+    - `"auto"`: pick the first writable location in this priority order:
+        1. Workspace config directory: `<workspace.storage.root>/logs/`.
+        2. User config directory: `<user config>/alfred/logs/`.
+        3. User data directory: `<user data>/alfred/logs/`.
+        4. OS log folder (for example `~/Library/Logs/alfred/` on macOS).
     - `"workspace"`: force workspace logs.
     - `"user_logs"`: force OS user logs.
     - `"user_data"`: force user data logs.

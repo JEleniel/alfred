@@ -10,11 +10,12 @@ Alfred consolidates a small public tool surface to minimize tool-count overhead 
 
 - `capabilities`: discover available tools, versions, schema versions, execution modes, and limits.
 - `workspace_dir`: return the resolved workspace root.
-- `search`: deterministic text search (literal or regex), backed by a workspace index.
+- `status`: report index readiness, memory usage, and configured runtime paths.
+- `search`: deterministic text search (`general`, `full_text`, and `regex` modes), backed by a workspace index.
 - `fs`: file/directory operations and inspection (text-only range reads, diff, CRUD with dry-run where applicable), including deterministic bulk move/copy/delete with optional background execution and built-in status polling.
 - `patch`: apply one or more text patches with conflict reporting and a duplicate-content safeguard (hard refusal).
 - `logs`: deterministic search/tail over logs.
-- `plan`: read/update the workspace project plan.
+- `plan`: read and update status on the workspace project plan.
 - `memory`: offline-only memory CRUD, search, and full-text retrieval.
 
 Execution semantics are deliberately constrained:
@@ -32,7 +33,7 @@ Alfred’s architecture emphasizes predictable, testable behavior:
 - Deterministic results: stable ordering, stable formatting, explicit pagination/cursors, and cross-platform normalization.
 - Consistent tool envelopes: tools return a common success/error shape; only background-capable operations may return `status: "pending"`.
 - Deterministic error taxonomy: failures are mapped into a small, stable set of deterministic error kinds (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
-- Deterministic redaction: secret-looking values are filtered from tool outputs, logs, and indexes using a stable replacement token (default `<-REDACTED->`).
+- Deterministic redaction: non-public information (NPI) is filtered from tool outputs, logs, and indexes using a stable replacement token (default `<-REDACTED->`).
 - Path handling: unless a contract says otherwise, paths are workspace-relative and use `/` separators; unrepresentable paths are encoded deterministically to keep protocol output valid UTF-8 JSON.
 
 ## Configuration model
@@ -88,6 +89,10 @@ This repository explicitly documents several non-goals:
 - Protocol envelopes, framing, NDJSON usage: [Protocol](./Protocol.md)
 - Tool contracts (inputs/outputs/limits): [ToolContracts](./ToolContracts.md)
 - Configuration model: [Configuration](./Configuration.md)
+- Default values (canonical reference): [Defaults](./Defaults.md)
 - Deterministic error taxonomy: [ErrorTaxonomy](./ErrorTaxonomy.md)
 - Deterministic redaction: [Redaction](./Redaction.md)
+- Index include/exclude rules: [DefaultIncludeExcludeList](./DefaultIncludeExcludeList.md)
 - Rendered Aurora model bundle: [MIS-001](./README-MIS-001-Alfred_Local_MCP_Server.md)
+
+> Agent guidance prompts and pre-written instructions for common workflows will be added in a future version.

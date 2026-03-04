@@ -1,6 +1,10 @@
 # Default Include and Exclude List
 
-Note: Includes will override ignores, allowing for `.gitignore` like behavior.
+Alfred uses two built-in ignore lists with different override semantics:
+
+1. **Always Excluded**: patterns that MUST always be excluded from indexing. **Nothing can override these rules**, not even `!` include lines in any `.alfredignore` file. This list contains items like executables and binary artifacts that are never useful for text indexing regardless of user preference.
+
+2. **Default `.alfredignore`**: patterns applied by default but overridable. A `.alfredignore` file may include a line beginning with `!` to include a path that would otherwise be excluded by this list. For example, placing `!Cargo.lock` in a workspace `.alfredignore` re-enables indexing of `Cargo.lock`.
 
 ## Always Excluded
 
@@ -57,7 +61,9 @@ Note: Includes will override ignores, allowing for `.gitignore` like behavior.
 *.webp
 ```
 
-## Default `.alfredignore`
+# Default `.alfredignore`
+
+These patterns are applied by default but MAY be overridden by a `!` include line in a `.alfredignore` file.
 
 ```gitignore
 # Rust
@@ -71,6 +77,9 @@ target/
 *.profraw
 *.profdata
 cargo-install-update-lock
+# Cargo.lock is excluded by default, not always-excluded, because agents occasionally need
+# to inspect it (for example for dependency auditing or version tracing). Workspace
+# .alfredignore files can re-enable it with !Cargo.lock.
 Cargo.lock
 Cargo.toml.orig
 crates-io-index/

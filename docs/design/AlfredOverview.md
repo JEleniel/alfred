@@ -6,20 +6,20 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 
 - Alfred MUST maintain an index of all files in the workspace not in an ignore list and their contents.
 - Alfred MUST provide a consolidated tool surface that minimizes command-count overhead.
-    - Alfred MUST expose `search` for workspace text search (literal and regex).
+    - Alfred MUST expose `search` for workspace text search (`general`, `full_text`, and `regex` modes).
     - Alfred MUST expose `fs` for file and directory operations, including deterministic bulk move/copy/delete operations.
     - Alfred MUST expose `patch` for one-or-more patch applications.
     - Alfred MUST expose `logs` for deterministic log search/tail operations.
     - Alfred MUST expose `plan` for project-plan CRUD/update operations.
     - Alfred MUST expose `memory` for memory CRUD/search operations.
 - Alfred MUST provide location awareness.
-    - Alfred MUST return the workspace root folder (`workspace_dir`).
+    - Alfred MUST expose `workspace_dir` to return the workspace root folder.
 - Alfred MUST provide a dry-run capability for all commands that modify anything, defaulted to true.
 - Alfred MUST provide safe file operations.
     - Alfred MUST support atomic CRUD operations where practical.
     - Alfred MUST support patching with conflict reporting and a duplicate-content safeguard (hard refusal).
     - Alfred MUST support bulk filesystem operations
-- Alfred MUST provide commanst to create and maintain a project plan and track progress in a common format.
+- Alfred MUST provide commands to create and maintain a project plan and track progress in a common format.
 - Alfred MUST support constrained background and streaming operations.
     - Bulk filesystem execution MAY run in the background and MUST be pollable via `fs` itself.
     - `logs` MAY support a streaming follow operation.
@@ -36,6 +36,8 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
     - Alfred MUST return available tools and capabilities.
     - Alfred MUST return tool and schema versions.
     - Alfred MUST return capability limits and execution modes.
+- Alfred MUST provide a runtime status endpoint.
+    - Alfred MUST expose `status` to report index readiness, memory usage, and configured paths.
 - Alfred MUST operate on text files only.
     - Byte-oriented read/write operations are out of scope.
 
