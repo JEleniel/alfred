@@ -1,13 +1,19 @@
 ---
+description: 'Agent directives for Cargo.toml metadata, dependencies, and package configuration.'
 applyTo: '**/Cargo.toml'
 ---
 
 # Cargo.toml Best Practices
 
+- Prefer `mcp_cargo-mcp_*` for Cargo operations when available.
+- If unavailable, use the standard `cargo` CLI.
+
 ## Application Metadata
 
-- For applications targeting Apple or mobile platforms, include a single reverse-DNS app ID in `Cargo.toml` as package/workspace metadata (not a top-level Cargo key).
+- For applications targeting Apple or mobile packaging toolchains that require an application identifier, include a single reverse-DNS app ID in `Cargo.toml` as package/workspace metadata (not a top-level Cargo key).
+- Only add this metadata when a packaging or bundling toolchain will consume it.
 - Use a domain you control for reverse-DNS identifiers.
+- The `crystultima` namespace below is an example owned by the repo owner, not a required metadata key. Rename it to match your project or toolchain.
 - For package-level metadata:
 
 ```toml
@@ -24,11 +30,12 @@ app_id = "org.crystultima.<workspace_name>"
 
 ## Core Settings
 
-- Set `edition` to the latest stable value (`2024`) and declare `rust-version` (MSRV).
-- Include `license`, `repository`, `readme`, and a clear `description`.
+- Set `edition` to the current stable value supported by the repo or toolchain (`2024` at the time of writing) and declare `rust-version` (MSRV).
+- Include a clear `description`.
+- Include `license`, `repository`, and `readme` if those are available.
 - Do not use the deprecated `authors` field.
-- Use SPDX license identifiers.
-- Use explicit major semver ranges; never `"*"`.
+- Use SPDX license identifiers. Default to MIT/Apache dual licensing.
+- Use explicit semver requirements; never `"*"`. Prefer not to pin the patch number unless a specific fix or compatibility need requires it.
 - Minimize dependency count; separate `dev-` and `build-` dependencies.
 - Disable defaults when not required: `default-features = false`.
 - Features must be additive only; never change existing behavior.
@@ -38,7 +45,6 @@ app_id = "org.crystultima.<workspace_name>"
 - Avoid `[patch]` except as a temporary override.
 - Centralize versions in `[workspace.dependencies]`.
 - Keep dependency scope as narrow as possible. Promote dependencies to workspace only if they are actually shared.
-- Keep crates focused; avoid “catch-all” packages.
 - Tune release builds intentionally (`lto`, `codegen-units`, `panic = "abort"` when appropriate).
 - Optimize `[profile.dev]` for faster iteration.
 - Regularly audit dependencies.
@@ -47,6 +53,7 @@ app_id = "org.crystultima.<workspace_name>"
 ## Approved libraries
 
 The following libraries are approved for use. Sublibraries include crates that share the parent prefix or are designed as companions.
+This section governs dependency allowance and selection only; language-specific instruction files define how approved crates are used.
 
 - `anyhow`, `thiserror` for error handling
 - `axum` (and sublibraries), `tower` (and sublibraries), `hyper` (and sublibraries) for web servers
@@ -56,10 +63,8 @@ The following libraries are approved for use. Sublibraries include crates that s
 - `config` for configuration file handling
 - `ctrlc` for signal handling
 - `dirs` (preferred) or `directories` for standard config/data/cache directories
-- `tracing` and `tracing-subscriber` for logging
+- `fern` for logging
 - `log` for logging API
-- `ollama-rs` for Ollama access
-- `openssl` or `rustls` (and sublibraries) for TLS
 - `r2d2`, `r2d2_sqlite`, `rusqlite` for SQLite (use `rusqlite` with the `bundled` feature)
 - `reqwest` for HTTP client calls
 - `serde` (and sublibraries), `serde_json` for serialization

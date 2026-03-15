@@ -34,9 +34,9 @@ Each model is identified by its `Mission` ID.
 3. Ensure `aurora/reference/` contains `Aurora.modelconfiguration.json`, `Aurora.viewconfiguration.json`, and `SVGTemplate.svgz`. If missing, copy them from `.github/aurora/reference/`. Do not copy the Markdown files.
 4. Create the `Mission` card in the model home (`aurora/`).
 5. Add other cards under `{mission id}/{card type folder}/` and link them from existing cards.
-6. Append to `{mission id}/AuditLog.ndjson` for every change event. One entry may include changes to multiple cards.
+6. Maintain the audit log according to [File and Folder Structure](#file-and-folder-structure)
 
-At the end of making changes, validate the model(s), generate the Markdown, views, and compact model. **If this fails do not stop working.**
+At the end of making changes, validate the model(s), generate the Markdown, views, and compact model. If this fails include a note in your summary and continue working.
 
 ### How the Model Works
 
@@ -65,7 +65,19 @@ graph LR
 
 ### Cards
 
-Cards represent architectural elements (nouns). A card contains properties of the element and links to other elements. A card MAY include an optional `icon` property to override the default icon mapping when rendering views. An `attributes` object is included to capture properties that are not already represented by other fields. Use links for relationships and interactions between elements. Card files should be "pretty printed" using `prettier` or a similar tool.
+Cards represent architectural elements (nouns). A card contains properties of the element and links to other elements. A card MAY include an optional `icon` property to override the default icon mapping when rendering views. An `attributes` object is included to capture properties that are not already represented by other fields. Use links for relationships and interactions between elements. Card files should be "pretty printed" using `prettier`. The following is the `.prettierrc.json` to follow if `prettier` is not available.
+
+```json
+{
+    "$schema": "https://json.schemastore.org/prettierrc",
+    "bracketSameLine": false,
+    "bracketSpacing": true,
+    "endOfLine": "lf",
+    "printWidth": 120,
+    "tabWidth": 4,
+    "useTabs": true
+}
+```
 
 Card field structure is defined exclusively in `schemas/Aurora.card.schema.json`.
 
@@ -142,7 +154,7 @@ aurora
   │    ├─ Aurora.modelconfiguration.schema.json
   │    └─ Aurora.viewconfiguration.schema.json
   ├─ reference
-  │    ├─ SVGTemplate.svg
+  │    ├─ SVGTemplate.svgz
   │    ├─ Aurora.modelconfiguration.json
   │    └─ Aurora.viewconfiguration.json
   ├─ MIS-001-Enable_Deterministic_Aurora_CLI_Tooling.json
@@ -156,13 +168,12 @@ These invariant rules ensure that the model is a rooted directed graph with only
 
 1. **The `Mission` Card**: All models must start with and include a single `Mission` card that summarizes the high-level "why" of the project. The `Mission` card must only have outgoing links and serves as the root node of the directed graph.
 2. **Direction (graph links)**: Traversal follows directed edges from `Mission` outward. Traversal algorithms MUST halt when they encounter either a leaf node (out-degree `0`) or a previously visited node.
-3. **No orphans**: Other than the `Mission` card, all cards must have one or more incoming links and a path from the `Mission` card. All cards may have any number of outgoing links. All link targets must be valid cards in the model.
+3. **No orphans**: Other than the `Mission` card, all cards must have one or more incoming links and a path from the `Mission` card. All cards may have any number of outgoing links. All link targets must be valid cards in the model (existence of the card file is sufficient to validate this).
 
 ## Optimizations for Handling Models
 
-- Unless making changes to the model, the compact model should cover everything an agent needs to implement.
 - Treat the mission audit log (`{mission id}/AuditLog.ndjson`) as the primary “what changed” record.
-- In order to extract all details for an Application, start at the APP card and work down as if rendering a view. This skips having to scan the entire model
+- In order to extract all details for an Application, start at the APP card and work down as if rendering a view. This skips having to scan the entire model.
 - The audit log is append-only NDJSON. In most workflows, appending a new entry is sufficient; avoid reading the entire file unless required.
 - Many Aurora workflows regenerate large, mechanical outputs (for example views, markdown renderings, and compact exports). These changes can overwhelm `git diff` and obscure intent.
 - The `Aurora.viewconfiguration.json` and `Aurora.viewconfiguration.schema.json` do not need to be read by agents; they are only needed by the rendering tools.

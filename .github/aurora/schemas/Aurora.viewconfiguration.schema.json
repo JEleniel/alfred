@@ -60,6 +60,42 @@
 			},
 			"type": "array",
 			"uniqueItems": true
+		},
+		"card_type_list": {
+			"items": {
+				"$ref": "#/$defs/acronym"
+			},
+			"minItems": 1,
+			"type": "array",
+			"uniqueItems": true
+		},
+		"view_definition": {
+			"additionalProperties": false,
+			"properties": {
+				"description": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"included_card_types": {
+					"$ref": "#/$defs/card_type_list"
+				},
+				"name": {
+					"$ref": "#/$defs/non_empty"
+				},
+				"root_card_types": {
+					"$ref": "#/$defs/card_type_list"
+				}
+			},
+			"required": ["name", "description", "root_card_types", "included_card_types"],
+			"type": "object"
+		},
+		"views": {
+			"description": "List of view definitions",
+			"items": {
+				"$ref": "#/$defs/view_definition"
+			},
+			"minItems": 1,
+			"type": "array",
+			"uniqueItems": true
 		}
 	},
 	"$id": "https://crystultima.org/aurora/viewconfiguration.schema.json",
@@ -79,9 +115,12 @@
 		},
 		"cards": {
 			"$ref": "#/$defs/cards"
+		},
+		"views": {
+			"$ref": "#/$defs/views"
 		}
 	},
-	"required": ["available_icons", "cards"],
+	"required": ["available_icons", "cards", "views"],
 	"title": "Aurora View Configuration Schema",
 	"type": "object"
 }

@@ -1,11 +1,12 @@
 ---
 description: 'Agent directives for NDJSON (newline-delimited JSON) formatting and handling.'
-applyTo: '*.ndjson'
+applyTo: '**/*.ndjson'
 ---
 
 # NDJSON Formatting & Handling
 
 NDJSON (newline-delimited JSON) stores one complete JSON value per line (typically one object per line). Treat NDJSON as a streaming format: do not rewrite it into arrays or pretty-printed multi-line JSON.
+When a consuming platform, tool, or specification requires a conflicting NDJSON convention, follow the consumer's requirements.
 
 ## Format rules
 

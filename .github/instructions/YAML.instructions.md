@@ -1,6 +1,6 @@
 ---
 description: 'Agent directives for YAML formatting and linting.'
-applyTo: '*.yaml'
+applyTo: '**/*.yaml'
 ---
 
 # Agent Directives — YAML Formatting & Linting

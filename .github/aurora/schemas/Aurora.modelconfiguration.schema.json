@@ -70,14 +70,6 @@
 			"required": ["target", "relationship"],
 			"type": "object"
 		},
-		"card_type_list": {
-			"items": {
-				"$ref": "#/$defs/acronym"
-			},
-			"minItems": 1,
-			"type": "array",
-			"uniqueItems": true
-		},
 		"cards": {
 			"items": {
 				"$ref": "#/$defs/card_entry"
@@ -98,34 +90,6 @@
 		"non_empty": {
 			"minLength": 1,
 			"type": "string"
-		},
-		"view_definition": {
-			"additionalProperties": false,
-			"properties": {
-				"description": {
-					"$ref": "#/$defs/non_empty"
-				},
-				"included_card_types": {
-					"$ref": "#/$defs/card_type_list"
-				},
-				"name": {
-					"$ref": "#/$defs/non_empty"
-				},
-				"root_card_types": {
-					"$ref": "#/$defs/card_type_list"
-				}
-			},
-			"required": ["name", "description", "root_card_types", "included_card_types"],
-			"type": "object"
-		},
-		"views": {
-			"description": "List of view definitions",
-			"items": {
-				"$ref": "#/$defs/view_definition"
-			},
-			"minItems": 1,
-			"type": "array",
-			"uniqueItems": true
 		}
 	},
 	"$id": "https://crystultima.org/aurora/modelconfiguration.schema.json",
@@ -139,12 +103,9 @@
 		},
 		"cards": {
 			"$ref": "#/$defs/cards"
-		},
-		"views": {
-			"$ref": "#/$defs/views"
 		}
 	},
-	"required": ["cards", "views"],
+	"required": ["cards"],
 	"title": "Aurora Model Configuration Schema",
 	"type": "object"
 }

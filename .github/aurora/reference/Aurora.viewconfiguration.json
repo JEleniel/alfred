@@ -436,5 +436,139 @@
 			"text": "#FFFFFF",
 			"icon": "office"
 		}
+	],
+	"views": [
+		{
+			"description": "Demonstrates adherence to constraints through mission drivers, controls, risk treatment, and verifiable tests.",
+			"included_card_types": ["DRI", "REQ", "CNS", "THM", "CTL", "RIS", "SYS", "APP", "COM", "TES"],
+			"name": "Compliance Governance",
+			"root_card_types": ["MIS"]
+		},
+		{
+			"description": "Explains internal implementation structure, focusing on how applications and components are realized in code.",
+			"included_card_types": ["COM", "INT", "ART", "DST", "DSR", "TES"],
+			"name": "Component",
+			"root_card_types": ["SYS", "APP", "VND"]
+		},
+		{
+			"description": "Defines where software executes, focusing on deployments, nodes, and hosted runtime elements.",
+			"included_card_types": ["APP", "DEP", "NOD", "COM", "DST", "DSR"],
+			"name": "Deployment",
+			"root_card_types": ["DEP", "VND"]
+		},
+		{
+			"description": "Displays the complete architectural model, highlighting shortest paths from the mission and alternate relationships.",
+			"included_card_types": [
+				"DRI",
+				"STK",
+				"SYS",
+				"APP",
+				"CAP",
+				"REQ",
+				"FEA",
+				"ADR",
+				"CNS",
+				"CTL",
+				"RIS",
+				"PRO",
+				"ATV",
+				"CON",
+				"TRG",
+				"EVT",
+				"PRD",
+				"STM",
+				"STA",
+				"STR",
+				"ACT",
+				"VND",
+				"ART",
+				"DST",
+				"DSR",
+				"AST",
+				"DEP",
+				"NOD",
+				"COM",
+				"INT",
+				"TES",
+				"THM",
+				"THD",
+				"ADV",
+				"THC",
+				"VIC",
+				"ROW"
+			],
+			"name": "Entire Model",
+			"root_card_types": ["MIS"]
+		},
+		{
+			"description": "Details how a capability is realized through ordered processes and activities with explicit triggering conditions.",
+			"included_card_types": ["PRO", "ATV", "CON", "TRG", "ACT"],
+			"name": "Process",
+			"root_card_types": ["CAP"]
+		},
+		{
+			"description": "Captures mission intent, motivation, and required capabilities, including architectural decisions that justify scope.",
+			"included_card_types": ["DRI", "STK", "CAP", "REQ", "ADR", "CNS"],
+			"name": "Requirements",
+			"root_card_types": ["MIS"]
+		},
+		{
+			"description": "Shows system context: mission intent, stakeholders/actors, and primary system components and interfaces.",
+			"included_card_types": ["DRI", "REQ", "CNS", "STK", "ACT", "VND", "SYS", "APP", "COM", "INT", "DSR"],
+			"name": "Context",
+			"root_card_types": ["MIS"]
+		},
+		{
+			"description": "Shows the high-level landscape of major components, interfaces, deployments, and nodes.",
+			"included_card_types": ["COM", "INT", "DST", "DSR", "DEP", "NOD"],
+			"name": "Landscape",
+			"root_card_types": ["SYS", "APP", "VND"]
+		},
+		{
+			"description": "Analyzes protection of assets against threats, including actors, constraints, controls, and resulting risks.",
+			"included_card_types": ["THM", "THD", "ADV", "THC", "VIC", "ROW", "AST", "CTL", "CNS", "RIS", "DST"],
+			"name": "Security",
+			"root_card_types": ["THM"]
+		},
+		{
+			"description": "Models system behavior using state machines, states, predicates, and events without process contamination.",
+			"included_card_types": ["STA", "PRD", "EVT"],
+			"name": "State Machine",
+			"root_card_types": ["STM"]
+		},
+		{
+			"description": "Provides end-to-end impact and coverage analysis from requirements through implementation and verification.",
+			"included_card_types": [
+				"DRI",
+				"REQ",
+				"CAP",
+				"FEA",
+				"SYS",
+				"APP",
+				"COM",
+				"INT",
+				"DST",
+				"DSR",
+				"TES",
+				"ADR",
+				"CNS",
+				"THM",
+				"CTL",
+				"RIS",
+				"ART",
+				"PRO",
+				"ATV",
+				"CON",
+				"TRG"
+			],
+			"name": "Traceability",
+			"root_card_types": ["MIS"]
+		},
+		{
+			"description": "Describes externally visible behavior using stakeholder stories and actor activities.",
+			"included_card_types": ["STR", "REQ", "CNS", "ATV"],
+			"name": "Use Case",
+			"root_card_types": ["STK", "ACT"]
+		}
 	]
 }
