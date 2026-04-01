@@ -172,8 +172,12 @@ fn encode_unix_bytes(bytes: &[u8]) -> String {
 			Err(error) => {
 				let valid = error.valid_up_to();
 				if valid > 0 {
-					let prefix = unsafe { std::str::from_utf8_unchecked(&remaining[..valid]) };
-					push_escaped_backslashes(&mut output, prefix);
+					if let Ok(prefix) = std::str::from_utf8(&remaining[..valid]) {
+						push_escaped_backslashes(&mut output, prefix);
+					} else {
+						remaining = &remaining[valid..];
+						continue;
+					}
 					remaining = &remaining[valid..];
 					continue;
 				}
