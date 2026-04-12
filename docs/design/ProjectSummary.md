@@ -93,6 +93,8 @@ This repository explicitly documents several non-goals:
 - Deterministic error taxonomy: [ErrorTaxonomy](./ErrorTaxonomy.md)
 - Deterministic redaction: [Redaction](./Redaction.md)
 - Index include/exclude rules: [DefaultIncludeExcludeList](./DefaultIncludeExcludeList.md)
+- Design authority (One Source of Truth): [DesignAuthority](./DesignAuthority.md)
+- Structural quality policy: [QualityPolicy](./QualityPolicy.md)
 - Rendered Aurora model bundle: [MIS-001](./README-MIS-001-Alfred_Local_MCP_Server.md)
 
 > Agent guidance prompts and pre-written instructions for common workflows will be added in a future version.

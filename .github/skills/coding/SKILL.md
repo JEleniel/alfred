@@ -14,7 +14,9 @@ description: Use this skill when writing or modifying source code, or when docum
 - Failure Handling Focus: Handle failures intentionally; return or log errors cleanly.
 - Accessibility for User-Facing Behavior: For user-facing surfaces, require WCAG AA at minimum (AAA preferred where feasible).
 - The file-specific rules in `../../instructions/*.instructions.md` take precedence over these instructions.
-- Follow best practices for the language being edited. Language-specific configs (for example `rustfmt.toml`, `.markdownlint-cli2.jsonc`, `.prettierrc.json`) are authoritative for formatting and linting details, and file-specific instructions may call out relevant config files or exceptions.
+- Follow best practices for the language being edited.
+- Treat language-specific configs (for example `rustfmt.toml`, `.markdownlint-cli2.jsonc`, `.prettierrc.json`) as authoritative for formatting and linting details.
+- Follow any file-specific instruction that calls out relevant config files or exceptions.
 - Use the shortest acceptable path for local files.
 - Prefer mature, well-supported dependencies with GPL, MIT, or Apache-2.0 licenses.
     - Well-maintained heuristic (use judgment; not a checklist):
@@ -36,8 +38,9 @@ description: Use this skill when writing or modifying source code, or when docum
 - Language-specific instructions define ecosystem-specific error crates, boundary conventions, and other implementation details.
 - Avoid unchecked failures (`unwrap`, `expect`, panics) unless justified by an explicit invariant.
 - You MUST NOT disable checks/tests (for example `// @ts-nocheck`, `#[allow(...)]`). Fix the underlying issue instead.
-- Include helpful TRACE and DEBUG logging where appropriate for troubleshooting.
-- Log at boundaries with appropriate severity.
+- Include TRACE and DEBUG logging where appropriate for troubleshooting.
+- Log at boundaries.
+- Choose severity appropriate to the boundary and outcome.
 - Never log secrets at any level.
 
 ## Principles of Elegant Code
@@ -85,9 +88,14 @@ description: Use this skill when writing or modifying source code, or when docum
 - Source code is modular, clean, readable, idiomatic, and aligned with project conventions.
 - Appropriate unit and integration tests are added and passing.
     - Coverage target (aspirational): aim for 90%+ coverage on functional code when practical.
-- Notes added for the documentation writer explaining changes, new features, and other relevant information for the project documentation.
+- No warnings (e.g., unused variables) are left behind from your work.
+- Add notes for the documentation writer that explain changes, new features, and other relevant information.
 - Linting, formatting, and static analysis checks are passing.
-- Create, if necessary, and maintain a `docs/design/analysis/Tests.md` file that lists the modules and their associated tests, including a brief description of what each test covers. This file should also identify and gaps in coverage, whether they are deliberate, and why.
+- Create and maintain documentation directly related to the code you write:
+    - `docs/design/analysis/Tests.md` listing modules and associated tests, with a brief description of each test's coverage.
+    - In `docs/design/analysis/Tests.md`, identify any coverage gaps, whether deliberate, and why.
+    - If applicable, `docs/design/Testing.md` documenting manual, interactive, or other tests that do not fit automated unit and integration suites.
+    - In `docs/design/Testing.md`, include how to run tests, what they cover, and expected human-observable outcomes.
 
 **Tests.md Example**:
 
@@ -98,14 +106,14 @@ description: Use this skill when writing or modifying source code, or when docum
 
 - `restart_device_falls_back_cleanly_on_host`: verifies that the host-side restart fallback mechanism works correctly when triggered from the binary entrypoint.
 
-## `tests/configuration_test.rs` tests `configuration`
+## `tests/configuration_test.rs` tests `data::configuration`
 
 - `parses_example_configuration`: ensures that the example configuration file is parsed correctly, with all expected fields populated and defaults applied as needed.
 - `configuration_serialization_preserves_unmodeled_sections`: checks that when a configuration written, any sections that are not explicitly modeled in the code are preserved without alteration.
 
 ### Gaps
 
-- `configuration` module currently lacks tests for invalid input handling, such as malformed configuration files or missing required fields. This is not deliberate.
+- `data::configuration` module currently lacks tests for invalid input handling, such as malformed configuration files or missing required fields. This is not deliberate.
 ```
 
 ## Operating Procedure
@@ -113,10 +121,13 @@ description: Use this skill when writing or modifying source code, or when docum
 1. Confirm the task scope, requirements, constraints, and success criteria from the user request and any available design artifacts. If critical information is missing, stop and get clarification before editing code.
 2. Inspect the relevant code, interfaces, tests, and configuration before making changes. Align the implementation with any requirements or design artifacts in `docs/design/` and any Aurora model present.
 3. Implement the intended change that satisfies the request, following existing patterns and avoiding new dependencies unless clearly justified.
-4. Add or update tests for the happy path, edge cases, and failure paths needed to prove the behavior. Language-specific instructions define test organization and placement rules.
-5. Run the relevant formatting, linting, static analysis, and test commands for the affected language or ecosystem, and fix any issues introduced by the change. Repo instructions require verification before completion; file-specific instructions define language- and file-specific checks.
-6. Record any documentation notes or follow-up information needed to explain behavior changes, new features, or operational impact.
-7. If the request also requires architecture, planning, documentation-only work, or formal review output, switch to the appropriate skill for that phase.
+4. Add or update tests for happy paths, edge cases, and failure paths needed to prove behavior.
+5. Follow language-specific test organization and placement rules from file-specific instructions.
+6. Run formatting, linting, static analysis, and tests for the affected language or ecosystem.
+7. Fix issues introduced by the change.
+8. Verify completion against repo-level and file-specific verification requirements.
+9. Update documentation you are responsible for.
+10. If the request also requires architecture, planning, documentation-only work, or formal review output, switch to the appropriate skill for that phase.
 
 - Note: If present, you can run `./.github/violations.sh` to check for oversize files or functions as well as small functions that may be candidates for cleanup.
 
@@ -161,11 +172,10 @@ description: Use this skill when writing or modifying source code, or when docum
 
 ## Cross-skill tasks
 
+- Keep documentation and tests up to date as part of coding work.
+- If the request includes documentation updates with coding, implement them within the coding task.
 - If the request is planning-only, do not produce code changes; use the Planning skill.
 - If the request is documentation-only, do not modify code; use the Documentation skill.
-- If the request includes both code and documentation updates, treat it as a coding task and include the documentation updates as part of the deliverables.
-- If the request is to review existing changes, use the Reviewing skill to record findings; implement fixes only when explicitly asked.
-
-## Glossary
-
-See the shared [Skills glossary](../GLOSSARY.md).
+- If the request includes both code and documentation updates, treat it as a coding task.
+- If the request is to review existing changes, use the Reviewing skill.
+- Implement fixes from review findings only when explicitly asked.

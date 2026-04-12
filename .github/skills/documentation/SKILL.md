@@ -9,12 +9,11 @@ description: Use this skill when writing or updating documentation, including in
 
 - This skill must **never** generate, modify, or suggest changes to source code beyond documentation comments.
 - If a `docs/design/aurora/` folder exists, you may read and follow the [Aurora Compact Model](../../aurora/Aurora.compact.instructions.md) to understand the design.
-    - The Aurora Compact Model exists to save time and tokens by keeping key information in a single compact (thus the name) file.
-    - Use the full Aurora instructions only when applying the Architecture skill.
-- Accuracy-First Mindset: Treat every claim as potentially wrong until verified against source-of-truth artifacts.
-- Task-Completion Focus: Prioritize whether a reader can complete the task safely and correctly.
-- Security and Privacy Awareness: Ensure guidance does not expose secrets, Non-Public Information (NPI), or unsafe operational patterns.
-- Accessibility for User-Facing Documentation: Require WCAG AA at minimum (AAA preferred where feasible).
+- Use the full Aurora instructions only when applying the Architecture skill.
+- Treat every claim as potentially wrong until verified against source-of-truth artifacts.
+- Prioritize whether a reader can complete the task safely and correctly.
+- Ensure guidance does not expose secrets, Non-Public Information (NPI), or unsafe operational patterns.
+- For user-facing documentation, require WCAG AA at minimum (AAA preferred where feasible).
 
 ## Outputs
 
@@ -24,12 +23,12 @@ description: Use this skill when writing or updating documentation, including in
 
 ## Principles of Elegant Documentation
 
-- Clarity: Readers can understand intent and action without external explanation.
-- Simplicity: The document solves the reader's need with the shortest complete path.
-- Traceability: Every key claim can be traced to a verifiable source of truth.
-- Composability: Sections can be reused and linked without duplicating or fragmenting meaning.
-- Predictability: Similar tasks are documented in similar patterns.
-- Minimal Incidental Complexity: Content includes only what is necessary to execute safely and correctly.
+- Keep intent and action understandable without external explanation.
+- Solve the reader's need with the shortest complete path.
+- Keep key claims traceable to a verifiable source of truth.
+- Reuse and link sections without duplicating or fragmenting meaning.
+- Handle similar tasks with similar documentation patterns.
+- Keep content limited to what is necessary for safe, correct execution.
 
 ### Indications of Poor Documentation
 
@@ -52,10 +51,12 @@ description: Use this skill when writing or updating documentation, including in
 1. Confirm the audience, task scope, success criteria, and constraints from the user request and any relevant repository artifacts. If critical information is missing, stop and get clarification before writing.
 2. Inspect the code, configuration, design artifacts, and existing documentation needed to verify every technical claim before updating documentation.
 3. Update existing documentation in place unless a genuinely new artifact is needed for clarity, discoverability, or scope separation.
-4. Write or revise content so that prerequisites, inputs, outputs, examples, failure paths, and constraints are explicit where they matter to safe and correct use.
-5. Keep terminology, links, and cross-references consistent across related documents so readers can follow the documentation set without guessing.
-6. Validate the result against the deliverables and validation checklists in this skill, ensuring that links resolve, documentation claims are verified, and any applicable file-specific instructions (for example Markdown formatting rules) pass.
-7. If the request also requires code changes, planning, architecture work, or formal review output, switch to the appropriate skill for that phase.
+4. Write or revise content so prerequisites, inputs, outputs, examples, failure paths, and constraints are explicit where needed.
+5. Keep terminology, links, and cross-references consistent across related documents.
+6. Validate links and documentation claims.
+7. Validate against this skill's deliverables and checklists.
+8. Validate against applicable file-specific instructions (for example Markdown formatting rules).
+9. If the request also requires code changes, planning, architecture work, or formal review output, switch to the appropriate skill for that phase.
 
 ## Validation Checklists
 
@@ -113,11 +114,9 @@ description: Use this skill when writing or updating documentation, including in
 
 ## Cross-skill tasks
 
-- If the request requires source code changes, do not proceed under this skill; switch to the Coding skill or split the work into phases.
+- If the request requires source code changes, do not proceed under this skill.
+- Switch to the Coding skill or split the work into phases.
 - If the request is plan-only (for example updating `docs/design/ProjectPlan.md`), use the Planning skill.
 - If the request requires architecture modeling or design updates, use the Architecture skill.
-- If the request is a formal review of documentation, use the Reviewing skill and record findings in the specified review files.
-
-## Glossary
-
-See the shared [Skills glossary](../GLOSSARY.md).
+- If the request is a formal review of documentation, use the Reviewing skill.
+- Record findings in the specified review files.

@@ -37,7 +37,7 @@ At a high level, the application is a stdio transport, a tool router, and a cons
 - Indexing and Memory
     - The tool indexes all files in the workspace except those in one of the ignore lists (permanent, default, user, workspace)
     - The tool provides memory functions using the same indexing technology, supporting search, including full text, for memories.
-    - All indices are periodically persisted to disk to enable restarts to skip full indexing.
+    - All indices are periodically persisted to disk to reduce startup indexing overhead.
 - Consolidated tool handlers
     - `search`: workspace text search over the index.
     - `fs`: non-bulk text-file and directory operations.
@@ -77,6 +77,8 @@ For concrete contracts (including memory CRUD/search), see:
 - [Error taxonomy](./ErrorTaxonomy.md)
 - [Tool contracts](./ToolContracts.md)
 - [Default values reference](./Defaults.md)
+- [Design authority matrix](./DesignAuthority.md)
+- [Quality policy](./QualityPolicy.md)
 
 The traceability view (drivers → requirements → capabilities → features → components) is available as a generated SVG under `docs/design/MIS-001/Views/`.
 
@@ -97,7 +99,7 @@ The deployment view is available as a generated SVG under `docs/design/MIS-001/V
 ## Design Goals
 
 - **Minimize per-call token cost**: consolidate the most context-expensive agentic operations into a small, composable surface with compact, deterministic responses.
-- **Deterministic by design**: stable ordering, stable error taxonomy, explicit pagination, and consistent output across restarts and platforms. Results must be diffable and testable.
+- **Deterministic by design**: stable ordering, stable error taxonomy, explicit pagination, and consistent output across runs and platforms. Results must be diffable and testable.
 - **Safe and conservative by default**: dry-run defaults on all mutating operations, atomic writes where practical, workspace boundary enforcement, and no implicit destructive behavior.
 - **Search performance through local indexing**: the single most-used operation (workspace text search) is backed by a persistent local index delivering sub-500 ms p95 latency without spawning external processes.
 - **Offline and self-contained**: no external service dependencies; all state (index, memory, logs) is local, explicit, and fully rebuildable from the workspace.

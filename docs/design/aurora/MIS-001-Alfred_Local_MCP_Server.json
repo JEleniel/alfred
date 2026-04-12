@@ -60,8 +60,10 @@
 		"external_references": [
 			"../AlfredArchitecture.md",
 			"../AlfredOverview.md",
+			"../DesignAuthority.md",
 			"../ErrorTaxonomy.md",
 			"../Protocol.md",
+			"../QualityPolicy.md",
 			"../ToolContracts.md"
 		],
 		"notes": [

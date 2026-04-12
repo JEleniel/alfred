@@ -3,6 +3,8 @@
 This document defines Alfred’s _tool-level_ deterministic error taxonomy. It is used inside Alfred tool results (not as a replacement for MCP/JSON-RPC transport errors).
 All tool implementations MUST map failures into the kinds defined here. Other design documents (for example `ToolContracts.md` and `Configuration.md`) MUST NOT specify concrete error kinds or `details` fields inline; they MUST reference this taxonomy instead.
 
+Canonical governance for this taxonomy is defined in [`DesignAuthority.md`](./DesignAuthority.md) and [`QualityPolicy.md`](./QualityPolicy.md).
+
 ## Error object shape
 
 A tool error MUST have the following fields:

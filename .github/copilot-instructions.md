@@ -2,81 +2,113 @@
 
 His praeceptis sine exceptione pare.
 
-The terms MUST and MUST NOT mean that the instruction is invariant and failure to obey is unacceptable in all circumstances.
+Permission to perform actions uses the following terms:
 
-**You are working on code for a high-risk environment. Security, reliability, and provability are top priorities. Failure of this code could lead to significant losses, up to and including deaths.**
+- NEVER - the action is strictly and unequivocally forbidden
+- ALWAYS - the action MUST be taken when the specified conditions are met
+
+This is a high-risk environment. Security, reliability, and provability of the code critical. Failure of this code could lead to deaths.
 
 ## Instruction Precedence
 
-Instructions MUST be obeyed in the following order, earlier overriding later:
+ALWAYS obey in the following order:
 
-1. System Instructions (including safety policies and tooling constraints)
-2. User Instructions (nothing overrides user intent except System Instructions)
+1. System Instructions
+2. User Instructions
 3. Inline comment instructions
 4. Skills and applicable instructions files
-5. Repo Instructions (this file)
+5. Repo Instructions
 6. Tool configurations, defaults, and generated templates
 
-If anything prevents compliance with any instructions, you MUST stop and notify the user of the conflict.
+ALWAYS stop and notify the user if there is a conflict between instructions.
 
 ## Work Tracking
 
-The project plan is stored as `docs/design/ProjectPlan.md`. If it exists, you MUST mark work off as you complete it and keep the status up to date. Unless instructed, do not create or alter the plan beyond tracking. When working with the user they may have you deviate from the plan; you should still mark off what you can as you go. If the plan is absent no action needs be taken.
+These instructions apply to the Project Plan at `docs/design/ProjectPlan.md` if present:
 
-You MUST NOT track implementation details, challenges, etc. in the Project Plan. You MUST only mark work completed _unless_ you are instructed to create or modify the plan.
-
-Implementation details, challenges, etc. that you think need documenting MUST be tracked in `docs/design/AsBuilt.md`.
+- ALWAYS mark items complete when applicable.
+- NEVER alter the plan in any other way unless instructed.
+- If the user has you deviate from the Project Plan, ALWAYS update any items completed even if they are out of order.
+- NEVER track implementation details, challenges, or similar in the Project Plan.
+- ALWAYS track implementation details, challenges, variances from the design, and similar in `docs/design/tracking/AsBuilt.md`. Create the file if it does not exist.
 
 ### Changelog
 
-With each commit, maintain the `CHANGELOG.md`, in Keep a Changelog format. Do not track changes to `.github/`, `docs/`, or `.agents/` in the changelog. Consolidate similar or related entries to keep the log concise.
+- Unless the Project Summary indicates the project is prerelease, ALWAYS maintain a `CHANGELOG.md`, in Keep a Changelog format. Create it if absent.
+- NEVER track changes to `.github/`, or `docs/` in the changelog.
+- ALWAYS consolidate similar or related entries to keep the log concise.
+- If available, include a link to the design artifact that defines the change.
 
 ## Behavior
 
-- You have the knowledge and skills of a senior team member. Work like one; look at everything with a critical eye, view it from an adversarial perspective, and never gloss over, brush aside, or treat as trivial any detail.
-- When working with more than one file, break the work up to work with as few files at a time as possible. Avoid working with more than three files at a time whenever possible.
-- Keep your responses concise, accurate, and focused. Avoid unnecessary detail, and if possible do not narrate every action.
-- Maintain a professional tone at all times.
-- Your user is an expert in the field and does not need basic explanations.
+- ALWAYS break the work up and change as few files as possible.
+- ALWAYS edit one file at a time, serializing multi-file changes.
+- ALWAYS keep responses concise, accurate, and focused.
+- ALWAYS avoid unnecessary detail.
+- NEVER provide basic explanations unless asked.
 
 ## Common Project Folders
 
-- User documentation is at `docs/` and starts at `docs/README.md` (if present).
-- The working copy of the Aurora model is at `docs/design/aurora/MIS*/Compact.json` (the compact model).
-- Working assets (styles, images) are at `assets/`.
-- Design documentation is at `docs/design/` and Aurora models at `docs/design/aurora/`.
-    - The following files and folders are generated and should be ignored:
-        - `docs/design/MIS-*/**/*`
-        - `docs/design/MIS-*.md`
-        - `docs/design/README-MIS-*`
-
-## Operating Assumptions/Constraints
-
-- Empirical evidence has shown that patches >50 lines fail >80% of the time, resulting in falling back to the smaller patches required here. Your patch tooling oes not guarantee atomicity, either, so multi-file patches not only fail, but are difficult to revert.
-- Every restriction in the instructions in this repository have been put in place to enforce solid engineering practices, avoid known issues, and are backed by empirical evidence.
-- The same evidence has shown that multi-file patches corrupt files frequently, most often creating duplicate content.
-- All repos where these instructions are used will have validation, linting, and formatting tools appropriate to the project.
+- User documentation: `docs/` starting with `docs/README.md` (if present)
+- Design documentation: `docs/design/`
+    - Full Aurora model(s): `docs/design/aurora/`
+    - Aurora compact models: `docs/design/aurora/MIS-**/Compact.json`
+- Working assets (styles, images): `assets/`
+- Analysis and reviews `docs/design/analysis/`.
+- Ignore the following:
+    - `docs/design/MIS-*/**/*`
+    - `docs/design/MIS-*.md`
+    - `docs/design/README-MIS-*`
 
 ## Invariants
 
-- You MUST ask any clarifying questions that are required to execute the task safely and correctly before you begin work.
-- You MUST NOT end your turn until your tasks are fully completed.
-- You MUST commit your changes as you go with an appropriate commit message, including the Project Plan reference, if available.
-- When adding dependencies, you MUST consult current, authoritative documentation before making decisions that could affect correctness or security.
-- You MUST NOT modify `.github/**/*` unless the user asks.
-- You MUST NOT revert changes you did not make.
-- You MUST NOT alter or delete files outside the specific task you were instructed to perform.
-- You MUST NOT try to read a URL that ends in a data or configuration file extension, such as `yml`, `yaml`, or `toml`.
-- You MUST always ignore files marked with the git attribute `generated` unless instructed otherwise.
-- You MUST NOT run Python, Node, or any other scripting language _unless_ the source code you are working on is in that language.
-- You MUST NOT attempt to run ad-hoc scripts. Indicators of ad-hoc scripts include the presence of conditionals or loops, the chaining of more than three commands, large quoted blocks of text, and the presence of a scripting language name in the command sequence.
-- You MUST NOT write outside the workspace, for any reason, including `/tmp`. You _will_ be blocked. If you need temporary working space, create `tmp/` in the workspace. You MUST delete it when done.
-- Files may change at any time as there is a team working this project. You MUST reread them before applying any edits.
-- You MUST NOT repeat the prompt, restate plans, or narrate obvious steps.
-- You MUST NOT compliment the user's request, compliment yourself, engage in sycophantic behavior, or otherwise violate neutral, professional behavior standards.
-- You MUST NOT attempt to apply a patch larger than 50 lines. You MUST use small, focused, surgical edits and patches.
-- You MUST NOT attempt to patch multiple files at one time. You MUST plan for, and execute multi-file changes one file at a time.
-- You MUST NOT make changes to multiple files at the same time, even if the work requires changing multiple files. You MUST change them one at a time.
-- If present, you MUST read the [Project Summary](../docs/design/ProjectSummary.md) which contains details specific to this project and repository.
-- After each set of changes, you MUST run the narrowest relevant verification. It is not necessary to validate after every individual change.
-- You MUST NOT end your turn or call work complete until all worked code validates, including linting and formatting.
+### Pre-Work
+
+- ALWAYS ask any clarifying questions before beginning work.
+- ALWAYS consult current documentation before using a new dependency.
+- ALWAYS read the [Project Summary](../docs/design/ProjectSummary.md), if present.
+
+### Scope and Boundaries
+
+- NEVER end your turn until your tasks are fully completed.
+- NEVER alter files unnecessary to the specific task you were instructed to perform.
+- NEVER alter the scope of a task.
+- NEVER alter resource ownership or boundaries unless unavoidable to complete the task.
+    - Unavoidable means the task cannot be completed without crossing that boundary, not that crossing it would be convenient.
+
+### File and Workspace Operations
+
+- NEVER modify `.github/**/*` unless instructed.
+- NEVER delete files without direct permission from the user.
+- NEVER try to read a URL that ends in a data or configuration file extension, such as `yml`, `yaml`, or `toml`.
+- NEVER write outside the workspace, including `/tmp`.
+- If you need temporary working space, ALWAYS create `tmp/` in the workspace.
+- ALWAYS delete `tmp/` if you create it.
+- NEVER run ad-hoc scripts. This includes:
+    - Commands with conditionals or loops
+    - Use of the chaining operation (`&` or `&&`)
+    - Commands with large quoted blocks of text
+    - A scripting language name in the command sequence
+
+### Editing Discipline
+
+- ALWAYS verify that files have not changed before editing them.
+- NEVER revert changes you did not make.
+- NEVER revert a change that happens between reads of a file.
+- NEVER apply a patch larger than 50 lines.
+- ALWAYS make small, focused, surgical edits and patches.
+
+### Quality Assurance
+
+- ALWAYS verify changes before ending a turn.
+    - Run formatters.
+    - Run linters.
+    - Run applicable tests.
+    - NEVER validate after every individual change.
+- NEVER end a turn until all worked code validates.
+
+### Code Quality and Design
+
+- NEVER "optimize things away" unless you fully understand why they are there. If in doubt, ask.
+- NEVER violate One Source of Truth: every capability must have one, and only one implementation.
+- ALWAYS decompose code into focused, single purpose modules with clear ownership and responsibilities.

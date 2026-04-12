@@ -1,759 +1,669 @@
 {
-	"$schema": "../schemas/Aurora.modelconfiguration.schema.json",
-	"cards": [
-		{
-			"acronym": "ATV",
-			"card_type": "Activity",
-			"description": "Discrete step within a process.",
-			"relationships": [
-				{
-					"target": "ATV",
-					"relationship": "leads to"
-				},
-				{
-					"target": "TRG",
-					"relationship": "receives"
-				},
-				{
-					"target": "CON",
-					"relationship": "triggers"
-				},
-				{
-					"target": "COM",
-					"relationship": "uses"
-				},
-				{
-					"target": "ART",
-					"relationship": "produces"
-				}
-			]
-		},
-		{
-			"acronym": "ACT",
-			"card_type": "Actor",
-			"common_subtypes": ["User", "Admin", "External System", "Regulator"],
-			"description": "External role interacting with or obligating the system.",
-			"relationships": [
-				{
-					"target": "ATV",
-					"relationship": "performs"
-				}
-			]
-		},
-		{
-			"acronym": "STK",
-			"card_type": "Stakeholder",
-			"common_subtypes": ["Customer", "End User", "Operator", "Manager", "Regulator"],
-			"description": "Person, group, or role with an interest in or affected by the system.",
-			"relationships": [
-				{
-					"target": "STR",
-					"relationship": "desires"
-				}
-			]
-		},
-		{
-			"acronym": "ADR",
-			"card_type": "ADR",
-			"description": "Architectural Decision Record capturing a significant decision, alternatives considered, rationale, trade-offs, and consequences."
-		},
-		{
-			"acronym": "ART",
-			"card_type": "Artifact",
-			"common_subtypes": ["Document", "Data", "Diagram", "Code", "Model", "Report"],
-			"description": "Concrete work product produced or consumed by the system.",
-			"relationships": [
-				{
-					"target": "ART",
-					"relationship": "derives from"
-				},
-				{
-					"target": "COM",
-					"relationship": "is input into"
-				},
-				{
-					"target": "ATV",
-					"relationship": "goes into"
-				},
-				{
-					"target": "AST",
-					"relationship": "is"
-				},
-				{
-					"target": "DST",
-					"relationship": "persists to"
-				}
-			]
-		},
-		{
-			"acronym": "AST",
-			"card_type": "Asset",
-			"description": "Valuable information/resources requiring protection."
-		},
-		{
-			"acronym": "CAP",
-			"card_type": "Capability",
-			"description": "Implementation-independent ability that satisfies requirements.",
-			"relationships": [
-				{
-					"target": "PRO",
-					"relationship": "requires"
-				}
-			]
-		},
-		{
-			"acronym": "SYS",
-			"card_type": "System",
-			"description": "Top-level software system composed of applications and components.",
-			"relationships": [
-				{
-					"target": "APP",
-					"relationship": "integrates"
-				}
-			]
-		},
-		{
-			"acronym": "APP",
-			"card_type": "Application",
-			"description": "Deployable application within a system, composed of components.",
-			"relationships": [
-				{
-					"target": "COM",
-					"relationship": "comprises"
-				},
-				{
-					"target": "DEP",
-					"relationship": "deploys to"
-				}
-			]
-		},
-		{
-			"acronym": "COM",
-			"card_type": "Component",
-			"common_subtypes": ["API", "Library", "Service", "Module", "Subsystem", "Class"],
-			"description": "Modular unit with a single responsibility and explicit interfaces.",
-			"relationships": [
-				{
-					"target": "COM",
-					"relationship": "composes"
-				},
-				{
-					"target": "FEA",
-					"relationship": "implements"
-				},
-				{
-					"target": "INT",
-					"relationship": "calls"
-				},
-				{
-					"target": "INT",
-					"relationship": "exposes"
-				},
-				{
-					"target": "TES",
-					"relationship": "implements"
-				},
-				{
-					"target": "ART",
-					"relationship": "produces"
-				},
-				{
-					"target": "DSR",
-					"relationship": "includes"
-				},
-				{
-					"target": "DST",
-					"relationship": "stores in"
-				},
-				{
-					"target": "STM",
-					"relationship": "executes"
-				},
-				{
-					"target": "NOD",
-					"relationship": "runs on"
-				}
-			]
-		},
-		{
-			"acronym": "DST",
-			"card_type": "Data Store",
-			"common_subtypes": ["Relational", "Object Store", "Event Log", "Key-Value", "Graph"],
-			"description": "Persistent storage system that holds artifacts and data for retrieval and lineage.",
-			"relationships": [
-				{
-					"target": "ART",
-					"relationship": "retrieves"
-				},
-				{
-					"target": "NOD",
-					"relationship": "runs on"
-				}
-			]
-		},
-		{
-			"acronym": "CON",
-			"card_type": "Condition",
-			"description": "Process-domain branching condition used by activities/processes; not used for state-machine branching.",
-			"relationships": [
-				{
-					"target": "ATV",
-					"relationship": "branches to"
-				},
-				{
-					"target": "TRG",
-					"relationship": "branches to"
-				},
-				{
-					"target": "CON",
-					"relationship": "branches to"
-				}
-			]
-		},
-		{
-			"acronym": "CNS",
-			"card_type": "Constraint",
-			"description": "Rule limiting allowable behavior or solutions.",
-			"relationships": [
-				{
-					"target": "REQ",
-					"relationship": "limits"
-				}
-			]
-		},
-		{
-			"acronym": "CTL",
-			"card_type": "Control",
-			"description": "Mechanism governing or constraining a process.",
-			"relationships": [
-				{
-					"target": "RIS",
-					"relationship": "mitigates"
-				},
-				{
-					"target": "AST",
-					"relationship": "protects"
-				},
-				{
-					"target": "CNS",
-					"relationship": "enforces"
-				},
-				{
-					"target": "DST",
-					"relationship": "governs"
-				},
-				{
-					"target": "REQ",
-					"relationship": "governs"
-				},
-				{
-					"target": "THC",
-					"relationship": "obstructs"
-				}
-			]
-		},
-		{
-			"acronym": "DEP",
-			"card_type": "Deployment",
-			"description": "Defined environment or configuration where software executes.",
-			"relationships": [
-				{
-					"target": "NOD",
-					"relationship": "includes"
-				}
-			]
-		},
-		{
-			"acronym": "DSR",
-			"card_type": "Data Source",
-			"common_subtypes": ["External System", "Upstream Feed", "Sensor", "Third-Party API"],
-			"description": "Origin of artifacts and data entering the system, used to model provenance and lineage.",
-			"relationships": [
-				{
-					"target": "ART",
-					"relationship": "provides"
-				},
-				{
-					"target": "NOD",
-					"relationship": "runs on"
-				}
-			]
-		},
-		{
-			"acronym": "DRI",
-			"card_type": "Driver",
-			"description": "Motivation explaining why requirements exist.",
-			"relationships": [
-				{
-					"target": "REQ",
-					"relationship": "drives"
-				}
-			]
-		},
-		{
-			"acronym": "EVT",
-			"card_type": "Event",
-			"description": "State-machine event that causes transitions or predicate evaluation; distinct from process-domain triggers.",
-			"relationships": [
-				{
-					"target": "STA",
-					"relationship": "transitions to"
-				},
-				{
-					"target": "EVT",
-					"relationship": "emits"
-				},
-				{
-					"target": "PRD",
-					"relationship": "triggers"
-				},
-				{
-					"target": "ART",
-					"relationship": "carries"
-				}
-			]
-		},
-		{
-			"acronym": "FEA",
-			"card_type": "Feature",
-			"description": "Externally observable behavior realizing one or more requirements.",
-			"relationships": [
-				{
-					"target": "CAP",
-					"relationship": "realizes"
-				},
-				{
-					"target": "CNS",
-					"relationship": "implies"
-				}
-			]
-		},
-		{
-			"acronym": "INT",
-			"card_type": "Interface",
-			"description": "Contract governing interaction across a boundary.",
-			"relationships": [
-				{
-					"target": "ART",
-					"relationship": "accepts"
-				},
-				{
-					"target": "ART",
-					"relationship": "returns"
-				}
-			]
-		},
-		{
-			"acronym": "MIS",
-			"card_type": "Mission",
-			"description": "Root intent that spawns every downstream driver.",
-			"relationships": [
-				{
-					"target": "DRI",
-					"relationship": "establishes"
-				},
-				{
-					"target": "STK",
-					"relationship": "involves"
-				},
-				{
-					"target": "ACT",
-					"relationship": "involves"
-				},
-				{
-					"target": "VND",
-					"relationship": "involves"
-				},
-				{
-					"target": "SYS",
-					"relationship": "necessitates"
-				},
-				{
-					"target": "APP",
-					"relationship": "necessitates"
-				},
-				{
-					"target": "THM",
-					"relationship": "remediates"
-				}
-			]
-		},
-		{
-			"acronym": "NOD",
-			"card_type": "Node",
-			"common_subtypes": ["Container", "Virtual Machine", "Hardware"],
-			"description": "Logical/physical execution environment hosting components or stores."
-		},
-		{
-			"acronym": "PRD",
-			"card_type": "Predicate",
-			"description": "State-machine branching predicate that evaluates to true/false; distinct from process-domain conditions.",
-			"relationships": [
-				{
-					"target": "STA",
-					"relationship": "branches to"
-				},
-				{
-					"target": "PRD",
-					"relationship": "branches to"
-				},
-				{
-					"target": "EVT",
-					"relationship": "emits"
-				}
-			]
-		},
-		{
-			"acronym": "PRO",
-			"card_type": "Process",
-			"description": "Ordered sequence of activities/decisions enabling a capability.",
-			"relationships": [
-				{
-					"target": "ATV",
-					"relationship": "includes"
-				},
-				{
-					"target": "TRG",
-					"relationship": "includes"
-				},
-				{
-					"target": "CON",
-					"relationship": "branches on"
-				},
-				{
-					"target": "ACT",
-					"relationship": "involves"
-				}
-			]
-		},
-		{
-			"acronym": "REQ",
-			"card_type": "Requirement",
-			"description": "Verifiable statement of need/obligation.",
-			"relationships": [
-				{
-					"target": "CAP",
-					"relationship": "requires"
-				},
-				{
-					"target": "ADR",
-					"relationship": "has"
-				},
-				{
-					"target": "CNS",
-					"relationship": "imposes"
-				}
-			]
-		},
-		{
-			"acronym": "RIS",
-			"card_type": "Risk",
-			"description": "Potential for loss/harm from threats/vulnerabilities."
-		},
-		{
-			"acronym": "STA",
-			"card_type": "State",
-			"description": "Observable condition that persists until a transition.",
-			"relationships": [
-				{
-					"target": "STA",
-					"relationship": "transitions to"
-				},
-				{
-					"target": "PRD",
-					"relationship": "evaluates"
-				},
-				{
-					"target": "EVT",
-					"relationship": "handles"
-				}
-			]
-		},
-		{
-			"acronym": "STM",
-			"card_type": "State Machine",
-			"description": "Behavioral model defining allowable states/transitions.",
-			"relationships": [
-				{
-					"target": "STA",
-					"relationship": "has"
-				}
-			]
-		},
-		{
-			"acronym": "STR",
-			"card_type": "Story",
-			"description": "Narrative expressing desired behavior/outcome; should follow the “`As an ___ I want/need ___.`” format.",
-			"relationships": [
-				{
-					"target": "REQ",
-					"relationship": "explains"
-				},
-				{
-					"target": "CNS",
-					"relationship": "implies"
-				}
-			]
-		},
-		{
-			"acronym": "TES",
-			"card_type": "Test",
-			"description": "Procedure verifying that a feature satisfies requirements.",
-			"relationships": [
-				{
-					"target": "FEA",
-					"relationship": "verifies"
-				}
-			]
-		},
-		{
-			"acronym": "THD",
-			"card_type": "Threat Diamond",
-			"description": "Threat rendered as a diamond (diagramming variant).",
-			"relationships": [
-				{
-					"target": "AST",
-					"relationship": "threatens"
-				},
-				{
-					"target": "ADV",
-					"relationship": "involves"
-				},
-				{
-					"target": "THC",
-					"relationship": "uses"
-				},
-				{
-					"target": "VIC",
-					"relationship": "impacts"
-				},
-				{
-					"target": "RIS",
-					"relationship": "creates"
-				}
-			]
-		},
-		{
-			"acronym": "ADV",
-			"card_type": "Adversary",
-			"common_subtypes": [
-				"Insider",
-				"Outsider",
-				"Script Kiddie",
-				"Hacktivist",
-				"Organized Crime",
-				"Nation State"
-			],
-			"description": "Threat source: actor with intent and capability to cause harm."
-		},
-		{
-			"acronym": "THC",
-			"card_type": "Threat Capability",
-			"description": "Skills, access, tooling, or resources enabling an adversary to execute threats."
-		},
-		{
-			"acronym": "VIC",
-			"card_type": "Victim",
-			"common_subtypes": ["User", "Organization", "System", "Data"],
-			"description": "Entity that suffers impact when a threat is realized."
-		},
-		{
-			"acronym": "ROW",
-			"card_type": "Resource Owner",
-			"description": "Role accountable for an asset/resource and its protection.",
-			"relationships": [
-				{
-					"target": "AST",
-					"relationship": "owns"
-				}
-			]
-		},
-		{
-			"acronym": "THM",
-			"card_type": "Threat Model",
-			"description": "Structured analysis of assets, adversaries, threats, and mitigations.",
-			"relationships": [
-				{
-					"target": "THD",
-					"relationship": "includes"
-				},
-				{
-					"target": "ROW",
-					"relationship": "includes"
-				},
-				{
-					"target": "CTL",
-					"relationship": "recommends"
-				}
-			]
-		},
-		{
-			"acronym": "TRG",
-			"card_type": "Trigger",
-			"description": "Process-domain trigger that initiates activities/conditions; distinct from state-machine events.",
-			"relationships": [
-				{
-					"target": "ATV",
-					"relationship": "initiates"
-				},
-				{
-					"target": "CON",
-					"relationship": "initiates"
-				},
-				{
-					"target": "TRG",
-					"relationship": "triggers"
-				}
-			]
-		},
-		{
-			"acronym": "VND",
-			"card_type": "Vendor",
-			"description": "Third party providing products/services integrated into the system.",
-			"relationships": [
-				{
-					"target": "APP",
-					"relationship": "provides"
-				},
-				{
-					"target": "SYS",
-					"relationship": "provides"
-				}
-			]
-		}
-	],
-	"views": [
-		{
-			"description": "Demonstrates adherence to constraints through mission drivers, controls, risk treatment, and verifiable tests.",
-			"included_card_types": ["DRI", "REQ", "CNS", "THM", "CTL", "RIS", "SYS", "APP", "COM", "TES"],
-			"name": "Compliance Governance",
-			"root_card_types": ["MIS"]
-		},
-		{
-			"description": "Explains internal implementation structure, focusing on how applications and components are realized in code.",
-			"included_card_types": ["COM", "INT", "ART", "DST", "DSR", "TES"],
-			"name": "Component",
-			"root_card_types": ["SYS", "APP", "VND"]
-		},
-		{
-			"description": "Defines where software executes, focusing on deployments, nodes, and hosted runtime elements.",
-			"included_card_types": ["APP", "DEP", "NOD", "COM", "DST", "DSR"],
-			"name": "Deployment",
-			"root_card_types": ["DEP", "VND"]
-		},
-		{
-			"description": "Displays the complete architectural model, highlighting shortest paths from the mission and alternate relationships.",
-			"included_card_types": [
-				"DRI",
-				"STK",
-				"SYS",
-				"APP",
-				"CAP",
-				"REQ",
-				"FEA",
-				"ADR",
-				"CNS",
-				"CTL",
-				"RIS",
-				"PRO",
-				"ATV",
-				"CON",
-				"TRG",
-				"EVT",
-				"PRD",
-				"STM",
-				"STA",
-				"STR",
-				"ACT",
-				"VND",
-				"ART",
-				"DST",
-				"DSR",
-				"AST",
-				"DEP",
-				"NOD",
-				"COM",
-				"INT",
-				"TES",
-				"THM",
-				"THD",
-				"ADV",
-				"THC",
-				"VIC",
-				"ROW"
-			],
-			"name": "Entire Model",
-			"root_card_types": ["MIS"]
-		},
-		{
-			"description": "Details how a capability is realized through ordered processes and activities with explicit triggering conditions.",
-			"included_card_types": ["PRO", "ATV", "CON", "TRG", "ACT"],
-			"name": "Process",
-			"root_card_types": ["CAP"]
-		},
-		{
-			"description": "Captures mission intent, motivation, and required capabilities, including architectural decisions that justify scope.",
-			"included_card_types": ["DRI", "STK", "CAP", "REQ", "ADR", "CNS"],
-			"name": "Requirements",
-			"root_card_types": ["MIS"]
-		},
-		{
-			"description": "Shows system context: mission intent, stakeholders/actors, and primary system components and interfaces.",
-			"included_card_types": ["DRI", "REQ", "CNS", "STK", "ACT", "VND", "SYS", "APP", "COM", "INT", "DSR"],
-			"name": "Context",
-			"root_card_types": ["MIS"]
-		},
-		{
-			"description": "Shows the high-level landscape of major components, interfaces, deployments, and nodes.",
-			"included_card_types": ["COM", "INT", "DST", "DSR", "DEP", "NOD"],
-			"name": "Landscape",
-			"root_card_types": ["SYS", "APP", "VND"]
-		},
-		{
-			"description": "Analyzes protection of assets against threats, including actors, constraints, controls, and resulting risks.",
-			"included_card_types": ["THM", "THD", "ADV", "THC", "VIC", "ROW", "AST", "CTL", "CNS", "RIS", "DST"],
-			"name": "Security",
-			"root_card_types": ["THM"]
-		},
-		{
-			"description": "Models system behavior using state machines, states, predicates, and events without process contamination.",
-			"included_card_types": ["STA", "PRD", "EVT"],
-			"name": "State Machine",
-			"root_card_types": ["STM"]
-		},
-		{
-			"description": "Provides end-to-end impact and coverage analysis from requirements through implementation and verification.",
-			"included_card_types": [
-				"DRI",
-				"REQ",
-				"CAP",
-				"FEA",
-				"SYS",
-				"APP",
-				"COM",
-				"INT",
-				"DST",
-				"DSR",
-				"TES",
-				"ADR",
-				"CNS",
-				"THM",
-				"CTL",
-				"RIS",
-				"ART",
-				"PRO",
-				"ATV",
-				"CON",
-				"TRG"
-			],
-			"name": "Traceability",
-			"root_card_types": ["MIS"]
-		},
-		{
-			"description": "Describes externally visible behavior using stakeholder stories and actor activities.",
-			"included_card_types": ["STR", "REQ", "CNS", "ATV"],
-			"name": "Use Case",
-			"root_card_types": ["STK", "ACT"]
-		}
-	]
+  "$schema": "../schemas/Aurora.modelconfiguration.schema.json",
+  "cards": [
+    {
+      "acronym": "ATV",
+      "card_type": "Activity",
+      "description": "Discrete step within a process.",
+      "relationships": [
+        {
+          "relationship": "has",
+          "target": "DEP"
+        },
+        {
+          "relationship": "leads to",
+          "target": "ATV"
+        },
+        {
+          "relationship": "causes",
+          "target": "TRG"
+        },
+        {
+          "relationship": "triggers",
+          "target": "CON"
+        }
+      ]
+    },
+    {
+      "acronym": "ACT",
+      "card_type": "Actor",
+      "common_subtypes": [
+        "User",
+        "Admin",
+        "External System",
+        "Regulator"
+      ],
+      "description": "External role interacting with or obligating the system.",
+      "relationships": [
+        {
+          "relationship": "performs",
+          "target": "ATV"
+        }
+      ]
+    },
+    {
+      "acronym": "STK",
+      "card_type": "Stakeholder",
+      "common_subtypes": [
+        "Customer",
+        "End User",
+        "Operator",
+        "Manager",
+        "Regulator"
+      ],
+      "description": "Person, group, or role with an interest in or affected by the system.",
+      "relationships": [
+        {
+          "relationship": "define",
+          "target": "ADR"
+        },
+        {
+          "relationship": "accepts",
+          "target": "EXC"
+        },
+        {
+          "relationship": "desires",
+          "target": "STR"
+        }
+      ]
+    },
+    {
+      "acronym": "ADR",
+      "card_type": "ADR",
+      "description": "Architectural Decision Record capturing a significant decision, alternatives considered, rationale, trade-offs, and consequences.",
+      "relationships": [
+        {
+          "relationship": "refines",
+          "target": "REQ"
+        }
+      ]
+    },
+    {
+      "acronym": "ART",
+      "card_type": "Artifact",
+      "common_properties": [
+        {
+          "description": "Links to the schema or supporting reference document(s) associated with the artifact.",
+          "name": "references"
+        }
+      ],
+      "common_subtypes": [
+        "Document",
+        "Data",
+        "Diagram",
+        "Code",
+        "Model",
+        "Report",
+        "Schema"
+      ],
+      "description": "Concrete work product produced or consumed by the system.",
+      "relationships": [
+        {
+          "relationship": "is",
+          "target": "AST"
+        },
+        {
+          "relationship": "persists to",
+          "target": "DST"
+        }
+      ]
+    },
+    {
+      "acronym": "AST",
+      "card_type": "Asset",
+      "description": "Valuable information/resources requiring protection.",
+      "relationships": [
+        {
+          "relationship": "hosts",
+          "target": "THC"
+        }
+      ]
+    },
+    {
+      "acronym": "DAR",
+      "card_type": "Deployment Artifact",
+      "description": "Artifacts generated by the CI/CD process such as binaries, configurations, and deployable data files."
+    },
+    {
+      "acronym": "CAP",
+      "card_type": "Capability",
+      "description": "Implementation-independent ability that satisfies requirements.",
+      "relationships": [
+        {
+          "relationship": "requires",
+          "target": "PRO"
+        }
+      ]
+    },
+    {
+      "acronym": "SYS",
+      "card_type": "System",
+      "description": "Top-level software system composed of applications and components.",
+      "relationships": [
+        {
+          "relationship": "has",
+          "target": "DEP"
+        },
+        {
+          "relationship": "involves",
+          "target": "DSR"
+        },
+        {
+          "relationship": "integrates",
+          "target": "APP"
+        },
+        {
+          "relationship": "involves",
+          "target": "VND"
+        }
+      ]
+    },
+    {
+      "acronym": "APP",
+      "card_type": "Application",
+      "description": "Deployable application within a system, composed of components.",
+      "relationships": [
+        {
+          "relationship": "comprises",
+          "target": "COM"
+        },
+        {
+          "relationship": "generates",
+          "target": "DAR"
+        },
+        {
+          "relationship": "implements",
+          "target": "FEA"
+        },
+        {
+          "relationship": "implements",
+          "target": "TES"
+        }
+      ]
+    },
+    {
+      "acronym": "COM",
+      "card_type": "Component",
+      "common_subtypes": [
+        "API",
+        "Library",
+        "Service",
+        "Module",
+        "Subsystem",
+        "Class"
+      ],
+      "description": "Modular unit with a single responsibility and explicit interfaces.",
+      "relationships": [
+        {
+          "relationship": "composes",
+          "target": "COM"
+        },
+        {
+          "relationship": "calls",
+          "target": "INT"
+        },
+        {
+          "relationship": "exposes",
+          "target": "INT"
+        },
+        {
+          "relationship": "produces",
+          "target": "ART"
+        },
+        {
+          "relationship": "executes",
+          "target": "STM"
+        },
+        {
+          "relationship": "calls",
+          "target": "API"
+        }
+      ]
+    },
+    {
+      "acronym": "DST",
+      "card_type": "Data Store",
+      "common_subtypes": [
+        "Relational",
+        "Object Store",
+        "Event Log",
+        "Key-Value",
+        "Graph"
+      ],
+      "description": "Persistent storage system that holds artifacts and data for retrieval and lineage.",
+      "relationships": [
+        {
+          "relationship": "provides",
+          "target": "DAR"
+        }
+      ]
+    },
+    {
+      "acronym": "CON",
+      "card_type": "Condition",
+      "description": "Process-domain branching condition used by activities/processes; not used for state-machine branching.",
+      "relationships": [
+        {
+          "relationship": "branches to",
+          "target": "ATV"
+        },
+        {
+          "relationship": "branches to",
+          "target": "TRG"
+        },
+        {
+          "relationship": "branches to",
+          "target": "CON"
+        }
+      ]
+    },
+    {
+      "acronym": "CNS",
+      "card_type": "Constraint",
+      "common_subtypes": [
+        "SLA",
+        "SLO"
+      ],
+      "description": "Rule limiting allowable behavior or solutions.",
+      "relationships": [
+        {
+          "relationship": "limits",
+          "target": "REQ"
+        }
+      ]
+    },
+    {
+      "acronym": "CTL",
+      "card_type": "Control",
+      "common_subtypes": [
+        "Policy"
+      ],
+      "description": "Mechanism governing or constraining a process.",
+      "relationships": [
+        {
+          "relationship": "mitigates",
+          "target": "RIS"
+        },
+        {
+          "relationship": "has",
+          "target": "EXC"
+        }
+      ]
+    },
+    {
+      "acronym": "EXC",
+      "card_type": "Exception",
+      "description": "A documented and traceable decision to allow a control to be waived in specific circumstances.",
+      "relationships": [
+        {
+          "relationship": "refines",
+          "target": "REQ"
+        }
+      ]
+    },
+    {
+      "acronym": "DEP",
+      "card_type": "Deployment",
+      "description": "Defined environment or configuration where software executes.",
+      "relationships": [
+        {
+          "relationship": "includes",
+          "target": "NOD"
+        }
+      ]
+    },
+    {
+      "acronym": "DSR",
+      "card_type": "Data Source",
+      "common_subtypes": [
+        "External System",
+        "Upstream Feed",
+        "Sensor",
+        "Third-Party API"
+      ],
+      "description": "Origin of artifacts and data entering the system, used to model provenance and lineage.",
+      "relationships": [
+        {
+          "relationship": "provides",
+          "target": "ART"
+        }
+      ]
+    },
+    {
+      "acronym": "DRI",
+      "card_type": "Driver",
+      "description": "Motivation explaining why requirements exist.",
+      "relationships": [
+        {
+          "relationship": "drives",
+          "target": "REQ"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CNS"
+        }
+      ]
+    },
+    {
+      "acronym": "EVT",
+      "card_type": "Event",
+      "description": "State-machine event that causes transitions or predicate evaluation; distinct from process-domain triggers.",
+      "relationships": [
+        {
+          "relationship": "triggers",
+          "target": "EVT"
+        },
+        {
+          "relationship": "triggers",
+          "target": "STA"
+        },
+        {
+          "relationship": "triggers",
+          "target": "PRD"
+        }
+      ]
+    },
+    {
+      "acronym": "FEA",
+      "card_type": "Feature",
+      "description": "Externally observable behavior realizing one or more requirements.",
+      "relationships": [
+        {
+          "relationship": "realizes",
+          "target": "CAP"
+        }
+      ]
+    },
+    {
+      "acronym": "INT",
+      "card_type": "Interface",
+      "description": "Contract governing interaction across a boundary.",
+      "relationships": [
+        {
+          "relationship": "accepts",
+          "target": "ART"
+        },
+        {
+          "relationship": "returns",
+          "target": "ART"
+        }
+      ]
+    },
+    {
+      "acronym": "API",
+      "card_type": "API",
+      "description": "Vendor-provided endpoint surface exposed outside the modeled component boundary."
+    },
+    {
+      "acronym": "MIS",
+      "card_type": "Mission",
+      "description": "Root intent that spawns every downstream driver.",
+      "relationships": [
+        {
+          "relationship": "establishes",
+          "target": "DRI"
+        },
+        {
+          "relationship": "has",
+          "target": "STK"
+        },
+        {
+          "relationship": "necessitates",
+          "target": "SYS"
+        }
+      ]
+    },
+    {
+      "acronym": "NOD",
+      "card_type": "Node",
+      "common_subtypes": [
+        "Container",
+        "Virtual Machine",
+        "Hardware"
+      ],
+      "description": "Logical/physical execution environment hosting components or stores.",
+      "relationships": [
+        {
+          "relationship": "runs",
+          "target": "DAR"
+        }
+      ]
+    },
+    {
+      "acronym": "PRD",
+      "card_type": "Predicate",
+      "description": "State-machine branching predicate that evaluates to true/false; distinct from process-domain conditions.",
+      "relationships": [
+        {
+          "relationship": "branches to",
+          "target": "STA"
+        },
+        {
+          "relationship": "branches to",
+          "target": "PRD"
+        },
+        {
+          "relationship": "branches to",
+          "target": "EVT"
+        }
+      ]
+    },
+    {
+      "acronym": "PRO",
+      "card_type": "Process",
+      "description": "Ordered sequence of activities/decisions enabling a capability.",
+      "relationships": [
+        {
+          "relationship": "starts with",
+          "target": "ATV"
+        },
+        {
+          "relationship": "involves",
+          "target": "ACT"
+        }
+      ]
+    },
+    {
+      "acronym": "REQ",
+      "card_type": "Requirement",
+      "common_subtypes": [
+        "Functional",
+        "Non-Functional"
+      ],
+      "description": "Verifiable statement of need/obligation.",
+      "relationships": [
+        {
+          "relationship": "requires",
+          "target": "CAP"
+        },
+        {
+          "relationship": "imposes",
+          "target": "CTL"
+        },
+        {
+          "relationship": "defines",
+          "target": "TES"
+        }
+      ]
+    },
+    {
+      "acronym": "RIS",
+      "card_type": "Risk",
+      "description": "Potential for loss/harm from threats/vulnerabilities."
+    },
+    {
+      "acronym": "STA",
+      "card_type": "State",
+      "description": "Observable condition that persists until a transition.",
+      "relationships": [
+        {
+          "relationship": "transitions to",
+          "target": "STA"
+        },
+        {
+          "relationship": "triggers",
+          "target": "PRD"
+        },
+        {
+          "relationship": "triggers",
+          "target": "EVT"
+        }
+      ]
+    },
+    {
+      "acronym": "STM",
+      "card_type": "State Machine",
+      "description": "Behavioral model defining allowable states/transitions.",
+      "relationships": [
+        {
+          "relationship": "starts in",
+          "target": "STA"
+        }
+      ]
+    },
+    {
+      "acronym": "STR",
+      "card_type": "Story",
+      "description": "Narrative expressing desired behavior/outcome; should follow the “`As an ___ I want/need ___.`” format.",
+      "relationships": [
+        {
+          "relationship": "defines",
+          "target": "REQ"
+        }
+      ]
+    },
+    {
+      "acronym": "TES",
+      "card_type": "Test",
+      "common_subtypes": [
+        "Acceptance Criteria"
+      ],
+      "description": "Procedure verifying that a feature satisfies requirements.",
+      "relationships": [
+        {
+          "relationship": "verifies",
+          "target": "FEA"
+        }
+      ]
+    },
+    {
+      "acronym": "THD",
+      "card_type": "Threat Diamond",
+      "description": "Threat rendered as a diamond (diagramming variant).",
+      "relationships": [
+        {
+          "relationship": "involves",
+          "target": "ADV"
+        }
+      ]
+    },
+    {
+      "acronym": "ADV",
+      "card_type": "Adversary",
+      "common_subtypes": [
+        "Insider",
+        "Outsider",
+        "Script Kiddie",
+        "Hacktivist",
+        "Organized Crime",
+        "Nation State"
+      ],
+      "description": "Threat source: actor with intent and capability to cause harm.",
+      "relationships": [
+        {
+          "relationship": "develops",
+          "target": "THC"
+        },
+        {
+          "relationship": "exploits",
+          "target": "AST"
+        }
+      ]
+    },
+    {
+      "acronym": "THC",
+      "card_type": "Threat Capability",
+      "description": "Skills, access, tooling, or resources enabling an adversary to execute threats.",
+      "relationships": [
+        {
+          "relationship": "impacts",
+          "target": "VIC"
+        }
+      ]
+    },
+    {
+      "acronym": "VIC",
+      "card_type": "Victim",
+      "common_subtypes": [
+        "User",
+        "Organization",
+        "System",
+        "Data"
+      ],
+      "description": "Entity that suffers impact when a threat is realized.",
+      "relationships": [
+        {
+          "relationship": "is",
+          "target": "ROW"
+        }
+      ]
+    },
+    {
+      "acronym": "ROW",
+      "card_type": "Resource Owner",
+      "description": "Role accountable for an asset/resource and its protection.",
+      "relationships": [
+        {
+          "relationship": "owns",
+          "target": "AST"
+        }
+      ]
+    },
+    {
+      "acronym": "THM",
+      "card_type": "Threat Model",
+      "description": "Structured analysis of assets, adversaries, threats, and mitigations.",
+      "relationships": [
+        {
+          "relationship": "includes",
+          "target": "THD"
+        },
+        {
+          "relationship": "defines",
+          "target": "RIS"
+        }
+      ]
+    },
+    {
+      "acronym": "TRG",
+      "card_type": "Trigger",
+      "description": "Process-domain trigger that initiates activities/conditions; distinct from state-machine events.",
+      "relationships": [
+        {
+          "relationship": "triggers",
+          "target": "ATV"
+        },
+        {
+          "relationship": "triggers",
+          "target": "CON"
+        },
+        {
+          "relationship": "triggers",
+          "target": "TRG"
+        }
+      ]
+    },
+    {
+      "acronym": "VND",
+      "card_type": "Vendor",
+      "description": "Third party providing products/services integrated into the system.",
+      "relationships": [
+        {
+          "relationship": "provides",
+          "target": "API"
+        }
+      ]
+    }
+  ],
+  "version": "1.1.0"
 }

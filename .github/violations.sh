@@ -6,10 +6,10 @@ if [[ "$PWD" == */.github ]]; then
 fi
 
 echo "----- Files in violation -----"
-find src/ -name '*.rs' -type f -exec wc -l {} \; | rg '(?:(?:\d+[0-9])|[5-9])\d{2}'
+find src/ -name '*.rs' -type f -exec wc -l {} \; | rg '^(?:(?:\d+[0-9])|[5-9])\d{2}'
 
 echo "----- Test Files in violation -----"
-find tests/ -name '*.rs' -type f -exec wc -l {} \; | rg '(?:(?:\d+[0-9])|[5-9])\d{2}'
+find tests/ -name '*.rs' -type f -exec wc -l {} \; | rg '^(?:(?:\d+[0-9])|[5-9])\d{2}'
 
 echo "----- Functions in violation -----"
 rg -iHUPN --multiline-dotall -g '*.rs' -e '^\t*(?:pub )?fn.*?^\t*}\n\n(?=\t*[\/pfei#]|\z)' src/ -r '$0\n---FUNC---' | awk -v RS='---FUNC---' '{n=split($0,a,"\n"); if(a[1]!="") print n-1, a[1]}' | rg '^\w*(?:(?:\d+[0-9])|[5-9])\d{1}'

@@ -1,5 +1,6 @@
 {
 	"$schema": "../schemas/Aurora.viewconfiguration.schema.json",
+	"version": "1.1.0",
 	"available_icons": [
 		"alarm",
 		"anchor",
@@ -184,6 +185,14 @@
 			"icon": "lock_and_key"
 		},
 		{
+			"acronym": "DAR",
+			"shape": "document",
+			"fill": "#0f766e",
+			"stroke": "#000000",
+			"text": "#FFFFFF",
+			"icon": "diskette"
+		},
+		{
 			"acronym": "CAP",
 			"shape": "rounded-rectangle",
 			"fill": "#052e16",
@@ -246,6 +255,14 @@
 			"icon": "shield"
 		},
 		{
+			"acronym": "EXC",
+			"shape": "ruler",
+			"fill": "#9a3412",
+			"stroke": "#000000",
+			"text": "#FFFFFF",
+			"icon": "memo"
+		},
+		{
 			"acronym": "DEP",
 			"shape": "octagon",
 			"fill": "#1e1b4b",
@@ -291,6 +308,14 @@
 			"stroke": "#000000",
 			"text": "#FFFFFF",
 			"icon": "electric_plug"
+		},
+		{
+			"acronym": "API",
+			"shape": "interface",
+			"fill": "#0f3d91",
+			"stroke": "#000000",
+			"text": "#FFFFFF",
+			"icon": "cloud"
 		},
 		{
 			"acronym": "MIS",
@@ -437,24 +462,60 @@
 			"icon": "office"
 		}
 	],
+	"domains": {
+		"Structure": {
+			"cards": ["APP", "ART", "COM", "DST", "INT", "SYS"],
+			"subdomains": {
+				"External": {
+					"cards": ["VND", "API", "DSR"]
+				},
+				"State": {
+					"cards": ["EVT", "PRD", "STA", "STM"]
+				},
+				"Deployment": {
+					"cards": ["DEP", "NOD", "DAR"]
+				}
+			}
+		},
+		"Governance": {
+			"cards": ["MIS", "DRI", "STK"],
+			"subdomains": {
+				"Requirements": {
+					"cards": ["EXC", "TES", "ADR", "CTL", "CAP", "CNS", "FEA", "REQ", "STR"]
+				},
+				"Risk": {
+					"cards": ["RIS", "THD", "THM"],
+					"subsubdomains": {
+						"ThreatDiamond": ["ADV", "AST", "ROW", "THC", "VIC"]
+					}
+				},
+				"Process": {
+					"cards": ["PRO"],
+					"subsubdomains": {
+						"ProcessSteps": ["ATV", "ACT", "CON", "TRG"]
+					}
+				}
+			}
+		}
+	},
 	"views": [
 		{
 			"description": "Demonstrates adherence to constraints through mission drivers, controls, risk treatment, and verifiable tests.",
-			"included_card_types": ["DRI", "REQ", "CNS", "THM", "CTL", "RIS", "SYS", "APP", "COM", "TES"],
+			"included_card_types": ["DRI", "CNS", "REQ", "CTL", "TES", "RIS"],
 			"name": "Compliance Governance",
 			"root_card_types": ["MIS"]
 		},
 		{
 			"description": "Explains internal implementation structure, focusing on how applications and components are realized in code.",
-			"included_card_types": ["COM", "INT", "ART", "DST", "DSR", "TES"],
+			"included_card_types": ["COM", "VND", "INT", "API", "ART", "DST", "DSR"],
 			"name": "Component",
-			"root_card_types": ["SYS", "APP", "VND"]
+			"root_card_types": ["SYS", "APP"]
 		},
 		{
 			"description": "Defines where software executes, focusing on deployments, nodes, and hosted runtime elements.",
-			"included_card_types": ["APP", "DEP", "NOD", "COM", "DST", "DSR"],
+			"included_card_types": ["APP", "DEP", "NOD", "DAR"],
 			"name": "Deployment",
-			"root_card_types": ["DEP", "VND"]
+			"root_card_types": ["SYS", "DST"]
 		},
 		{
 			"description": "Displays the complete architectural model, highlighting shortest paths from the mission and alternate relationships.",
@@ -469,6 +530,7 @@
 				"ADR",
 				"CNS",
 				"CTL",
+				"EXC",
 				"RIS",
 				"PRO",
 				"ATV",
@@ -482,6 +544,8 @@
 				"ACT",
 				"VND",
 				"ART",
+				"API",
+				"DAR",
 				"DST",
 				"DSR",
 				"AST",
@@ -502,39 +566,54 @@
 		},
 		{
 			"description": "Details how a capability is realized through ordered processes and activities with explicit triggering conditions.",
-			"included_card_types": ["PRO", "ATV", "CON", "TRG", "ACT"],
+			"included_card_types": ["PRO", "ATV", "CON", "ACT"],
 			"name": "Process",
 			"root_card_types": ["CAP"]
 		},
 		{
 			"description": "Captures mission intent, motivation, and required capabilities, including architectural decisions that justify scope.",
-			"included_card_types": ["DRI", "STK", "CAP", "REQ", "ADR", "CNS"],
+			"included_card_types": ["DRI", "STK", "CAP", "REQ", "ADR", "CNS", "CTL", "EXC", "TES", "STR"],
 			"name": "Requirements",
 			"root_card_types": ["MIS"]
 		},
 		{
-			"description": "Shows system context: mission intent, stakeholders/actors, and primary system components and interfaces.",
-			"included_card_types": ["DRI", "REQ", "CNS", "STK", "ACT", "VND", "SYS", "APP", "COM", "INT", "DSR"],
+			"description": "Shows system context: mission intent, stakeholders, and primary system components and interfaces.",
+			"included_card_types": [
+				"STK",
+				"DRI",
+				"STR",
+				"EXC",
+				"ADR",
+				"CNS",
+				"REQ",
+				"TES",
+				"FEA",
+				"CAP",
+				"SYS",
+				"APP",
+				"COM",
+				"INT"
+			],
 			"name": "Context",
 			"root_card_types": ["MIS"]
 		},
 		{
 			"description": "Shows the high-level landscape of major components, interfaces, deployments, and nodes.",
-			"included_card_types": ["COM", "INT", "DST", "DSR", "DEP", "NOD"],
+			"included_card_types": ["APP", "COM", "VND", "INT", "API", "DST", "DEP", "NOD", "DAR"],
 			"name": "Landscape",
-			"root_card_types": ["SYS", "APP", "VND"]
+			"root_card_types": ["SYS"]
 		},
 		{
 			"description": "Analyzes protection of assets against threats, including actors, constraints, controls, and resulting risks.",
-			"included_card_types": ["THM", "THD", "ADV", "THC", "VIC", "ROW", "AST", "CTL", "CNS", "RIS", "DST"],
+			"included_card_types": ["THM", "THD", "ADV", "THC", "VIC", "ROW", "AST", "CTL"],
 			"name": "Security",
-			"root_card_types": ["THM"]
+			"root_card_types": ["RIS"]
 		},
 		{
 			"description": "Models system behavior using state machines, states, predicates, and events without process contamination.",
-			"included_card_types": ["STA", "PRD", "EVT"],
+			"included_card_types": ["STM", "STA", "PRD", "EVT"],
 			"name": "State Machine",
-			"root_card_types": ["STM"]
+			"root_card_types": ["COM"]
 		},
 		{
 			"description": "Provides end-to-end impact and coverage analysis from requirements through implementation and verification.",
@@ -546,29 +625,23 @@
 				"SYS",
 				"APP",
 				"COM",
-				"INT",
-				"DST",
-				"DSR",
 				"TES",
 				"ADR",
 				"CNS",
-				"THM",
 				"CTL",
+				"EXC",
+				"THM",
 				"RIS",
-				"ART",
-				"PRO",
-				"ATV",
-				"CON",
-				"TRG"
+				"API"
 			],
 			"name": "Traceability",
 			"root_card_types": ["MIS"]
 		},
 		{
 			"description": "Describes externally visible behavior using stakeholder stories and actor activities.",
-			"included_card_types": ["STR", "REQ", "CNS", "ATV"],
+			"included_card_types": ["STR", "EXC", "ADR", "REQ", "CNS"],
 			"name": "Use Case",
-			"root_card_types": ["STK", "ACT"]
+			"root_card_types": ["STK"]
 		}
 	]
 }

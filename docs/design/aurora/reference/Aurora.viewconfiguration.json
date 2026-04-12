@@ -1,440 +1,790 @@
 {
-	"$schema": "../schemas/Aurora.viewconfiguration.schema.json",
-	"available_icons": [
-		"alarm",
-		"anchor",
-		"audio",
-		"balance_scale",
-		"bank",
-		"bar_chart",
-		"battery",
-		"battery_low",
-		"beetle",
-		"bell",
-		"biohazard",
-		"bolt",
-		"bomb",
-		"books",
-		"box",
-		"brick",
-		"bulb",
-		"card",
-		"card_file_box",
-		"card_index",
-		"card_index_dividers",
-		"chains",
-		"chart_decreasing",
-		"chart_increasing",
-		"check",
-		"chequered_flag",
-		"circle_red",
-		"classical_building",
-		"clock",
-		"clockwise_vertical_arrows",
-		"closed_book",
-		"cloud",
-		"collision",
-		"commercial",
-		"compass",
-		"construction",
-		"control_knobs",
-		"copyright",
-		"corner_square",
-		"counterclockwise_arrows_button",
-		"crane",
-		"cross_mark_button",
-		"crossed_swords",
-		"desktop",
-		"diamond",
-		"diskette",
-		"dollarsign",
-		"double_exclamation_mark",
-		"earth",
-		"electric_plug",
-		"email",
-		"exclamation",
-		"exclamation_question_mark",
-		"filing_cabinet",
-		"flag_red",
-		"folder",
-		"folder_open",
-		"gear",
-		"globe_with_meridians",
-		"group",
-		"hammer",
-		"hammer_and_pick",
-		"hammer_and_wrench",
-		"hook",
-		"hourglass",
-		"inbox_tray",
-		"industrial",
-		"key",
-		"laptop",
-		"large_blue_diamond",
-		"large_orange_diamond",
-		"ledger",
-		"level_slider",
-		"lifepreserver",
-		"link",
-		"lock",
-		"lock_and_key",
-		"locked_pen",
-		"magic_wand",
-		"magnifying_glass_tilted_left",
-		"memo",
-		"mobile",
-		"moneybag",
-		"no_entry",
-		"no_passing_fire",
-		"office",
-		"outbox_tray",
-		"page_facing_up",
-		"pen_black",
-		"pen_blue",
-		"person",
-		"pick",
-		"pirate_flag",
-		"police_car_light",
-		"ppe",
-		"printer",
-		"prohibited",
-		"puzzle_piece",
-		"question",
-		"radiation",
-		"receipt",
-		"recycle",
-		"red_triangle_pointed_down",
-		"red_triangle_pointed_up",
-		"registered",
-		"repeat_button",
-		"rescue_workers_helmet",
-		"robot",
-		"safety_vest",
-		"school",
-		"screwdriver",
-		"search",
-		"shield",
-		"skull_and_crossbones",
-		"speaker_high_volume",
-		"spider_web",
-		"spiral_calendar",
-		"star",
-		"stop_sign",
-		"stopwatch",
-		"straight_ruler",
-		"tag",
-		"target",
-		"thermometer",
-		"toolbox",
-		"trash_basket",
-		"unlocked",
-		"vertical_traffic_light",
-		"video",
-		"warning",
-		"wheelchair_symbol",
-		"wrench"
-	],
-	"cards": [
-		{
-			"acronym": "ATV",
-			"shape": "double-rectangle",
-			"fill": "#4c1d95",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "hammer"
-		},
-		{
-			"acronym": "ACT",
-			"shape": "rounded-rectangle",
-			"fill": "#1a2e05",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "person"
-		},
-		{
-			"acronym": "STK",
-			"shape": "rounded-rectangle",
-			"fill": "#1a2e05",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "group"
-		},
-		{
-			"acronym": "ADR",
-			"shape": "ruler",
-			"fill": "#1f2937",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "straight_ruler"
-		},
-		{
-			"acronym": "ART",
-			"shape": "document",
-			"fill": "#1e293b",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "page_facing_up"
-		},
-		{
-			"acronym": "AST",
-			"shape": "document",
-			"fill": "#334155",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "lock_and_key"
-		},
-		{
-			"acronym": "CAP",
-			"shape": "rounded-rectangle",
-			"fill": "#052e16",
-			"stroke": "#000000",
-			"text": "#FFFFFF"
-		},
-		{
-			"acronym": "SYS",
-			"shape": "folder",
-			"fill": "#1e40af",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "robot"
-		},
-		{
-			"acronym": "APP",
-			"shape": "rectangle",
-			"fill": "#1e40af",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "crane"
-		},
-		{
-			"acronym": "COM",
-			"shape": "component",
-			"fill": "#1e40af",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "puzzle_piece"
-		},
-		{
-			"acronym": "DST",
-			"shape": "cylinder",
-			"fill": "#5b21b6",
-			"stroke": "#000000",
-			"text": "#FFFFFF"
-		},
-		{
-			"acronym": "CON",
-			"shape": "diamond",
-			"fill": "#422006",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "large_blue_diamond"
-		},
-		{
-			"acronym": "CNS",
-			"shape": "ruler",
-			"fill": "#082f49",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "stop_sign"
-		},
-		{
-			"acronym": "CTL",
-			"shape": "ruler",
-			"fill": "#713f12",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "shield"
-		},
-		{
-			"acronym": "DEP",
-			"shape": "octagon",
-			"fill": "#1e1b4b",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "red_triangle_pointed_up"
-		},
-		{
-			"acronym": "DSR",
-			"shape": "cylinder",
-			"fill": "#0e7490",
-			"stroke": "#000000",
-			"text": "#FFFFFF"
-		},
-		{
-			"acronym": "DRI",
-			"shape": "rounded-rectangle",
-			"fill": "#064e3b",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "compass"
-		},
-		{
-			"acronym": "EVT",
-			"shape": "trapezoid",
-			"fill": "#5b21b6",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "alarm"
-		},
-		{
-			"acronym": "FEA",
-			"shape": "rectangle",
-			"fill": "#14532d",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "level_slider"
-		},
-		{
-			"acronym": "INT",
-			"shape": "interface",
-			"fill": "#102080",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "electric_plug"
-		},
-		{
-			"acronym": "MIS",
-			"shape": "octagon",
-			"fill": "#022c22",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "anchor"
-		},
-		{
-			"acronym": "NOD",
-			"shape": "box",
-			"fill": "#312e81",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "desktop"
-		},
-		{
-			"acronym": "PRD",
-			"shape": "diamond",
-			"fill": "#581c87",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "large_orange_diamond"
-		},
-		{
-			"acronym": "PRO",
-			"shape": "octagon",
-			"fill": "#2e1065",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "repeat_button"
-		},
-		{
-			"acronym": "REQ",
-			"shape": "rounded-rectangle",
-			"fill": "#065f46",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "check"
-		},
-		{
-			"acronym": "RIS",
-			"shape": "hexagon",
-			"fill": "#881337",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "warning"
-		},
-		{
-			"acronym": "STA",
-			"shape": "ellipse",
-			"fill": "#701a75",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "tag"
-		},
-		{
-			"acronym": "STM",
-			"shape": "octagon",
-			"fill": "#4a044e",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "gear"
-		},
-		{
-			"acronym": "STR",
-			"shape": "rectangle",
-			"fill": "#365314",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "card"
-		},
-		{
-			"acronym": "TES",
-			"shape": "hexagon",
-			"fill": "#022c22",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "ppe"
-		},
-		{
-			"acronym": "THD",
-			"shape": "diamond",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "diamond"
-		},
-		{
-			"acronym": "ADV",
-			"shape": "rounded-rectangle",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "pirate_flag"
-		},
-		{
-			"acronym": "THC",
-			"shape": "rounded-rectangle",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "bomb"
-		},
-		{
-			"acronym": "VIC",
-			"shape": "rounded-rectangle",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "target"
-		},
-		{
-			"acronym": "ROW",
-			"shape": "rounded-rectangle",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "key"
-		},
-		{
-			"acronym": "THM",
-			"shape": "octagon",
-			"fill": "#4c0519",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "no_passing_fire"
-		},
-		{
-			"acronym": "TRG",
-			"shape": "trapezoid",
-			"fill": "#78350f",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "bolt"
-		},
-		{
-			"acronym": "VND",
-			"shape": "rounded-rectangle",
-			"fill": "#1a2e05",
-			"stroke": "#000000",
-			"text": "#FFFFFF",
-			"icon": "office"
-		}
-	]
+  "$schema": "../schemas/Aurora.viewconfiguration.schema.json",
+  "available_icons": [
+    "alarm",
+    "anchor",
+    "audio",
+    "balance_scale",
+    "bank",
+    "bar_chart",
+    "battery",
+    "battery_low",
+    "beetle",
+    "bell",
+    "biohazard",
+    "bolt",
+    "bomb",
+    "books",
+    "box",
+    "brick",
+    "bulb",
+    "card",
+    "card_file_box",
+    "card_index",
+    "card_index_dividers",
+    "chains",
+    "chart_decreasing",
+    "chart_increasing",
+    "check",
+    "chequered_flag",
+    "circle_red",
+    "classical_building",
+    "clock",
+    "clockwise_vertical_arrows",
+    "closed_book",
+    "cloud",
+    "collision",
+    "commercial",
+    "compass",
+    "construction",
+    "control_knobs",
+    "copyright",
+    "corner_square",
+    "counterclockwise_arrows_button",
+    "crane",
+    "cross_mark_button",
+    "crossed_swords",
+    "desktop",
+    "diamond",
+    "diskette",
+    "dollarsign",
+    "double_exclamation_mark",
+    "earth",
+    "electric_plug",
+    "email",
+    "exclamation",
+    "exclamation_question_mark",
+    "filing_cabinet",
+    "flag_red",
+    "folder",
+    "folder_open",
+    "gear",
+    "globe_with_meridians",
+    "group",
+    "hammer",
+    "hammer_and_pick",
+    "hammer_and_wrench",
+    "hook",
+    "hourglass",
+    "inbox_tray",
+    "industrial",
+    "key",
+    "laptop",
+    "large_blue_diamond",
+    "large_orange_diamond",
+    "ledger",
+    "level_slider",
+    "lifepreserver",
+    "link",
+    "lock",
+    "lock_and_key",
+    "locked_pen",
+    "magic_wand",
+    "magnifying_glass_tilted_left",
+    "memo",
+    "mobile",
+    "moneybag",
+    "no_entry",
+    "no_passing_fire",
+    "office",
+    "outbox_tray",
+    "page_facing_up",
+    "pen_black",
+    "pen_blue",
+    "person",
+    "pick",
+    "pirate_flag",
+    "police_car_light",
+    "ppe",
+    "printer",
+    "prohibited",
+    "puzzle_piece",
+    "question",
+    "radiation",
+    "receipt",
+    "recycle",
+    "red_triangle_pointed_down",
+    "red_triangle_pointed_up",
+    "registered",
+    "repeat_button",
+    "rescue_workers_helmet",
+    "robot",
+    "safety_vest",
+    "school",
+    "screwdriver",
+    "search",
+    "shield",
+    "skull_and_crossbones",
+    "speaker_high_volume",
+    "spider_web",
+    "spiral_calendar",
+    "star",
+    "stop_sign",
+    "stopwatch",
+    "straight_ruler",
+    "tag",
+    "target",
+    "thermometer",
+    "toolbox",
+    "trash_basket",
+    "unlocked",
+    "vertical_traffic_light",
+    "video",
+    "warning",
+    "wheelchair_symbol",
+    "wrench"
+  ],
+  "cards": [
+    {
+      "acronym": "ATV",
+      "fill": "#4c1d95",
+      "icon": "hammer",
+      "shape": "double-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "ACT",
+      "fill": "#1a2e05",
+      "icon": "person",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "STK",
+      "fill": "#1a2e05",
+      "icon": "group",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "ADR",
+      "fill": "#1f2937",
+      "icon": "straight_ruler",
+      "shape": "ruler",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "ART",
+      "fill": "#1e293b",
+      "icon": "page_facing_up",
+      "shape": "document",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "AST",
+      "fill": "#334155",
+      "icon": "lock_and_key",
+      "shape": "document",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "DAR",
+      "fill": "#0f766e",
+      "icon": "diskette",
+      "shape": "document",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "CAP",
+      "fill": "#052e16",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "SYS",
+      "fill": "#1e40af",
+      "icon": "robot",
+      "shape": "folder",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "APP",
+      "fill": "#1e40af",
+      "icon": "crane",
+      "shape": "rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "COM",
+      "fill": "#1e40af",
+      "icon": "puzzle_piece",
+      "shape": "component",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "DST",
+      "fill": "#5b21b6",
+      "shape": "cylinder",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "CON",
+      "fill": "#422006",
+      "icon": "large_blue_diamond",
+      "shape": "diamond",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "CNS",
+      "fill": "#082f49",
+      "icon": "stop_sign",
+      "shape": "ruler",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "CTL",
+      "fill": "#713f12",
+      "icon": "shield",
+      "shape": "ruler",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "EXC",
+      "fill": "#9a3412",
+      "icon": "memo",
+      "shape": "ruler",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "DEP",
+      "fill": "#1e1b4b",
+      "icon": "red_triangle_pointed_up",
+      "shape": "octagon",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "DSR",
+      "fill": "#0e7490",
+      "shape": "cylinder",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "DRI",
+      "fill": "#064e3b",
+      "icon": "compass",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "EVT",
+      "fill": "#5b21b6",
+      "icon": "alarm",
+      "shape": "trapezoid",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "FEA",
+      "fill": "#14532d",
+      "icon": "level_slider",
+      "shape": "rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "INT",
+      "fill": "#102080",
+      "icon": "electric_plug",
+      "shape": "interface",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "API",
+      "fill": "#0f3d91",
+      "icon": "cloud",
+      "shape": "interface",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "MIS",
+      "fill": "#022c22",
+      "icon": "anchor",
+      "shape": "octagon",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "NOD",
+      "fill": "#312e81",
+      "icon": "desktop",
+      "shape": "box",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "PRD",
+      "fill": "#581c87",
+      "icon": "large_orange_diamond",
+      "shape": "diamond",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "PRO",
+      "fill": "#2e1065",
+      "icon": "repeat_button",
+      "shape": "octagon",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "REQ",
+      "fill": "#065f46",
+      "icon": "check",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "RIS",
+      "fill": "#881337",
+      "icon": "warning",
+      "shape": "hexagon",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "STA",
+      "fill": "#701a75",
+      "icon": "tag",
+      "shape": "ellipse",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "STM",
+      "fill": "#4a044e",
+      "icon": "gear",
+      "shape": "octagon",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "STR",
+      "fill": "#365314",
+      "icon": "card",
+      "shape": "rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "TES",
+      "fill": "#022c22",
+      "icon": "ppe",
+      "shape": "hexagon",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "THD",
+      "fill": "#4c0519",
+      "icon": "diamond",
+      "shape": "diamond",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "ADV",
+      "fill": "#4c0519",
+      "icon": "pirate_flag",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "THC",
+      "fill": "#4c0519",
+      "icon": "bomb",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "VIC",
+      "fill": "#4c0519",
+      "icon": "target",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "ROW",
+      "fill": "#4c0519",
+      "icon": "key",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "THM",
+      "fill": "#4c0519",
+      "icon": "no_passing_fire",
+      "shape": "octagon",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "TRG",
+      "fill": "#78350f",
+      "icon": "bolt",
+      "shape": "trapezoid",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    },
+    {
+      "acronym": "VND",
+      "fill": "#1a2e05",
+      "icon": "office",
+      "shape": "rounded-rectangle",
+      "stroke": "#000000",
+      "text": "#FFFFFF"
+    }
+  ],
+  "domains": {
+    "Governance": {
+      "cards": [
+        "MIS",
+        "DRI",
+        "STK"
+      ],
+      "subdomains": {
+        "Process": {
+          "cards": [
+            "PRO"
+          ],
+          "subsubdomains": {
+            "ProcessSteps": [
+              "ATV",
+              "ACT",
+              "CON",
+              "TRG"
+            ]
+          }
+        },
+        "Requirements": {
+          "cards": [
+            "EXC",
+            "TES",
+            "ADR",
+            "CTL",
+            "CAP",
+            "CNS",
+            "FEA",
+            "REQ",
+            "STR"
+          ]
+        },
+        "Risk": {
+          "cards": [
+            "RIS",
+            "THD",
+            "THM"
+          ],
+          "subsubdomains": {
+            "ThreatDiamond": [
+              "ADV",
+              "AST",
+              "ROW",
+              "THC",
+              "VIC"
+            ]
+          }
+        }
+      }
+    },
+    "Structure": {
+      "cards": [
+        "APP",
+        "ART",
+        "COM",
+        "DST",
+        "INT",
+        "SYS"
+      ],
+      "subdomains": {
+        "Deployment": {
+          "cards": [
+            "DEP",
+            "NOD",
+            "DAR"
+          ]
+        },
+        "External": {
+          "cards": [
+            "VND",
+            "API",
+            "DSR"
+          ]
+        },
+        "State": {
+          "cards": [
+            "EVT",
+            "PRD",
+            "STA",
+            "STM"
+          ]
+        }
+      }
+    }
+  },
+  "version": "1.1.0",
+  "views": [
+    {
+      "description": "Demonstrates adherence to constraints through mission drivers, controls, risk treatment, and verifiable tests.",
+      "included_card_types": [
+        "DRI",
+        "CNS",
+        "REQ",
+        "CTL",
+        "TES",
+        "RIS"
+      ],
+      "name": "Compliance Governance",
+      "root_card_types": [
+        "MIS"
+      ]
+    },
+    {
+      "description": "Explains internal implementation structure, focusing on how applications and components are realized in code.",
+      "included_card_types": [
+        "COM",
+        "VND",
+        "INT",
+        "API",
+        "ART",
+        "DST",
+        "DSR"
+      ],
+      "name": "Component",
+      "root_card_types": [
+        "SYS",
+        "APP"
+      ]
+    },
+    {
+      "description": "Defines where software executes, focusing on deployments, nodes, and hosted runtime elements.",
+      "included_card_types": [
+        "APP",
+        "DEP",
+        "NOD",
+        "DAR"
+      ],
+      "name": "Deployment",
+      "root_card_types": [
+        "SYS",
+        "DST"
+      ]
+    },
+    {
+      "description": "Displays the complete architectural model, highlighting shortest paths from the mission and alternate relationships.",
+      "included_card_types": [
+        "DRI",
+        "STK",
+        "SYS",
+        "APP",
+        "CAP",
+        "REQ",
+        "FEA",
+        "ADR",
+        "CNS",
+        "CTL",
+        "EXC",
+        "RIS",
+        "PRO",
+        "ATV",
+        "CON",
+        "TRG",
+        "EVT",
+        "PRD",
+        "STM",
+        "STA",
+        "STR",
+        "ACT",
+        "VND",
+        "ART",
+        "API",
+        "DAR",
+        "DST",
+        "DSR",
+        "AST",
+        "DEP",
+        "NOD",
+        "COM",
+        "INT",
+        "TES",
+        "THM",
+        "THD",
+        "ADV",
+        "THC",
+        "VIC",
+        "ROW"
+      ],
+      "name": "Entire Model",
+      "root_card_types": [
+        "MIS"
+      ]
+    },
+    {
+      "description": "Details how a capability is realized through ordered processes and activities with explicit triggering conditions.",
+      "included_card_types": [
+        "PRO",
+        "ATV",
+        "CON",
+        "ACT"
+      ],
+      "name": "Process",
+      "root_card_types": [
+        "CAP"
+      ]
+    },
+    {
+      "description": "Captures mission intent, motivation, and required capabilities, including architectural decisions that justify scope.",
+      "included_card_types": [
+        "DRI",
+        "STK",
+        "CAP",
+        "REQ",
+        "ADR",
+        "CNS",
+        "CTL",
+        "EXC",
+        "TES",
+        "STR"
+      ],
+      "name": "Requirements",
+      "root_card_types": [
+        "MIS"
+      ]
+    },
+    {
+      "description": "Shows system context: mission intent, stakeholders, and primary system components and interfaces.",
+      "included_card_types": [
+        "STK",
+        "DRI",
+        "STR",
+        "EXC",
+        "ADR",
+        "CNS",
+        "REQ",
+        "TES",
+        "FEA",
+        "CAP",
+        "SYS",
+        "APP",
+        "COM",
+        "INT"
+      ],
+      "name": "Context",
+      "root_card_types": [
+        "MIS"
+      ]
+    },
+    {
+      "description": "Shows the high-level landscape of major components, interfaces, deployments, and nodes.",
+      "included_card_types": [
+        "APP",
+        "COM",
+        "VND",
+        "INT",
+        "API",
+        "DST",
+        "DEP",
+        "NOD",
+        "DAR"
+      ],
+      "name": "Landscape",
+      "root_card_types": [
+        "SYS"
+      ]
+    },
+    {
+      "description": "Analyzes protection of assets against threats, including actors, constraints, controls, and resulting risks.",
+      "included_card_types": [
+        "THM",
+        "THD",
+        "ADV",
+        "THC",
+        "VIC",
+        "ROW",
+        "AST",
+        "CTL"
+      ],
+      "name": "Security",
+      "root_card_types": [
+        "RIS"
+      ]
+    },
+    {
+      "description": "Models system behavior using state machines, states, predicates, and events without process contamination.",
+      "included_card_types": [
+        "STM",
+        "STA",
+        "PRD",
+        "EVT"
+      ],
+      "name": "State Machine",
+      "root_card_types": [
+        "COM"
+      ]
+    },
+    {
+      "description": "Provides end-to-end impact and coverage analysis from requirements through implementation and verification.",
+      "included_card_types": [
+        "DRI",
+        "REQ",
+        "CAP",
+        "FEA",
+        "SYS",
+        "APP",
+        "COM",
+        "TES",
+        "ADR",
+        "CNS",
+        "CTL",
+        "EXC",
+        "THM",
+        "RIS",
+        "API"
+      ],
+      "name": "Traceability",
+      "root_card_types": [
+        "MIS"
+      ]
+    },
+    {
+      "description": "Describes externally visible behavior using stakeholder stories and actor activities.",
+      "included_card_types": [
+        "STR",
+        "EXC",
+        "ADR",
+        "REQ",
+        "CNS"
+      ],
+      "name": "Use Case",
+      "root_card_types": [
+        "STK"
+      ]
+    }
+  ]
 }

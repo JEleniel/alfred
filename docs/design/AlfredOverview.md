@@ -4,6 +4,9 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
 
 ## Functional Requirements
 
+- Alfred MUST enforce One Source of Truth governance as defined in [`docs/design/DesignAuthority.md`](./DesignAuthority.md).
+- Alfred MUST keep public behavior aligned with canonical contracts and MUST NOT retain undocumented compatibility aliases.
+
 - Alfred MUST maintain an index of all files in the workspace not in an ignore list and their contents.
 - Alfred MUST provide a consolidated tool surface that minimizes command-count overhead.
     - Alfred MUST expose `search` for workspace text search (`general`, `full_text`, and `regex` modes).
@@ -48,6 +51,7 @@ Alfred provides efficient, safe, and reliable MCP capabilities for common agent 
     - Diagnostics MUST use a consistent schema regardless of source tool.
     - Diagnostics SHOULD support delta reporting between runs (for example new, unchanged, resolved).
 - Alfred MUST use deterministic and clear error taxonomy definitions.
+- Alfred MUST conform to the structural quality and decomposition policy defined in [`docs/design/QualityPolicy.md`](./QualityPolicy.md).
 - Alfred MUST provide dry-run behavior for destructive or irreversible actions.
 - Alfred MUST be self-contained and MUST NOT depend on any outside service.
     - Alfred MUST rotate runtime logs on server startup and retain a bounded history (default 7 days), with archives stored in ZIP form.

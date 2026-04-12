@@ -8,6 +8,11 @@ Redaction is applied:
 - To tool outputs (redacted content MUST NOT be emitted).
 - To logs and job streams (redacted content MUST NOT be persisted or emitted).
 
+Operational path logging policy:
+
+- Absolute paths that can disclose host user names or home-directory segments MUST NOT be logged verbatim.
+- Logs SHOULD use workspace-relative paths or short path tails that do not reveal non-public host identity details.
+
 Redaction is deterministic. The same inputs MUST produce the same outputs.
 
 ## Terminology

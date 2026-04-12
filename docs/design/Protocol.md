@@ -26,16 +26,20 @@ Unless a tool contract explicitly states otherwise, all `path` values in tool in
 
 If an incoming request provides a path using `\` separators, Alfred MUST treat them as `/` separators before normalization.
 
-### Deterministic encoding for non-text paths
+### Deterministic path transport encoding
 
-Filesystems can contain paths that are not valid Unicode strings (for example, arbitrary bytes on Unix, or ill-formed UTF-16 on Windows). Alfred MUST still emit valid UTF-8 JSON.
+All protocol path strings MUST be valid UTF-8 and MUST use percent-encoding for transport when encoding is required.
 
-When a path cannot be represented as Unicode text, Alfred MUST emit an encoded ASCII-only representation using these rules:
+- `.` MUST remain literal.
+- Path separator semantics remain native to path handling logic; protocol encoding only governs transport shape.
+- Inputs containing unsafe or ambiguous path text MUST be rejected at the boundary rather than round-tripped.
+- Rejected characters include `<`, `>`, `:`, `"`, `\`, `|`, `?`, `*`, `\0`, ASCII `0..=31`, Unicode control characters, and invalid Unicode values.
+- `/` remains valid only as a path separator and MUST NOT appear inside encoded path components.
+- Spaces are allowed.
+- File-name components matching reserved Windows names (`CON`, `PRN`, `AUX`, `NUL`, `COM0..COM9`, `LPT0..LPT9`) MUST be rejected.
+- File-name components ending in `.` MUST be rejected.
 
-- Unix (byte paths): represent each non-UTF-8 byte as `\xNN` (uppercase hex), and escape backslash as `\\`.
-- Windows (UTF-16): represent any unpaired surrogate 16-bit unit as `\u{XXXX}` (uppercase hex). Other code points MUST be emitted normally.
-
-When encoded path rendering occurs, Alfred SHOULD add a warning via top-level `warnings` (for example `{"kind":"path_encoded"}`) and MUST ensure ordering/cursors use the encoded representation consistently.
+When path encoding occurs, Alfred SHOULD add a warning via top-level `warnings` (for example `{"kind":"path_encoded"}`) and MUST ensure ordering/cursors use the encoded representation consistently.
 
 ## Alfred tool result envelope
 

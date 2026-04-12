@@ -2,6 +2,8 @@
 
 This document describes Alfred's architecture-level tool surface at an implementation-ready level.
 
+Canonical governance for this document is defined in [`DesignAuthority.md`](./DesignAuthority.md) and [`QualityPolicy.md`](./QualityPolicy.md).
+
 Unless otherwise specified:
 
 - Tools are executed relative to the workspace root.

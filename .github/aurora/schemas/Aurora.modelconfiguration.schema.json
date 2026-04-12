@@ -101,6 +101,9 @@
 			"minLength": 1,
 			"type": "string"
 		},
+		"version": {
+			"$ref": "#/$defs/non_empty"
+		},
 		"cards": {
 			"$ref": "#/$defs/cards"
 		}
