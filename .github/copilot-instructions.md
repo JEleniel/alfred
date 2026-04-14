@@ -30,7 +30,7 @@ These instructions apply to the Project Plan at `docs/design/ProjectPlan.md` if 
 - NEVER alter the plan in any other way unless instructed.
 - If the user has you deviate from the Project Plan, ALWAYS update any items completed even if they are out of order.
 - NEVER track implementation details, challenges, or similar in the Project Plan.
-- ALWAYS track implementation details, challenges, variances from the design, and similar in `docs/design/tracking/AsBuilt.md`. Create the file if it does not exist.
+- ALWAYS track variations between implementation and design, and why they are in place, in  `docs/design/tracking/AsBuilt.md`. Create the file if it does not exist.
 
 ### Changelog
 

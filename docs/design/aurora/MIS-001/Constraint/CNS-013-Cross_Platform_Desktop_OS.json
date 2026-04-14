@@ -4,5 +4,10 @@
 	"card_type": "Constraint",
 	"name": "Cross-Platform Desktop OS Support",
 	"description": "Alfred MUST run on Linux, macOS, and Windows.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-016"
+		}
+	]
 }

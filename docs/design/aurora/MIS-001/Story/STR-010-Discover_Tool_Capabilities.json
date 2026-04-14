@@ -6,12 +6,8 @@
 	"description": "As an agent user, I need Alfred to advertise its tool surface, versions, and limits so that the agent can adapt behavior safely and avoid invalid calls.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-010"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-008"
 		}
 	]
 }

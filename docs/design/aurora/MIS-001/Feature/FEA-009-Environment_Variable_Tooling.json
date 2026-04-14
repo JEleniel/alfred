@@ -8,10 +8,6 @@
 		{
 			"relationship": "realizes",
 			"target": "CAP-009"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-010"
 		}
 	]
 }

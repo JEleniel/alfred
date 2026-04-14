@@ -1,4 +1,10 @@
-# Default Include and Exclude List
+# IncludeExcludeList
+
+This document specifies Alfred's built-in include and exclude patterns.
+
+## Parent Aurora card
+
+[CAP-001](../aurora/MIS-001/Capability/CAP-001-Workspace_Index_and_Query.json) — this document elaborates the built-in indexing rules used by the workspace index and query capability.
 
 Alfred uses two built-in ignore lists with different override semantics:
 
@@ -61,7 +67,7 @@ Alfred uses two built-in ignore lists with different override semantics:
 *.webp
 ```
 
-# Default `.alfredignore`
+## Default `.alfredignore`
 
 These patterns are applied by default but MAY be overridden by a `!` include line in a `.alfredignore` file.
 

@@ -2,8 +2,8 @@
 	"$schema": "../../schemas/Aurora.card.schema.json",
 	"id": "STM-009",
 	"card_type": "State Machine",
-	"name": "Contracts and Diagnostics State Machine",
-	"description": "Deterministic validation and emission lifecycle for COM-011 (Contracts and Diagnostics) when shaping outputs and errors.",
+	"name": "Interfaces and Diagnostics State Machine",
+	"description": "Deterministic validation and emission lifecycle for COM-011 (Interfaces and Diagnostics) when shaping outputs and errors.",
 	"links": [
 		{
 			"relationship": "has",

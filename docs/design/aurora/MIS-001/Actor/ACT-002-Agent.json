@@ -32,7 +32,6 @@
 		}
 	],
 	"attributes": {
-		"invocation_path": "via ACT-001 (MCP Host) over stdio",
 		"operational_mode": "local-first relative to workspace host"
 	}
 }

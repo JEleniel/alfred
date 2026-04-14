@@ -1,8 +1,10 @@
-# Alfred Tool Contracts
+# Tool API Definition
 
-This document describes Alfred's architecture-level tool surface at an implementation-ready level.
+This document specifies Alfred's public tool names, operations, payloads, ordering rules, and tool-level limits.
 
-Canonical governance for this document is defined in [`DesignAuthority.md`](./DesignAuthority.md) and [`QualityPolicy.md`](./QualityPolicy.md).
+## Parent Aurora card
+
+[INT-001](./aurora/MIS-001/Interface/INT-001-MCP_Stdio_Interface.json) — this document elaborates the tool-API portion of the MCP stdio interface.
 
 Unless otherwise specified:
 
@@ -13,25 +15,11 @@ Unless otherwise specified:
 - Operations do not default to paging.
 - Line and column numbers in a file are 1-indexed.
 
-## Configuration and policy
+## Policy-driven surface
 
-Alfred behavior is configurable at two levels:
+This document defines Alfred's canonical public tool API. Configuration sourcing, precedence, persistence locations, and storage layout are defined in [`Configuration.md`](./Configuration.md) and [`StorageLayout.md`](./StorageLayout.md).
 
-- User configuration: applies to all workspaces on a machine.
-- Workspace configuration: applies only within a single workspace.
-
-Workspace configuration MUST override user configuration.
-
-Default config locations:
-
-- User: OS config directory `alfred/config.json`.
-- Workspace: `<workspaceRoot>/.alfred/config.json`.
-
-Configuration keys and defaults are defined in [`docs/design/Configuration.md`](./Configuration.md).
-
-### Tool enablement
-
-Any tool MAY be disabled by configuration.
+Any tool MAY be disabled by policy.
 
 - Disabled tools MUST be omitted from `capabilities`.
 - Calls to disabled tools MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
@@ -46,15 +34,15 @@ Alfred MUST filter non-public information (NPI) from:
 
 NPI includes (at minimum) NPI-looking values (tokens/keys/passwords) and MAY include user-configured PII/PHI-like patterns.
 
-Redaction is deterministic and uses a stable replacement token (default `<-REDACTED->`, see [Defaults](./Defaults.md)).
+Redaction is deterministic and uses a stable replacement token (default `<-REDACTED->`, see [Default](./Default.md)).
 
 The deterministic redaction algorithm (detection + replacement-length fitting) is specified in [`docs/design/Redaction.md`](./Redaction.md).
 
-Tools SHOULD surface redaction as a warning in the tool result envelope (see [`docs/design/Protocol.md`](./Protocol.md)) rather than failing the call.
+Tools SHOULD surface redaction as a warning in the tool result envelope (see [`McpStdioProtocol.md`](./McpStdioProtocol.md)) rather than failing the call.
 
 ## Result envelope (all tools)
 
-All tools MUST return results using the envelope described in [`docs/design/Protocol.md`](./Protocol.md).
+All tools MUST return results using the envelope described in `McpStdioProtocol.md`.
 
 In this document, each tool section's **Output** describes the envelope `data` payload unless explicitly stated otherwise.
 
@@ -82,7 +70,7 @@ The architecture intentionally consolidates the public command set to reduce too
 - Execution: synchronous.
 - Input: none.
 - Output:
-    - `root`: normalized workspace-root absolute path.
+    - `root`: host-OS-normalized workspace-root absolute path.
 
 ## Search tool
 
@@ -92,8 +80,8 @@ The architecture intentionally consolidates the public command set to reduce too
 - Execution: synchronous.
 - Input:
     - `query`: string.
-    - `mode`: optional `"general" | "full_text" | "regex"` (default `"general"`, see [Defaults](./Defaults.md)).
-    - `case_sensitive`: optional boolean (default `false`, see [Defaults](./Defaults.md)).
+    - `mode`: optional `"general" | "full_text" | "regex"` (default `"general"`, see `Default.md`).
+    - `case_sensitive`: optional boolean (default `false`, see `Default.md`).
     - `include_pattern`: optional string (glob applied to workspace-relative paths).
     - `exclude_pattern`: optional string (glob applied to workspace-relative paths).
     - `cursor`: optional string.
@@ -107,7 +95,7 @@ The architecture intentionally consolidates the public command set to reduce too
 
 Notes:
 
-- This tool is index-backed. If the workspace index is not available, the tool MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
+- This tool is index-backed. If the workspace index is not available, the tool MUST fail deterministically (see `ErrorTaxonomy.md`).
 - Result ordering: `matches` MUST be stable-sorted lexicographically, case-insensitive by `path`, then by `line` ascending.
 
 Search modes:
@@ -127,9 +115,10 @@ Asynchronous n-gram indexing:
 - N-gram indexing MAY be performed asynchronously (eventual consistency is acceptable) so long as `mode: "regex"` remains correct by verifying matches against raw text.
 - The n-gram field is an internal performance mechanism and MUST NOT change observable match semantics beyond reducing the candidate set for verification.
 
-Mode-parameter conflicts:
+Mode-parameter compatibility:
 
-- Parameters specific to one mode MUST NOT be supplied with an incompatible mode. Violations MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `mode_parameter_conflict`).
+- In the current public API, all documented `search` parameters are mode-agnostic.
+- No mode-specific parameter incompatibilities are currently defined for `search`.
 
 ## Agent guidance
 
@@ -235,6 +224,7 @@ Pre-written prompts and agent guidance instructions will be added in a future ve
         - `path`: string.
     - Result:
         - `deleted`: boolean.
+    - Policy note: disabled by default. Alfred MUST reject this operation unless it is explicitly enabled by configuration (see `Configuration.md`).
 
 - `create_dir`
     - Input args:
@@ -248,6 +238,7 @@ Pre-written prompts and agent guidance instructions will be added in a future ve
         - `path`: string.
     - Result:
         - `deleted`: boolean.
+    - Policy note: disabled by default. Alfred MUST reject this operation unless it is explicitly enabled by configuration (see `Configuration.md`).
 
 - `bulk`
     - Input args:
@@ -283,6 +274,7 @@ Pre-written prompts and agent guidance instructions will be added in a future ve
 Notes:
 
 - `cancel` returns the same shape as `status`, reflecting the operation state at the time the cancel was processed.
+- Delete actions inside `bulk` are disabled by default. Alfred MUST reject any item with `kind: "delete"` unless that operation has been explicitly enabled by configuration (see `Configuration.md`).
 
 - Byte-oriented file operations are out of scope for Alfred and MUST NOT be exposed.
 - All paths MUST resolve within the workspace boundary after applying host-OS path semantics.
@@ -353,20 +345,20 @@ Revert semantics:
 > **Retention rule**: Alfred retains revert state only for the patches applied in the most recent `patch` or `multi-patch` call. Each new apply call replaces all prior revert state. Revert-only calls do not update the retained set.
 
 - A reversion MUST apply the reverse patch using the same semantics as other patches.
-- If the `patch_id` is no longer retained (superseded by a later call), Alfred MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `patch_id_not_retained`).
-- If the target file has changed since the patch was applied, Alfred MUST refuse to revert for that file and fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `file_changed_since_patch`).
+- If the `patch_id` is no longer retained (superseded by a later call), Alfred MUST fail deterministically (see `ErrorTaxonomy.md`, `patch_id_not_retained`).
+- If the target file has changed since the patch was applied, Alfred MUST refuse to revert for that file and fail deterministically (see `ErrorTaxonomy.md`, `file_changed_since_patch`).
 - After a successful non-dry-run revert for a given `patch_id`, Alfred MUST discard the stored revert state for that `patch_id`.
 
 Duplicate-content safeguard:
 
 - Alfred MUST evaluate each patch for duplicate-content before write.
-- If applying a patch would duplicate existing content (for example, append a full-file copy to the end of the same file), Alfred MUST refuse to apply that patch as a hard failure (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `duplicate_content`).
+- If applying a patch would duplicate existing content (for example, append a full-file copy to the end of the same file), Alfred MUST refuse to apply that patch as a hard failure (see `ErrorTaxonomy.md`, `duplicate_content`).
 
 ## Status tool
 
 ### `status`
 
-- Purpose: return a lightweight snapshot of Alfred runtime state (index readiness, memory usage, configured paths).
+- Purpose: return a lightweight snapshot of Alfred runtime state (index readiness, memory usage, and effective runtime paths).
 - Execution: synchronous.
 - Input:
     - `verbose`: optional boolean (default `false`).
@@ -387,7 +379,7 @@ Duplicate-content safeguard:
 
 Notes:
 
-- `paths.alfred_logs` MAY be an absolute path outside the workspace when runtime logs are configured to live in OS user log locations.
+- `paths.alfred_logs` MAY be an absolute path outside the workspace when the effective runtime log location is outside the workspace boundary.
 
 ## Log operations tool
 
@@ -439,7 +431,7 @@ Supported operations:
 
 Path rules:
 
-- If `args.path` is omitted, Alfred MUST use its configured runtime log path.
+- If `args.path` is omitted, Alfred MUST use Alfred's effective runtime log path.
 - If `args.path` is provided:
     - It MAY use any path form valid for the host OS.
     - The resolved path MUST remain within the workspace boundary.
@@ -447,13 +439,13 @@ Path rules:
 
 Streaming notes:
 
-- `follow` is a streaming operation governed by the contract in [`docs/design/Protocol.md`](./Protocol.md) (Streaming semantics).
+- `follow` is a streaming operation governed by the contract in `McpStdioProtocol.md` (Streaming semantics).
 - Streamed output MUST use the normal tool result envelope and the normal `logs` output shape.
-- The terminal emission MUST include `result.stopped: true` (see [`docs/design/Protocol.md`](./Protocol.md)).
+- The terminal emission MUST include `result.stopped: true` (see `McpStdioProtocol.md`).
 - Only one `follow` stream may be active at a time.
-    - If a `follow` stream is already active, a new `follow` start request MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `stream_active`).
+    - If a `follow` stream is already active, a new `follow` start request MUST fail deterministically (see `ErrorTaxonomy.md`, `stream_active`).
     - A `follow` stop request (`stop: true`) MUST stop the active stream and emit a terminal envelope.
-    - If a `follow` stop request is issued when no stream is active, Alfred MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `stream_not_active`).
+    - If a `follow` stop request is issued when no stream is active, Alfred MUST fail deterministically (see `ErrorTaxonomy.md`, `stream_not_active`).
 
 Behavioral notes:
 
@@ -491,9 +483,7 @@ Operations:
 
 Plan location and locking:
 
-- Default plan selection:
-    1. `docs/design/ProjectPlan.md` if present.
-    2. `ProjectPlan.md` otherwise.
+- The effective plan path is selected by Alfred's configuration and default-location rules as defined in `Configuration.md`.
 - Content mutations (add, edit, delete plan items) MUST use the `fs` tool directly.
 - Concurrent writers (multiple Alfred instances targeting the same workspace plan) are unsupported; last-write-wins behavior is acceptable.
 
@@ -594,16 +584,13 @@ Operation contracts:
     - Input args:
         - `id`: string (UUID).
         - `scope`: `"user" | "workspace"`. Required to disambiguate when the same `id` may exist in more than one scope.
-        - `dry_run`: optional boolean (default `true`, see [Defaults](./Defaults.md)).
+        - `dry_run`: optional boolean (default `true`, see `Default.md`).
     - Result:
         - `deleted`: boolean.
 
 Storage model:
 
-- User-scoped memory (default): persisted under `<user data>/alfred/memory/`.
-- When `storage.user.location = "workspace"`, user-scoped memory is persisted under `<workspace.storage.root>/user/memory/`.
-- Workspace-scoped memory (optional): persisted under `<workspace.storage.root>/memory/` when `storage.workspace.location = "workspace"`.
-- When `storage.workspace.location = "user"`, workspace-scoped memory is persisted under `<user data>/alfred/<workspace_id>/data/memory/`.
+- Memory enablement, scope persistence, and resolved storage locations are defined in `Configuration.md` and `StorageLayout.md`.
 - Alfred MUST NOT maintain more than one persisted copy of any active memory index for a given scope.
 
 ## Capability discovery
@@ -627,7 +614,7 @@ Execution modes:
 - `Background`: may return `status: "pending"` and MUST be polled via a follow-up tool call.
 - `Stream`: may emit a stream of results over time by emitting repeated, standard tool result envelopes (MCP-compliant).
 
-Limits SHOULD include (canonical values in [`docs/design/Defaults.md`](./Defaults.md)):
+Limits SHOULD include (canonical values in `Default.md`):
 
 - `max_inline_utf8_bytes`: maximum inline payload size per call.
 - `max_patch_files_per_call`: maximum number of files accepted by `patch`.

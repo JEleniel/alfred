@@ -4,5 +4,10 @@
 	"card_type": "Constraint",
 	"name": "VS Code Remote Development Compatibility",
 	"description": "Alfred MUST be compatible with VS Code Remote Development modes (SSH, WSL, Dev Containers) where the extension host is remote. Alfred runs as a local stdio process relative to the extension host/workspace machine.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-016"
+		}
+	]
 }

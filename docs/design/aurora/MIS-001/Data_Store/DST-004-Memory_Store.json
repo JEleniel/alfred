@@ -5,42 +5,9 @@
 	"card_subtype": "Index",
 	"name": "Memory Store",
 	"description": "Local persistent storage for memory facts and their derived search index.",
-	"links": [
-		{
-			"relationship": "retrieves",
-			"target": "ART-008"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
-		}
-	],
+	"links": [],
 	"attributes": {
 		"offline_only": true,
-		"durability": "persistent",
-		"stores": {
-			"user": {
-				"default_location": "<userDataDir>/alfred/memory/",
-				"notes": "User-scoped (global) memory store and index."
-			},
-			"workspace": {
-				"default_location": "<workspaceRoot>/.alfred/memory/",
-				"notes": "Workspace-scoped memory store and index (when enabled).",
-				"optional": true
-			}
-		},
-		"effective_view": {
-			"mode_default": "merged",
-			"modes": ["merged", "prefer_workspace"],
-			"id_collision_resolution": "workspace_over_user",
-			"scope_required_for_writes": true,
-			"id_issued_by": "alfred",
-			"id_format": "uuid",
-			"workspace_relocated_default_location": "<userDataDir>/alfred/<workspace_id>/data/memory/",
-			"user_preferences": {
-				"persist_in": "user",
-				"workspace_override_allowed": true
-			}
-		}
+		"durability": "persistent"
 	}
 }

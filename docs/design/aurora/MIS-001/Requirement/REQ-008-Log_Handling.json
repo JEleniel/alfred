@@ -11,6 +11,6 @@
 		}
 	],
 	"attributes": {
-		"spec": "docs/design/Protocol.md"
+		"spec": "docs/design/McpStdioProtocol.md"
 	}
 }

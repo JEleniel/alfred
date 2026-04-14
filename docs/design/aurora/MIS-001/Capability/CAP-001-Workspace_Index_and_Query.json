@@ -6,9 +6,10 @@
 	"description": "Maintain an index of workspace files and provide fast, deterministic search and file inspection primitives.",
 	"links": [],
 	"attributes": {
-		"contracts": {
-			"tool_contracts": "docs/design/ToolContracts.md"
+		"specifications": {
+			"tool_api": "docs/design/ToolApiDefinition.md"
 		},
 		"tools": ["search", "fs"]
-	}
+	},
+	"external_references": ["docs/design/Default/IncludeExcludeList.md"]
 }

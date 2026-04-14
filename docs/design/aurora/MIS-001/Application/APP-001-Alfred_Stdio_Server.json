@@ -6,10 +6,6 @@
 	"description": "Single local process implementing the MCP tool surface over stdio, enforcing workspace boundaries and returning machine-readable results.",
 	"links": [
 		{
-			"relationship": "deploys to",
-			"target": "DEP-001"
-		},
-		{
 			"relationship": "comprises",
 			"target": "COM-001"
 		},
@@ -23,7 +19,15 @@
 		},
 		{
 			"relationship": "comprises",
+			"target": "COM-005"
+		},
+		{
+			"relationship": "comprises",
 			"target": "COM-007"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-008"
 		},
 		{
 			"relationship": "comprises",
@@ -39,7 +43,71 @@
 		},
 		{
 			"relationship": "comprises",
+			"target": "COM-013"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-014"
+		},
+		{
+			"relationship": "comprises",
+			"target": "COM-016"
+		},
+		{
+			"relationship": "comprises",
 			"target": "COM-017"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-001"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-002"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-003"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-004"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-006"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-007"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-008"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-009"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-010"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-012"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-013"
+		},
+		{
+			"relationship": "implements",
+			"target": "FEA-014"
+		},
+		{
+			"relationship": "implements",
+			"target": "TES-001"
 		}
 	],
 	"attributes": {
@@ -55,7 +123,7 @@
 			"memory",
 			"capabilities",
 			"status"
-		],
-		"deprecated_tool_families_non_exposed": ["env_*", "job_*"]
-	}
+		]
+	},
+	"external_references": ["docs/design/StorageLayout.md", "docs/design/Default.md"]
 }

@@ -7,8 +7,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
 ## Planning Constraints
 
 - Public surface remains consolidated: `capabilities`, `workspace_dir`, `status`, `search`, `fs`, `patch`, `logs`, `plan`, `memory`.
-- Normative contract set: `Protocol.md`, `ToolContracts.md`, `ErrorTaxonomy.md`, `Redaction.md`, `Configuration.md`, `Defaults.md`, `StorageLayout.md`.
-- Design authority is defined in `docs/design/DesignAuthority.md`.
+- Normative interface and policy set: `McpStdioProtocol.md`, `ToolApiDefinition.md`, `ErrorTaxonomy.md`, `Redaction.md`, `Configuration.md`, `Default.md`, `StorageLayout.md`.
 - Structural quality policy is defined in `docs/design/QualityPolicy.md`.
 - One Source of Truth is mandatory for every capability and contract.
 - Review and verification order: analysis, architecture, code, documentation.
@@ -32,20 +31,20 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - Acceptance gates: correctness, determinism, security, conformance.
         - Rejection gates: duplicate logic paths, contract drift, compatibility shims, and unapproved aliases.
         - Verification gates: analysis first, then architecture, then code, then documentation.
-    - References: `docs/design/ProjectSummary.md`, `docs/design/AlfredOverview.md`, `docs/design/aurora/MIS-001/Compact.json`
+    - References: `docs/design/ProjectSummary.md`, `docs/design/aurora/MIS-001/Requirement/`, `docs/design/aurora/MIS-001/Compact.json`
 
-- [ ] P0: Normalize authoritative contracts before implementation
+- [ ] P0: Normalize authoritative interfaces before implementation
     - Description: Resolve contradictions across normative docs so implementation has one canonical target.
     - Deliverable:
         - A conflict matrix covering protocol envelope shape, tool I/O schemas, and error kinds.
         - Canonicalized contract decisions reflected in one source per concern.
         - Cross-links from all dependent docs to canonical locations.
     - Subtasks:
-        - [ ] Capture protocol-envelope conflicts across `Protocol.md`, `ToolContracts.md`, and `ErrorTaxonomy.md`.
+        - [ ] Capture protocol-envelope conflicts across `McpStdioProtocol.md`, `ToolApiDefinition.md`, and `ErrorTaxonomy.md`.
         - [ ] Record canonical decisions for tool I/O schemas and execution-mode semantics.
         - [ ] Record canonical decisions for error kinds and `details.reason` usage.
         - [ ] Add cross-links from dependent design docs to the canonical sources.
-    - References: `docs/design/Protocol.md`, `docs/design/ToolContracts.md`, `docs/design/ErrorTaxonomy.md`
+    - References: `docs/design/McpStdioProtocol.md`, `docs/design/ToolApiDefinition.md`, `docs/design/ErrorTaxonomy.md`
     - Depends on: Lock governance and acceptance gates
 
 - [ ] P0: Produce architecture baseline
@@ -54,7 +53,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - A decomposition map assigning each capability to one owning module.
         - Explicit trust boundaries and boundary-enforcement flow.
         - Lifecycle/state mapping for sync, background, and streaming operations.
-    - References: `docs/design/AlfredArchitecture.md`, `docs/design/aurora/MIS-001/Compact.json`
+    - References: `docs/design/Architecture.md`, `docs/design/aurora/MIS-001/Compact.json`
     - Depends on: Normalize authoritative contracts before implementation
 
 - [ ] P0: Define deterministic envelope and taxonomy test vectors
@@ -63,7 +62,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - Golden vectors for `ok`, `error`, and `pending` envelopes.
         - Golden vectors for deterministic error kinds and `details.reason` usage.
         - Negative vectors for boundary escape, disabled tools, mode conflicts, and stream conflicts.
-    - References: `docs/design/Protocol.md`, `docs/design/ErrorTaxonomy.md`
+    - References: `docs/design/McpStdioProtocol.md`, `docs/design/ErrorTaxonomy.md`
     - Depends on: Normalize authoritative contracts before implementation
 
 - [ ] P1: Implement transport and routing skeleton
@@ -72,7 +71,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - Stdio request/response loop with deterministic frame handling.
         - Central envelope builder used by all tool handlers.
         - Capability registry wired to declared tool metadata and execution modes.
-    - References: `docs/design/Protocol.md`, `docs/design/ToolContracts.md`
+    - References: `docs/design/McpStdioProtocol.md`, `docs/design/ToolApiDefinition.md`
     - Depends on: Produce architecture baseline
 
 - [ ] P1: Implement workspace boundary and path normalization core
@@ -81,7 +80,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - Resolved-path boundary checks including symlink and junction handling.
         - Uniform path normalization (`/` separators, workspace-relative rules).
         - Deterministic non-UTF path encoding and warning behavior.
-    - References: `docs/design/Protocol.md`, `docs/design/AlfredOverview.md`, `docs/design/aurora/MIS-001/Constraint/CNS-001-Workspace_Boundary.json`
+    - References: `docs/design/McpStdioProtocol.md`, `docs/design/aurora/MIS-001/Requirement/`, `docs/design/aurora/MIS-001/Constraint/CNS-001-Workspace_Boundary.json`
     - Depends on: Implement transport and routing skeleton
 
 - [ ] P1: Implement configuration and storage resolution core
@@ -90,7 +89,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - User/workspace merge logic with deterministic array semantics.
         - Storage location selection implementing `storage.user.location` and `storage.workspace.location`.
         - Stable runtime resolution for index, memory, plan, and logs paths.
-    - References: `docs/design/Configuration.md`, `docs/design/Defaults.md`, `docs/design/StorageLayout.md`
+    - References: `docs/design/Configuration.md`, `docs/design/Default.md`, `docs/design/StorageLayout.md`
     - Depends on: Implement transport and routing skeleton
 
 - [ ] P1: Implement redaction engine and ingestion policy
@@ -99,7 +98,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - Deterministic span detection/merge/token-fitting implementation.
         - Redaction at index and memory ingestion.
         - Redaction warnings surfaced via top-level envelope warnings.
-    - References: `docs/design/Redaction.md`, `docs/design/Protocol.md`
+    - References: `docs/design/Redaction.md`, `docs/design/McpStdioProtocol.md`
     - Depends on: Implement configuration and storage resolution core
 
 - [ ] P1: Implement `capabilities` and `workspace_dir`
@@ -107,7 +106,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
     - Deliverable:
         - Deterministic capabilities listing with schema/tool lockstep and execution modes.
         - Workspace root reporting with normalized output guarantees.
-    - References: `docs/design/ToolContracts.md`
+    - References: `docs/design/ToolApiDefinition.md`
     - Depends on: Implement workspace boundary and path normalization core
 
 - [ ] P1: Implement `status`
@@ -115,7 +114,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
     - Deliverable:
         - Contract-conformant `status` output including memory and path fields.
         - Stable verbose and non-verbose behavior.
-    - References: `docs/design/ToolContracts.md`
+    - References: `docs/design/ToolApiDefinition.md`
     - Depends on: Implement configuration and storage resolution core
 
 - [ ] P1: Implement `search`
@@ -124,7 +123,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - `general`, `full_text`, and `regex` behavior with mode conflict validation.
         - Stable sorting and deterministic cursor behavior.
         - Deterministic failure behavior when index is disabled or not ready.
-    - References: `docs/design/ToolContracts.md`, `docs/design/ErrorTaxonomy.md`
+    - References: `docs/design/ToolApiDefinition.md`, `docs/design/ErrorTaxonomy.md`
     - Depends on: Implement redaction engine and ingestion policy
 
 - [ ] P1: Implement `fs` (non-bulk operations)
@@ -133,7 +132,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - `search`, `read_range`, `stat`, `diff`, `create_file`, `append_file`, `delete_file`, `create_dir`, `delete_dir`.
         - Text-only enforcement for read operations.
         - Per-operation deterministic diagnostics and ordering behavior.
-    - References: `docs/design/ToolContracts.md`, `docs/design/Protocol.md`
+    - References: `docs/design/ToolApiDefinition.md`, `docs/design/McpStdioProtocol.md`
     - Depends on: Implement workspace boundary and path normalization core
 
 - [ ] P1: Implement `patch`
@@ -142,7 +141,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - `patch`, `multi-patch`, and `revert` with per-file `patch_id` assignment.
         - Retained-state policy for revert IDs enforced exactly as specified.
         - Duplicate-content hard refusal.
-    - References: `docs/design/ToolContracts.md`, `docs/design/ErrorTaxonomy.md`
+    - References: `docs/design/ToolApiDefinition.md`, `docs/design/ErrorTaxonomy.md`
     - Depends on: Implement `fs` (non-bulk operations)
 
 - [ ] P1: Implement `logs`
@@ -151,7 +150,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - `search`, `tail`, `follow` with stream lifecycle and stop semantics.
         - Single-active-stream enforcement and deterministic stream errors.
         - Stable log record filtering and pagination.
-    - References: `docs/design/ToolContracts.md`, `docs/design/Protocol.md`
+    - References: `docs/design/ToolApiDefinition.md`, `docs/design/McpStdioProtocol.md`
     - Depends on: Implement transport and routing skeleton
 
 - [ ] P1: Implement `plan`
@@ -159,7 +158,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
     - Deliverable:
         - `retrieve` and `update_status` operation support with deterministic result shape.
         - Plan path resolution according to configuration/default rules.
-    - References: `docs/design/ToolContracts.md`, `docs/design/Configuration.md`
+    - References: `docs/design/ToolApiDefinition.md`, `docs/design/Configuration.md`
     - Depends on: Implement configuration and storage resolution core
 
 - [ ] P1: Implement `memory`
@@ -168,7 +167,7 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - `create`, `retrieve`, `update`, `delete` with UUID identity rules.
         - Scope-aware retrieval behavior and deterministic ordering.
         - Redaction-safe persistence and retrieval.
-    - References: `docs/design/ToolContracts.md`, `docs/design/Redaction.md`
+    - References: `docs/design/ToolApiDefinition.md`, `docs/design/Redaction.md`
     - Depends on: Implement redaction engine and ingestion policy
 
 - [ ] P1: Implement `fs` bulk background lifecycle
@@ -177,16 +176,16 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - Bulk execute/status/cancel state machine and summaries.
         - `pending` envelope contract (`operation_id`, `state`, `poll_with`).
         - Deterministic terminal states and cancellation behavior.
-    - References: `docs/design/ToolContracts.md`, `docs/design/Protocol.md`, `docs/design/ErrorTaxonomy.md`
+    - References: `docs/design/ToolApiDefinition.md`, `docs/design/McpStdioProtocol.md`, `docs/design/ErrorTaxonomy.md`
     - Depends on: Implement `fs` (non-bulk operations)
 
-- [ ] P0: Build contract-conformance test suite
-    - Description: Validate every tool contract and envelope shape against golden vectors and deterministic error semantics.
+- [ ] P0: Build interface-conformance test suite
+    - Description: Validate every tool API definition and envelope shape against golden vectors and deterministic error semantics.
     - Deliverable:
         - Conformance coverage for all tools and operations in the consolidated surface.
         - Golden-output checks for ordering, pagination, warning placement, and error mapping.
         - Cross-platform path and boundary edge-case coverage.
-    - References: `docs/design/ToolContracts.md`, `docs/design/Protocol.md`, `docs/design/ErrorTaxonomy.md`
+    - References: `docs/design/ToolApiDefinition.md`, `docs/design/McpStdioProtocol.md`, `docs/design/ErrorTaxonomy.md`
     - Depends on: Implement `capabilities` and `workspace_dir`
 
 - [ ] P0: Run formal analysis gate on architecture
@@ -196,10 +195,10 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - Verification that each capability has a single owning implementation path.
         - Recorded corrective actions for any hotspot or coupling violations.
     - References: `docs/design/analysis/Code.md`, `docs/design/analysis/CallMap.md`, `docs/design/analysis/CallGraph.md`
-    - Depends on: Build contract-conformance test suite
+    - Depends on: Build interface-conformance test suite
 
 - [ ] P0: Run formal code review gate
-    - Description: Execute formal review for correctness, safety controls, and adherence to deterministic contracts.
+    - Description: Execute formal review for correctness, safety controls, and adherence to deterministic interfaces.
     - Deliverable:
         - Formal review report with evidence-linked findings.
         - Correction list prioritized by safety and contract risk.

@@ -1,6 +1,10 @@
 # Quality Policy
 
-This document is the canonical quality and maintainability policy for Alfred design and implementation artifacts.
+This document defines the normative quality policy that Alfred conformance and formal review activities must enforce.
+
+## Parent Aurora card
+
+[REQ-014](./aurora/MIS-001/Requirement/REQ-014-Conformance_Suite.json) — this document elaborates the conformance requirement by defining the policy baseline that verification artifacts must check.
 
 ## Core Policy
 
@@ -20,8 +24,8 @@ This document is the canonical quality and maintainability policy for Alfred des
 
 ## API And Contract Discipline
 
-- Tool envelopes must conform to `docs/design/Protocol.md` exactly.
-- Tool schemas and operation names must conform to `docs/design/ToolContracts.md` exactly.
+- Tool envelopes must conform to `docs/design/McpStdioProtocol.md` exactly.
+- Tool schemas and operation names must conform to `docs/design/ToolApiDefinition.md` exactly.
 - Errors must use `docs/design/ErrorTaxonomy.md` kinds and deterministic `details.reason` values.
 - Deprecated aliases and compatibility pathways are prohibited unless canonically documented.
 

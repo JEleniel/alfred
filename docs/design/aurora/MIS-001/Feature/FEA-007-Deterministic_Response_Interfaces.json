@@ -2,27 +2,19 @@
 	"$schema": "../../schemas/Aurora.card.schema.json",
 	"id": "FEA-007",
 	"card_type": "Feature",
-	"name": "Deterministic Response Contracts",
+	"name": "Deterministic Response Interfaces",
 	"description": "Return concise JSON/json responses with stable schema versions and deterministic error taxonomy.",
 	"links": [
 		{
 			"relationship": "realizes",
 			"target": "CAP-007"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-005"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-008"
 		}
 	],
 	"attributes": {
-		"contracts": {
-			"protocol": "docs/design/Protocol.md",
+		"specifications": {
+			"protocol": "docs/design/McpStdioProtocol.md",
 			"errors": "docs/design/ErrorTaxonomy.md",
-			"tool_contracts": "docs/design/ToolContracts.md"
+			"tool_api": "docs/design/ToolApiDefinition.md"
 		}
 	}
 }

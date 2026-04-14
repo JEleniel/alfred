@@ -4,5 +4,14 @@
 	"card_type": "Constraint",
 	"name": "Dry-Run for Destructive Operations",
 	"description": "Alfred MUST provide dry-run behavior for destructive or irreversible actions.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-003"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-014"
+		}
+	]
 }

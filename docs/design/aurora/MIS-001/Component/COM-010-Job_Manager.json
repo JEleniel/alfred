@@ -7,24 +7,12 @@
 	"description": "Manages internal asynchronous execution for `fs` bulk background mode, including cancellation, progress, and deterministic status transitions.",
 	"links": [
 		{
-			"relationship": "implements",
-			"target": "FEA-006"
-		},
-		{
-			"relationship": "stores in",
-			"target": "DST-002"
-		},
-		{
 			"relationship": "produces",
 			"target": "ART-006"
 		},
 		{
 			"relationship": "executes",
 			"target": "STM-008"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {

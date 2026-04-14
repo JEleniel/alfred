@@ -4,5 +4,10 @@
 	"card_type": "Constraint",
 	"name": "Mobile Platforms Out of Scope",
 	"description": "Alfred is not required to support mobile platforms (iOS/Android).",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-016"
+		}
+	]
 }

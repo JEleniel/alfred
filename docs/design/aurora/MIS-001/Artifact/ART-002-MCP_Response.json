@@ -4,39 +4,9 @@
 	"card_type": "Artifact",
 	"card_subtype": "Data",
 	"name": "MCP Response",
-	"description": "A structured tool result returned over stdio as a single JSON frame. Large result sets SHOULD be carried as bounded JSON arrays/objects. Background execution is limited and exposed only via the bulk filesystem operations contract (no standalone job tools).",
+	"description": "A structured tool result returned over stdio.",
 	"links": [],
 	"attributes": {
-		"formats": ["json"],
-		"envelope": {
-			"success": {
-				"status": "ok",
-				"fields": ["status", "data", "meta"]
-			},
-			"pending": {
-				"status": "pending",
-				"fields": ["status", "data", "meta"],
-				"transport_equivalent": {
-					"http_status": 202
-				},
-				"notes": "Used only when bulk filesystem operations run in background mode; the response data includes operation metadata and a poll-with hint."
-			},
-			"failure": {
-				"status": "error",
-				"fields": ["status", "error", "meta"]
-			}
-		},
-		"errors": {
-			"taxonomy": "docs/design/ErrorTaxonomy.md"
-		},
-		"contracts": {
-			"protocol": "docs/design/Protocol.md",
-			"tool_contracts": "docs/design/ToolContracts.md"
-		},
-		"redaction": {
-			"required": true,
-			"notes": "Responses MUST be deterministically redacted before emission, except where a tool contract explicitly allows returning unredacted environment values; such values MUST NOT be logged."
-		},
-		"design_goal": "concise and token-conservative"
+		"format": "json"
 	}
 }

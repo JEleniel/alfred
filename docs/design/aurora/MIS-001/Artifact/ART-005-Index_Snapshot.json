@@ -5,7 +5,12 @@
 	"card_subtype": "Data",
 	"name": "Index Snapshot",
 	"description": "Serialized index state used to accelerate repeated queries and reduce redundant filesystem scans.",
-	"links": [],
+	"links": [
+		{
+			"relationship": "persists to",
+			"target": "DST-001"
+		}
+	],
 	"attributes": {
 		"storage": "local"
 	}

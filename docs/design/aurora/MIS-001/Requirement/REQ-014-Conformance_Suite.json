@@ -8,18 +8,7 @@
 		{
 			"relationship": "requires",
 			"target": "CAP-013"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-001"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-003"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-005"
 		}
-	]
+	],
+	"external_references": ["docs/design/QualityPolicy.md"]
 }

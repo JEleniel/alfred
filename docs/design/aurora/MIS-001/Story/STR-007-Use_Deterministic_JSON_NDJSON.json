@@ -6,16 +6,8 @@
 	"description": "As an agent user, I need deterministic JSON/json output shapes and ordering so that tool results are diffable, testable, and predictable across platforms and runs.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-007"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-005"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-015"
 		}
 	]
 }

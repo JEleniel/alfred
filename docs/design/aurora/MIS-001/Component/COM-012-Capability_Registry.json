@@ -7,16 +7,8 @@
 	"description": "Maintains discoverable metadata for Alfred tools/capabilities, including versions, schema versions, limits, and execution modes.",
 	"links": [
 		{
-			"relationship": "implements",
-			"target": "FEA-010"
-		},
-		{
 			"relationship": "executes",
 			"target": "STM-010"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {

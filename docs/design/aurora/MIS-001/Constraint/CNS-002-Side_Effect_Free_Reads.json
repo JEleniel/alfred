@@ -4,5 +4,14 @@
 	"card_type": "Constraint",
 	"name": "Side-Effect Free Reads",
 	"description": "Read-only operations MUST be side-effect free.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-002"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-001"
+		}
+	]
 }

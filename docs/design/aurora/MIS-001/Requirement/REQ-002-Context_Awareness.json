@@ -8,14 +8,6 @@
 		{
 			"relationship": "requires",
 			"target": "CAP-002"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-001"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-002"
 		}
 	],
 	"attributes": {

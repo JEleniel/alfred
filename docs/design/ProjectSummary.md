@@ -4,6 +4,10 @@ This repository contains Alfred: a local-only Model Context Protocol (MCP) stdio
 
 Alfred is designed to run on the workspace host machine (including VS Code Remote Development modes where the host may be remote) and communicate exclusively over stdin/stdout using newline-delimited UTF-8 JSON frames.
 
+## Parent Aurora card
+
+[MIS-001](./aurora/MIS-001-Alfred_Local_MCP_Server.json) — this document is the mission-level summary for Alfred and provides the narrative overview of the mission scope, major goals, and non-goals.
+
 ## What Alfred provides
 
 Alfred consolidates a small public tool surface to minimize tool-count overhead while still covering typical “agent in a repo” workflows:
@@ -22,10 +26,11 @@ Execution semantics are deliberately constrained:
 
 - Read-only operations are side-effect free.
 - Mutating operations are safe-by-default (dry-run where applicable; atomic per-target where practical).
+- `fs` delete operations are policy-disabled by default until explicitly enabled.
 - Background execution is limited and MUST be pollable via the tool that started it (for example `fs` bulk operations).
 - Streaming behavior MAY be supported (for example `logs.follow`). When supported, Alfred MUST allow at most one active stream at a time.
 
-## Determinism, safety, and contract discipline
+## Determinism, safety, and interface discipline
 
 Alfred’s architecture emphasizes predictable, testable behavior:
 
@@ -45,18 +50,24 @@ Alfred reads configuration at two levels with deterministic precedence:
 
 Default locations:
 
-- User: OS config directory `alfred/config.json`.
-- Workspace: `<workspaceRoot>/.alfred/config.json`.
+- User configuration: user configuration folder `alfred/config.json`.
+- User durable data: user data folder `alfred/`.
+- User temporary data: user cache folder `alfred/`.
+- User logs: user log folder `alfred/`.
+- Workspace storage root: `<workspaceRoot>/<workspace.storage.root>/` when workspace-local storage is enabled.
 
 Configuration is JSON validated against `schemas/alfred.config.schema.json`.
+
+The workspace root is the boundary root selected from the hosting environment when available, otherwise from an explicit user-specified root, with SCM-marker discovery as a fallback.
 
 Notable configuration areas include:
 
 - Tool enablement via `tools.disabled`.
+- `fs` operation gating via `fs.disabled_operations`.
 - Index enablement and persistence settings.
 - Workspace storage root (`workspace.storage.root`, default `.alfred/`).
 - Memory storage (explicit user/workspace scope; user store enabled by default; optional workspace store).
-- Storage location controls for relocating workspace artifacts into OS user directories or relocating user artifacts into the workspace.
+- Storage location controls with `user` and `workspace` values for user-scoped and workspace-scoped artifacts.
 - Redaction behavior (replacement token, length preservation, rule sets).
 - Plan location (`plan.path`), defaulting to `docs/design/ProjectPlan.md` when present.
 
@@ -64,14 +75,14 @@ Notable configuration areas include:
 
 Alfred uses local, explicit state stores and does not depend on external services.
 
-By default, workspace-scoped artifacts are rooted at `<workspaceRoot>/.alfred/` and may include:
+By default, workspace-scoped artifacts are limited to durable data under `<workspaceRoot>/<workspace.storage.root>/data/` and may include:
 
 - Workspace index persistence.
-- Optional workspace memory store.
+- Workspace memory store.
 
 Alfred logs are structured json records intended for deterministic search/tail operations.
 
-Depending on `storage.*` and `logging.*` configuration, some artifacts (including runtime logs and optionally workspace-scoped data) MAY be stored under OS user directories rather than the workspace.
+When `storage.workspace.location = "user"`, workspace-scoped artifacts follow the same purpose-based user layout as user-scoped artifacts, using per-workspace subfolders under `alfred/` in the user configuration, data, cache, and log folders.
 
 ## Non-goals and out of scope
 
@@ -84,16 +95,15 @@ This repository explicitly documents several non-goals:
 
 ## Where to look next
 
-- Requirements and constraints: [AlfredOverview](./AlfredOverview.md)
-- Architecture and decomposition: [AlfredArchitecture](./AlfredArchitecture.md)
-- Protocol envelopes, framing, json usage: [Protocol](./Protocol.md)
-- Tool contracts (inputs/outputs/limits): [ToolContracts](./ToolContracts.md)
+- Requirement cards: [REQ cards](./aurora/MIS-001/Requirement/)
+- Architecture and decomposition: [Architecture](./Architecture.md)
+- MCP stdio protocol: [McpStdioProtocol](./McpStdioProtocol.md)
+- Tool API definition: [ToolApiDefinition](./ToolApiDefinition.md)
 - Configuration model: [Configuration](./Configuration.md)
-- Default values (canonical reference): [Defaults](./Defaults.md)
+- Default values: [Default](./Default.md)
 - Deterministic error taxonomy: [ErrorTaxonomy](./ErrorTaxonomy.md)
 - Deterministic redaction: [Redaction](./Redaction.md)
-- Index include/exclude rules: [DefaultIncludeExcludeList](./DefaultIncludeExcludeList.md)
-- Design authority (One Source of Truth): [DesignAuthority](./DesignAuthority.md)
+- Index include/exclude rules: [IncludeExcludeList](./Default/IncludeExcludeList.md)
 - Structural quality policy: [QualityPolicy](./QualityPolicy.md)
 - Rendered Aurora model bundle: [MIS-001](./README-MIS-001-Alfred_Local_MCP_Server.md)
 

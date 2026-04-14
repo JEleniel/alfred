@@ -2,7 +2,7 @@
 	"$schema": "../../schemas/Aurora.card.schema.json",
 	"id": "DRI-003",
 	"card_type": "Driver",
-	"name": "Deterministic Contracts",
+	"name": "Deterministic Interfaces",
 	"description": "Agents need consistent schemas, errors, and diagnostics across tools to support reliable automation and low-token summaries.",
 	"links": [
 		{

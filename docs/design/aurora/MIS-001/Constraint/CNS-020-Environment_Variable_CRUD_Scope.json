@@ -4,5 +4,10 @@
 	"card_type": "Constraint",
 	"name": "Environment Variable CRUD Scope",
 	"description": "Alfred MUST NOT expose standalone environment-variable CRUD tools. If environment-variable behavior is supported, it MUST be scoped to Alfred-controlled contexts (e.g., managed .env files or tool-scoped environments) and MUST NOT claim to mutate the parent IDE or shell environment across OSes.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-009"
+		}
+	]
 }

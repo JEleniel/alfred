@@ -7,16 +7,8 @@
 	"description": "Provides scoped environment handling for internal operations (for example, constructing safe subprocess/task environments) under policy guardrails. No standalone environment-variable CRUD tools are exposed.",
 	"links": [
 		{
-			"relationship": "implements",
-			"target": "FEA-009"
-		},
-		{
 			"relationship": "executes",
 			"target": "STM-012"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {

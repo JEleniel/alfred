@@ -49,10 +49,6 @@
 		{
 			"relationship": "executes",
 			"target": "STM-002"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {

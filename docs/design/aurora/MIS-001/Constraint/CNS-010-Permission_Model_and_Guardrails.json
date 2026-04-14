@@ -22,8 +22,25 @@
 	},
 	"card_type": "Constraint",
 	"description": "Alfred MUST provide an IDE-compliant permission model and configurable policy guardrails with reasonable defaults. Tool exposure and plan writes MUST be governed by deterministic policies.",
-	"external_references": ["docs/design/ToolContracts.md", "docs/design/Configuration.md"],
+	"external_references": ["docs/design/Configuration.md"],
 	"id": "CNS-010",
-	"links": [],
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-003"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-017"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-009"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-016"
+		}
+	],
 	"name": "Permission Model and Guardrails"
 }

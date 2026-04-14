@@ -7,29 +7,17 @@
 	"description": "Tails and filters logs and exposes log-related tooling for debugging.",
 	"links": [
 		{
-			"relationship": "implements",
-			"target": "FEA-008"
-		},
-		{
-			"relationship": "stores in",
-			"target": "DST-002"
-		},
-		{
 			"relationship": "produces",
 			"target": "ART-006"
 		},
 		{
 			"relationship": "executes",
 			"target": "STM-011"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {
 		"stream_format": "json",
 		"redaction": "deterministic",
-		"spec": "docs/design/Protocol.md"
+		"spec": "docs/design/McpStdioProtocol.md"
 	}
 }

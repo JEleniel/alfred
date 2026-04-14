@@ -4,5 +4,10 @@
 	"card_type": "Constraint",
 	"name": "Atomic Mutations (Per Target)",
 	"description": "Mutating operations SHOULD be atomic per target where practical.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-003"
+		}
+	]
 }

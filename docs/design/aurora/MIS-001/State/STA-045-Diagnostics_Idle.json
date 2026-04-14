@@ -3,7 +3,7 @@
 	"id": "STA-045",
 	"card_type": "State",
 	"name": "Diagnostics Idle",
-	"description": "Contracts and Diagnostics awaits a request to validate or format an output/error.",
+	"description": "Interfaces and Diagnostics awaits a request to validate or format an output/error.",
 	"links": [
 		{
 			"relationship": "handles",

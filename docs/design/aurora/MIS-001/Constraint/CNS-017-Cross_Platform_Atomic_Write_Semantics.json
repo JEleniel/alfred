@@ -4,5 +4,10 @@
 	"card_type": "Constraint",
 	"name": "Cross-Platform Safe Mutation Semantics",
 	"description": "When claiming all-or-nothing mutations, Alfred MUST ensure failures leave the destination unchanged without relying on temp-file replace/rename strategies. If these semantics cannot be guaranteed (for example due to locked destinations on Windows), Alfred MUST fail explicitly rather than partially applying changes.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-003"
+		}
+	]
 }

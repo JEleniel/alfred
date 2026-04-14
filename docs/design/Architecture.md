@@ -1,12 +1,17 @@
-# Alfred Architecture
+# Architecture
 
-This document summarizes Alfred's architecture as modeled in Aurora and points to generated views and key decisions.
+This document provides the narrative detail for Alfred's top-level system architecture and points readers to the subordinate application and component structure in the Aurora model.
+
+## Parent Aurora card
+
+[SYS-001](./aurora/MIS-001/System/SYS-001-Alfred.json) — this document elaborates the Alfred system card and serves as the architecture entry point for the design set.
 
 ## Key artifacts
 
 | Artifact                                                        | Purpose                                                                                                                      |
 | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| [AlfredOverview](./AlfredOverview.md)                           | Requirements and constraints that drive the architecture.                                                                    |
+| [ProjectSummary](./ProjectSummary.md)                          | Summary of mission scope, goals, and non-goals.                                                                              |
+| [Requirement cards](./aurora/MIS-001/Requirement/)            | Canonical functional, safety, and non-functional requirements as Aurora `REQ-*` cards.                                       |
 | [Aurora model home](./aurora/)                                  | Source-of-truth architecture model (cards + audit log).                                                                      |
 | [Rendered model markdown](./MIS-001-Alfred_Local_MCP_Server.md) | Human-readable rendering of all cards in the model.                                                                          |
 | [Model README](./README-MIS-001-Alfred_Local_MCP_Server.md)     | Entry point for the generated model bundle.                                                                                  |
@@ -18,7 +23,7 @@ Alfred is a local-only stdio server designed to run on the workspace host machin
 
 The server:
 
-- Communicates over stdin/stdout using deterministic JSON contracts.
+- Communicates over stdin/stdout using deterministic JSON interfaces.
 - Operates within a configured workspace boundary (no escape hatches to arbitrary filesystem access).
 - Prioritizes predictability and safety (dry-run support, atomic mutations where practical, normalized diagnostics, bounded background work).
 
@@ -59,7 +64,7 @@ Alfred is intentionally local-only and uses small, explicit state stores:
 
 These stores are modeled as local data stores backed by the host filesystem with no external services.
 
-By default, workspace-scoped Alfred artifacts are rooted at `<workspaceRoot>/.alfred/`.
+By default, workspace-scoped Alfred artifacts are limited to durable data under `<workspaceRoot>/<workspace.storage.root>/data/`, with a workspace-local identity token retained there even when other workspace-scoped artifacts are relocated to user folders.
 
 ## Cross-cutting concerns
 
@@ -71,13 +76,14 @@ The architecture encodes several non-negotiables:
 - Versioning discipline: SemVer with schema/version lockstep and conformance testing.
 - Cross-platform semantics: filesystem/path normalization, safe mutation semantics (no partial writes; no temp-file replace/rename), cancellation behavior, and encoding-safe path reporting are modeled explicitly via constraints `CNS-015` through `CNS-021`.
 
-For concrete contracts (including memory CRUD/search), see:
+For concrete interface and policy details, see:
 
-- [Protocol](./Protocol.md)
+- [MCP stdio protocol](./McpStdioProtocol.md)
+- [Tool API definition](./ToolApiDefinition.md)
+- [Configuration](./Configuration.md)
+- [Storage layout](./StorageLayout.md)
+- [Default values](./Default.md)
 - [Error taxonomy](./ErrorTaxonomy.md)
-- [Tool contracts](./ToolContracts.md)
-- [Default values reference](./Defaults.md)
-- [Design authority matrix](./DesignAuthority.md)
 - [Quality policy](./QualityPolicy.md)
 
 The traceability view (drivers → requirements → capabilities → features → components) is available as a generated SVG under `docs/design/MIS-001/Views/`.
@@ -95,6 +101,26 @@ The security view is available as a generated SVG under `docs/design/MIS-001/Vie
 Alfred is deployed as a single local stdio process on the workspace host machine and communicates over stdio. This remains true even when the user is in VS Code Remote Development modes (where the host is remote). It is intended to run on Linux, macOS, and Windows; mobile platforms (iOS/Android) are out of scope (but may still work for most operations).
 
 The deployment view is available as a generated SVG under `docs/design/MIS-001/Views/`.
+
+## Technology Selections
+
+The current planned implementation stack includes:
+
+- `rmcp` for the MCP interface.
+- `dir_watcher` for file-system watching.
+- `tantivy` for indexing and search.
+- `imara-diff` for diffing.
+- `mpatch` for patching.
+- `anyhow` and `thiserror` for error handling.
+- `chrono` for time and date handling.
+- `clap` for CLI interfaces.
+- `config` for configuration file handling.
+- `dirs` for standard config, data, cache, and log directories.
+- `fern` and `log` for logging.
+- `zip` for log archiving.
+- `serde` and `serde_json` for serialization.
+- `tokio` for the async runtime.
+- `uuid`, `sha2`, and related utility crates for identifiers and hashing.
 
 ## Design Goals
 

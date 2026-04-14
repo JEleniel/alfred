@@ -6,12 +6,8 @@
 	"description": "As an agent user, I need Alfred to maintain and expose relevant context (workspace metadata, recent actions, and constraints) so that tool results are interpretable and I can avoid repeating expensive discovery work.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-002"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-001"
 		}
 	]
 }

@@ -5,20 +5,13 @@
 	"card_subtype": "Data",
 	"name": "Memory Fact",
 	"description": "A single structured memory entry persisted by Alfred for offline recall and search.",
-	"links": [],
+	"links": [
+		{
+			"relationship": "persists to",
+			"target": "DST-004"
+		}
+	],
 	"attributes": {
-		"formats": ["json"],
-		"schema": {
-			"id": "string (stable, recommended uuid)",
-			"subject": "string",
-			"fact": "string",
-			"citations": "string",
-			"reason": "string",
-			"category": "string (recommended: general|user_preferences|file_specific|bootstrap_and_build)",
-			"tags": "optional array of strings (stable-sorted ascending; recommended lower-case kebab-case)",
-			"created_at": "string (RFC3339 UTC; seconds preferred; max milliseconds)",
-			"updated_at": "string (RFC3339 UTC; seconds preferred; max milliseconds)"
-		},
-		"search_fields": ["subject", "fact", "citations", "reason", "tags"]
+		"format": "json"
 	}
 }

@@ -4,7 +4,28 @@
 	"card_type": "Constraint",
 	"name": "Service Level Objectives",
 	"description": "Initial p95 latency objectives constrain implementation choices for discovery, indexed search, patching, and background status polling.",
-	"links": [],
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-001"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-006"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-010"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-017"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-015"
+		}
+	],
 	"attributes": {
 		"p95_targets_ms": {
 			"capability_discovery": 100,

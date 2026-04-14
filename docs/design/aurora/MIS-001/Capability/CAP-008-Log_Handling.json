@@ -7,6 +7,6 @@
 	"links": [],
 	"attributes": {
 		"format": "json",
-		"spec": "docs/design/Protocol.md"
+		"spec": "docs/design/McpStdioProtocol.md"
 	}
 }

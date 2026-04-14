@@ -2,7 +2,7 @@
 	"$schema": "../../schemas/Aurora.card.schema.json",
 	"id": "CAP-007",
 	"card_type": "Capability",
-	"name": "Deterministic Contracts",
+	"name": "Deterministic Interfaces",
 	"description": "Provide concise JSON/json responses with deterministic error taxonomy, schema versioning, and consistent diagnostics structures.",
 	"links": []
 }

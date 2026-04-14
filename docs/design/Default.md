@@ -1,8 +1,10 @@
-# Alfred Defaults Reference
+# Default
 
-This document is the single source of truth for every default value in Alfred.
+This document records Alfred's application-level default values. The built-in include and exclude patterns are detailed separately in [`Default/IncludeExcludeList.md`](./Default/IncludeExcludeList.md).
 
-Other documents MAY cite a default value inline for readability, but MUST reference this document as the authoritative source. When any default changes, update this document first and follow up in cited documents.
+## Parent Aurora card
+
+[APP-001](./aurora/MIS-001/Application/APP-001-Alfred_Stdio_Server.json) — this document elaborates the default operating values of the Alfred application.
 
 ## Configuration defaults
 
@@ -10,44 +12,46 @@ Other documents MAY cite a default value inline for readability, but MUST refere
 
 | Key                          | Default               | Notes                                                    |
 | ---------------------------- | --------------------- | -------------------------------------------------------- |
-| `storage.user.location`      | `<user data>/alfred/` | First writable user data dir, see location search below. |
-| `storage.workspace.location` | `"workspace"`         | Workspace-rooted storage.                                |
+| `storage.user.location`      | `"user"`              | Uses user config, data, cache, and log folders.          |
+| `storage.workspace.location` | `"workspace"`         | Workspace-scoped artifacts live under the workspace root by default. |
 | `workspace.storage.root`     | `.alfred/`            | Relative to workspace root.                              |
 
 #### Storage location search
 
 See [`StorageLayout.md`](./StorageLayout.md) for the full file and folder reference.
 
-Alfred resolves three root storage locations at startup. `alfred/` is always appended to whichever base is selected.
+Alfred resolves purpose-specific user folders plus an optional workspace storage root at startup. `alfred/` is always appended to user-level base directories.
 
-**User configuration folder** — searches in priority order, selects the first found:
-
-1. The user's config folder (e.g. `~/.config/` on Linux).
-2. The user's data folder.
-3. An OS config folder, if available.
-4. The workspace folder.
+**User configuration folder** — uses the host user configuration directory.
 
 Contains: `config.json`
 
-**User data folder** — searches in priority order, selects the first writable location:
-
-1. The user's data folder (e.g. `~/.local/share/` on Linux, `~/Library/Application Support/` on macOS).
-2. An OS data folder, if available.
-3. The workspace folder.
+**User data folder** — uses the host user data directory.
 
 Contains: `index/` and `memory/` subfolders (workspace-independent persistence).
+
+**User cache folder** — uses the host user cache directory.
+
+Contains: temporary Alfred data.
+
+**User log folder** — uses the host user log directory.
+
+Contains: Alfred runtime logs.
 
 **Workspace folder** — `.alfred/` relative to the workspace root unless overridden by `workspace.storage.root`.
 
 Contains:
 
-- `index/` — workspace index persistence.
-- `memory/` — workspace memory persistence.
-- `config.json` — workspace configuration.
+- `data/` — workspace-scoped durable data.
+- `config/` — workspace configuration when enabled.
+- `cache/` — workspace-scoped temporary data when enabled.
+- `logs/` — workspace-local logs when enabled.
 - `user/` (optional) — per-user overrides stored in the workspace:
     - `config.json`
     - `index/`
     - `memory/`
+    - `cache/`
+    - `logs/`
 
 ### Index
 
@@ -70,7 +74,7 @@ Contains:
 
 | Key                      | Default                    | Notes |
 | ------------------------ | -------------------------- | ----- |
-| `logging.location`       | `<user data>/alfred/logs/` |       |
+| `logging.path`           | `<user logs>/alfred/`      |       |
 | `logging.retention_days` | `7`                        |       |
 
 ### Redaction
@@ -92,6 +96,12 @@ Contains:
 | Key              | Default | Notes                                 |
 | ---------------- | ------- | ------------------------------------- |
 | `tools.disabled` | `[]`    | Empty — all tools enabled by default. |
+
+### `fs` operation gating
+
+| Key                      | Default                                           | Notes                                          |
+| ------------------------ | ------------------------------------------------- | ---------------------------------------------- |
+| `fs.disabled_operations` | `["bulk.delete", "delete_dir", "delete_file"]` | Delete operations are disabled until enabled. |
 
 ---
 
@@ -191,6 +201,6 @@ These values are defined as constants in `src/tools/capabilities.rs` and are can
 
 | Property        | Default                                                 |
 | --------------- | ------------------------------------------------------- |
-| Path separators | POSIX `/`                                               |
+| Path separators | Host-OS-native separators after normalization           |
 | Path scope      | Resolve within the workspace boundary unless a contract states otherwise |
 | Absolute paths  | Accepted when host-OS-valid and they resolve in bounds  |

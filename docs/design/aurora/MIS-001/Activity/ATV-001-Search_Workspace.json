@@ -4,18 +4,5 @@
 	"card_type": "Activity",
 	"name": "Search Workspace",
 	"description": "Search and inspect workspace files to locate relevant code and context for the requested change.",
-	"links": [
-		{
-			"relationship": "uses",
-			"target": "COM-002"
-		},
-		{
-			"relationship": "uses",
-			"target": "COM-003"
-		},
-		{
-			"relationship": "uses",
-			"target": "COM-011"
-		}
-	]
+	"links": []
 }

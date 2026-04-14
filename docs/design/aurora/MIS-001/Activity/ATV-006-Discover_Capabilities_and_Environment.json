@@ -4,18 +4,5 @@
 	"card_type": "Activity",
 	"name": "Discover Capabilities and Environment",
 	"description": "Discover supported tools/versions and understand the effective execution environment (especially in remote/networked workspaces).",
-	"links": [
-		{
-			"relationship": "uses",
-			"target": "COM-012"
-		},
-		{
-			"relationship": "uses",
-			"target": "COM-011"
-		},
-		{
-			"relationship": "uses",
-			"target": "COM-013"
-		}
-	]
+	"links": []
 }

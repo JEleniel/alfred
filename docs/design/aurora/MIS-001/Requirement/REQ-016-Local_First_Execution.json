@@ -10,38 +10,6 @@
 			"target": "CAP-007"
 		},
 		{
-			"relationship": "imposes",
-			"target": "CNS-001"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-006"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-007"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-010"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-011"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-013"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-014"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-023"
-		},
-		{
 			"relationship": "has",
 			"target": "ADR-001"
 		}

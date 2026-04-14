@@ -1,6 +1,10 @@
-# Alfred Protocol Notes
+# MCP Stdio Protocol
 
-This document defines Alfred-specific protocol expectations on top of the Model Context Protocol (MCP) stdio transport.
+This document specifies Alfred's MCP stdio framing, transport rules, envelope shape, path transport rules, and streaming behavior.
+
+## Parent Aurora card
+
+[INT-001](./aurora/MIS-001/Interface/INT-001-MCP_Stdio_Interface.json) — this document elaborates the protocol-facing portion of the MCP stdio interface.
 
 Alfred is intended to be used via an MCP host (for example, an IDE) that:
 

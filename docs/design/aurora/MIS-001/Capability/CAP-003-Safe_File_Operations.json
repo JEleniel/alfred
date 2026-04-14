@@ -6,8 +6,8 @@
 	"description": "Perform safe, bounded, and mostly-atomic workspace mutations including patching with conflict reporting and bulk operations with dry-run.",
 	"links": [],
 	"attributes": {
-		"contracts": {
-			"tool_contracts": "docs/design/ToolContracts.md"
+		"specifications": {
+			"tool_api": "docs/design/ToolApiDefinition.md"
 		},
 		"tools": ["fs", "patch"],
 		"bulk_operations_via": "fs.operation=bulk"
