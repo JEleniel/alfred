@@ -192,5 +192,5 @@ These values are defined as constants in `src/tools/capabilities.rs` and are can
 | Property        | Default                                                 |
 | --------------- | ------------------------------------------------------- |
 | Path separators | POSIX `/`                                               |
-| Path scope      | Workspace-relative (unless a contract states otherwise) |
-| Absolute paths  | Rejected unless specifically permitted by the contract  |
+| Path scope      | Resolve within the workspace boundary unless a contract states otherwise |
+| Absolute paths  | Accepted when host-OS-valid and they resolve in bounds  |

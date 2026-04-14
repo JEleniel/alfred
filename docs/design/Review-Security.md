@@ -120,15 +120,15 @@ AlfredError::InvalidArgumentWithDetails {
 
 **Evidence:** The top-level tool dispatcher in `src/protocol.rs` applies `services.redactor.redact_json_value(&mut structured_content)` to the complete serialized tool response before writing it to stdout. This is the correct location for output-layer redaction.
 
-However, `src/services/memory_store.rs` stores verbatim fact text in the Tantivy index and NDJSON backing files. There is no evidence in the reviewed code that redaction is applied **at index ingestion time** for memory facts. `Redaction.md` and `ToolContracts.md` both state that redaction MUST be applied at ingestion, not only at the output layer.
+However, `src/services/memory_store.rs` stores verbatim fact text in the Tantivy index and json backing files. There is no evidence in the reviewed code that redaction is applied **at index ingestion time** for memory facts. `Redaction.md` and `ToolContracts.md` both state that redaction MUST be applied at ingestion, not only at the output layer.
 
-If a secret is written to a memory fact, it may be stored in plaintext in the Tantivy index shards, in the NDJSON backing files, and in any archive produced by log rotation.
+If a secret is written to a memory fact, it may be stored in plaintext in the Tantivy index shards, in the json backing files, and in any archive produced by log rotation.
 
 **Risk:** An agent or user could deliberately or accidentally store a secret (API key, bearer token) as a memory fact. The secret would persist in the memory index on disk and remain readable via direct file access outside of Alfred's output-layer redaction.
 
-**Smallest safe fix:** Apply the `Redactor` to all user-supplied string fields of `MemoryFactInput` (specifically `fact`, `reasoning`, `subject`) during `upsert_in_scope` before the data is written to the index and NDJSON store.
+**Smallest safe fix:** Apply the `Redactor` to all user-supplied string fields of `MemoryFactInput` (specifically `fact`, `reasoning`, `subject`) during `upsert_in_scope` before the data is written to the index and json store.
 
-**Verification guidance:** A test that creates a memory fact containing a bearer token pattern confirms that the retrieved fact contains the redaction token, not the original secret. The stored NDJSON file must also not contain the secret.
+**Verification guidance:** A test that creates a memory fact containing a bearer token pattern confirms that the retrieved fact contains the redaction token, not the original secret. The stored json file must also not contain the secret.
 
 ---
 

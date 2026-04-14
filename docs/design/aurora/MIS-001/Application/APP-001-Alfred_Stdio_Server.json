@@ -44,7 +44,7 @@
 	],
 	"attributes": {
 		"transport": "stdio",
-		"io_format": ["json", "ndjson"],
+		"io_format": ["json", "json"],
 		"public_tool_surface": [
 			"workspace_dir",
 			"search",

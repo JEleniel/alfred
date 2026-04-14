@@ -7,7 +7,7 @@
 	"description": "A stream of output chunks and structured status for internal `fs` bulk background operations (not a standalone public job tool surface).",
 	"links": [],
 	"attributes": {
-		"formats": ["ndjson", "json"],
+		"formats": ["json", "json"],
 		"schema": "schemas/alfred.job-stream-item.schema.json",
 		"cursor": {
 			"type": "seq",
@@ -23,7 +23,7 @@
 			"required": true,
 			"notes": "All stream items MUST be redacted deterministically before persistence or emission."
 		},
-		"ndjson": {
+		"json": {
 			"rules": "Each line is a complete JSON object. Callers MUST tolerate chunking and resume using cursors/job offsets.",
 			"ordering": "Stable by emission order within the job.",
 			"item_kinds": ["log", "stdout", "stderr", "status", "progress", "result", "error"],

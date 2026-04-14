@@ -16,12 +16,22 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
 
 ## Work Items
 
-- [ ] P0: Lock governance and acceptance gates
+- [x] P0: Lock governance and acceptance gates
     - Description: Establish explicit entry/exit criteria and non-negotiable controls for delivery.
     - Deliverable:
         - A signed-off gate list for correctness, determinism, security, and conformance.
         - Explicit rejection criteria for duplicate logic paths and contract drift.
         - Sequenced verification gates for analysis, architecture, code, and documentation.
+        - A canonical dependency rule stating that no downstream implementation may begin until the governance gate is complete.
+        - A completion record that identifies the governance gate as the controlling acceptance checkpoint for the plan.
+    - Subtasks:
+        - [x] Define the acceptance gate checklist for correctness, determinism, security, and conformance.
+        - [x] Define the rejection criteria for duplicate logic paths and contract drift.
+        - [x] Record the required verification order: analysis, architecture, code, and documentation.
+    - Notes: This gate is a prerequisite for contract normalization and all downstream implementation work.
+        - Acceptance gates: correctness, determinism, security, conformance.
+        - Rejection gates: duplicate logic paths, contract drift, compatibility shims, and unapproved aliases.
+        - Verification gates: analysis first, then architecture, then code, then documentation.
     - References: `docs/design/ProjectSummary.md`, `docs/design/AlfredOverview.md`, `docs/design/aurora/MIS-001/Compact.json`
 
 - [ ] P0: Normalize authoritative contracts before implementation
@@ -30,6 +40,11 @@ Advance Alfred from a baseline aligned with validated design intent. This plan i
         - A conflict matrix covering protocol envelope shape, tool I/O schemas, and error kinds.
         - Canonicalized contract decisions reflected in one source per concern.
         - Cross-links from all dependent docs to canonical locations.
+    - Subtasks:
+        - [ ] Capture protocol-envelope conflicts across `Protocol.md`, `ToolContracts.md`, and `ErrorTaxonomy.md`.
+        - [ ] Record canonical decisions for tool I/O schemas and execution-mode semantics.
+        - [ ] Record canonical decisions for error kinds and `details.reason` usage.
+        - [ ] Add cross-links from dependent design docs to the canonical sources.
     - References: `docs/design/Protocol.md`, `docs/design/ToolContracts.md`, `docs/design/ErrorTaxonomy.md`
     - Depends on: Lock governance and acceptance gates
 

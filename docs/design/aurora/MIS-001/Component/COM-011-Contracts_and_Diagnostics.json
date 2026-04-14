@@ -29,6 +29,6 @@
 	],
 	"attributes": {
 		"error_taxonomy": "deterministic",
-		"formats": ["json", "ndjson"]
+		"formats": ["json", "json"]
 	}
 }

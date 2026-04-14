@@ -20,11 +20,11 @@ Alfred is intended to be used via an MCP host (for example, an IDE) that:
 
 Unless a tool contract explicitly states otherwise, all `path` values in tool inputs and outputs:
 
-- Are workspace-relative.
-- Use POSIX separators (`/`) regardless of OS.
-- MUST NOT be absolute.
+- Are resolved against Alfred's workspace boundary.
+- MAY use any path form valid for the host OS, including absolute paths and traversal segments.
+- Are valid only when resolution from the workspace root leaves the final target within the workspace boundary.
 
-If an incoming request provides a path using `\` separators, Alfred MUST treat them as `/` separators before normalization.
+Alfred MUST preserve host-OS path semantics during resolution rather than rejecting a path solely for being absolute, traversal-heavy, or using native separators.
 
 ### Deterministic path transport encoding
 
@@ -32,8 +32,8 @@ All protocol path strings MUST be valid UTF-8 and MUST use percent-encoding for 
 
 - `.` MUST remain literal.
 - Path separator semantics remain native to path handling logic; protocol encoding only governs transport shape.
-- Inputs containing unsafe or ambiguous path text MUST be rejected at the boundary rather than round-tripped.
-- Rejected characters include `<`, `>`, `:`, `"`, `\`, `|`, `?`, `*`, `\0`, ASCII `0..=31`, Unicode control characters, and invalid Unicode values.
+- Inputs containing unsafe or ambiguous path text after host-OS parsing MUST be rejected at the boundary rather than round-tripped.
+- Rejected path-component text includes reserved Windows names, trailing `.` on Windows, control characters, invalid Unicode values, and characters forbidden by the host OS within a path component.
 - `/` remains valid only as a path separator and MUST NOT appear inside encoded path components.
 - Spaces are allowed.
 - File-name components matching reserved Windows names (`CON`, `PRN`, `AUX`, `NUL`, `COM0..COM9`, `LPT0..LPT9`) MUST be rejected.
@@ -95,13 +95,13 @@ When accepted for background execution, the response MUST include:
 
 Background status MUST be retrieved by calling `fs` with `operation: "bulk"` and `args.mode: "status"`.
 
-## NDJSON usage
+## json usage
 
-Alfred uses NDJSON for structured log persistence and exchange, but not for a standalone job-stream tool family.
+Alfred uses json for structured log persistence and exchange, but not for a standalone job-stream tool family.
 
-- Log records are NDJSON append-only JSON objects.
-- NDJSON items MUST be stable-ordered where ordering is contractually defined.
-- Each NDJSON line MUST be a complete JSON object.
+- Log records are json append-only JSON objects.
+- json items MUST be stable-ordered where ordering is contractually defined.
+- Each json line MUST be a complete JSON object.
 
 ## MCP compliance notes
 
@@ -112,7 +112,7 @@ Alfred uses NDJSON for structured log persistence and exchange, but not for a st
 
 ## Streaming semantics
 
-Alfred supports streaming operations (currently `logs.follow`). Streaming complies fully with the MCP specification: Alfred emits only valid MCP frames; no raw NDJSON or non-MCP framing is emitted on stdio.
+Alfred supports streaming operations (currently `logs.follow`). Streaming complies fully with the MCP specification: Alfred emits only valid MCP frames; no raw json or non-MCP framing is emitted on stdio.
 
 ### Stream lifecycle
 
@@ -134,7 +134,7 @@ If no stream is active and a stop request is received, Alfred MUST fail determin
 
 - Clients MUST NOT assume a stream is terminated until they receive a terminal envelope (`data.stopped: true`) or a `status: "error"` envelope, or the transport closes.
 - At most one stream may be active at a time. A new stream start request while a stream is active MUST fail deterministically (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md), `stream_active`).
-- Streaming intent MUST be discoverable via `capabilities` as an `execution_modes` entry (`"stream"`).
+- Streaming intent MUST be discoverable via `capabilities` as an `execution_modes` entry (`"Stream"`).
 
 ## Redaction (non-public information)
 
@@ -150,9 +150,9 @@ The default replacement token is `<-REDACTED->`.
 
 The deterministic redaction algorithm (detection + replacement-length fitting) is specified in [`docs/design/Redaction.md`](./Redaction.md).
 
-## Structured log record (NDJSON)
+## Structured log record (json)
 
-Alfred emits NDJSON append-only logs intended to be consumed by tooling (for example via log search/tail operations). Each NDJSON line MUST be a single JSON object with this shape:
+Alfred emits json append-only logs intended to be consumed by tooling (for example via log search/tail operations). Each json line MUST be a single JSON object with this shape:
 
 - `timestamp` (string): RFC3339 (ISO 8601) UTC timestamp (seconds preferred; max milliseconds)
 - `level` (string): `"TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR"`

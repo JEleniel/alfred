@@ -205,7 +205,7 @@ When `storage.user.location = "workspace"`, the default user-scoped memory root 
 - `logging.runtime.path`: optional path override; if set, overrides `logging.runtime.location`.
 - `logging.runtime.retention_days`: integer (default `7`).
 
-At server startup, Alfred MUST create a new runtime log file using a stable, time-sortable filename (UTC timestamp to second precision; RFC3339-like without `:`), for example `alfred-20260228T134512Z.ndjson`.
+At server startup, Alfred MUST create a new runtime log file using a stable, time-sortable filename (UTC timestamp to second precision; RFC3339-like without `:`), for example `alfred-20260228T134512Z.json`.
 
 Rotated logs MUST be archived as ZIP files and pruned according to `logging.runtime.retention_days`.
 

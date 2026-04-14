@@ -285,7 +285,8 @@ Notes:
 - `cancel` returns the same shape as `status`, reflecting the operation state at the time the cancel was processed.
 
 - Byte-oriented file operations are out of scope for Alfred and MUST NOT be exposed.
-- All paths MUST be workspace-relative, normalized, and use `/` separators.
+- All paths MUST resolve within the workspace boundary after applying host-OS path semantics.
+- Callers MAY supply relative paths, absolute paths, and traversal segments so long as resolution remains in bounds.
     - The alfred logs path is permitted for read-only operations.
 - Status polling MUST be performed by calling this same tool with `operation: "bulk"` and `args.mode: "status"`.
 - There are no standalone job tools.
@@ -440,10 +441,9 @@ Path rules:
 
 - If `args.path` is omitted, Alfred MUST use its configured runtime log path.
 - If `args.path` is provided:
-    - It MUST be a workspace-relative path.
+    - It MAY use any path form valid for the host OS.
     - The resolved path MUST remain within the workspace boundary.
-    - Absolute paths MUST be rejected.
-    - `..` traversal MUST be rejected.
+    - Invalid paths and boundary escapes MUST fail deterministically.
 
 Streaming notes:
 
@@ -618,14 +618,14 @@ Storage model:
         - `name`: string.
         - `version`: string (SemVer).
         - `schema_version`: string (SemVer; lockstep with `version`).
-        - `execution_modes`: array (`"sync" | "background" | "stream"`).
+        - `execution_modes`: array (`"Sync" | "Background" | "Stream"`).
         - `limits`: optional object.
 
 Execution modes:
 
-- `sync`: completes within a single tool call and returns a finite payload.
-- `background`: may return `status: "pending"` and MUST be polled via a follow-up tool call.
-- `stream`: may emit a stream of results over time by emitting repeated, standard tool result envelopes (MCP-compliant).
+- `Sync`: completes within a single tool call and returns a finite payload.
+- `Background`: may return `status: "pending"` and MUST be polled via a follow-up tool call.
+- `Stream`: may emit a stream of results over time by emitting repeated, standard tool result envelopes (MCP-compliant).
 
 Limits SHOULD include (canonical values in [`docs/design/Defaults.md`](./Defaults.md)):
 

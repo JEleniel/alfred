@@ -3,6 +3,6 @@
 	"id": "CAP-007",
 	"card_type": "Capability",
 	"name": "Deterministic Contracts",
-	"description": "Provide concise JSON/NDJSON responses with deterministic error taxonomy, schema versioning, and consistent diagnostics structures.",
+	"description": "Provide concise JSON/json responses with deterministic error taxonomy, schema versioning, and consistent diagnostics structures.",
 	"links": []
 }

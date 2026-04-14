@@ -106,7 +106,7 @@ Runtime logs are written to the resolved `logging.location` directory (default `
 
 | Pattern                      | Description                                                                                                            |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `alfred-<timestamp>Z.ndjson` | Active log file. Timestamp is UTC, RFC3339-like without `:`, second precision (e.g. `alfred-20260228T134512Z.ndjson`). |
+| `alfred-<timestamp>Z.json` | Active log file. Timestamp is UTC, RFC3339-like without `:`, second precision (e.g. `alfred-20260228T134512Z.json`). |
 | `alfred-<timestamp>Z.zip`    | Archived (rotated) log. Older than the active file; pruned after `logging.retention_days` days (default `7`).          |
 
 A new log file is created on each server startup. Previous files are archived as ZIP and pruned per retention policy.

@@ -7,7 +7,6 @@ applyTo: '**/Cargo.toml'
 
 ## Tooling
 
-- ALWAYS use `cargo-mcp` for Cargo operations when available.
 - If unavailable, use the standard `cargo` CLI.
 
 ## Core Settings

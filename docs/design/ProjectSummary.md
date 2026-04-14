@@ -34,7 +34,7 @@ Alfred’s architecture emphasizes predictable, testable behavior:
 - Consistent tool envelopes: tools return a common success/error shape; only background-capable operations may return `status: "pending"`.
 - Deterministic error taxonomy: failures are mapped into a small, stable set of deterministic error kinds (see [`docs/design/ErrorTaxonomy.md`](./ErrorTaxonomy.md)).
 - Deterministic redaction: non-public information (NPI) is filtered from tool outputs, logs, and indexes using a stable replacement token (default `<-REDACTED->`).
-- Path handling: unless a contract says otherwise, paths are workspace-relative and use `/` separators; unrepresentable paths are encoded deterministically to keep protocol output valid UTF-8 JSON.
+- Path handling: unless a contract says otherwise, inputs may use any host-OS-valid path form and are accepted only when resolution stays inside the workspace boundary; unrepresentable paths are encoded deterministically to keep protocol output valid UTF-8 JSON.
 
 ## Configuration model
 
@@ -69,7 +69,7 @@ By default, workspace-scoped artifacts are rooted at `<workspaceRoot>/.alfred/` 
 - Workspace index persistence.
 - Optional workspace memory store.
 
-Alfred logs are structured NDJSON records intended for deterministic search/tail operations.
+Alfred logs are structured json records intended for deterministic search/tail operations.
 
 Depending on `storage.*` and `logging.*` configuration, some artifacts (including runtime logs and optionally workspace-scoped data) MAY be stored under OS user directories rather than the workspace.
 
@@ -86,7 +86,7 @@ This repository explicitly documents several non-goals:
 
 - Requirements and constraints: [AlfredOverview](./AlfredOverview.md)
 - Architecture and decomposition: [AlfredArchitecture](./AlfredArchitecture.md)
-- Protocol envelopes, framing, NDJSON usage: [Protocol](./Protocol.md)
+- Protocol envelopes, framing, json usage: [Protocol](./Protocol.md)
 - Tool contracts (inputs/outputs/limits): [ToolContracts](./ToolContracts.md)
 - Configuration model: [Configuration](./Configuration.md)
 - Default values (canonical reference): [Defaults](./Defaults.md)

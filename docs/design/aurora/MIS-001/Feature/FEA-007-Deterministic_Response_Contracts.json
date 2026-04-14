@@ -3,7 +3,7 @@
 	"id": "FEA-007",
 	"card_type": "Feature",
 	"name": "Deterministic Response Contracts",
-	"description": "Return concise JSON/NDJSON responses with stable schema versions and deterministic error taxonomy.",
+	"description": "Return concise JSON/json responses with stable schema versions and deterministic error taxonomy.",
 	"links": [
 		{
 			"relationship": "realizes",

@@ -23,7 +23,7 @@
 		}
 	},
 	"card_type": "Constraint",
-	"description": "Alfred protocol outputs MUST be valid UTF-8 JSON/NDJSON and use deterministic percent-encoding for path transport when encoding is required. Unsafe or ambiguous path text MUST be rejected at the boundary.",
+	"description": "Alfred protocol outputs MUST be valid UTF-8 JSON/json and use deterministic percent-encoding for path transport when encoding is required. Unsafe or ambiguous path text MUST be rejected at the boundary.",
 	"external_references": ["docs/design/Protocol.md"],
 	"id": "CNS-021",
 	"links": [],

@@ -7,7 +7,7 @@
 	"description": "Normalized diagnostics output emitted by build/test/lint/format tooling, optionally with deltas between runs.",
 	"links": [],
 	"attributes": {
-		"format": ["json", "ndjson"],
+		"format": ["json", "json"],
 		"schema": "schemas/alfred.diagnostics.schema.json",
 		"sources": ["cargo", "pnpm", "linters", "formatters"],
 		"contracts": {
@@ -15,7 +15,7 @@
 			"errors": "docs/design/ErrorTaxonomy.md"
 		},
 		"notes": [
-			"When emitted as NDJSON, each line is a complete JSON object and the stream is append-only.",
+			"When emitted as json, each line is a complete JSON object and the stream is append-only.",
 			"Diagnostics envelopes are designed to be validated against a deterministic schema and taxonomy."
 		]
 	}

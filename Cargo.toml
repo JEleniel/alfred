@@ -2,6 +2,10 @@
 name = "alfred"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.85"
+description = "Local-only MCP stdio server for deterministic, workspace-scoped agent workflows"
+license = "GPL-3.0-only"
+readme = "README.md"
 
 [package.metadata.crystultima]
 app_id = "org.crystultima.alfred"

@@ -28,7 +28,7 @@
 		}
 	],
 	"attributes": {
-		"stream_format": "ndjson",
+		"stream_format": "json",
 		"redaction": "deterministic",
 		"spec": "docs/design/Protocol.md"
 	}

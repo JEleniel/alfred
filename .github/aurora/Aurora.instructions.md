@@ -91,9 +91,9 @@ When present, the optional `icon` value MUST match an icon id in `reference/Auro
 
 #### External References
 
-Aurora is designed to join the model with reference documents that detail the elements of the model. In order to allow for the inclusion of artifacts, such as JSON schemas, ADR documents, URLs and other external material, the `external_references` field can contain an array of strings, each of which is a _relative_ path or URL to the external material. When rendered to Markdown these will become links.
+In order to allow for the inclusion of artifacts, such as JSON schemas, ADR documents, URLs and other external material, the `external_references` field can contain an array of strings, each of which is a _relative_ path or URL to the external material. When rendered to Markdown these will become links.
 
-The default location for such material is `docs/design/`.
+The default location for such material is `docs/design/references/`.
 
 #### ID acronym consistency
 
@@ -153,11 +153,12 @@ aurora
   │    ├─ Aurora.compact.schema.json
   │    ├─ Aurora.modelconfiguration.schema.json
   │    └─ Aurora.viewconfiguration.schema.json
-  │─ Aurora.modelconfiguration.json
-  │─ Aurora.viewconfiguration.json
-  │─ SVGTemplate.svgz
-  │─ MIS-002-Write_User_Documentation_for_Aurora.json
-  └─ MIS-001-Enable_Deterministic_Aurora_CLI_Tooling.json
+  ├─ reference
+  │    ├─ SVGTemplate.svgz
+  │    ├─ Aurora.modelconfiguration.json
+  │    └─ Aurora.viewconfiguration.json
+  ├─ MIS-001-Enable_Deterministic_Aurora_CLI_Tooling.json
+  └─ MIS-002-Write_User_Documentation_for_Aurora.json
 ... etc
 ```
 

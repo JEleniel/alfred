@@ -56,6 +56,6 @@
 		}
 	],
 	"attributes": {
-		"execution_modes": ["sync", "async"]
+		"execution_modes": ["Sync", "Background"]
 	}
 }
