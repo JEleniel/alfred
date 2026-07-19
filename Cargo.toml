@@ -43,3 +43,11 @@ criterion = "0.5.1"
 [[bench]]
 name = "tool_commands"
 harness = false
+
+[lints.clippy]
+excessive-nesting = "forbid"
+too-many-lines = "forbid"
+upper-case-acronyms = "allow"
+
+[lints.rust]
+unsafe-code = "forbid"

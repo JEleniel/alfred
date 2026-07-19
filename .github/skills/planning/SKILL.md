@@ -36,20 +36,31 @@ description: Use this skill when creating or maintaining a project plan, includi
 
 ## Deliverables
 
-- The Project Plan at `docs/design/ProjectPlan.md` or a user-designated path.
-- A Project Plan containing structured tasks, dependencies, priorities, and progress status.
-- If the plan spans design, implementation, release, or verification work, explicit tasks for the applicable review and checklist gates.
+- A Project Plan containing structured tasks, subtasks, dependencies, priorities, and progress status at `docs/design/ProjectPlan.md`.
+    - The plan must include tasks for implementation, documentation, reviews, and analysis as well as tasks for remediation of any identified gaps.
+    - Tasks must be present for every step and element required to reach the project goals and align with the designs.
+    - Tasks must be broken down into inseperable units of work that can be independently tracked and verified.
+    - Reviews must be in the order analysis, architecture, code, and documentation.
+- Do not number the items in the plan; use markdown nesting to indicate hierarchy and sequencing instead of explicit numbering. This makes it easier to insert, remove, reorder, and split tasks without needing to renumber the entire plan.
+- Phrases like "implement _x_ and _y_", or lists of multiple deliverables are clear indicators that the task is not a single unit of work and should be broken down into subtasks.
 - The Project Plan should use the following task format:
 
 ```markdown
-1. [x] <priority P0-P3>: Description of task
-    - Status: `Not Started`, `In Progress`, `Completed`, or `Blocked`
-    - Description: Detailed description of the task, its purpose, and any relevant context.
-    - Deliverables:
-        - Clear, specific, concise deliverables that can be verified upon completion.
-    - Cards: (Optional) List of related Aurora card IDs (if applicable)
-    - Notes: (Optional) Any assumptions, constraints, or additional information relevant to the task.
-    - Dependencies: (Optional) List of other tasks that must be completed before this task can be started.
+- [x] <priority P0-P3>: Build the DS3231 Driver
+    - Description: Implement the driver for the DS3231 Real Time Clock.
+    - Deliverable:
+        - The driver receives resources from the HAL, including pins and busses.
+        - The driver exposes a clean, simple, stateless interface.
+        - Errors are locally typed, `#[from]` conversions are used everywhere possible, and all fallible functions return `Result<_, _x_Error>`.
+    - References: (Optional) Links to relevant Aurora cards, documentation, designs, or project artifacts that provide context for the task.
+    - Notes: (Optional) Concise additional information directly related to executing the plan. Implementationd etails, functional notes, and other details are documentation, not notes.
+    - Dependends on: (Optional) Hardware Abstraction Layer
+    - Subtasks:
+        - [ ] `new` - accepts an I2C bus and time zone (name) and uses them to initialize the device.
+        - [ ] `get_time` - function that returns now in UTC.
+        - [ ] `get_time_local` - function that returns now in the time zone.
+        - [ ] `set_time_zone` - function that updates the time zone.
+        - [ ] `set_time` - function that sets the time on the device.
 ```
 
 ## Operating Procedure
@@ -70,22 +81,27 @@ description: Use this skill when creating or maintaining a project plan, includi
 - Plan format matches the documented structure.
 - Consistent numbering and hierarchy.
 - Priorities present and within the defined range.
-- Status present for every task.
+- The plan includes tasks for implementation, documentation, reviews, and analysis as well as tasks for remediation of any identified gaps.
+- Tasks are present for every step and element required to reach the project goals and align with the designs.
+- Reviews are in the order analysis, architecture, code, and documentation.
 
 ### Task Quality Checklist
 
-- Specific tasks with a clear purpose.
-- Measurable deliverables.
-- Achievable scope.
-- Relevant contribution to project goals.
-- Technology-agnostic wording unless the user requires otherwise.
+- Each task touches only one subsystem or one inseperable unit of work.
+- Each task includes references to related documentation or Aurora cards providing traceability and context.
+- The order of tasks minimizes the total work, for example avoiding touching a subsystem then later refactoring the same subsystem.
+- Each task depends on a task of equal or higher priority.
+- Every task includes verification criteria and steps.
+- Tasks are specific, include the work to be done clearly stated, avoid vague or "business" language, and are directly actionable.
+- Deliverables are specific, concise, and objectively verifiable.
 
 ### Dependency and Sequencing Checklist
 
+- Task dependencies form a clean tree structure with no circular dependencies.
+- Tasks only depend on equal or higher priority parents.
+- Research tasks are included for any work that has an open question.
 - Explicit dependencies where they matter.
-- No circular dependencies.
 - Prerequisites listed before dependents.
-- Explicit review and checklist gates where applicable.
 - Status that reflects real progress and blockers.
 
 ## Things to Watch For
@@ -98,6 +114,9 @@ description: Use this skill when creating or maintaining a project plan, includi
 - Review gates missing from delivery plans.
 - Implementation details masquerading as project goals.
 - Status drift between the plan and reality.
+- Tasks thare not broken into the smallest possible unit of work that can be independently tracked and verified.
+- Tasks that depend on lower priority tasks, which can lead to blockers and delays.
+- Tasks that touch more than three files or components, which can indicate that the task is not sufficiently decomposed.
 
 ## Cross-skill tasks
 

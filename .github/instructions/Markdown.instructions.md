@@ -10,7 +10,7 @@ When a consuming platform or tool requires a conflicting Markdown convention, fo
 
 ## Guidelines
 
-- Use only ATX headings (`#`, `##`, …); do not indent headings.
+- Use only ATX headings (`#`, `##`, …) in title case; do not indent headings.
 - Use a single H1.
 - Increase heading levels one at a time; do not skip levels.
     - Sibling headings must be unique.

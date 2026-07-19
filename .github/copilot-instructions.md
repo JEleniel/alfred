@@ -25,11 +25,13 @@ The project plan is stored as `docs/design/ProjectPlan.md`. If it exists, you MU
 
 You MUST NOT track implementation details, challenges, etc. in the Project Plan. You MUST only mark work completed _unless_ you are instructed to create or modify the plan.
 
-Implementation details, challenges, etc. that you think need documenting MUST be tracked in `docs/design/AsBuilt.md`.
+Implementation details, challenges, etc. that you think need documenting MUST be tracked in `docs/design/tracking/AsBuilt.md`. Create the file if it does not exist. If a `docs/design/AsBuilt.md` exists, relocate it to to the new location.
+
+The team will also be following these same work tracking requirements. In addition, they will maintain [Team Notes](../docs/design/tracking/TeamNotes.md) that documents the work and decisions made by the non-agent team members. You can use this file to catch up on what changed.
 
 ### Changelog
 
-With each commit, maintain the `CHANGELOG.md`, in Keep a Changelog format. Do not track changes to `.github/`, `docs/`, or `.agents/` in the changelog. Consolidate similar or related entries to keep the log concise.
+With each commit, maintain the `CHANGELOG.md`, in Keep a Changelog format. Do not track changes to `.github/`, `docs/`, or `.agents/` in the changelog. Consolidate similar or related entries to keep the log concise. If available, include a link to the design artifact that defines the implemented code.
 
 ## Behavior
 
@@ -49,12 +51,8 @@ With each commit, maintain the `CHANGELOG.md`, in Keep a Changelog format. Do no
         - `docs/design/MIS-*/**/*`
         - `docs/design/MIS-*.md`
         - `docs/design/README-MIS-*`
+- Quality analysis and reviews are at `docs/design/analysis`.
 
-## Operating Assumptions/Constraints
-
-- Empirical evidence has shown that patches >50 lines fail >80% of the time, resulting in falling back to the smaller patches required here. Your patch tooling oes not guarantee atomicity, either, so multi-file patches not only fail, but are difficult to revert.
-- Every restriction in the instructions in this repository have been put in place to enforce solid engineering practices, avoid known issues, and are backed by empirical evidence.
-- The same evidence has shown that multi-file patches corrupt files frequently, most often creating duplicate content.
 - All repos where these instructions are used will have validation, linting, and formatting tools appropriate to the project.
 
 ## Invariants
@@ -64,19 +62,38 @@ With each commit, maintain the `CHANGELOG.md`, in Keep a Changelog format. Do no
 - You MUST commit your changes as you go with an appropriate commit message, including the Project Plan reference, if available.
 - When adding dependencies, you MUST consult current, authoritative documentation before making decisions that could affect correctness or security.
 - You MUST NOT modify `.github/**/*` unless the user asks.
-- You MUST NOT revert changes you did not make.
-- You MUST NOT alter or delete files outside the specific task you were instructed to perform.
+- You MUST NOT revert changes you did not make. This includes when you reread a document to make edits. You MUST NOT overwrite these collaborative edits.
+- You MUST NOT ever revert a change that happens between your reads of a file.
+- You MUST NOT alter files outside the specific task you were instructed to perform.
+- You MUST NOT delete _any_ file without direct permission from the user.
 - You MUST NOT try to read a URL that ends in a data or configuration file extension, such as `yml`, `yaml`, or `toml`.
 - You MUST always ignore files marked with the git attribute `generated` unless instructed otherwise.
 - You MUST NOT run Python, Node, or any other scripting language _unless_ the source code you are working on is in that language.
-- You MUST NOT attempt to run ad-hoc scripts. Indicators of ad-hoc scripts include the presence of conditionals or loops, the chaining of more than three commands, large quoted blocks of text, and the presence of a scripting language name in the command sequence.
+- You MUST NOT attempt to run ad-hoc scripts. Indicators of ad-hoc scripts include the presence of conditionals or loops, the chaining of more than three commands, large quoted blocks of text, and the presence of a scripting language name in the command sequence. The use of the pipe and `| head` or `| tail` does not constitute scriptint.
 - You MUST NOT write outside the workspace, for any reason, including `/tmp`. You _will_ be blocked. If you need temporary working space, create `tmp/` in the workspace. You MUST delete it when done.
 - Files may change at any time as there is a team working this project. You MUST reread them before applying any edits.
 - You MUST NOT repeat the prompt, restate plans, or narrate obvious steps.
-- You MUST NOT compliment the user's request, compliment yourself, engage in sycophantic behavior, or otherwise violate neutral, professional behavior standards.
 - You MUST NOT attempt to apply a patch larger than 50 lines. You MUST use small, focused, surgical edits and patches.
-- You MUST NOT attempt to patch multiple files at one time. You MUST plan for, and execute multi-file changes one file at a time.
-- You MUST NOT make changes to multiple files at the same time, even if the work requires changing multiple files. You MUST change them one at a time.
+- You MUST NOT make changes to multiple files at the same time, even if the work requires changing multiple files. You MUST plan for, and execute multi-file changes one file at a time.
 - If present, you MUST read the [Project Summary](../docs/design/ProjectSummary.md) which contains details specific to this project and repository.
 - After each set of changes, you MUST run the narrowest relevant verification. It is not necessary to validate after every individual change.
 - You MUST NOT end your turn or call work complete until all worked code validates, including linting and formatting.
+- You MUST NOT "optimize things away". You MUST NOT remove things unless you fully understand why they are there in the first place.
+
+## Startegic Thinking Approach
+
+- Before editing, will explicitly identify:
+    - How to keep the lifecycle ownership as narrow as possible.
+    - Where clean module lines can be drawn, minimal interfaces exposed, and coupling minimized.
+    - Which components own resources, both in general and specific resources.
+    - Which components exist to orchestrate complex operations.
+    - Where helper systems are _necessary_, where they are _beneficial_, and where they make sense.
+- For eack change set, budget five files to edit. If you hit it, stop and re-evaluate before editing more files.
+- Plan to accomplish work and do not attempt to combine multiple aspects into one change; break them up into contained changesets:
+    - implementation
+    - architecture cleanup
+    - doc normalization
+    - plan reshaping
+- Identify the smallest and most focused change that spans the least files.
+    - Not the most elegant (though small and focused leads to elegant).
+    - Not "future proofing" or support for theoretical code paths.

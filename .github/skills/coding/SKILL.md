@@ -85,9 +85,12 @@ description: Use this skill when writing or modifying source code, or when docum
 - Source code is modular, clean, readable, idiomatic, and aligned with project conventions.
 - Appropriate unit and integration tests are added and passing.
     - Coverage target (aspirational): aim for 90%+ coverage on functional code when practical.
+- No warnings (e.g., unused variables) are left behind from your work.
 - Notes added for the documentation writer explaining changes, new features, and other relevant information for the project documentation.
 - Linting, formatting, and static analysis checks are passing.
-- Create, if necessary, and maintain a `docs/design/analysis/Tests.md` file that lists the modules and their associated tests, including a brief description of what each test covers. This file should also identify and gaps in coverage, whether they are deliberate, and why.
+- You are responsible for the creation and maintenance of the following document that are directly related to the code you are writing:
+    - A `docs/design/analysis/Tests.md` file that lists the modules and their associated tests, including a brief description of what each test covers. This file should also identify and gaps in coverage, whether they are deliberate, and why.
+    - If applicable a `docs/design/Testing.md` file that documents any manual, interactive, or other tests that do not fit into the automated unit and integration test suites. This file should include instructions on how to run the tests, what they cover, and any expected behavior or outcomes tailored for humans.
 
 **Tests.md Example**:
 
@@ -98,14 +101,14 @@ description: Use this skill when writing or modifying source code, or when docum
 
 - `restart_device_falls_back_cleanly_on_host`: verifies that the host-side restart fallback mechanism works correctly when triggered from the binary entrypoint.
 
-## `tests/configuration_test.rs` tests `configuration`
+## `tests/configuration_test.rs` tests `data::configuration`
 
 - `parses_example_configuration`: ensures that the example configuration file is parsed correctly, with all expected fields populated and defaults applied as needed.
 - `configuration_serialization_preserves_unmodeled_sections`: checks that when a configuration written, any sections that are not explicitly modeled in the code are preserved without alteration.
 
 ### Gaps
 
-- `configuration` module currently lacks tests for invalid input handling, such as malformed configuration files or missing required fields. This is not deliberate.
+- `data::configuration` module currently lacks tests for invalid input handling, such as malformed configuration files or missing required fields. This is not deliberate.
 ```
 
 ## Operating Procedure
@@ -115,7 +118,7 @@ description: Use this skill when writing or modifying source code, or when docum
 3. Implement the intended change that satisfies the request, following existing patterns and avoiding new dependencies unless clearly justified.
 4. Add or update tests for the happy path, edge cases, and failure paths needed to prove the behavior. Language-specific instructions define test organization and placement rules.
 5. Run the relevant formatting, linting, static analysis, and test commands for the affected language or ecosystem, and fix any issues introduced by the change. Repo instructions require verification before completion; file-specific instructions define language- and file-specific checks.
-6. Record any documentation notes or follow-up information needed to explain behavior changes, new features, or operational impact.
+6. Update any documentation you are responsible for.
 7. If the request also requires architecture, planning, documentation-only work, or formal review output, switch to the appropriate skill for that phase.
 
 - Note: If present, you can run `./.github/violations.sh` to check for oversize files or functions as well as small functions that may be candidates for cleanup.
@@ -161,6 +164,7 @@ description: Use this skill when writing or modifying source code, or when docum
 
 ## Cross-skill tasks
 
+- When coding you are also responsible for keeping the documentation and tests up to date. If the request involves documentation updates, implement those as part of the coding task instead of switching to the Documentation skill.
 - If the request is planning-only, do not produce code changes; use the Planning skill.
 - If the request is documentation-only, do not modify code; use the Documentation skill.
 - If the request includes both code and documentation updates, treat it as a coding task and include the documentation updates as part of the deliverables.

@@ -16,4 +16,4 @@ If present, the repository's Prettier config (`.prettierrc.json`) is the source 
 - **Encoding and Characters**: Encode as UTF-8 without BOM. Use double quotes for keys and strings and Unix line endings (`\n`). Include exactly one trailing newline.
 - **Types**: Preserve primitive types; do not turn numbers/booleans into strings. Use ISO 8601 for dates/timestamps with (maximum) millisecond resolution and in UTC when possible, unless the declared schema or consuming system requires another format. Avoid ambiguous numeric formats.
 - **Consistent Ordering**: Sort JSON by keys when generating it, maintain the existing order when editing.
-- **Prettier**: Instead of wasting time formatting JSON, use `prettier` when available (and it is in the IDE).
+- **Prettier**: Instead of wasting time formatting JSON, use `pnpm dlx prettier --write <file>` when available (and it is in the IDE).

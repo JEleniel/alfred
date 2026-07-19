@@ -69,6 +69,40 @@
 			"type": "array",
 			"uniqueItems": true
 		},
+		"view_subdomain_definition": {
+			"additionalProperties": false,
+			"properties": {
+				"cards": {
+					"$ref": "#/$defs/card_type_list"
+				},
+				"subsubdomains": {
+					"additionalProperties": {
+						"$ref": "#/$defs/card_type_list"
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"view_domain_definition": {
+			"additionalProperties": false,
+			"properties": {
+				"cards": {
+					"$ref": "#/$defs/card_type_list"
+				},
+				"subdomains": {
+					"additionalProperties": {
+						"$ref": "#/$defs/view_subdomain_definition"
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"layout_family": {
+			"enum": ["TreeTopDown", "TreeLeftRight"],
+			"type": "string"
+		},
 		"view_definition": {
 			"additionalProperties": false,
 			"properties": {
@@ -77,6 +111,10 @@
 				},
 				"included_card_types": {
 					"$ref": "#/$defs/card_type_list"
+				},
+				"layout": {
+					"$ref": "#/$defs/layout_family",
+					"description": "Optional preferred layout family for rendering this view."
 				},
 				"name": {
 					"$ref": "#/$defs/non_empty"
@@ -115,6 +153,12 @@
 		},
 		"cards": {
 			"$ref": "#/$defs/cards"
+		},
+		"domains": {
+			"additionalProperties": {
+				"$ref": "#/$defs/view_domain_definition"
+			},
+			"type": "object"
 		},
 		"views": {
 			"$ref": "#/$defs/views"
