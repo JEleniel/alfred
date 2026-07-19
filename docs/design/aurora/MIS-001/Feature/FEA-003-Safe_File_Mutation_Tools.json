@@ -8,23 +8,11 @@
 		{
 			"relationship": "realizes",
 			"target": "CAP-003"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-001"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-003"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-004"
 		}
 	],
 	"attributes": {
-		"contracts": {
-			"tool_contracts": "docs/design/ToolContracts.md"
+		"specifications": {
+			"tool_api": "docs/design/ToolApiDefinition.md"
 		},
 		"tools": ["fs", "patch"],
 		"bulk_operations_via": "fs.operation=bulk"

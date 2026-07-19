@@ -1,0 +1,22 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "COM-011",
+	"card_type": "Component",
+	"card_subtype": "Library",
+	"name": "Interfaces and Diagnostics",
+	"description": "Defines and enforces deterministic response schemas, error taxonomy, and normalized diagnostics (including delta reporting).",
+	"links": [
+		{
+			"relationship": "produces",
+			"target": "ART-003"
+		},
+		{
+			"relationship": "executes",
+			"target": "STM-009"
+		}
+	],
+	"attributes": {
+		"error_taxonomy": "deterministic",
+		"formats": ["json", "json"]
+	}
+}

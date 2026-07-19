@@ -7,28 +7,12 @@
 	"description": "Maintains the workspace file index and supports deterministic `search` plus `fs` inspection operations (including read-range and diff).",
 	"links": [
 		{
-			"relationship": "implements",
-			"target": "FEA-001"
-		},
-		{
-			"relationship": "includes",
-			"target": "DSR-001"
-		},
-		{
-			"relationship": "stores in",
-			"target": "DST-001"
-		},
-		{
 			"relationship": "produces",
 			"target": "ART-005"
 		},
 		{
 			"relationship": "executes",
 			"target": "STM-003"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {

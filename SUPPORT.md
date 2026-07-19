@@ -18,7 +18,7 @@ If you’re debugging an integration problem, it’s often helpful to confirm th
 
 ### Troubleshooting
 
-- Alfred writes a structured NDJSON runtime log under the OS user-data directory (subfolder `alfred/logs/`, file `runtime.ndjson`).
+- Alfred writes a structured json runtime log under the OS user-data directory (subfolder `alfred/logs/`, file `runtime.json`).
 - If you are using Alfred via an MCP host, you can usually retrieve relevant log lines with the `log_search` tool.
 
 ## Questions

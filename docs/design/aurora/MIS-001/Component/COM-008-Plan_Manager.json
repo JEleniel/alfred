@@ -7,24 +7,12 @@
 	"description": "Creates and maintains the project plan artifact, including capturing tool/diagnostics errors and progress.",
 	"links": [
 		{
-			"relationship": "implements",
-			"target": "FEA-004"
-		},
-		{
-			"relationship": "stores in",
-			"target": "DST-003"
-		},
-		{
 			"relationship": "produces",
 			"target": "ART-004"
 		},
 		{
 			"relationship": "executes",
 			"target": "STM-006"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	]
 }

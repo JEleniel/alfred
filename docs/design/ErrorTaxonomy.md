@@ -1,7 +1,11 @@
 # Alfred Deterministic Error Taxonomy
 
+## Parent Aurora card
+
+[REQ-013](./aurora/MIS-001/Requirement/REQ-013-Deterministic_Error_Taxonomy.json) — this document elaborates the deterministic error taxonomy requirement.
+
 This document defines Alfred’s _tool-level_ deterministic error taxonomy. It is used inside Alfred tool results (not as a replacement for MCP/JSON-RPC transport errors).
-All tool implementations MUST map failures into the kinds defined here. Other design documents (for example `ToolContracts.md` and `Configuration.md`) MUST NOT specify concrete error kinds or `details` fields inline; they MUST reference this taxonomy instead.
+All tool implementations MUST map failures into the kinds defined here. Other design documents (for example `ToolApiDefinition.md` and `Configuration.md`) MUST NOT specify concrete error kinds or `details` fields inline; they MUST reference this taxonomy instead.
 
 ## Error object shape
 
@@ -32,7 +36,7 @@ A tool error MUST have the following fields:
 
 - Free-form logs MUST NOT be the only place where error information exists.
 - `details` SHOULD include enough structure to support deterministic conformance tests.
-- Non-public information (NPI) MUST be filtered from responses and logs deterministically. Redaction SHOULD be surfaced as a warning in the tool result envelope (see [`docs/design/Protocol.md`](./Protocol.md)) rather than introducing a new error kind.
+- Non-public information (NPI) MUST be filtered from responses and logs deterministically. Redaction SHOULD be surfaced as a warning in the tool result envelope (see [`docs/design/McpStdioProtocol.md`](./McpStdioProtocol.md)) rather than introducing a new error kind.
 
 ## Common `details` conventions
 
@@ -50,6 +54,11 @@ When present, `details` MUST be a JSON object.
     - `kind`: `invalid_argument`
     - `retryable`: `false`
     - `details`: `{ "reason": "tool_disabled", "tool": "<tool_name>" }`
+
+- Operation disabled by policy:
+    - `kind`: `permission_denied`
+    - `retryable`: `false`
+    - `details`: `{ "reason": "operation_disabled", "tool": "<tool_name>", "operation": "<operation_name>" }`
 
 ### Index-backed operations
 
@@ -111,10 +120,3 @@ A dedicated kind is used so callers can distinguish boundary escapes from ordina
     - `kind`: `invalid_argument`
     - `retryable`: `false`
     - `details`: `{ "reason": "stream_not_active" }`
-
-### Search mode parameter conflicts
-
-- A search parameter is incompatible with the supplied `mode`:
-    - `kind`: `invalid_argument`
-    - `retryable`: `false`
-    - `details`: `{ "reason": "mode_parameter_conflict", "parameter": "<param_name>", "mode": "<supplied_mode>" }`

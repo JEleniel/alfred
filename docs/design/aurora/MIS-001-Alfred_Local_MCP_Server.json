@@ -6,20 +6,8 @@
 	"description": "Provide efficient, safe, and reliable MCP tooling for common agent workflows as a local stdio server.",
 	"links": [
 		{
-			"relationship": "involves",
+			"relationship": "has",
 			"target": "STK-001"
-		},
-		{
-			"relationship": "remediates",
-			"target": "THM-001"
-		},
-		{
-			"relationship": "involves",
-			"target": "ACT-001"
-		},
-		{
-			"relationship": "involves",
-			"target": "ACT-002"
 		},
 		{
 			"relationship": "establishes",
@@ -48,26 +36,16 @@
 		{
 			"relationship": "necessitates",
 			"target": "SYS-001"
-		},
-		{
-			"relationship": "necessitates",
-			"target": "APP-001"
 		}
 	],
 	"attributes": {
 		"transport": "stdio",
 		"execution": "local",
-		"external_references": [
-			"../AlfredArchitecture.md",
-			"../AlfredOverview.md",
-			"../ErrorTaxonomy.md",
-			"../Protocol.md",
-			"../ToolContracts.md"
-		],
 		"notes": [
 			"Alfred is an MCP stdio server running on the workspace host machine.",
-			"The model emphasizes deterministic contracts, safety boundaries, and agent-optimized outputs.",
+			"The model emphasizes deterministic interfaces, safety boundaries, and agent-optimized outputs.",
 			"Alfred includes an offline-only local memory capability to provide stable agent memory when online-dependent memory is unavailable."
 		]
-	}
+	},
+	"external_references": ["../ProjectSummary.md"]
 }

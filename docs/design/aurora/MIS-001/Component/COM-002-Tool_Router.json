@@ -49,13 +49,9 @@
 		{
 			"relationship": "executes",
 			"target": "STM-002"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {
-		"execution_modes": ["sync", "async"]
+		"execution_modes": ["Sync", "Background"]
 	}
 }

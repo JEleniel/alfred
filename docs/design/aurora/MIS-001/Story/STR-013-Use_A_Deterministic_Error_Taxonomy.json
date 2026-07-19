@@ -6,12 +6,8 @@
 	"description": "As an agent user, I need a deterministic error taxonomy so that I can branch logic safely (retry, degrade, ask for permission) without brittle string matching.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-013"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-005"
 		}
 	]
 }

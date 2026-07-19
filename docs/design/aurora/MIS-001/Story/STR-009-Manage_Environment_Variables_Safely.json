@@ -6,16 +6,8 @@
 	"description": "As an agent user, I need to set/get/remove environment variables with clear scoping rules so that automation is possible without unintentionally leaking or persisting secrets.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-009"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-020"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-010"
 		}
 	]
 }

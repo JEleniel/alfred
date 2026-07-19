@@ -1,127 +1,215 @@
-//! Workspace boundary enforcement helpers.
+//! Workspace boundary and path normalization primitives for Alfred.
 
-use std::ffi::OsString;
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 
-use crate::errors::AlfredError;
+use thiserror::Error;
 
-/// Canonical error message for resolved-path boundary violations.
-///
-/// See `docs/design/MIS-001/Constraint/CNS-016-Symlink_and_JunctionSafe_Boundary_Checks.md`.
-pub const SYMLINK_JUNCTION_ESCAPE_MESSAGE: &str = "symlink/junction escapes workspace";
+/// Resolves a workspace path into a normalized path.
+pub fn normalize_workspace_relative_path(path: &str) -> Result<PathBuf, WorkspaceBoundaryError> {
+	let path = Path::new(path);
 
-fn canonicalize_path(path: &Path) -> Result<PathBuf, AlfredError> {
-	std::fs::canonicalize(path).map_err(|error| {
-		AlfredError::IoError(format!(
-			"failed to canonicalize {}: {error}",
-			path.display()
-		))
-	})
+	normalize_workspace_path(path)
 }
 
-fn ensure_within_root(resolved_root: &Path, resolved_candidate: &Path) -> Result<(), AlfredError> {
-	if resolved_candidate.starts_with(resolved_root) {
+fn normalize_workspace_path(path: &Path) -> Result<PathBuf, WorkspaceBoundaryError> {
+	let mut normalized = PathBuf::new();
+
+	for component in path.components() {
+		match component {
+			Component::CurDir => continue,
+			Component::ParentDir => {
+				if !normalized.pop() {
+					return Err(WorkspaceBoundaryError::boundary_violation(
+						path.to_string_lossy().as_ref(),
+					));
+				}
+			}
+			Component::Normal(part) => push_valid_component(
+				&mut normalized,
+				part.to_str().ok_or_else(|| {
+					WorkspaceBoundaryError::invalid_path(
+						path.to_string_lossy().as_ref(),
+						"non_utf8_component",
+					)
+				})?,
+				path.to_string_lossy().as_ref(),
+			)?,
+			Component::RootDir | Component::Prefix(_) => {
+				normalized.push(component.as_os_str());
+			}
+		}
+	}
+
+	if normalized.as_os_str().is_empty() {
+		return Err(WorkspaceBoundaryError::invalid_path(
+			path.to_string_lossy().as_ref(),
+			"empty_path",
+		));
+	}
+
+	Ok(normalized)
+}
+
+/// Resolves a workspace-relative write target beneath the workspace root.
+pub fn resolve_write_target_within_workspace_root(
+	workspace_root: impl AsRef<Path>,
+	path: &str,
+) -> Result<PathBuf, WorkspaceBoundaryError> {
+	let workspace_root = workspace_root.as_ref();
+	let candidate = normalize_workspace_path(&workspace_root.join(path))?;
+
+	if candidate.starts_with(workspace_root) {
+		return Ok(candidate);
+	}
+
+	Err(WorkspaceBoundaryError::boundary_violation(path))
+}
+
+/// Resolves an existing path beneath the workspace root and rejects escapes.
+pub fn try_resolve_existing_path_within_workspace_root(
+	workspace_root: impl AsRef<Path>,
+	path: &str,
+) -> Result<PathBuf, WorkspaceBoundaryError> {
+	let normalized = resolve_write_target_within_workspace_root(workspace_root.as_ref(), path)?;
+	let canonical_root = workspace_root
+		.as_ref()
+		.canonicalize()
+		.map_err(|_| WorkspaceBoundaryError::not_found(path))?;
+	let canonical_candidate = normalized
+		.canonicalize()
+		.map_err(|_| WorkspaceBoundaryError::not_found(path))?;
+
+	if !canonical_candidate.starts_with(&canonical_root) {
+		return Err(WorkspaceBoundaryError::boundary_violation(path));
+	}
+
+	Ok(canonical_candidate)
+}
+
+fn push_valid_component(
+	target: &mut PathBuf,
+	component: &str,
+	raw_path: &str,
+) -> Result<(), WorkspaceBoundaryError> {
+	validate_component_text(component, raw_path)?;
+	target.push(component);
+	Ok(())
+}
+
+fn validate_component_text(component: &str, raw_path: &str) -> Result<(), WorkspaceBoundaryError> {
+	if component == "." {
 		return Ok(());
 	}
 
-	Err(AlfredError::PermissionDenied(
-		SYMLINK_JUNCTION_ESCAPE_MESSAGE.to_string(),
-	))
+	if component == ".." {
+		return Err(WorkspaceBoundaryError::boundary_violation(raw_path));
+	}
+
+	validate_platform_component_text(component, raw_path)?;
+
+	Ok(())
 }
 
-/// If `candidate` exists, resolves it to a canonical target and ensures it remains within the
-/// canonicalized `workspace_root` boundary.
-///
-/// Returns `Ok(None)` when the path does not exist.
-pub fn try_resolve_existing_path_within_workspace_root(
-	workspace_root: &Path,
-	candidate: &Path,
-) -> Result<Option<PathBuf>, AlfredError> {
-	match std::fs::symlink_metadata(candidate) {
-		Ok(_) => {}
-		Err(error) => {
-			if error.kind() == std::io::ErrorKind::NotFound {
-				return Ok(None);
-			}
-			return Err(AlfredError::IoError(format!(
-				"failed to stat {}: {error}",
-				candidate.display()
-			)));
+#[cfg(windows)]
+fn validate_platform_component_text(
+	component: &str,
+	raw_path: &str,
+) -> Result<(), WorkspaceBoundaryError> {
+	if component.ends_with('.') {
+		return Err(WorkspaceBoundaryError::invalid_path(
+			raw_path,
+			"trailing_dot",
+		));
+	}
+
+	if is_reserved_windows_component(component) {
+		return Err(WorkspaceBoundaryError::invalid_path(
+			raw_path,
+			"reserved_name",
+		));
+	}
+
+	if component.chars().any(is_forbidden_windows_character) {
+		return Err(WorkspaceBoundaryError::invalid_path(
+			raw_path,
+			"forbidden_character",
+		));
+	}
+
+	Ok(())
+}
+
+#[cfg(not(windows))]
+fn validate_platform_component_text(
+	_component: &str,
+	_raw_path: &str,
+) -> Result<(), WorkspaceBoundaryError> {
+	Ok(())
+}
+
+#[cfg(windows)]
+fn is_reserved_windows_component(component: &str) -> bool {
+	matches!(
+		component.to_ascii_uppercase().as_str(),
+		"CON"
+			| "PRN" | "AUX"
+			| "NUL" | "COM0"
+			| "COM1" | "COM2"
+			| "COM3" | "COM4"
+			| "COM5" | "COM6"
+			| "COM7" | "COM8"
+			| "COM9" | "LPT0"
+			| "LPT1" | "LPT2"
+			| "LPT3" | "LPT4"
+			| "LPT5" | "LPT6"
+			| "LPT7" | "LPT8"
+			| "LPT9"
+	)
+}
+
+#[cfg(windows)]
+fn is_forbidden_windows_character(character: char) -> bool {
+	matches!(
+		character,
+		'<' | '>' | ':' | '"' | '\\' | '|' | '?' | '*' | '\0'
+	) || character.is_control()
+}
+
+/// Canonical workspace boundary error.
+#[derive(Debug, Error, Clone, Eq, PartialEq)]
+pub enum WorkspaceBoundaryError {
+	/// The supplied path is invalid for workspace-boundary processing.
+	#[error("invalid workspace path `{path}` ({reason}).")]
+	InvalidPath { path: String, reason: String },
+	/// The supplied path escapes the configured workspace boundary.
+	#[error("workspace boundary violation for `{path}`.")]
+	BoundaryViolation { path: String },
+	/// The supplied existing path could not be found.
+	#[error("workspace path `{path}` was not found.")]
+	NotFound { path: String },
+}
+
+impl WorkspaceBoundaryError {
+	fn invalid_path(path: &str, reason: &str) -> Self {
+		Self::InvalidPath {
+			path: path.to_owned(),
+			reason: reason.to_owned(),
 		}
 	}
 
-	let resolved_root = canonicalize_path(workspace_root)?;
-	let resolved_candidate = canonicalize_path(candidate)?;
-	ensure_within_root(resolved_root.as_path(), resolved_candidate.as_path())?;
-	Ok(Some(resolved_candidate))
-}
-
-fn find_existing_ancestor_with_remainder(
-	workspace_root: &Path,
-	target: &Path,
-) -> Result<(PathBuf, Vec<OsString>), AlfredError> {
-	let mut remainder: Vec<OsString> = Vec::new();
-	let mut cursor = target.to_path_buf();
-
-	loop {
-		if cursor == workspace_root {
-			return Ok((cursor, remainder));
+	fn boundary_violation(path: &str) -> Self {
+		Self::BoundaryViolation {
+			path: path.to_owned(),
 		}
+	}
 
-		match std::fs::symlink_metadata(cursor.as_path()) {
-			Ok(_) => return Ok((cursor, remainder)),
-			Err(error) => {
-				if error.kind() != std::io::ErrorKind::NotFound {
-					return Err(AlfredError::IoError(format!(
-						"failed to stat {}: {error}",
-						cursor.display()
-					)));
-				}
-			}
+	fn not_found(path: &str) -> Self {
+		Self::NotFound {
+			path: path.to_owned(),
 		}
-
-		let name = cursor.file_name().ok_or_else(|| {
-			AlfredError::Internal(format!(
-				"path has no file name while resolving write target: {}",
-				target.display()
-			))
-		})?;
-		remainder.push(name.to_os_string());
-		cursor = cursor
-			.parent()
-			.ok_or_else(|| {
-				AlfredError::Internal(format!(
-					"path has no parent while resolving write target: {}",
-					target.display()
-				))
-			})?
-			.to_path_buf();
 	}
 }
 
-/// Resolves a potentially-nonexistent target path for a write operation and ensures the resolved
-/// (canonical) destination remains within the canonicalized workspace root.
-///
-/// This prevents writing through symlink/junction components that escape the workspace.
-pub fn resolve_write_target_within_workspace_root(
-	workspace_root: &Path,
-	target: &Path,
-) -> Result<PathBuf, AlfredError> {
-	let resolved_root = canonicalize_path(workspace_root)?;
-
-	if std::fs::symlink_metadata(target).is_ok() {
-		let resolved_target = canonicalize_path(target)?;
-		ensure_within_root(resolved_root.as_path(), resolved_target.as_path())?;
-		return Ok(resolved_target);
-	}
-
-	let (ancestor, remainder) = find_existing_ancestor_with_remainder(workspace_root, target)?;
-	let resolved_ancestor = canonicalize_path(ancestor.as_path())?;
-	ensure_within_root(resolved_root.as_path(), resolved_ancestor.as_path())?;
-
-	let mut resolved_target = resolved_ancestor;
-	for component in remainder.into_iter().rev() {
-		resolved_target.push(component);
-	}
-	Ok(resolved_target)
-}
+#[cfg(test)]
+#[path = "workspace_boundary/tests/workspace_boundary_tests.rs"]
+mod workspace_boundary_tests;

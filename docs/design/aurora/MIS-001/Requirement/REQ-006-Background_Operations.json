@@ -8,18 +8,6 @@
 		{
 			"relationship": "requires",
 			"target": "CAP-006"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-012"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-019"
-		},
-		{
-			"relationship": "imposes",
-			"target": "CNS-022"
 		}
 	]
 }

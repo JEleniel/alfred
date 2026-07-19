@@ -6,12 +6,8 @@
 	"description": "As an agent user, I need Alfred to maintain a structured plan and completion state so that long-running work stays coherent and progress can be reported incrementally.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-004"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-015"
 		}
 	]
 }

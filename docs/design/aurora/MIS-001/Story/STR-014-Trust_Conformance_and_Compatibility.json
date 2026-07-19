@@ -6,16 +6,8 @@
 	"description": "As an agent user, I need a conformance suite so that tool behavior remains consistent across versions, platforms, and remote/networked workspaces.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-014"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-008"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-013"
 		}
 	]
 }

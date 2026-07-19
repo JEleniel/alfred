@@ -5,35 +5,13 @@
 	"card_subtype": "Data",
 	"name": "Job Output Stream",
 	"description": "A stream of output chunks and structured status for internal `fs` bulk background operations (not a standalone public job tool surface).",
-	"links": [],
-	"attributes": {
-		"formats": ["ndjson", "json"],
-		"schema": "schemas/alfred.job-stream-item.schema.json",
-		"cursor": {
-			"type": "seq",
-			"encoding": "decimal_string",
-			"monotonic": true
-		},
-		"semantics": "append-only",
-		"contracts": {
-			"protocol": "docs/design/Protocol.md",
-			"errors": "docs/design/ErrorTaxonomy.md"
-		},
-		"redaction": {
-			"required": true,
-			"notes": "All stream items MUST be redacted deterministically before persistence or emission."
-		},
-		"ndjson": {
-			"rules": "Each line is a complete JSON object. Callers MUST tolerate chunking and resume using cursors/job offsets.",
-			"ordering": "Stable by emission order within the job.",
-			"item_kinds": ["log", "stdout", "stderr", "status", "progress", "result", "error"],
-			"log_record_schema": {
-				"timestamp": "string (RFC3339 UTC; seconds preferred; max milliseconds)",
-				"level": "string (TRACE|DEBUG|INFO|WARN|ERROR)",
-				"message": "string",
-				"source": "string (e.g., alfred::configuration::load)",
-				"extra": "object (string-to-string pairs)"
-			}
+	"links": [
+		{
+			"relationship": "persists to",
+			"target": "DST-002"
 		}
+	],
+	"attributes": {
+		"format": "ndjson"
 	}
 }

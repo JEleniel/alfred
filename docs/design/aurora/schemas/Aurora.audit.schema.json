@@ -53,7 +53,7 @@
 			"type": "string"
 		}
 	},
-	"description": "JSON schema for a single Aurora audit log entry. Mission audit logs are append-only NDJSON files (`AuditLog.ndjson`) where each line is one entry.",
+	"description": "JSON schema for a single Aurora audit log entry. Mission audit logs are append-only json files (`AuditLog.json`) where each line is one entry.",
 	"properties": {
 		"changes": {
 			"description": "The set of card changes recorded in this single audit event",

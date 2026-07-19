@@ -8,17 +8,20 @@
 			"description": "Discrete step within a process.",
 			"relationships": [
 				{
-					"target": "ATV",
-					"relationship": "leads to"
-				},
-			]
-		},
-					"target": "TRG",
-					"relationship": "causes"
+					"target": "DEP",
+					"relationship": "has"
 				},
 				{
-					"target": "CON",
-					"relationship": "triggers"
+					"relationship": "leads to",
+					"target": "ATV"
+				},
+				{
+					"relationship": "causes",
+					"target": "TRG"
+				},
+				{
+					"relationship": "triggers",
+					"target": "CON"
 				}
 			]
 		},
@@ -29,8 +32,8 @@
 			"description": "External role interacting with or obligating the system.",
 			"relationships": [
 				{
-					"target": "ATV",
-					"relationship": "performs"
+					"relationship": "performs",
+					"target": "ATV"
 				}
 			]
 		},
@@ -41,16 +44,16 @@
 			"description": "Person, group, or role with an interest in or affected by the system.",
 			"relationships": [
 				{
-					"target": "ADR",
-					"relationship": "define"
+					"relationship": "define",
+					"target": "ADR"
 				},
 				{
-					"target": "EXC",
-					"relationship": "accepts"
+					"relationship": "accepts",
+					"target": "EXC"
 				},
 				{
-					"target": "STR",
-					"relationship": "desires"
+					"relationship": "desires",
+					"target": "STR"
 				}
 			]
 		},
@@ -60,30 +63,30 @@
 			"description": "Architectural Decision Record capturing a significant decision, alternatives considered, rationale, trade-offs, and consequences.",
 			"relationships": [
 				{
-					"target": "REQ",
-					"relationship": "refines"
+					"relationship": "refines",
+					"target": "REQ"
 				}
 			]
 		},
 		{
 			"acronym": "ART",
 			"card_type": "Artifact",
-			"common_subtypes": ["Document", "Data", "Diagram", "Code", "Model", "Report", "Schema"],
 			"common_properties": [
 				{
-					"name": "references",
-					"description": "Links to the schema or supporting reference document(s) associated with the artifact."
+					"description": "Links to the schema or supporting reference document(s) associated with the artifact.",
+					"name": "references"
 				}
 			],
+			"common_subtypes": ["Document", "Data", "Diagram", "Code", "Model", "Report", "Schema"],
 			"description": "Concrete work product produced or consumed by the system.",
 			"relationships": [
 				{
-					"target": "AST",
-					"relationship": "is"
+					"relationship": "is",
+					"target": "AST"
 				},
 				{
-					"target": "DST",
-					"relationship": "persists to"
+					"relationship": "persists to",
+					"target": "DST"
 				}
 			]
 		},
@@ -93,8 +96,8 @@
 			"description": "Valuable information/resources requiring protection.",
 			"relationships": [
 				{
-					"target": "THC",
-					"relationship": "hosts"
+					"relationship": "hosts",
+					"target": "THC"
 				}
 			]
 		},
@@ -109,8 +112,8 @@
 			"description": "Implementation-independent ability that satisfies requirements.",
 			"relationships": [
 				{
-					"target": "PRO",
-					"relationship": "requires"
+					"relationship": "requires",
+					"target": "PRO"
 				}
 			]
 		},
@@ -120,20 +123,20 @@
 			"description": "Top-level software system composed of applications and components.",
 			"relationships": [
 				{
-					"target": "DEP",
-					"relationship": "has"
+					"relationship": "has",
+					"target": "DEP"
 				},
 				{
-					"target": "DSR",
-					"relationship": "involves"
+					"relationship": "involves",
+					"target": "DSR"
 				},
 				{
-					"target": "APP",
-					"relationship": "integrates"
+					"relationship": "integrates",
+					"target": "APP"
 				},
 				{
-					"target": "VND",
-					"relationship": "involves"
+					"relationship": "involves",
+					"target": "VND"
 				}
 			]
 		},
@@ -143,20 +146,20 @@
 			"description": "Deployable application within a system, composed of components.",
 			"relationships": [
 				{
-					"target": "COM",
-					"relationship": "comprises"
+					"relationship": "comprises",
+					"target": "COM"
 				},
 				{
-					"target": "DAR",
-					"relationship": "generates"
+					"relationship": "generates",
+					"target": "DAR"
 				},
 				{
-					"target": "FEA",
-					"relationship": "implements"
+					"relationship": "implements",
+					"target": "FEA"
 				},
 				{
-					"target": "TES",
-					"relationship": "implements"
+					"relationship": "implements",
+					"target": "TES"
 				}
 			]
 		},
@@ -167,28 +170,28 @@
 			"description": "Modular unit with a single responsibility and explicit interfaces.",
 			"relationships": [
 				{
-					"target": "COM",
-					"relationship": "composes"
+					"relationship": "composes",
+					"target": "COM"
 				},
 				{
-					"target": "INT",
-					"relationship": "calls"
+					"relationship": "calls",
+					"target": "INT"
 				},
 				{
-					"target": "INT",
-					"relationship": "exposes"
+					"relationship": "exposes",
+					"target": "INT"
 				},
 				{
-					"target": "ART",
-					"relationship": "produces"
+					"relationship": "produces",
+					"target": "ART"
 				},
 				{
-					"target": "STM",
-					"relationship": "executes"
+					"relationship": "executes",
+					"target": "STM"
 				},
 				{
-					"target": "API",
-					"relationship": "calls"
+					"relationship": "calls",
+					"target": "API"
 				}
 			]
 		},
@@ -199,8 +202,8 @@
 			"description": "Persistent storage system that holds artifacts and data for retrieval and lineage.",
 			"relationships": [
 				{
-					"target": "DAR",
-					"relationship": "provides"
+					"relationship": "provides",
+					"target": "DAR"
 				}
 			]
 		},
@@ -210,16 +213,16 @@
 			"description": "Process-domain branching condition used by activities/processes; not used for state-machine branching.",
 			"relationships": [
 				{
-					"target": "ATV",
-					"relationship": "branches to"
+					"relationship": "branches to",
+					"target": "ATV"
 				},
 				{
-					"target": "TRG",
-					"relationship": "branches to"
+					"relationship": "branches to",
+					"target": "TRG"
 				},
 				{
-					"target": "CON",
-					"relationship": "branches to"
+					"relationship": "branches to",
+					"target": "CON"
 				}
 			]
 		},
@@ -230,8 +233,8 @@
 			"description": "Rule limiting allowable behavior or solutions.",
 			"relationships": [
 				{
-					"target": "REQ",
-					"relationship": "limits"
+					"relationship": "limits",
+					"target": "REQ"
 				}
 			]
 		},
@@ -242,12 +245,12 @@
 			"description": "Mechanism governing or constraining a process.",
 			"relationships": [
 				{
-					"target": "RIS",
-					"relationship": "mitigates"
+					"relationship": "mitigates",
+					"target": "RIS"
 				},
 				{
-					"target": "EXC",
-					"relationship": "has"
+					"relationship": "has",
+					"target": "EXC"
 				}
 			]
 		},
@@ -257,8 +260,8 @@
 			"description": "A documented and traceable decision to allow a control to be waived in specific circumstances.",
 			"relationships": [
 				{
-					"target": "REQ",
-					"relationship": "refines"
+					"relationship": "refines",
+					"target": "REQ"
 				}
 			]
 		},
@@ -268,8 +271,8 @@
 			"description": "Defined environment or configuration where software executes.",
 			"relationships": [
 				{
-					"target": "NOD",
-					"relationship": "includes"
+					"relationship": "includes",
+					"target": "NOD"
 				}
 			]
 		},
@@ -280,9 +283,9 @@
 			"description": "Origin of artifacts and data entering the system, used to model provenance and lineage.",
 			"relationships": [
 				{
-					"target": "ART",
-					"relationship": "provides"
-				},
+					"relationship": "provides",
+					"target": "ART"
+				}
 			]
 		},
 		{
@@ -291,12 +294,12 @@
 			"description": "Motivation explaining why requirements exist.",
 			"relationships": [
 				{
-					"target": "REQ",
-					"relationship": "drives"
+					"relationship": "drives",
+					"target": "REQ"
 				},
 				{
-					"target": "CNS",
-					"relationship": "imposes"
+					"relationship": "imposes",
+					"target": "CNS"
 				}
 			]
 		},
@@ -306,16 +309,16 @@
 			"description": "State-machine event that causes transitions or predicate evaluation; distinct from process-domain triggers.",
 			"relationships": [
 				{
-					"target": "EVT",
-					"relationship": "triggers"
+					"relationship": "triggers",
+					"target": "EVT"
 				},
 				{
-					"target": "STA",
-					"relationship": "triggers"
+					"relationship": "triggers",
+					"target": "STA"
 				},
 				{
-					"target": "PRD",
-					"relationship": "triggers"
+					"relationship": "triggers",
+					"target": "PRD"
 				}
 			]
 		},
@@ -325,8 +328,8 @@
 			"description": "Externally observable behavior realizing one or more requirements.",
 			"relationships": [
 				{
-					"target": "CAP",
-					"relationship": "realizes"
+					"relationship": "realizes",
+					"target": "CAP"
 				}
 			]
 		},
@@ -336,12 +339,12 @@
 			"description": "Contract governing interaction across a boundary.",
 			"relationships": [
 				{
-					"target": "ART",
-					"relationship": "accepts"
+					"relationship": "accepts",
+					"target": "ART"
 				},
 				{
-					"target": "ART",
-					"relationship": "returns"
+					"relationship": "returns",
+					"target": "ART"
 				}
 			]
 		},
@@ -356,16 +359,16 @@
 			"description": "Root intent that spawns every downstream driver.",
 			"relationships": [
 				{
-					"target": "DRI",
-					"relationship": "establishes"
+					"relationship": "establishes",
+					"target": "DRI"
 				},
 				{
-					"target": "STK",
-					"relationship": "has"
+					"relationship": "has",
+					"target": "STK"
 				},
 				{
-					"target": "SYS",
-					"relationship": "necessitates"
+					"relationship": "necessitates",
+					"target": "SYS"
 				}
 			]
 		},
@@ -376,8 +379,8 @@
 			"description": "Logical/physical execution environment hosting components or stores.",
 			"relationships": [
 				{
-					"target": "DAR",
-					"relationship": "runs"
+					"relationship": "runs",
+					"target": "DAR"
 				}
 			]
 		},
@@ -387,16 +390,16 @@
 			"description": "State-machine branching predicate that evaluates to true/false; distinct from process-domain conditions.",
 			"relationships": [
 				{
-					"target": "STA",
-					"relationship": "branches to"
+					"relationship": "branches to",
+					"target": "STA"
 				},
 				{
-					"target": "PRD",
-					"relationship": "branches to"
+					"relationship": "branches to",
+					"target": "PRD"
 				},
 				{
-					"target": "EVT",
-					"relationship": "branches to"
+					"relationship": "branches to",
+					"target": "EVT"
 				}
 			]
 		},
@@ -406,12 +409,12 @@
 			"description": "Ordered sequence of activities/decisions enabling a capability.",
 			"relationships": [
 				{
-					"target": "ATV",
-					"relationship": "starts with"
+					"relationship": "starts with",
+					"target": "ATV"
 				},
 				{
-					"target": "ACT",
-					"relationship": "involves"
+					"relationship": "involves",
+					"target": "ACT"
 				}
 			]
 		},
@@ -422,16 +425,16 @@
 			"description": "Verifiable statement of need/obligation.",
 			"relationships": [
 				{
-					"target": "CAP",
-					"relationship": "requires"
+					"relationship": "requires",
+					"target": "CAP"
 				},
 				{
-					"target": "CTL",
-					"relationship": "imposes"
+					"relationship": "imposes",
+					"target": "CTL"
 				},
 				{
-					"target": "TES",
-					"relationship": "defines"
+					"relationship": "defines",
+					"target": "TES"
 				}
 			]
 		},
@@ -452,16 +455,16 @@
 			"description": "Observable condition that persists until a transition.",
 			"relationships": [
 				{
-					"target": "STA",
-					"relationship": "transitions to"
+					"relationship": "transitions to",
+					"target": "STA"
 				},
 				{
-					"target": "PRD",
-					"relationship": "triggers"
+					"relationship": "triggers",
+					"target": "PRD"
 				},
 				{
-					"target": "EVT",
-					"relationship": "triggers"
+					"relationship": "triggers",
+					"target": "EVT"
 				}
 			]
 		},
@@ -471,8 +474,8 @@
 			"description": "Behavioral model defining allowable states/transitions.",
 			"relationships": [
 				{
-					"target": "STA",
-					"relationship": "starts in"
+					"relationship": "starts in",
+					"target": "STA"
 				}
 			]
 		},
@@ -482,8 +485,8 @@
 			"description": "Narrative expressing desired behavior/outcome; should follow the “`As an ___ I want/need ___.`” format.",
 			"relationships": [
 				{
-					"target": "REQ",
-					"relationship": "defines"
+					"relationship": "defines",
+					"target": "REQ"
 				}
 			]
 		},
@@ -494,8 +497,8 @@
 			"description": "Procedure verifying that a feature satisfies requirements.",
 			"relationships": [
 				{
-					"target": "FEA",
-					"relationship": "verifies"
+					"relationship": "verifies",
+					"target": "FEA"
 				}
 			]
 		},
@@ -505,8 +508,8 @@
 			"description": "Threat rendered as a diamond (diagramming variant).",
 			"relationships": [
 				{
-					"target": "ADV",
-					"relationship": "involves"
+					"relationship": "involves",
+					"target": "ADV"
 				}
 			]
 		},
@@ -524,12 +527,12 @@
 			"description": "Threat source: actor with intent and capability to cause harm.",
 			"relationships": [
 				{
-					"target": "THC",
-					"relationship": "develops"
+					"relationship": "develops",
+					"target": "THC"
 				},
 				{
-					"target": "AST",
-					"relationship": "exploits"
+					"relationship": "exploits",
+					"target": "AST"
 				}
 			]
 		},
@@ -539,8 +542,8 @@
 			"description": "Skills, access, tooling, or resources enabling an adversary to execute threats.",
 			"relationships": [
 				{
-					"target": "VIC",
-					"relationship": "impacts"
+					"relationship": "impacts",
+					"target": "VIC"
 				}
 			]
 		},
@@ -551,8 +554,8 @@
 			"description": "Entity that suffers impact when a threat is realized.",
 			"relationships": [
 				{
-					"target": "ROW",
-					"relationship": "is"
+					"relationship": "is",
+					"target": "ROW"
 				}
 			]
 		},
@@ -562,8 +565,8 @@
 			"description": "Role accountable for an asset/resource and its protection.",
 			"relationships": [
 				{
-					"target": "AST",
-					"relationship": "owns"
+					"relationship": "owns",
+					"target": "AST"
 				}
 			]
 		},
@@ -573,8 +576,12 @@
 			"description": "Structured analysis of assets, adversaries, threats, and mitigations.",
 			"relationships": [
 				{
-					"target": "THD",
-					"relationship": "includes"
+					"relationship": "includes",
+					"target": "THD"
+				},
+				{
+					"relationship": "defines",
+					"target": "RIS"
 				}
 			]
 		},
@@ -584,16 +591,16 @@
 			"description": "Process-domain trigger that initiates activities/conditions; distinct from state-machine events.",
 			"relationships": [
 				{
-					"target": "ATV",
-					"relationship": "triggers"
+					"relationship": "triggers",
+					"target": "ATV"
 				},
 				{
-					"target": "CON",
-					"relationship": "triggers"
+					"relationship": "triggers",
+					"target": "CON"
 				},
 				{
-					"target": "TRG",
-					"relationship": "triggers"
+					"relationship": "triggers",
+					"target": "TRG"
 				}
 			]
 		},
@@ -603,10 +610,11 @@
 			"description": "Third party providing products/services integrated into the system.",
 			"relationships": [
 				{
-					"target": "API",
-					"relationship": "provides"
+					"relationship": "provides",
+					"target": "API"
 				}
 			]
 		}
-	]
+	],
+	"version": "1.1.0"
 }

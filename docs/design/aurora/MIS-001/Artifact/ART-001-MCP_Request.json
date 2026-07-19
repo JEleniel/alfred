@@ -9,9 +9,9 @@
 	"attributes": {
 		"formats": ["json"],
 		"frame": "MCP tool invocation request (JSON frame over stdio)",
-		"contracts": {
-			"protocol": "docs/design/Protocol.md",
-			"tool_contracts": "docs/design/ToolContracts.md"
+		"specifications": {
+			"protocol": "docs/design/McpStdioProtocol.md",
+			"tool_api": "docs/design/ToolApiDefinition.md"
 		}
 	}
 }

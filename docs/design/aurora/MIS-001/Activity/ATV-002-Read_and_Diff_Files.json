@@ -4,14 +4,5 @@
 	"card_type": "Activity",
 	"name": "Read and Diff Files",
 	"description": "Read file ranges and view diffs through consolidated `fs` operations to understand the current state and validate intended changes.",
-	"links": [
-		{
-			"relationship": "uses",
-			"target": "COM-007"
-		},
-		{
-			"relationship": "uses",
-			"target": "COM-011"
-		}
-	]
+	"links": []
 }

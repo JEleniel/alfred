@@ -1,31 +1,34 @@
-# Alfred Storage Layout
+# Storage Layout
+
+This document provides the narrative detail for Alfred's application-managed on-disk layout and file locations.
+
+## Parent Aurora card
+
+[APP-001](./aurora/MIS-001/Application/APP-001-Alfred_Stdio_Server.json) — this document elaborates how the Alfred application organizes its local stores, logs, and workspace-owned files on disk.
 
 This document is the canonical reference for every file and folder Alfred reads or writes.
 For configuration semantics and precedence rules, see [`Configuration.md`](./Configuration.md).
-For default values, see [`Defaults.md`](./Defaults.md).
+For default values, see [`Default.md`](./Default.md).
 
 ## Overview
 
-Alfred uses three root storage locations. `alfred/` is appended to whichever base directory is selected for each location.
+Alfred uses purpose-specific user folders plus an optional workspace storage root. `alfred/` is appended to each user-level base directory, and `<workspace.storage.root>/` is used inside the workspace when workspace-local storage is enabled.
 
-| Location                  | Purpose                                        |
-| ------------------------- | ---------------------------------------------- |
-| User configuration folder | User-scoped configuration and ignore rules     |
-| User data folder          | User-scoped persistence (index, memory, logs)  |
-| Workspace folder          | Workspace-scoped persistence and configuration |
+| Location                  | Purpose                                                     |
+| ------------------------- | ----------------------------------------------------------- |
+| User configuration folder | User-scoped configuration and ignore rules                  |
+| User data folder          | User-scoped durable data and optional relocated workspace data |
+| User cache folder         | User-scoped temporary data and optional relocated workspace cache |
+| User log folder           | Runtime logs and optional relocated workspace logs          |
+| Workspace folder          | Workspace-scoped artifacts stored inside the workspace      |
 
-The resolved base for each location depends on the host OS and any overrides in configuration. See [Location resolution](#location-resolution) below.
+The resolved base for each location depends on the host OS and any overrides in configuration.
 
 ---
 
 ## User configuration folder
 
-**Resolution** — the first directory that exists is selected, in priority order:
-
-1. OS user config directory (e.g. `~/.config/` on Linux, `~/Library/Preferences/` on macOS, `%APPDATA%\` on Windows).
-2. OS user data directory.
-3. OS config directory (platform-specific fallback).
-4. Workspace folder.
+**Resolution** — the host user configuration directory.
 
 **Contents under `alfred/`:**
 
@@ -36,17 +39,13 @@ The resolved base for each location depends on the host OS and any overrides in 
 | `<workspace_id>/config.json`   | Per-workspace configuration override, when `storage.workspace.location = "user"`. |
 | `<workspace_id>/.alfredignore` | Per-workspace ignore rules, when `storage.workspace.location = "user"`.           |
 
-`<workspace_id>` is the SHA-256 hex hash of the absolute workspace root path. See [`Configuration.md`](./Configuration.md) for derivation details.
+`<workspace_id>` follows the identity derivation rules in [`Configuration.md`](./Configuration.md).
 
 ---
 
 ## User data folder
 
-**Resolution** — the first writable directory is selected, in priority order:
-
-1. OS user data directory (e.g. `~/.local/share/` on Linux, `~/Library/Application Support/` on macOS, `%LOCALAPPDATA%\` on Windows).
-2. OS data directory (platform-specific fallback).
-3. Workspace folder.
+**Resolution** — the host user data directory.
 
 **Contents under `alfred/`:**
 
@@ -54,11 +53,34 @@ The resolved base for each location depends on the host OS and any overrides in 
 | ----------------------------- | ------------------------------------------------------------------------- |
 | `index/`                      | User-scoped index persistence files.                                      |
 | `memory/`                     | User-scoped memory facts.                                                 |
-| `logs/`                       | Runtime log files (default location). See [Log files](#log-files).        |
-| `<workspace_id>/config.json`  | Workspace configuration, when `storage.workspace.location = "user"`.      |
-| `<workspace_id>/data/index/`  | Workspace index persistence, when `storage.workspace.location = "user"`.  |
-| `<workspace_id>/data/memory/` | Workspace memory persistence, when `storage.workspace.location = "user"`. |
-| `<workspace_id>/data/logs/`   | Workspace runtime logs, when `storage.workspace.location = "user"`.       |
+| `workspace-index.json`        | Debug index of workspace roots and derived workspace-identity hashes.     |
+| `<workspace_id>/index/`       | Workspace index persistence, when `storage.workspace.location = "user"`.  |
+| `<workspace_id>/memory/`      | Workspace memory persistence, when `storage.workspace.location = "user"`. |
+
+---
+
+## User cache folder
+
+**Resolution** — the user cache directory for the host OS.
+
+**Contents under `alfred/`:**
+
+| Path             | Description                                                          |
+| ---------------- | -------------------------------------------------------------------- |
+| `<workspace_id>/` | Workspace-scoped temporary data, when `storage.workspace.location = "user"`. |
+
+---
+
+## User log folder
+
+**Resolution** — the user log directory for the host OS.
+
+**Contents under `alfred/`:**
+
+| Path             | Description                                                     |
+| ---------------- | --------------------------------------------------------------- |
+| `alfred-*.json`  | Runtime log files for Alfred. See [Log files](#log-files).      |
+| `<workspace_id>/` | Workspace runtime logs, when `storage.workspace.location = "user"`. |
 
 ---
 
@@ -70,10 +92,11 @@ The workspace folder is rooted at `<workspace.storage.root>` relative to the wor
 
 | Path                 | Description                                                                                 |
 | -------------------- | ------------------------------------------------------------------------------------------- |
-| `config.json`        | Workspace configuration. Validated against `schemas/alfred.config.schema.json`.             |
-| `index/`             | Workspace index persistence files.                                                          |
-| `memory/`            | Workspace-scoped memory facts (when `memory.storage.workspace.enabled = true`).             |
-| `logs/`              | Workspace-local runtime logs (when `logging.location` is not overridden).                   |
+| `data/`              | Workspace-scoped durable data such as index persistence and workspace memory.               |
+| `data/workspace.json` | Workspace-local identity token and related workspace identity metadata.                     |
+| `config/`            | Workspace configuration when workspace-local configuration is enabled.                       |
+| `cache/`             | Workspace-scoped temporary data when workspace-local cache is enabled.                       |
+| `logs/`              | Workspace-local runtime logs when workspace-local logs are enabled.                          |
 | `user/`              | Optional user profile stored in the workspace (when `storage.user.location = "workspace"`). |
 | `user/config.json`   | User configuration stored in-workspace.                                                     |
 | `user/.alfredignore` | User ignore rules stored in-workspace.                                                      |
@@ -96,17 +119,17 @@ The `.alfred/` folder itself is in the built-in default exclude list and is neve
 | Workspace root `.alfredignore`     | Applied after user rules.                                      |
 | Subdirectory `.alfredignore` files | Applied additively from root down to each subdirectory.        |
 
-The default built-in patterns are defined in [`DefaultIncludeExcludeList.md`](./DefaultIncludeExcludeList.md).
+The default built-in patterns are defined in [`Default/IncludeExcludeList.md`](./Default/IncludeExcludeList.md).
 
 ---
 
 ## Log files
 
-Runtime logs are written to the resolved `logging.location` directory (default `<user data>/alfred/logs/`).
+Runtime logs are written to the resolved `logging.path` directory when configured, or to the default user log folder at `<user logs>/alfred/`.
 
 | Pattern                      | Description                                                                                                            |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `alfred-<timestamp>Z.ndjson` | Active log file. Timestamp is UTC, RFC3339-like without `:`, second precision (e.g. `alfred-20260228T134512Z.ndjson`). |
+| `alfred-<timestamp>Z.json` | Active log file. Timestamp is UTC, RFC3339-like without `:`, second precision (e.g. `alfred-20260228T134512Z.json`). |
 | `alfred-<timestamp>Z.zip`    | Archived (rotated) log. Older than the active file; pruned after `logging.retention_days` days (default `7`).          |
 
 A new log file is created on each server startup. Previous files are archived as ZIP and pruned per retention policy.
@@ -119,31 +142,35 @@ Alfred supports three storage layouts, controlled by `storage.user.location` and
 
 ### Default layout
 
-`storage.user.location = "os"` (default), `storage.workspace.location = "workspace"` (default).
+`storage.user.location = "user"` (default), `storage.workspace.location = "workspace"` (default).
 
 | Artifact               | Resolved path                         |
 | ---------------------- | ------------------------------------- |
-| User config            | `<user config>/alfred/config.json`    |
-| User ignore rules      | `<user config>/alfred/.alfredignore`  |
-| User index             | `<user data>/alfred/index/`           |
-| User memory            | `<user data>/alfred/memory/`          |
-| Runtime logs           | `<user data>/alfred/logs/`            |
-| Workspace config       | `<workspaceRoot>/.alfred/config.json` |
-| Workspace index        | `<workspaceRoot>/.alfred/index/`      |
-| Workspace memory       | `<workspaceRoot>/.alfred/memory/`     |
+| User config            | `<user config>/alfred/config.json`         |
+| User ignore rules      | `<user config>/alfred/.alfredignore`       |
+| User index             | `<user data>/alfred/index/`                |
+| User memory            | `<user data>/alfred/memory/`               |
+| User temporary data    | `<user cache>/alfred/`                     |
+| Runtime logs           | `<user logs>/alfred/`                      |
+| Workspace identity     | `<workspaceRoot>/.alfred/data/workspace.json` |
+| Workspace data         | `<workspaceRoot>/.alfred/data/`            |
+| Workspace config       | `<workspaceRoot>/.alfred/config/` (optional) |
+| Workspace logs         | `<workspaceRoot>/.alfred/logs/` (optional) |
 | Workspace ignore rules | `<workspaceRoot>/.alfredignore`       |
 
 ### Workspace-relocated layout
 
-`storage.workspace.location = "user"` — workspace artifacts are stored in OS user directories, keyed by `<workspace_id>`.
+`storage.workspace.location = "user"` — workspace artifacts are stored in the matching user folders, keyed by `<workspace_id>`.
 
 | Artifact               | Resolved path                                       |
 | ---------------------- | --------------------------------------------------- |
 | Workspace config       | `<user config>/alfred/<workspace_id>/config.json`   |
 | Workspace ignore rules | `<user config>/alfred/<workspace_id>/.alfredignore` |
-| Workspace index        | `<user data>/alfred/<workspace_id>/data/index/`     |
-| Workspace memory       | `<user data>/alfred/<workspace_id>/data/memory/`    |
-| Workspace logs         | `<user data>/alfred/<workspace_id>/data/logs/`      |
+| Workspace identity     | `<workspaceRoot>/.alfred/data/workspace.json`       |
+| Workspace index        | `<user data>/alfred/<workspace_id>/index/`          |
+| Workspace memory       | `<user data>/alfred/<workspace_id>/memory/`         |
+| Workspace cache        | `<user cache>/alfred/<workspace_id>/`               |
+| Workspace logs         | `<user logs>/alfred/<workspace_id>/`                |
 
 Use this layout to avoid writing Alfred artifacts into the workspace (for example in read-only or shared repositories).
 
@@ -157,5 +184,7 @@ Use this layout to avoid writing Alfred artifacts into the workspace (for exampl
 | User ignore rules | `<workspaceRoot>/.alfred/user/.alfredignore` |
 | User index        | `<workspaceRoot>/.alfred/user/index/`        |
 | User memory       | `<workspaceRoot>/.alfred/user/memory/`       |
+| User cache        | `<workspaceRoot>/.alfred/user/cache/`        |
+| User logs         | `<workspaceRoot>/.alfred/user/logs/`         |
 
-Use this layout when OS user directories should not be read or written (for example in sandboxed or ephemeral environments).
+Use this layout when user-scoped artifacts should be stored in the workspace instead of the user folders (for example in sandboxed or ephemeral environments).

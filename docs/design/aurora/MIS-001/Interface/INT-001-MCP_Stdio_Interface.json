@@ -18,14 +18,15 @@
 		"transport": "stdio",
 		"encoding": "utf-8",
 		"framing": "newline-delimited JSON frames (one JSON value per line)",
-		"contracts": {
-			"protocol": "docs/design/Protocol.md",
+		"specifications": {
+			"protocol": "docs/design/McpStdioProtocol.md",
 			"errors": "docs/design/ErrorTaxonomy.md",
-			"tool_contracts": "docs/design/ToolContracts.md"
+			"tool_api": "docs/design/ToolApiDefinition.md"
 		},
 		"determinism": {
 			"stable_ordering": true,
 			"explicit_pagination": true
 		}
-	}
+	},
+	"external_references": ["docs/design/McpStdioProtocol.md", "docs/design/ToolApiDefinition.md"]
 }

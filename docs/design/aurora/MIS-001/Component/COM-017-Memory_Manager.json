@@ -7,20 +7,8 @@
 	"description": "Provides CRUD for memory facts and deterministic full-text search over stored facts, maintaining a local index. Supports subject/category/tag filtering and an effective view over user/workspace stores.",
 	"links": [
 		{
-			"relationship": "implements",
-			"target": "FEA-014"
-		},
-		{
-			"relationship": "stores in",
-			"target": "DST-004"
-		},
-		{
 			"relationship": "produces",
 			"target": "ART-008"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {
@@ -30,11 +18,6 @@
 			"filters": ["subject", "category", "tags"],
 			"default_limit": 100
 		},
-		"redaction": "deterministic",
-		"storage": {
-			"user_store": "DST-004",
-			"workspace_store": "DST-004",
-			"effective_view": "merged (default) or prefer_workspace"
-		}
+		"redaction": "deterministic"
 	}
 }

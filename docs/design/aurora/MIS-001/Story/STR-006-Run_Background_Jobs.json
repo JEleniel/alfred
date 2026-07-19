@@ -6,16 +6,8 @@
 	"description": "As an agent user, I need background `fs` bulk operations with deterministic status polling and cancellation so that expensive work does not block interactive steps or run away.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-006"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-019"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-012"
 		}
 	]
 }

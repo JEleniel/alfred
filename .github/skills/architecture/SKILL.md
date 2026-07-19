@@ -7,19 +7,19 @@ description: Use this skill when creating or updating the architecture of a syst
 
 ## General guidelines
 
-- Security-First Architecture Mindset: Evaluate architecture with an adversarial mindset and validate trust boundaries, privilege boundaries, and abuse resistance.
-- Model-to-Reality Focus: Verify that architecture artifacts represent the implemented system and intended evolution.
-- Decision Traceability Focus: Require explicit rationale, constraints, and trade-offs for architecture decisions.
-- Operability and Evolvability Focus: Prioritize designs that are observable, resilient, and changeable without cascading rework.
+- Evaluate architecture with an adversarial mindset. Validate trust boundaries, privilege boundaries, and abuse resistance.
+- Verify that architecture artifacts represent the implemented system and intended evolution.
+- Record explicit rationale, constraints, and trade-offs for architecture decisions.
+- Prioritize designs that are observable, resilient, and changeable without cascading rework.
 
 ## Principles of Elegant Architecture
 
-- Clarity: Architectural structure and intent are understandable without external explanation.
-- Simplicity: The architecture solves requirements with the smallest complete set of mechanisms.
-- Composability: Components compose orthogonally without special-case glue.
-- Predictability: Similar concerns are handled with consistent patterns and constraints.
-- Traceability: Decisions, constraints, and trade-offs are discoverable and auditable.
-- Minimal Incidental Complexity: Mechanisms exist for domain value, not accidental implementation convenience.
+- Keep structure and intent understandable without external explanation.
+- Solve requirements with the smallest complete set of mechanisms.
+- Compose components orthogonally without special-case glue.
+- Handle similar concerns with consistent patterns and constraints.
+- Keep decisions, constraints, and trade-offs discoverable and auditable.
+- Keep mechanisms focused on domain value, not implementation convenience.
 
 ### Indications of Poor Architecture or Modeling
 
@@ -32,10 +32,7 @@ description: Use this skill when creating or updating the architecture of a syst
 
 ## Aurora
 
-The Aurora modeling system captures architectural elements—such as missions, drivers, requirements, and their relationships—in a formal model that is easy to reason about.
-
-Details on the Aurora modeling system are in the [Aurora instructions](../../aurora/Aurora.instructions.md).
-
+- Use the full [Aurora instructions](../../aurora/Aurora.instructions.md).
 - Do not use the Aurora compact model when using this skill.
 
 ### Aurora Model Fidelity Checklist
@@ -48,22 +45,27 @@ Details on the Aurora modeling system are in the [Aurora instructions](../../aur
 
 ## Deliverables
 
-- Root the architecture in `docs/design/Requirements.md`, provided by the user, which captures the requirements and constraints the architecture must satisfy. Maintain this document as requirements evolve.
-- Produce one or more Aurora models and any supporting documentation needed to capture the architecture in enough detail to guide implementation. Use multiple models only when they reduce complexity and can be kept clearly related.
-- Capture architectural decisions, trade-offs, and rationale in supporting documentation. This may include ADRs, hardware specifications, and other reference material needed to understand or justify the model.
+- Root the architecture in `docs/design/Requirements.md`.
+- Keep `docs/design/Requirements.md` current as requirements and constraints evolve.
+- Produce Aurora model(s) and supporting documentation with enough detail to guide implementation.
+- Use multiple models only when they reduce complexity and remain clearly related.
+- Capture architectural decisions, trade-offs, and rationale in supporting documentation.
+- Include ADRs, hardware specifications, and other reference material when needed to justify the model.
 - Store Aurora models under `docs/design/aurora/`, following the standard Aurora structure and naming conventions.
 - Store supporting documentation under `docs/design/`, organized into appropriate subdirectories (for example, `docs/design/adrs/` for Architectural Decision Records).
 
 ## Operating Procedure
 
-1. Confirm the task scope, stakeholders, constraints, and success criteria from `docs/design/Requirements.md` and the user request. If critical information is missing, stop and get clarification before modeling.
-2. Inspect existing architecture artifacts under `docs/design/` and `docs/design/aurora/`. Update them in place unless a genuinely new architectural boundary warrants a separate model.
-3. Capture or update supporting design documentation for assumptions, constraints, external dependencies, trust boundaries, and key decisions before or alongside the model changes.
-4. Create or update Aurora models under `docs/design/aurora/` using the full Aurora instructions. Prefer canonical card types and relationships; introduce non-canonical elements only when no canonical option is semantically correct and the user agrees.
-5. Keep terminology, identifiers, and references consistent across requirements, supporting documentation, and Aurora artifacts so that each important decision and constraint traces back to a single source of truth.
-6. Include external references—such as standards, RFCs, or third-party documentation—when they materially support the architecture, and link them to the relevant model elements for context and traceability.
-7. Review the result against the deliverables and validation checklists in this skill, confirming that the model and supporting documents are complete enough to guide implementation without guesswork.
-8. If the request also includes implementation work, complete the architecture phase first, then switch to the Coding skill for implementation.
+1. Confirm scope, stakeholders, constraints, and success criteria from `docs/design/Requirements.md` and the user request. If critical information is missing, stop and get clarification.
+2. Inspect existing artifacts under `docs/design/` and `docs/design/aurora/`.
+3. Update artifacts in place unless a new architectural boundary requires a separate model.
+4. Capture or update assumptions, constraints, external dependencies, trust boundaries, and key decisions in supporting documentation.
+5. Create or update Aurora models under `docs/design/aurora/` using the full Aurora instructions.
+6. Prefer canonical card types and relationships. Use non-canonical elements only when no canonical option is semantically correct and the user agrees.
+7. Keep terminology, identifiers, and references consistent across requirements, supporting docs, and Aurora artifacts.
+8. Include external references when they materially support the architecture, and link them to relevant model elements.
+9. Validate the result against this skill's deliverables and checklists before completion.
+10. If the request includes implementation work, complete architecture first, then switch to the Coding skill.
 
 ## Validation Checklists
 
@@ -122,9 +124,7 @@ Details on the Aurora modeling system are in the [Aurora instructions](../../aur
 
 ## Cross-skill tasks
 
-- If the request includes implementation work (code changes), treat architecture modeling as its own phase first (produce/confirm the model and supporting documentation), then switch to the Coding skill for implementation.
-- If the request is to review an existing architecture or model without changing it, use the Reviewing skill to record findings and recommendations.
-
-## Glossary
-
-See the shared [Skills glossary](../GLOSSARY.md).
+- If the request includes implementation work, complete architecture modeling as its own phase first.
+- Produce or confirm the model and supporting documentation before switching skills.
+- Switch to the Coding skill only after the architecture phase is complete.
+- If the request is to review an existing architecture or model without changing it, use the Reviewing skill.

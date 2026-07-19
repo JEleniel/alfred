@@ -1,0 +1,20 @@
+{
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"id": "FEA-007",
+	"card_type": "Feature",
+	"name": "Deterministic Response Interfaces",
+	"description": "Return concise JSON/json responses with stable schema versions and deterministic error taxonomy.",
+	"links": [
+		{
+			"relationship": "realizes",
+			"target": "CAP-007"
+		}
+	],
+	"attributes": {
+		"specifications": {
+			"protocol": "docs/design/McpStdioProtocol.md",
+			"errors": "docs/design/ErrorTaxonomy.md",
+			"tool_api": "docs/design/ToolApiDefinition.md"
+		}
+	}
+}

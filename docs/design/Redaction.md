@@ -1,12 +1,21 @@
 # Alfred Redaction
 
-This document specifies Alfred’s deterministic redaction behavior for non-public information (NPI).
+This document specifies Alfred's deterministic redaction behavior for non-public information (NPI).
+
+## Parent Aurora card
+
+[CNS-015](./aurora/MIS-001/Constraint/CNS-015-Deterministic_Output_Normalization.json) — this document elaborates the deterministic-output normalization constraint for redaction behavior and replacement rules.
 
 Redaction is applied:
 
 - At index ingestion (redacted content MUST NOT be stored or searchable).
 - To tool outputs (redacted content MUST NOT be emitted).
 - To logs and job streams (redacted content MUST NOT be persisted or emitted).
+
+Operational path logging policy:
+
+- Absolute paths that can disclose host user names or home-directory segments MUST NOT be logged verbatim.
+- Logs SHOULD use workspace-relative paths or short path tails that do not reveal non-public host identity details.
 
 Redaction is deterministic. The same inputs MUST produce the same outputs.
 
@@ -175,7 +184,7 @@ After merge: the overlapping spans are unioned; only one replacement is emitted 
 
 ## Metadata and warnings
 
-When redaction occurs, Alfred SHOULD emit a warning in the tool result envelope (see [`docs/design/Protocol.md`](./Protocol.md)):
+When redaction occurs, Alfred SHOULD emit a warning in the tool result envelope (see [`docs/design/McpStdioProtocol.md`](./McpStdioProtocol.md)):
 
 - `warnings += {"kind":"redaction","redacted_spans":<count>}`
 

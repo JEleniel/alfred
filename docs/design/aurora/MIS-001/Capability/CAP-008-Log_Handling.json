@@ -6,7 +6,7 @@
 	"description": "Tail and filter logs to support debugging and long-running operations.",
 	"links": [],
 	"attributes": {
-		"format": "ndjson",
-		"spec": "docs/design/Protocol.md"
+		"format": "json",
+		"spec": "docs/design/McpStdioProtocol.md"
 	}
 }

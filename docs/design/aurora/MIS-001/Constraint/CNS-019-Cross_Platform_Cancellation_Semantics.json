@@ -4,5 +4,10 @@
 	"card_type": "Constraint",
 	"name": "Cross-Platform Cancellation Semantics",
 	"description": "Background jobs MUST support best-effort cancellation with documented semantics that work on Linux/macOS/Windows (terminate → wait → force kill), acknowledging OS-specific differences.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-006"
+		}
+	]
 }

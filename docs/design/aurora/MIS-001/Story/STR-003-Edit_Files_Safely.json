@@ -6,20 +6,8 @@
 	"description": "As an agent user, I need Alfred to read and modify files safely and only within the workspace boundary so that accidental damage and boundary escape are prevented by default.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-003"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-001"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-003"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-004"
 		}
 	]
 }

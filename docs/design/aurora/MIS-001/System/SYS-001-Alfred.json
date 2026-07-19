@@ -3,7 +3,7 @@
 	"id": "SYS-001",
 	"card_type": "System",
 	"name": "Alfred",
-	"description": "A local MCP tool server providing workspace indexing, safe file operations, and deterministic JSON/NDJSON contracts.",
+	"description": "A local MCP tool server providing workspace indexing, safe file operations, and deterministic JSON/json contracts.",
 	"links": [
 		{
 			"relationship": "integrates",
@@ -13,5 +13,6 @@
 	"attributes": {
 		"scope": "local-only",
 		"out_of_scope": ["git", "github"]
-	}
+	},
+	"external_references": ["docs/design/Architecture.md"]
 }

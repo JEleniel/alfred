@@ -6,12 +6,8 @@
 	"description": "As an agent user, I need Alfred to capture and present logs in a predictable, bounded way so that I can debug failures without drowning the protocol in noise.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-008"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-012"
 		}
 	]
 }

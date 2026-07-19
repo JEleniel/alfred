@@ -17,5 +17,10 @@
 			"message": "symlink/junction escapes workspace"
 		}
 	},
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-003"
+		}
+	]
 }

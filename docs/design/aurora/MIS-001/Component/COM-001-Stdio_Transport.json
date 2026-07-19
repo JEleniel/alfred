@@ -11,20 +11,12 @@
 			"target": "INT-001"
 		},
 		{
-			"relationship": "implements",
-			"target": "FEA-007"
-		},
-		{
 			"relationship": "produces",
 			"target": "ART-002"
 		},
 		{
 			"relationship": "executes",
 			"target": "STM-001"
-		},
-		{
-			"relationship": "runs on",
-			"target": "NOD-001"
 		}
 	],
 	"attributes": {

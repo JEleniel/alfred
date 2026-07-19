@@ -3,7 +3,7 @@
 	"id": "REQ-008",
 	"card_type": "Requirement",
 	"name": "Log Handling",
-	"description": "Alfred MUST tail and filter logs using a standardized NDJSON log record format and deterministic redaction.",
+	"description": "Alfred MUST tail and filter logs using a standardized json log record format and deterministic redaction.",
 	"links": [
 		{
 			"relationship": "requires",
@@ -11,6 +11,6 @@
 		}
 	],
 	"attributes": {
-		"spec": "docs/design/Protocol.md"
+		"spec": "docs/design/McpStdioProtocol.md"
 	}
 }

@@ -4,5 +4,18 @@
 	"card_type": "Constraint",
 	"name": "Network Filesystem Tolerance",
 	"description": "Alfred MUST tolerate workspaces located on network-backed filesystems (e.g., SMB/NFS/SSHFS) and MUST NOT assume strict local-POSIX filesystem semantics; when guarantees (atomicity, locking, timestamps) cannot be met, Alfred MUST degrade safely and report deterministically.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-001"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-006"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-015"
+		}
+	]
 }

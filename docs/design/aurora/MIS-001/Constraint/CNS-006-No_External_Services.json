@@ -4,5 +4,14 @@
 	"card_type": "Constraint",
 	"name": "No External Service Dependencies",
 	"description": "Alfred MUST be self-contained and MUST NOT depend on any outside service.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-017"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-016"
+		}
+	]
 }

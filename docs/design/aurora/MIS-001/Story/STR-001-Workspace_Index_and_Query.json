@@ -6,16 +6,8 @@
 	"description": "As an agent user, I need to list files, search content, and extract file ranges deterministically so that I can answer questions and make changes with minimal tokens and surprises.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-001"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-012"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-015"
 		}
 	]
 }

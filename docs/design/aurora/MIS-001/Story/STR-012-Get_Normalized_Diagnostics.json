@@ -6,12 +6,8 @@
 	"description": "As an agent user, I need normalized, structured diagnostics so that errors and warnings can be handled programmatically and explained clearly.",
 	"links": [
 		{
-			"relationship": "explains",
+			"relationship": "defines",
 			"target": "REQ-012"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-005"
 		}
 	]
 }

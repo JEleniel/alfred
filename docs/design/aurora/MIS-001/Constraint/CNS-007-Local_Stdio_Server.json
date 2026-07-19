@@ -4,5 +4,10 @@
 	"card_type": "Constraint",
 	"name": "Local Stdio Server",
 	"description": "Alfred runs locally and communicates over stdio.",
-	"links": []
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-016"
+		}
+	]
 }

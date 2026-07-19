@@ -1,32 +1,44 @@
 {
-  "$schema": "../../schemas/Aurora.card.schema.json",
-  "attributes": {
-    "non_text_fs_paths": {
-      "unix": {
-        "escape_format": "\\xNN"
-      },
-      "windows": {
-        "escape_format": "\\u{XXXX}",
-        "note": "ill-formed UTF-16 surrogate units may be escaped"
-      }
-    },
-    "protocol_encoding": {
-      "json_must_be_utf8": true
-    },
-    "separator_normalization": {
-      "normalize_backslash_to_slash": true
-    },
-    "tool_path_format": {
-      "encoding": "utf-8",
-      "workspace_relative_posix": true
-    }
-  },
-  "card_type": "Constraint",
-  "description": "Alfred’s protocol outputs MUST be valid UTF-8 JSON/NDJSON. When encountering non-UTF8 filesystem paths or OS-specific path encodings, Alfred MUST handle them safely and report them deterministically (e.g., escaped/encoded representations) rather than crashing or producing invalid JSON.",
-  "external_references": [
-    "docs/design/Protocol.md"
-  ],
-  "id": "CNS-021",
-  "links": [],
-  "name": "UTF-8 Protocol and Path Encoding Handling"
+	"$schema": "../../schemas/Aurora.card.schema.json",
+	"attributes": {
+		"path_transport": {
+			"encoding_format": "percent-encoding",
+			"dot_literal": true
+		},
+		"protocol_encoding": {
+			"json_must_be_utf8": true
+		},
+		"separator_normalization": {
+			"normalize_backslash_to_slash": true
+		},
+		"tool_path_format": {
+			"encoding": "utf-8",
+			"workspace_relative_posix": true
+		},
+		"unsafe_path_rejection": {
+			"reject_controls": true,
+			"reject_invalid_unicode": true,
+			"reject_reserved_windows_component_names": true,
+			"reject_trailing_dot_component": true
+		}
+	},
+	"card_type": "Constraint",
+	"description": "Alfred protocol outputs MUST be valid UTF-8 JSON/json and use deterministic percent-encoding for path transport when encoding is required. Unsafe or ambiguous path text MUST be rejected at the boundary.",
+	"external_references": ["docs/design/McpStdioProtocol.md"],
+	"id": "CNS-021",
+	"links": [
+		{
+			"relationship": "limits",
+			"target": "REQ-003"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-007"
+		},
+		{
+			"relationship": "limits",
+			"target": "REQ-012"
+		}
+	],
+	"name": "UTF-8 Protocol and Path Encoding Handling"
 }

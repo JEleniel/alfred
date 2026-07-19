@@ -3,7 +3,7 @@
 	"id": "STA-010",
 	"card_type": "State",
 	"name": "Router Streaming or Waiting",
-	"description": "Router streams deterministic output (NDJSON) for long operations or waits for a single response for sync operations.",
+	"description": "Router streams deterministic output (json) for long operations or waits for a single response for sync operations.",
 	"links": [
 		{
 			"relationship": "handles",

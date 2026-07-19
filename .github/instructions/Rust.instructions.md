@@ -3,75 +3,76 @@ description: 'Agent directives for Rust code structure, testing, and verificatio
 applyTo: '**/*.rs'
 ---
 
-# Rust Coding Guide
+# Rust Instructions
 
-If present, the repository's Rust formatting config (`rustfmt.toml`) is the source of truth for formatting.
+If present, the repository's Rust formatting config (`rustfmt.toml`) and lint config (`clippy.toml`) are the sources of truth for formatting and linting.
 
 ## Formatting Rules
 
-- **Formatting**: Use `cargo fmt`. Do not spend time manually adjusting layout that `rustfmt` already controls.
-- **Indentation**: Use tabs; let the tools enforce indentation and alignment.
-- **Line endings**: Use `\n`.
-- **Comments and docs**:
-    - Keep comments accurate and up to date.
-    - Use `//!` for module/crate docs and `///` for item docs.
-    - Let `rustfmt` wrap and normalize comments, doc comments, doc attributes, and other configured formatting details.
-    - Follow the [rustdoc book](https://doc.rust-lang.org/rustdoc/).
-- **Patterns**: Use `_` for single-item wildcards and `..` for rest patterns.
-- **Initialization**: Use field init shorthand when possible.
-- Baseline: [2024 Rust Style Guide](https://doc.rust-lang.org/stable/style-guide/index.html).
+- ALWAYS use `cargo fmt` to format Rust source files. Do not fight the formatter.
+- ALWAYS use tabs to support adjustable visual width for accessibility; let the tools enforce indentation and alignment.
+- ALWAYS use line feed only (`\n`) and NEVER use carriage return.
 
-### Imports
+## Comments and Rustdoc
 
-- Put `mod` declarations first (after module docs), then a blank line, then `use`.
-  This is an organizational preference; `rustfmt` will not move `mod` declarations above
-  existing `use` declarations.
-- Within a contiguous import block, let `rustfmt` group imports into standard-library,
-  external-crate, and local-crate sections, and sort them in Rust style-guide order.
-- Keep intentionally separate import blocks separated by blank lines.
-- Format imports on one line where possible. Don’t put spaces around braces.
-- Prefer the simplest import form that remains readable. Under the current formatter config, `rustfmt` preserves import granularity, but it may regroup a contiguous block by crate origin.
-- If an import does require multiple lines (either because a list of single names does not fit within the max width, or because of the rules for nested imports below), then break after the opening brace and before the closing brace, use a trailing comma, and block indent the names.
-- Names in a list import must follow Rust style-guide order, recursively,
-  except that:
-    - self and super always come first if present, and
-    - groups and glob imports always come last if present.
-- If there are any nested imports in a list import, then use the multi-line form, even if the import fits on one line. Each nested import must be on its own line, but non-nested imports must be grouped on as few lines as possible.
+- ALWAYS keep existing comments accurate and up to date.
+- ALWAYS use `//!` for module/crate docs and `///` for item docs.
+- Follow the [rustdoc book](https://doc.rust-lang.org/rustdoc/).
 
-## Coding Rules
+## Coding
 
-- Apply these rules to Rust code you write or modify. Do not rewrite unrelated existing code solely for conformance.
-- Organize code into logical, cohesive modules; minimize top-level `*.rs` sprawl. Do not use `mod.rs`.
-- Do not use `unwrap`, `expect`, `panic`, or similar in non-test code unless explicitly instructed.
-- Add documentation comments for new modules and new public items.
-- Avoid `unsafe` unless a specific API requires it.
-- When configuring logging, write `TRACE`, `DEBUG`, `INFO`, and `WARN` to stdout and `ERROR` to stderr. Optionally log to a structured file.
+- ALWAYS use `_` for single-item wildcards and `..` for rest patterns.
+- ALWAYS use field initializer shorthand when possible.
+- ALWAYS place code elements in the following order:
+    - `mod` declarations (after module docs)
+    - `use` declarations
+    - the module's primary struct
+    - module level functions
+    - secondary structs
+    - supporting enums
+    - error enums
+- ALWAYS place the components of structs in the following order:
+    - the `struct` declaration
+    - the simple `impl` block (there should only be one)
+    - trait `impl` blocks
+- NEVER rewrite unrelated existing code solely for conformance with these rules.
+- ALWAYS organize code into logical, cohesive modules.
+- ALWAYS minimize top-level `*.rs` sprawl.
+- NEVER use `mod.rs`.
+- ALWAYS add documentation comments for new public items.
+- NEVER use `unsafe` except in embedded projects where no alternative is available.
+- ALWAYS place unit tests in a module-local `tests/` subfolder named with the suffix `_tests` added to the base filename.
+    - For example, a `src/module/submodule.rs` would have a matching `src/module/tests/submodule_tests.rs`
+    - Tests should be brought in using the `path` directive.
+- ALWAYS place integration tests in the project's `src/tests/` directory, e.g., `src/tests/integration_tests_1.rs`.
+- NEVER expose the internals of a module for any reason. All access must be through the public API.
+
+### Complexity
+
+- NEVER let a source file exceed 500 lines.
+- NEVER let a single function exceed 50 lines.
+    - These limits include generated code and macro-heavy modules. Generators must be written to comply with these limits.
+    - Outputs generated by third party tools, such as SQL migrations, are exempt.
+    - You may use the `./.github/violations.sh` script to verify compliance, if present.
+- NEVER write functions that _only_ return a constant value.
+- NEVER write one-line functions except when they enforce ownership or API boundaries, or when they encapsulate a complex mathematical operation.
+- NEVER write wrapper functions, error remapping functions (outside `impl From<>` on an error enum), or trivial functions.
+- NEVER create multiple paths, functions, or other code that does the same thing. There must be One Source of Truth for any function or capability.
+
+### Error Handling
+
+- NEVER `unwrap`, `expect`, `map_err`, `panic`, or similar when the error can be rectified or converted into a typed error (`Result<>`).
+- Prefer `#[from]`, `impl From<>`, `if let Some`, `if let Err`, or `match` to handle and propagate errors explicitly.
+- NEVER swallow, mask, or drop errors. They must all be handled or logged at minimum.
+- ALWAYS rectify errors when possible.
+
+## General Guidelines
+
+- Default to writing `TRACE`, `DEBUG`, `INFO`, and `WARN` to stdout and `ERROR` to stderr.
 - Unit testing exercises the inside of a module. Integration testing exercises the outside through public APIs.
-- Unit tests belong in a module-local `tests/` subfolder and may be brought in using the `path` directive. Name host-side tests `<module>_host_tests.rs` and device-side tests `<module>_device_tests.rs`. Mock helper modules may be named `mock_<module>.rs`.
-- Integration tests belong in the crate-root `tests/` directory.
-- While using complete words, strive to keep names short and to the point, e.g.:
-    - Instead of `uninitialized_reading_rejects_reads_and_writes` use `unready_reading_rejects_access`
-    - For example, phrases like "reads_and_writes" can be shortened to "access", "sets x when y, sets z when a" becomes "sets_status".
-
-## Prohibitions
-
-- You MUST NOT write functions that _only_ return a constant value.
-- You MUST NOT `map_err`, wrap errors, flatten errors, or write functions that convert or wrap errors. Use `thiserror` `#[from]` directives instead along with the `?` operator.
-- You MUST NOT expose the internals of a module for any reason.
-- You MUST NOT let a source file exceed 500 lines or a single function exceed 50 lines. You may use the `./.github/violations.sh` script to verify compliance.
-- You MUST NOT write a function that executes a simple calculation or call that is only used once. Just use the call or formula directly.
-- You MUST NOT write multiple paths, functions, or other code that does the same thing. There MUST be one source of truth for any function or capability.
-- You MUST NOT use any form of shared data across task or thread boundaries; all communication must use channels or similar. Use of `mutex` is a red flag for this.
-
-## Error Handling
-
-- You MUST NOT swallow errors. They MUST all be handled or logged at minimum.
-- Recover from handled errors when that is safe and correct.
-- Library code SHOULD return typed errors (prefer `thiserror`).
-- Executable entrypoints and true application boundaries—places where control leaves our code to an external runtime, caller, or user-facing shell—MUST use `anyhow`.
-- All errors MUST be either handled or logged. The code should crash only if there is no choice.
-
-## Acceptance Criteria
-
-- For Rust work, relevant `cargo` checks pass (`fmt`, `clippy`, and targeted `test`).
-- **Important**: In this repository the default tests is configured to flash and run device-side tests. You MUST use the "host-test" alias to run host-side tests.
+- Use complete words instead of abbreviations when naming.
+    - Names should clearly describe the thing being named without being verbose.
+    - For example, instead of `uninitialized_reading_rejects_reads_and_writes` use `unready_reading_rejects_access`
+    - Phrases like "reads_and_writes" can be shortened to "accesses", "sets x when y, sets z when a" becomes "sets_status".
+- Any function under five lines should be considered for elimination.
+- Avoid sharing data across thread boundaries. Use channels, signals, or other similar constructs instead.

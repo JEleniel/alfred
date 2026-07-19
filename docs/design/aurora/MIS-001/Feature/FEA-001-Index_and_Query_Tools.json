@@ -8,19 +8,11 @@
 		{
 			"relationship": "realizes",
 			"target": "CAP-001"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-001"
-		},
-		{
-			"relationship": "implies",
-			"target": "CNS-002"
 		}
 	],
 	"attributes": {
-		"contracts": {
-			"tool_contracts": "docs/design/ToolContracts.md"
+		"specifications": {
+			"tool_api": "docs/design/ToolApiDefinition.md"
 		},
 		"tools": ["search", "fs"]
 	}
